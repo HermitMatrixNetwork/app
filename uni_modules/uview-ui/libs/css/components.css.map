@@ -1,0 +1,10 @@
+{
+    "version": 3,
+    "mappings": "AAEA,sBAAsB;AAGtB,AAAA,IAAI,EAAE,WAAW,EAAE,WAAW,CAAC;EAC9B,OAAO,EAAE,IAAI;EACb,cAAc,EAAE,MAAM;EACtB,WAAW,EAAE,CAAC;EACd,SAAS,EAAE,CAAC;EACZ,UAAU,EAAE,IAAI;EAChB,WAAW,EAAE,OAAO;EACpB,aAAa,EAAE,UAAU;CACzB;;AACD,YAAY",
+    "sources": [
+        "components.scss",
+        "mixin.scss"
+    ],
+    "names": [],
+    "file": "components.css"
+}
