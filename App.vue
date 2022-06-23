@@ -1,5 +1,9 @@
 <script>
-  export default {}
+  export default {
+    onLaunch() {
+      this.$cache.get('_language') !== null || this.$cache.set('_language', '繁體中文', 0)
+    }
+  }
 </script>
 
 <style lang="scss">
