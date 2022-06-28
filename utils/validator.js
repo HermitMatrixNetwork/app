@@ -6,8 +6,6 @@
  * @Description: In User Settings Edit
  */
 
-import colorGradient from '../uni_modules/uview-ui/libs/function/colorGradient'
-
 const validator = {
   isEmpty(val) {
     if (val.length == 0) return false
@@ -47,9 +45,9 @@ export function validate(target) {
   if (message !== '') console.error(message)
 
   return {
-    filedName: target,
+    fieldName: target,
     result,
-    message
+    errMessage: message
   }
 }
 
