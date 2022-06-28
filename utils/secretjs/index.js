@@ -1,5 +1,5 @@
 import NetworkClient from './SecretNetWorkClient'
-import * as _secretjs from 'secretjs'
+import * as _secretjs from 'secretjs-cjgs'
 const SecretJs = {
 
   get SecretNetworkClient() {

@@ -13,6 +13,6 @@
     "@cosmjs/crypto": "^0.28.7",
     "bech32": "^2.0.0",
     "bn.js": "^5.2.1",
-    "secretjs": "^1.3.0-beta.6"
+    "secretjs-cjgs": "^1.0.0"
   }
 }
