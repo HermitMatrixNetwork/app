@@ -23,7 +23,7 @@ const WalletCrypto = {}
   @param { msg } string 签名
   @returns { string } 私钥
  */
-WalletCrypto.encode = (key, msg = 'gongshi') => {
+WalletCrypto.encode = (key, msg = 'cjgsh') => {
   const words = bech32.toWords(key, 'utf8')
   const result = bech32.encode(msg, words)
   return result
