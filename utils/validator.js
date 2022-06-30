@@ -7,12 +7,16 @@
  */
 
 const validator = {
-  isEmpty(val) {
+  required(val) {
     if (val.length == 0) return false
     return true
   },
   min(val, rule) {
     if (val.length < rule.len) return false
+    return true
+  },
+  max(val, rule) {
+    if (val.length > rule.len) return false
     return true
   }
 }
