@@ -65,12 +65,7 @@
       }
     },
     created() {
-      // #ifdef APP
       this.wallet = uni.getStorageSync('_currentWallet').data
-      // #endif
-      // #ifdef H5
-      this.wallet = JSON.parse(uni.getStorageSync('_currentWallet')).data
-      // #endif
       this.mnemonicList = this.wallet.mnemonic.split(' ')
     },
     methods: {
