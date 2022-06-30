@@ -1,14 +1,7 @@
 <template>
   <view class="create-wallet">
 
-    <!-- 状态栏 -->
-    <view class="status_bar">
-      <!-- APP下会占用系统原生消息因此需要该占位符 -->
-    </view>
-
-    <view class="goBack">
-      <u-icon name="arrow-left" color="#8397B1" @click="goBack"></u-icon>
-    </view>
+    <uniHeader></uniHeader>
 
     <view class="title">
       创建钱包
@@ -19,7 +12,7 @@
         钱包名称
       </view>
       <u-input class="wallet-name-input" :class="{error: invalidFields.fieldName == 'name'}" v-model="name"
-        placeholder="设置钱包名称" @blur="validate('name')"></u-input>
+        placeholder="设置钱包名称"></u-input>
     </view>
 
     <view class="wallet-password">
@@ -28,8 +21,7 @@
       </view>
       <view class="wallet-password-item">
         <u-input :password="!passwordEye" class="wallet-password-input"
-          :class="{error: invalidFields.fieldName == 'password'}" v-model="password" placeholder="设置钱包密码（不少于8位）"
-          @blur="validate('password')">
+          :class="{error: invalidFields.fieldName == 'password'}" v-model="password" placeholder="设置钱包密码（不少于8位）">
         </u-input>
         <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
           :class="{error: invalidFields.fieldName == 'password'}" @click="passwordEye = !passwordEye">
@@ -37,8 +29,7 @@
       </view>
       <view class="wallet-password-item" :class="{error: invalidFields.fieldName == 'checkPassword'}">
         <u-input :password="!checkPasswordEye" :class="{error: invalidFields.fieldName == 'checkPassword'}"
-          class="wallet-password-input" v-model="checkPassword" placeholder="重复输入确认钱包密码"
-          @blur="validate('checkPassword')">
+          class="wallet-password-input" v-model="checkPassword" placeholder="重复输入确认钱包密码">
         </u-input>
         <u-icon color="#8F9BB3" size="20" :name="checkPasswordEye ? 'eye' : 'eye-off'"
           :class="{error: invalidFields.fieldName == 'checkPassword'}" @click="checkPasswordEye = !checkPasswordEye">
@@ -49,7 +40,7 @@
     <!-- #ifdef APP -->
     <view :callRenderCreate="callRenderCreate" :change:callRenderCreate="render.createWallet"></view>
     <!-- #endif -->
-    <u-button type="primary" class="create-btn" @click="createWallet">确认</u-button>
+    <u-button type="primary" class="create-btn" @click="confrim">确认</u-button>
 
     <!-- 错误提示 -->
     <u-notify class="notify" ref="uNotify"></u-notify>
@@ -61,12 +52,16 @@
     validate,
     validateAll
   } from '@/utils/validator.js'
-
+  import uniHeader from './components/uniHeader.vue'
+  import WalletCrypto from '@/utils/walletCrypto.js'
   export default {
+    components: {
+      uniHeader
+    },
     data() {
       return {
         name: '',
-        password: '',
+        password: '', // 不能大于48位
         checkPassword: '',
         checkPasswordEye: false,
         passwordEye: false, // 是否明文显示密码
@@ -76,11 +71,11 @@
         uNotify: false,
         rules: {
           name: {
-            rule: 'isEmpty',
+            rule: 'required',
             errMessage: '钱包名称不能为空'
           },
           password: [{
-            rule: 'isEmpty',
+            rule: 'required',
             errMessage: '钱包密码不能为空'
           }, {
             rule: 'min',
@@ -88,8 +83,8 @@
             errMessage: '密码长度不能少于8位'
           }, {
             rule: 'max',
-            len: 19,
-            errMessage: '密码长度不能大于19位'
+            len: 48,
+            errMessage: '密码长度不能大于48位'
           }],
           checkPassword: [{
             validator(value) {
@@ -97,6 +92,9 @@
               return true
             },
             errMessage: '密码输入不一致，请重新输入。'
+          }, {
+            rule: 'required',
+            errMessage: '钱包密码不能为空'
           }]
         }
       }
@@ -105,18 +103,37 @@
       goBack() {
         uni.navigateBack()
       },
-      validate(target) {
-        this.isValidate = validate.call(this, target).result
-        console.log(`${target}校验失败`)
-      },
+      // validate(target) {
+      //   const {
+      //     result,
+      //     errMessage
+      //   } = validate.call(this, target)
+      //   if (result) {
+      //     this.$refs.uNotify.open = false
+      //   } else {
+      //     // 校验失败
+      //     this.$refs.uNotify.show({
+      //       top: .1, // 0在H5下无效
+      //       type: 'error',
+      //       color: '#FFFFFF',
+      //       bgColor: '#EC6665',
+      //       message: errMessage,
+      //       duration: 1000 * 3,
+      //       fontSize: '28rpx', // 单位rpx
+      //       safeAreaInsetTop: false
+      //     })
+      //     console.log(`${target}校验失败`)
+      //   }
+      // },
 
-      createWallet() {
+      confrim() {
         this.invalidFields = validateAll.call(this, this.rules).find(item => !item.result) || {}
-        this.isValidate = true
-        // this.isValidate = this.invalidFields.field == undefined
+        this.isValidate = this.invalidFields.fieldName == undefined
+        // this.isValidate = true // @test
         if (this.isValidate) {
           this.callRenderCreate++ // 调用render.createWallet创建钱包
         } else {
+          // 表单校验失败
           this.$refs.uNotify.show({
             top: .1, // 0在H5下无效
             type: 'error',
@@ -128,27 +145,33 @@
             safeAreaInsetTop: false
           })
         }
-        // if (!this.isValidate) {
-        // return uni.showToast({
-        //   title: '请正确填写相关信息',
-        //   icon: 'none'
-        // })
-        // } else {
-        // const wallet = new this.$secretjs.Wallet('', {
-        //   bech32Prefix: 'ghm'
-        // })
-
-        // 生成私钥
-        // this.privateKey = WalletCrypto.encode(wallet.privateKey)
+      },
+      initWallet({
+        wallet,
+        privateKey
+      }) {
         // 加密密码
         // const password = WalletCrypto.encode(this.password, 'hhaic')
 
         // console.log(password)
 
-        // const dePassword = WalletCrypto.decode(password)
+        wallet.password = this.password
+        wallet.privateKey64 = privateKey
 
-        // console.log(dePassword)
-        // }
+        console.log('创建钱包数据:', {
+          wallet
+        })
+        this.$cache.set('_currentWallet', wallet, 0)
+        // 解密密码
+        // const dePassword = WalletCrypto.decode(password)
+        // console.log(dePassword.join(''))
+
+        this.toBackupReminder()
+      },
+      toBackupReminder(wallet, privateKey) {
+        uni.navigateTo({
+          url: './backupReminder'
+        })
       }
     }
   }
@@ -157,19 +180,23 @@
 <script lang="renderjs" module="render">
   import WalletCrypto from '@/utils/walletCrypto.js'
   import secretjs from '@/utils/secretjs/index.js'
-  import {
-    runMethod
-  } from '@/utils/render.base.js'
+  import renderUtils from '@/utils/render.base.js'
   export default {
     methods: {
       createWallet(newVal, oldVal, oldVm, newVm) {
         if (newVal == 0) return; // 第一次进入页面会默认调用一次
-        console.log('render call createWallet')
         const wallet = new secretjs.Wallet('', {
           bech32Prefix: 'ghm'
         })
-        console.log(this._$id);
-        // console.log(wallet);
+
+        // 生成私钥
+        const privateKey = WalletCrypto.encode(wallet.privateKey)
+
+        renderUtils.runMethod(this._$id, 'initWallet', {
+          wallet,
+          privateKey
+        })
+
       }
     }
   }
@@ -177,26 +204,14 @@
 
 <style lang="scss" scoped>
   .create-wallet {
-    padding: 0 32rpx;
-  }
-
-  .status_bar {
-    height: var(--status-bar-height);
-    width: 100%;
-  }
-
-  .goBack {
-    height: 48rpx;
-    margin: 32rpx 0 64rpx 0;
-
-    /deep/ .u-icon__icon {
-      font-size: 48rpx !important;
-    }
+    // padding: 0 32rpx;
   }
 
   .title {
     height: 48rpx;
     margin-bottom: 64rpx;
+    margin-top: 64rpx;
+    margin-left: 32rpx;
     font-weight: 500;
     font-size: 48rpx;
     color: #2C365A;
@@ -206,6 +221,9 @@
 
   .wallet-name,
   .wallet-password {
+    margin-left: 32rpx;
+    margin-right: 32rpx;
+
     &-label {
       height: 28rpx;
       margin-bottom: 24rpx;

@@ -9,7 +9,7 @@
 
     <!--  -->
     <view class="logo">
-      <image class="logo-image"></image>
+      <image class="logo-image" src="/static/img/placeholder.jpeg"></image>
       <view class="logo-describe">
         创建您自己的钱包</view>
       <view class="logo-describe">
@@ -38,7 +38,7 @@
           用户协议
         </view>
         <view class="protocol-header-close" @click="closeProtocol">
-          X
+          <u-icon name="close" color="#2C365A" size="32rpx"></u-icon>
         </view>
       </view>
       <view class="protocol-content">
@@ -69,12 +69,12 @@
       <view class="protocol-footer">
         <view class="protocol-footer-check">
           <label>
-            <checkbox class="protocol-footer-check-checkbox" :checked="pre_agree_protocol"
-              @click="pre_agree_protocol = !pre_agree_protocol" />
+            <checkbox class="protocol-footer-check-checkbox" :checked="agree_protocol"
+              @click="agree_protocol = !agree_protocol" />
           </label>
           <text>我已阅读并同意用户协议</text>
         </view>
-        <view class="protocol-footer-confirm">
+        <view class="protocol-footer-confirm" :class="{ complete: agree_protocol }">
           <u-button @click="confirmProtocol">确认</u-button>
         </view>
       </view>
@@ -87,19 +87,15 @@
     data() {
       return {
         agree_protocol: this.$cache.get('_agree_protocol') || false,
-        pre_agree_protocol: false,
         showProtocol: false,
         action: ''
       }
     },
     onShow() {
       // str @test
-      this.$cache.delete('_agree_protocol')
-      this.agree_protocol = this.$cache.get('_agree_protocol') || false
+      // this.$cache.delete('_agree_protocol')
+      // this.agree_protocol = this.$cache.get('_agree_protocol') || false
       // end
-    },
-    created() {
-      this.pre_agree_protocol = this.agree_protocol
     },
     methods: {
       toCreateWallet() {
@@ -122,8 +118,7 @@
         return isAgree
       },
       confirmProtocol() {
-        if (this.pre_agree_protocol) {
-          this.agree_protocol = true
+        if (this.agree_protocol) {
           this.$cache.set('_agree_protocol', true, 0)
           this.showProtocol = false
           this.action === 'toCreateWallet' ? this.toCreateWallet() : this.toImportWallet()
@@ -134,6 +129,7 @@
       },
       closeProtocol() {
         this.showProtocol = false
+        this.agree_protocol = false
       }
     },
     watch: {
@@ -167,7 +163,7 @@
       height: 370rpx;
       margin-bottom: 32rpx;
       margin-top: 144rpx;
-      background-color: skyblue;
+      // background-color: skyblue;
     }
 
     &-describe {
@@ -283,6 +279,8 @@
       }
 
       &-confirm {
+        opacity: .2;
+
         .u-button {
           width: 622rpx;
           height: 96rpx;
@@ -294,5 +292,9 @@
         }
       }
     }
+  }
+
+  .complete {
+    opacity: 1 !important;
   }
 </style>
