@@ -34,19 +34,19 @@
 </template>
 
 <script>
-  import uniHeader from './components/uniHeader.vue'
-  export default {
-    components: {
-      uniHeader
-    },
-    methods: {
-      toNextStep() {
-        uni.navigateTo({
-          url: './backupMnemonic'
-        })
-      }
+import uniHeader from './components/uniHeader.vue'
+export default {
+  components: {
+    uniHeader
+  },
+  methods: {
+    toNextStep() {
+      uni.navigateTo({
+        url: './backupMnemonic'
+      })
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

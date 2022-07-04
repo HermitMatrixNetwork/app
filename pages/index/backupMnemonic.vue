@@ -52,33 +52,33 @@
 </template>
 
 <script>
-  import uniHeader from './components/uniHeader.vue'
-  export default {
-    components: {
-      uniHeader
+import uniHeader from './components/uniHeader.vue'
+export default {
+  components: {
+    uniHeader
+  },
+  data() {
+    return {
+      showHint: true, // 是否显示提示窗口 @test: false
+      mnemonicList: [],
+      wallet: {}
+    }
+  },
+  created() {
+    this.wallet = uni.getStorageSync('_currentWallet').data
+    this.mnemonicList = this.wallet.mnemonic.split(' ')
+  },
+  methods: {
+    confrimHint() {
+      this.showHint = false
     },
-    data() {
-      return {
-        showHint: true, // 是否显示提示窗口 @test: false
-        mnemonicList: [],
-        wallet: {}
-      }
-    },
-    created() {
-      this.wallet = uni.getStorageSync('_currentWallet').data
-      this.mnemonicList = this.wallet.mnemonic.split(' ')
-    },
-    methods: {
-      confrimHint() {
-        this.showHint = false
-      },
-      toValidateMnemonic() {
-        uni.navigateTo({
-          url: './validateMnemonic'
-        })
-      }
+    toValidateMnemonic() {
+      uni.navigateTo({
+        url: './validateMnemonic'
+      })
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

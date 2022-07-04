@@ -33,72 +33,72 @@
 </template>
 
 <script>
-  import uniHeader from './components/uniHeader.vue'
-  export default {
-    components: {
-      uniHeader
+import uniHeader from './components/uniHeader.vue'
+export default {
+  components: {
+    uniHeader
+  },
+  data() {
+    return {
+      mnemonicList: [], // 正确顺序的助记词
+      randomMnemonicList: [], // 随机排序助记词 
+      pickedMnemonicList: [], // 用户选择的助记词
+      errorIndex: -1, // 选择错误助记词的索引
+    }
+  },
+  created() {
+    this.wallet = uni.getStorageSync('_currentWallet').data
+    this.mnemonicList = this.wallet.mnemonic.split(' ')
+    this.randomMnemonicList = this.wallet.mnemonic.split(' ').sort(() => Math.random() - 0.5)
+  },
+  methods: {
+    // 删除选择的助记词
+    resetItem(item) {
+      const checkIndex = this.pickedMnemonicList.findIndex(val => val == item)
+      this.pickedMnemonicList.splice(checkIndex, 1)
+      this.validatePickedMnemonicList()
     },
-    data() {
-      return {
-        mnemonicList: [], // 正确顺序的助记词
-        randomMnemonicList: [], // 随机排序助记词 
-        pickedMnemonicList: [], // 用户选择的助记词
-        errorIndex: -1, // 选择错误助记词的索引
+    // 添加选中的助记词
+    pickItem(item) {
+      if (this.pickedMnemonicList.includes(item)) return
+      this.pickedMnemonicList.push(item)
+      this.validatePickedMnemonicList()
+    },
+    // 验证器：校验已选择的助记词顺序是否错误
+    validatePickedMnemonicList() {
+      const mnemonicList = this.mnemonicList
+      this.errorIndex = this.pickedMnemonicList.findIndex((item, index) => {
+        // console.log(mnemonicList[index], index, item)
+        return mnemonicList[index] !== item
+      })
+      if (this.errorIndex > -1) {
+        // 助记词填写顺序错误
+        this.$refs.uNotify.show({
+          top: .1, // 0在H5下无效
+          type: 'error',
+          color: '#FFFFFF',
+          bgColor: '#EC6665',
+          message: '助记词错误，请重新选择！',
+          duration: 1000 * 3,
+          fontSize: '28rpx', // 单位rpx
+          safeAreaInsetTop: false
+        })
+      } else {
+        this.$refs.uNotify.open = false
       }
     },
-    created() {
-      this.wallet = uni.getStorageSync('_currentWallet').data
-      this.mnemonicList = this.wallet.mnemonic.split(' ')
-      this.randomMnemonicList = this.wallet.mnemonic.split(' ').sort(() => Math.random() - 0.5)
+    checkComplete() {
+      return this.errorIndex == -1 && this.pickedMnemonicList.length == 12
     },
-    methods: {
-      // 删除选择的助记词
-      resetItem(item) {
-        const checkIndex = this.pickedMnemonicList.findIndex(val => val == item)
-        this.pickedMnemonicList.splice(checkIndex, 1)
-        this.validatePickedMnemonicList()
-      },
-      // 添加选中的助记词
-      pickItem(item) {
-        if (this.pickedMnemonicList.includes(item)) return
-        this.pickedMnemonicList.push(item)
-        this.validatePickedMnemonicList()
-      },
-      // 验证器：校验已选择的助记词顺序是否错误
-      validatePickedMnemonicList() {
-        const mnemonicList = this.mnemonicList
-        this.errorIndex = this.pickedMnemonicList.findIndex((item, index) => {
-          // console.log(mnemonicList[index], index, item)
-          return mnemonicList[index] !== item
+    confirm() {
+      if (this.checkComplete()) {
+        uni.navigateTo({
+          url: '/pages/account/index'
         })
-        if (this.errorIndex > -1) {
-          // 助记词填写顺序错误
-          this.$refs.uNotify.show({
-            top: .1, // 0在H5下无效
-            type: 'error',
-            color: '#FFFFFF',
-            bgColor: '#EC6665',
-            message: '助记词错误，请重新选择！',
-            duration: 1000 * 3,
-            fontSize: '28rpx', // 单位rpx
-            safeAreaInsetTop: false
-          })
-        } else {
-          this.$refs.uNotify.open = false
-        }
-      },
-      checkComplete() {
-        return this.errorIndex == -1 && this.pickedMnemonicList.length == 12
-      },
-      confirm() {
-        if (this.checkComplete()) {
-          uni.navigateTo({
-            url: '/pages/account/index'
-          })
-        }
       }
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
