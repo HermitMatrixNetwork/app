@@ -47,155 +47,93 @@
 </template>
 
 <script>
-  import {
-    validate,
-    validateAll
-  } from '@/utils/validator.js'
-  import uniHeader from './components/uniHeader.vue'
-  import WalletCrypto from '@/utils/walletCrypto.js'
-  export default {
-    components: {
-      uniHeader
-    },
-    data() {
-      return {
-        name: '',
-        password: '', // 不能大于48位
-        checkPassword: '',
-        checkPasswordEye: false,
-        passwordEye: false, // 是否明文显示密码
-        isValidate: false, // 表单校验状态 @test: true
-        invalidFields: {}, // 校验失败的字段
-        callRenderCreate: 0,
-        uNotify: false,
-        rules: {
-          name: {
-            rule: 'required',
-            errMessage: '钱包名称不能为空'
+import {
+  validateAll
+} from '@/utils/validator.js'
+import uniHeader from './components/uniHeader.vue'
+import mixin from './mixins/index.js'
+export default {
+  components: {
+    uniHeader
+  },
+  mixins: [mixin],
+  data() {
+    return {
+      name: '',
+      password: '', // 不能大于48位
+      checkPassword: '',
+      checkPasswordEye: false,
+      passwordEye: false, // 是否明文显示密码
+      isValidate: false, // 表单校验状态 @test: true
+      invalidFields: {}, // 校验失败的字段
+      callRenderCreate: 0,
+      uNotify: false,
+      rules: {
+        name: {
+          rule: 'required',
+          errMessage: '钱包名称不能为空'
+        },
+        password: [{
+          rule: 'required',
+          errMessage: '钱包密码不能为空'
+        }, {
+          rule: 'min',
+          len: 8,
+          errMessage: '密码长度不能少于8位'
+        }, {
+          rule: 'max',
+          len: 48,
+          errMessage: '密码长度不能大于48位'
+        }],
+        checkPassword: [{
+          validator(value) {
+            if (value !== this.password) return false
+            return true
           },
-          password: [{
-            rule: 'required',
-            errMessage: '钱包密码不能为空'
-          }, {
-            rule: 'min',
-            len: 8,
-            errMessage: '密码长度不能少于8位'
-          }, {
-            rule: 'max',
-            len: 48,
-            errMessage: '密码长度不能大于48位'
-          }],
-          checkPassword: [{
-            validator(value) {
-              if (value !== this.password) return false
-              return true
-            },
-            errMessage: '密码输入不一致，请重新输入。'
-          }, {
-            rule: 'required',
-            errMessage: '钱包密码不能为空'
-          }]
-        }
-      }
-    },
-    methods: {
-      goBack() {
-        uni.navigateBack()
-      },
-      // validate(target) {
-      //   const {
-      //     result,
-      //     errMessage
-      //   } = validate.call(this, target)
-      //   if (result) {
-      //     this.$refs.uNotify.open = false
-      //   } else {
-      //     // 校验失败
-      //     this.$refs.uNotify.show({
-      //       top: .1, // 0在H5下无效
-      //       type: 'error',
-      //       color: '#FFFFFF',
-      //       bgColor: '#EC6665',
-      //       message: errMessage,
-      //       duration: 1000 * 3,
-      //       fontSize: '28rpx', // 单位rpx
-      //       safeAreaInsetTop: false
-      //     })
-      //     console.log(`${target}校验失败`)
-      //   }
-      // },
-
-      confrim() {
-        this.invalidFields = validateAll.call(this, this.rules).find(item => !item.result) || {}
-        this.isValidate = this.invalidFields.fieldName == undefined
-        // this.isValidate = true // @test
-        if (this.isValidate) {
-          this.callRenderCreate++ // 调用render.createWallet创建钱包
-        } else {
-          // 表单校验失败
-          this.$refs.uNotify.show({
-            top: .1, // 0在H5下无效
-            type: 'error',
-            color: '#FFFFFF',
-            bgColor: '#EC6665',
-            message: this.invalidFields.errMessage,
-            duration: 1000 * 3,
-            fontSize: '28rpx', // 单位rpx
-            safeAreaInsetTop: false
-          })
-        }
-      },
-      initWallet({
-        wallet,
-        privateKey
-      }) {
-        // 加密密码
-        // const password = WalletCrypto.encode(this.password, 'hhaic')
-
-        // console.log(password)
-
-        wallet.password = this.password
-        wallet.privateKey64 = privateKey
-
-        console.log('创建钱包数据:', {
-          wallet
-        })
-        this.$cache.set('_currentWallet', wallet, 0)
-        // 解密密码
-        // const dePassword = WalletCrypto.decode(password)
-        // console.log(dePassword.join(''))
-
-        this.toBackupReminder()
-      },
-      toBackupReminder(wallet, privateKey) {
-        uni.navigateTo({
-          url: './backupReminder'
-        })
+          errMessage: '密码输入不一致，请重新输入。'
+        }, {
+          rule: 'required',
+          errMessage: '钱包密码不能为空'
+        }]
       }
     }
+  },
+  methods: {
+    goBack() {
+      uni.navigateBack()
+    },
+    confrim() {
+      this.invalidFields = validateAll.call(this, this.rules).find(item => !item.result) || {}
+      this.isValidate = this.invalidFields.fieldName == undefined
+      // this.isValidate = true // @test
+      if (this.isValidate) {
+        this.callRenderCreate++ // 调用render.createWallet创建钱包
+      } else {
+        // 表单校验失败
+        this.showNotify('error', this.invalidFields.errMessage)
+      }
+    },
+    cbInitWallet() {
+      this.toBackupReminder()
+    },
+    toBackupReminder(wallet, privateKey) {
+      uni.navigateTo({
+        url: './backupReminder'
+      })
+    }
   }
+}
 </script>
 
 <script lang="renderjs" module="render">
-  import WalletCrypto from '@/utils/walletCrypto.js'
-  import secretjs from '@/utils/secretjs/index.js'
-  import renderUtils from '@/utils/render.base.js'
+  import {
+    createWallet
+  } from './utils/index.js'
   export default {
     methods: {
       createWallet(newVal, oldVal, oldVm, newVm) {
         if (newVal == 0) return; // 第一次进入页面会默认调用一次
-        const wallet = new secretjs.Wallet('', {
-          bech32Prefix: 'ghm'
-        })
-
-        // 生成私钥
-        const privateKey = WalletCrypto.encode(wallet.privateKey)
-
-        renderUtils.runMethod(this._$id, 'initWallet', {
-          wallet,
-          privateKey
-        }, this)
-
+        createWallet('initWallet', this, '', 'cbInitWallet')
       }
     }
   }
