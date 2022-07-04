@@ -83,61 +83,61 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        agree_protocol: this.$cache.get('_agree_protocol') || false,
-        showProtocol: false,
-        action: ''
-      }
+export default {
+  data() {
+    return {
+      agree_protocol: this.$cache.get('_agree_protocol') || false,
+      showProtocol: false,
+      action: ''
+    }
+  },
+  onShow() {
+    // str @test
+    // this.$cache.delete('_agree_protocol')
+    // this.agree_protocol = this.$cache.get('_agree_protocol') || false
+    // end
+  },
+  methods: {
+    toCreateWallet() {
+      this.action = 'toCreateWallet'
+      if (!this.checkIsAgree()) return
+      uni.navigateTo({
+        url: './createWallet'
+      })
     },
-    onShow() {
-      // str @test
-      // this.$cache.delete('_agree_protocol')
-      // this.agree_protocol = this.$cache.get('_agree_protocol') || false
-      // end
+    toImportWallet() {
+      this.action = 'toImportWallet'
+      if (!this.checkIsAgree()) return
+      uni.navigateTo({
+        url: './importWallet'
+      })
     },
-    methods: {
-      toCreateWallet() {
-        this.action = 'toCreateWallet'
-        if (!this.checkIsAgree()) return
-        uni.navigateTo({
-          url: './createWallet'
-        })
-      },
-      toImportWallet() {
-        this.action = 'toImportWallet'
-        if (!this.checkIsAgree()) return
-        uni.navigateTo({
-          url: './importWallet'
-        })
-      },
-      checkIsAgree() {
-        const isAgree = this.agree_protocol === true
-        this.showProtocol = !isAgree
-        return isAgree
-      },
-      confirmProtocol() {
-        if (this.agree_protocol) {
-          this.$cache.set('_agree_protocol', true, 0)
-          this.showProtocol = false
-          this.action === 'toCreateWallet' ? this.toCreateWallet() : this.toImportWallet()
-        } else {
-          // 提示用户勾选同意用户协议按钮
-        }
-
-      },
-      closeProtocol() {
+    checkIsAgree() {
+      const isAgree = this.agree_protocol === true
+      this.showProtocol = !isAgree
+      return isAgree
+    },
+    confirmProtocol() {
+      if (this.agree_protocol) {
+        this.$cache.set('_agree_protocol', true, 0)
         this.showProtocol = false
-        this.agree_protocol = false
+        this.action === 'toCreateWallet' ? this.toCreateWallet() : this.toImportWallet()
+      } else {
+        // 提示用户勾选同意用户协议按钮
       }
+
     },
-    watch: {
-      agree_protocol(newVal, oldVal) {
-        this.$cache.set('_agree_protocol', newVal, 0)
-      }
+    closeProtocol() {
+      this.showProtocol = false
+      this.agree_protocol = false
+    }
+  },
+  watch: {
+    agree_protocol(newVal, oldVal) {
+      this.$cache.set('_agree_protocol', newVal, 0)
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
