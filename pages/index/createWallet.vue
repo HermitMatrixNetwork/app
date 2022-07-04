@@ -47,9 +47,6 @@
 </template>
 
 <script>
-import {
-  validateAll
-} from '@/utils/validator.js'
 import uniHeader from './components/uniHeader.vue'
 import mixin from './mixins/index.js'
 export default {

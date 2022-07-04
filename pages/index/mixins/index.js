@@ -3,6 +3,9 @@
  * @Date: 2022-07-04 13:59:38
  * @Description: In User Settings Edit
  */
+import {
+  validate
+} from '@/utils/validator.js'
 export default {
   methods: {
     /** 
@@ -40,30 +43,47 @@ export default {
       wallet,
       privateKey
     }) {
-      const walletList = this.$cache.get('_walletList')
-
       // 加密密码
       // const password = WalletCrypto.encode(this.password, 'hhaic')
 
       // console.log(password)
-
+      if (!this.password || !this.name) return console.error('初始化钱包数据失败，请检查组件是否已经注册password、name字段作为钱包密码和钱包名字')
       wallet.password = this.password
       wallet.privateKey64 = privateKey
+      wallet.name = this.name
 
-      console.log('111创建钱包数据:', {
+      console.log('创建钱包数据:', {
         wallet
       })
       this.$cache.set('_currentWallet', wallet, 0)
-
-      if (walletList) { // @todo 校验是否已经存在于walletList
-        walletList.push(wallet)
-        this.$cache.set('_walletList', walletList, 0)
-      } else {
-        this.$cache.set('_walletList', [wallet], 0)
-      }
+      this.updateWalletList(wallet)
       // 解密密码
       // const dePassword = WalletCrypto.decode(password)
       // console.log(dePassword.join(''))
+    },
+    /** 更新本地 walletList 数据
+     *  @param { object } wallet 钱包数据
+     *  @return { boolean } 更新是否成功
+     */
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.privateKey64 === wallet.privateKey64)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.push(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
+    },
+    // 校验密码
+    verifyPassword(target, value) {
+      const {
+        result
+      } = validate.call(this, 'password')
+      const wallet = this.findWallet(target, value)
+      if (!wallet) return true
+      return result && wallet.password == this.password
     }
   }
 }
