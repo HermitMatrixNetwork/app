@@ -1,74 +1,150 @@
 {
-  "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-    {
-      "path": "pages/index/index",
-      "style": {
-        "navigationBarTitleText": "钱包首页"
-      }
+    "pages" : [
+		{
+		    "path" : "pages/account/index",
+		    "style" : {
+		        "navigationBarTitleText" : "",
+		        "enablePullDownRefresh" : false
+		    }
+		},		{
+		    "path" : "pages/account/assetManage",
+		    "style" : {
+		        "navigationBarTitleText" : "",
+		        "enablePullDownRefresh" : false
+		    }
+		},	
+		{
+		    "path" : "pages/market/index",
+		    "style" : {
+		        "navigationBarTitleText" : "",
+		        "enablePullDownRefresh" : false
+		    }
+		},{
+		    "path" : "pages/entrust/index",
+		    "style" : {
+		        "navigationBarTitleText" : "",
+		        "enablePullDownRefresh" : false
+		    }
+		},
+			
+			{
+		    "path" : "pages/transaction/index",
+		    "style" : {
+		        "navigationBarTitleText" : "",
+		        "enablePullDownRefresh" : false
+		    }
+		},	
+		{
+		    "path" : "pages/mine/index",
+		    "style" : {
+		        "navigationBarTitleText" : "",
+		        "enablePullDownRefresh" : false
+		    }
+		},
+        //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+        {
+            "path" : "pages/index/index",
+            "style" : {
+                "navigationBarTitleText" : "钱包首页"
+            }
+        },
+        {
+            "path" : "pages/index/createWallet",
+            "style" : {
+                "navigationBarTitleText" : "",
+                "enablePullDownRefresh" : false
+            }
+        },
+        {
+            "path" : "pages/index/importWallet",
+            "style" : {
+                "navigationBarTitleText" : "",
+                "enablePullDownRefresh" : false
+            }
+        },
+        {
+            "path" : "pages/index/backupReminder",
+            "style" : {
+                "navigationBarTitleText" : "",
+                "enablePullDownRefresh" : false
+            }
+        },
+        {
+            "path" : "pages/index/backupMnemonic",
+            "style" : {
+                "navigationBarTitleText" : "",
+                "enablePullDownRefresh" : false
+            }
+        },
+        {
+            "path" : "pages/index/validateMnemonic",
+            "style" : {
+                "navigationBarTitleText" : "",
+                "enablePullDownRefresh" : false
+            }
+        }
+    ],
+    // {
+    //      "path": "pages/index/importFromMnemonic",
+    //      "style": {
+    //        "navigationBarTitleText": "",
+    //        "enablePullDownRefresh": false
+    //      }
+    // }, {
+    //   "path": "pages/index/importFromPrivatekey",
+    //   "style": {
+    //     "navigationBarTitleText": "",
+    //     "enablePullDownRefresh": false
+    //   }
+    // }
+    // ,{
+    //       "path" : "pages/index/importFromKeystore",
+    //       "style" :                                                                                    
+    //       {
+    //           "navigationBarTitleText": "",
+    //           "enablePullDownRefresh": false
+    //       }
+    //   }
+    "globalStyle" : {
+        "navigationStyle" : "custom"
     },
-    {
-      "path": "pages/account/index",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/index/createWallet",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/index/importWallet",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/index/backupReminder",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/index/backupMnemonic",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/index/validateMnemonic",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/index/importFromMnemonic",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    }, {
-      "path": "pages/index/importFromPrivatekey",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    }, {
-      "path": "pages/index/importFromKeystore",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    }
-  ],
-  "globalStyle": {
-    "navigationStyle": "custom"
-  }
+		"tabBar": {
+			"custom": true, 
+			"color": "#B6C3D2",
+					"selectedColor": "#2B2E3D",
+					"borderStyle": "black",
+					"backgroundColor": "#FFFFFF",
+					"list": [{
+							"pagePath": "pages/account/index",
+							"iconPath": "static/img/TabBar/tabbar/msg.png",
+							"selectedIconPath": "static/img/TabBar/active/meg_active.png",
+							"text": "资产"
+						},
+						{
+							"pagePath": "pages/market/index",
+							"iconPath": "static/img/tabbar/market.png",
+							"selectedIconPath": "static/img/tabbar/selMarket.png",
+							"text": "市场"
+						},
+						{
+							"text": "",
+							"pagePath": "pages/entrust/index",
+							"iconPath": "static/img/tabbar/entrust.png",
+							"selectedIconPath": "static/img/tabbar/entrust.png"
+						},
+			
+						{
+							"pagePath": "pages/transaction/index",
+							"iconPath": "static/img/TabBar/tabbar/transaction.png",
+							"selectedIconPath": "static/img/tabbar/selTransaction.png",
+							"text": "交易"
+						},
+						{
+							"pagePath": "pages/mine/index",
+							"iconPath": "static/img/TabBar/tabbar/mine.png",
+							"selectedIconPath": "static/img/tabbar/selMine.png",
+							"text": "我的"
+						}
+					]
+		}
 }
