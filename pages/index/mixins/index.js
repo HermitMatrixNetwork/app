@@ -4,7 +4,8 @@
  * @Description: In User Settings Edit
  */
 import {
-  validate
+  validate,
+  validateAll
 } from '@/utils/validator.js'
 export default {
   methods: {
