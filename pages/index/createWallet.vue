@@ -49,6 +49,7 @@
 <script>
 import uniHeader from './components/uniHeader.vue'
 import mixin from './mixins/index.js'
+import { validateAll } from '@/utils/validator.js'
 export default {
   components: {
     uniHeader
