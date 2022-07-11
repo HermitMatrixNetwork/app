@@ -1,6 +1,6 @@
 <template>
   <view>
-    <uniHeader></uniHeader>
+    <custom-header></custom-header>
 
     <view class="mnemonic">
       <view class="mnemonic-title">备份助记词</view>
@@ -52,11 +52,7 @@
 </template>
 
 <script>
-import uniHeader from './components/uniHeader.vue'
 export default {
-  components: {
-    uniHeader
-  },
   data() {
     return {
       showHint: true, // 是否显示提示窗口 @test: false

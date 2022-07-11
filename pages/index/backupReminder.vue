@@ -1,6 +1,6 @@
 <template>
   <view>
-    <uniHeader style="margin-left: 18rpx;"></uniHeader>
+    <custom-header></custom-header>
 
     <view class="logo">
       <image src="/static/img/placeholder.jpeg" style="width: 174rpx; height: 174rpx;"></image>
@@ -34,11 +34,7 @@
 </template>
 
 <script>
-import uniHeader from './components/uniHeader.vue'
 export default {
-  components: {
-    uniHeader
-  },
   methods: {
     toNextStep() {
       uni.navigateTo({

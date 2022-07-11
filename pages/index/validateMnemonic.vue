@@ -1,6 +1,6 @@
 <template>
   <view>
-    <uniHeader></uniHeader>
+    <custom-header></custom-header>
 
     <view class="mnemonic">
       <view class="mnemonic-title">验证助记词</view>
@@ -33,11 +33,7 @@
 </template>
 
 <script>
-import uniHeader from './components/uniHeader.vue'
 export default {
-  components: {
-    uniHeader
-  },
   data() {
     return {
       mnemonicList: [], // 正确顺序的助记词

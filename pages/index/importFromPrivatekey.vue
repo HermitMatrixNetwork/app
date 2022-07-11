@@ -1,7 +1,6 @@
 <template>
   <view>
-    <uniHeader class="header" title="私钥导入"></uniHeader>
-
+    <custom-header class="header" title="私钥导入"></custom-header>
     <view class="container">
       <view class="item">
         <view class="item-label">私钥</view>
@@ -34,13 +33,9 @@
 </template>
 
 <script>
-import uniHeader from './components/uniHeader.vue'
 import mixin from './mixins/index.js'
 export default {
   mixins: [mixin],
-  components: {
-    uniHeader
-  },
   data() {
     return {
       privateKey64: '', // 私钥

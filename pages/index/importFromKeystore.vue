@@ -1,6 +1,6 @@
 <template>
   <view>
-    <uniHeader class="header" title="Keystore"></uniHeader>
+    <custom-header class="header" title="Keystore"></custom-header>
 
     <view class="container">
       <view class="item">
@@ -32,23 +32,19 @@
 </template>
 
 <script>
-  import uniHeader from './components/uniHeader.vue'
-  export default {
-    components: {
-      uniHeader
-    },
-    data() {
-      return {
-        privateKey: '', // 助记词
-        password: '', // 资金密码
-        name: '', // 钱包名称
-        passwordEye: false, // 是否明文显示资金密码
-      }
-    },
-    methods: {
-      importWallet() {}
+export default {
+  data() {
+    return {
+      privateKey: '', // 助记词
+      password: '', // 资金密码
+      name: '', // 钱包名称
+      passwordEye: false, // 是否明文显示资金密码
     }
+  },
+  methods: {
+    importWallet() {}
   }
+}
 </script>
 
 <style lang="scss" scoped>

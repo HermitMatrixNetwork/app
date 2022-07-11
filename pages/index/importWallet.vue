@@ -1,7 +1,6 @@
 <template>
   <view class="content">
-    <uniHeader class="header" title="选择导入类型"></uniHeader>
-
+    <custom-header class="header" title="选择导入类型"></custom-header>
     <view class="import-container">
       <view class="import-type" v-for="(item, index) in importTypes" :key="index" @click="toPage(index)">
         <view class="import-type-icon">
@@ -22,39 +21,35 @@
 </template>
 
 <script>
-  import uniHeader from './components/uniHeader.vue'
-  export default {
-    components: {
-      uniHeader
-    },
-    data() {
-      return {
-        importTypes: [{
-          name: '助记词',
-          icon: '',
-          describe: '助记词由单词组成，以空格隔开',
-          page: './importFromMnemonic'
-        }, {
-          name: '私钥',
-          icon: '',
-          describe: '明文私钥字符',
-          page: './importFromPrivatekey'
-        }, {
-          name: 'Keystore',
-          icon: '',
-          describe: '加密的私钥JSON 文件',
-          page: './importFromKeystore'
-        }]
-      }
-    },
-    methods: {
-      toPage(index) {
-        uni.navigateTo({
-          url: this.importTypes[index].page
-        })
-      }
+export default {
+  data() {
+    return {
+      importTypes: [{
+        name: '助记词',
+        icon: '',
+        describe: '助记词由单词组成，以空格隔开',
+        page: './importFromMnemonic'
+      }, {
+        name: '私钥',
+        icon: '',
+        describe: '明文私钥字符',
+        page: './importFromPrivatekey'
+      }, {
+        name: 'Keystore',
+        icon: '',
+        describe: '加密的私钥JSON 文件',
+        page: './importFromKeystore'
+      }]
+    }
+  },
+  methods: {
+    toPage(index) {
+      uni.navigateTo({
+        url: this.importTypes[index].page
+      })
     }
   }
+}
 </script>
 
 <script lang="renderjs" module="render">
