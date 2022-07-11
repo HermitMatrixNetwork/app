@@ -1,7 +1,7 @@
 <template>
   <view class="create-wallet">
 
-    <uniHeader></uniHeader>
+    <custom-header></custom-header>
 
     <view class="title">
       创建钱包
@@ -47,13 +47,9 @@
 </template>
 
 <script>
-import uniHeader from './components/uniHeader.vue'
 import mixin from './mixins/index.js'
 import { validateAll } from '@/utils/validator.js'
 export default {
-  components: {
-    uniHeader
-  },
   mixins: [mixin],
   data() {
     return {

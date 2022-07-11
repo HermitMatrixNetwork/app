@@ -12,31 +12,33 @@
       <view class="title">
         {{ title }}
       </view>
-      <view></view>
+      <view class="right">
+        <slot name="customIcon"></slot>
+      </view>
     </view>
   </view>
 </template>
 
 <script>
-  export default {
-    props: {
-      customStyle: Object,
-      title: {
-        type: String,
-        default: ''
-      }
-    },
-    data() {
-      return {
+export default {
+  props: {
+    customStyle: Object,
+    title: {
+      type: String,
+      default: ''
+    }
+  },
+  data() {
+    return {
 
-      }
-    },
-    methods: {
-      goBack() {
-        uni.navigateBack()
-      }
+    }
+  },
+  methods: {
+    goBack() {
+      uni.navigateBack()
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -48,8 +50,7 @@
   .container {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-top: var(--status-bar-height);
+    justify-content: space-between;
     height: 112rpx;
 
     .title {
@@ -61,9 +62,6 @@
     }
 
     .goBack {
-      position: absolute;
-      left: 0;
-      height: 112rpx;
       padding-left: 18rpx;
       display: flex;
       align-items: center;
@@ -78,6 +76,10 @@
         width: 48rpx;
         height: 48rpx;
       }
+    }
+
+    .right {
+      padding-right: 32rpx;
     }
   }
 </style>
