@@ -37,9 +37,8 @@
       </view>
     </view>
 
-    <!-- #ifdef APP -->
     <view :callRenderCreate="callRenderCreate" :change:callRenderCreate="render.createWallet"></view>
-    <!-- #endif -->
+
     <u-button type="primary" class="create-btn" @click="confrim">确认</u-button>
 
     <!-- 错误提示 -->
@@ -195,7 +194,7 @@
         renderUtils.runMethod(this._$id, 'initWallet', {
           wallet,
           privateKey
-        })
+        }, this)
 
       }
     }
