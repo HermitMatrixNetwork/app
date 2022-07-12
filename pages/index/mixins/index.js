@@ -20,24 +20,6 @@ export default {
       if (!walletList) return
       return walletList.find(item => item[target] === value)
     },
-    /**
-     * 应用上方弹出提示
-     * @param { string } type 类型 
-     * @param { string } message 提示信息
-     */
-    showNotify(type, message) {
-      if (!this.$refs.uNotify) return console.warn('没有注册uNotify组件')
-      return this.$refs.uNotify.show({
-        top: .1, // 0在H5下无效
-        type: type || 'error',
-        color: '#FFFFFF',
-        bgColor: '#EC6665',
-        message: message || '信息',
-        duration: 1000 * 3,
-        fontSize: '28rpx', // 单位rpx
-        safeAreaInsetTop: false
-      })
-    },
     /** 设置 _currentWallet , 更新 _walletList
      */
     initWallet({
