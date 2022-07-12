@@ -1,11 +1,31 @@
 export default {
   'CN': {
-    text01: '钱包地址',
-    text02: '钱包名称',
-    text03: '导出助记词',
-    text04: '导出私钥',
-    text05: '导出Keystore'
+    'walletAddress': '钱包地址',
+    'walletName': '钱包名称',
+    'exportMnemonic': '导出助记词',
+    'exportPrivateKey': '导出私钥',
+    'exportKeyStore': '导出Keystore',
+    'removeWallet': '移除钱包',
+    'cancel': '取消',
+    'confirm': '确认',
+    'editName': '修改名称',
+    'editNameErrorTip': '名称超过10个字符，请重新输入！',
+    'editNamePlaceholder': '请输入新名称，不超过10个字符',
+    'confirmPassword': '密码确认',
+    'confirmPasswordPlaceholder': '请输入资金密码',
+    'confirmPasswordErrorTip': '资金密码错误，请确认后重新输入！',
+    'plaintextPrivatekey': '明文私钥',
+    'clickToCopy': '点击复制',
+    'copySuccess': '复制成功',
+    'copyFailure': '复制失败',
+    'keystore': 'Keystore',
+    'mnemonic': '助记词',
+    'completeBackupToVerify': '完成备份，点击验证'
   },
-  'CT': {},
-  'EN': {}
+  'CT': {
+
+  },
+  'EN': {
+    
+  }
 }
