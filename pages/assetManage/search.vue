@@ -15,7 +15,7 @@ import List from './components/List.vue'
 export default {
   data(){
     return {
-			   language: languages[this.$cache.get('_language')],
+			language: languages[this.$cache.get('_language')],
       keyword: '',
       searchStyle: {
         fontSize: '28rpx',

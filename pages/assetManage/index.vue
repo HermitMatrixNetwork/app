@@ -27,8 +27,8 @@ import List from './components/List.vue'
 export default {
   data(){
     return {
-			   language: languages[this.$cache.get('_language')],
-      keyword: ''
+		  language: languages[this.$cache.get('_language')],
+      keyword: '',
     }
   },
   components: {

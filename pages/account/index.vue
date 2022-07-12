@@ -4,6 +4,7 @@
 		<view class="status_bar">
 			<!-- APP下会占用系统原生消息因此需要该占位符 -->
 		</view>
+		<view :address="address" :change:address="render.init"></view>
 		<view class="main">
 			<view class="account-header">
 				<text>我的钱包</text>
@@ -23,7 +24,9 @@
 						${{eyeAsset?allassets:"∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗"}}
 					</view>
 					<view class="user-address">
-						{{eyeAsset?newuserAdres:'∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗'}}
+						<text v-if="eyeAsset">{{currentWallet.address|sliceAddress}}</text>
+						<text v-else>∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗</text>
+						<!-- {{eyeAsset?(currentWallet.address|sliceAddress):'∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗'}} -->
 						<u-icon name="file-text" color="#FFFFFF" size="32rpx" />
 					</view>
 				</view>
@@ -66,7 +69,7 @@
 			<view class="coin-list">
 				<u-tabs :list="coinList" lineColor="#2C365A" @click="click" :inactiveStyle="inactiveStyle"
 					:activeStyle="activeStyle" lineWidth="20" lineHeight="3" :itemStyle="itemStyle">
-					<view slot="right" style="padding-bottom: 8rpx;" data-url="/pages/account/assetManage/index" @click="goTo">
+					<view slot="right" style="padding-bottom: 8rpx;" data-url="/pages/assetManage/index" @click="goTo">
 						<u-icon name="plus-circle" size="48rpx" color="#8895b0" bold></u-icon>
 					</view>
 				</u-tabs>
@@ -89,10 +92,18 @@
 </template>
 
 <script>
+import {
+	  sliceAddress
+} from '@/utils/filters.js'
+
 export default {
+  filters:{
+	  sliceAddress
+  },
   data() {
     return {
-			 // send: require('../../static/img/account/send.png'),
+      address: '',
+      currentWallet: this.$cache.get('_currentWallet'),
       coinList: [{
         name: '代币'
       },
@@ -124,6 +135,15 @@ export default {
   },
   onLoad() {
     this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
+  },
+  created(){
+    this.address = this.currentWallet.address
+  },
+  mounted(){
+		 // console.log('_currentWallet',this.$cache.get('_currentWallet'))
+    //  this.currentWallet = this.$cache.get('_currentWallet')
+    // console.log('currentWallet',this.currentWallet)
+   
   },
   methods: {
     click(item) {
@@ -165,6 +185,21 @@ export default {
 }
 </script>
 
+
+
+<script lang="renderjs" module="render">
+import {getBalance} from './utils/index.js'
+	export default {
+		methods: {
+			async init(address){
+				console.log('address',address)
+				//获取主网币余额
+				let res = await getBalance(address)
+				console.log('res',res)
+			}
+		}
+	}
+</script>
 <style lang="scss" scoped>
 	page {
 		width: 100%;

@@ -65,34 +65,34 @@
       "path": "pages/walletManager/index",
       "style": {}
     },
-    {
-      "path": "pages/walletManager/exportPrivatekeyReminder",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/walletManager/exportPrivatekey",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/walletManager/exportMnemonicReminder",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/walletManager/exportKeystoreReminder",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
+    // {
+    //   "path": "pages/walletManager/exportPrivatekeyReminder",
+    //   "style": {
+    //     "navigationBarTitleText": "",
+    //     "enablePullDownRefresh": false
+    //   }
+    // },
+    // {
+    //   "path": "pages/walletManager/exportPrivatekey",
+    //   "style": {
+    //     "navigationBarTitleText": "",
+    //     "enablePullDownRefresh": false
+    //   }
+    // },
+    // {
+    //   "path": "pages/walletManager/exportMnemonicReminder",
+    //   "style": {
+    //     "navigationBarTitleText": "",
+    //     "enablePullDownRefresh": false
+    //   }
+    // },
+    // {
+    //   "path": "pages/walletManager/exportKeystoreReminder",
+    //   "style": {
+    //     "navigationBarTitleText": "",
+    //     "enablePullDownRefresh": false
+    //   }
+    // },
     {
       "path": "pages/walletManager/exportKeystore",
       "style": {
@@ -125,14 +125,14 @@
       }
     },
     {
-      "path": "pages/account/assetManage/index",
+      "path": "pages/assetManage/index",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
     },
     {
-      "path": "pages/account/assetManage/search",
+      "path": "pages/assetManage/search",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
