@@ -7,12 +7,21 @@
 		        "enablePullDownRefresh" : false
 		    }
 		},		{
-		    "path" : "pages/account/assetManage",
+		    "path" : "pages/account/assetManage/index",
 		    "style" : {
 		        "navigationBarTitleText" : "",
 		        "enablePullDownRefresh" : false
 		    }
 		},	
+		{
+		    "path" : "pages/account/assetManage/search",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
 		{
 		    "path" : "pages/market/index",
 		    "style" : {
@@ -83,6 +92,7 @@
                 "enablePullDownRefresh" : false
             }
         }
+        
     ],
     // {
     //      "path": "pages/index/importFromMnemonic",
