@@ -146,7 +146,7 @@
       }
     },
     {
-      "path": "pages/entrust/index",
+      "path": "pages/delegate/index",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false

@@ -42,7 +42,7 @@
 					<text>接收</text>
 				</view>
 				<view class="column-item">
-					<u-icon :name="require('../../static/img/account/entrust.png')" size="80rpx"></u-icon>
+					<u-icon :name="require('../../static/img/account/delegate.png')" size="80rpx"></u-icon>
 					<text>委托</text>
 				</view>
 				<view class="column-item" @click="dealBtn">
@@ -87,7 +87,7 @@
 				</scroll-view>
 			</view>
 		</view>
-	 <TabBar />
+	 <tab-bar />
 	</view>
 </template>
 
