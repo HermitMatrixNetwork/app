@@ -3,37 +3,38 @@
 </template>
 
 <script>
-export default {
-  methods: {
-    /**
+  export default {
+    methods: {
+      /**
        * 应用上方弹出提示
        * @param { string } type 类型 
        * @param { string } message 提示信息
        */
-    show(type, message) {
-      if (!this.$refs.uNotify) return console.warn('没有注册uNotify组件')
-      return this.$refs.uNotify.show({
-        top: .1, // 0在H5下无效
-        type: type || 'error',
-        color: '#FFFFFF',
-        bgColor: '#EC6665',
-        message: message || '信息',
-        duration: 1000 * 3,
-        fontSize: '28rpx', // 单位rpx
-        safeAreaInsetTop: false
-      })
-    },
-    close() {
-      this.$refs.uNotify.open = false
+      show(type, message, opt) {
+        if (!this.$refs.uNotify) return console.warn('没有注册uNotify组件')
+        return this.$refs.uNotify.show({
+          top: .1, // 0在H5下无效
+          type: type || 'error',
+          color: '#FFFFFF',
+          bgColor: opt.bgColor || '#275EF1',
+          message: message || '信息',
+          duration: 1000 * 3,
+          fontSize: '28rpx', // 单位rpx
+          safeAreaInsetTop: false
+        })
+      },
+      close() {
+        this.$refs.uNotify.open = false
+      }
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
   /deep/ .u-notify {
     border-radius: 0 0 16rpx 16rpx;
     padding: 0 !important;
+
     .u-notify__warpper {
       align-items: flex-end !important;
       justify-content: flex-start;
