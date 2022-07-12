@@ -1,5 +1,6 @@
 {
-  "pages": [{
+  "pages": [
+    {
       "path": "pages/index/index",
       "style": {
         "navigationBarTitleText": "钱包首页"
@@ -65,57 +66,33 @@
       "path": "pages/walletManager/index",
       "style": {}
     },
-    // {
-    //   "path": "pages/walletManager/exportPrivatekeyReminder",
-    //   "style": {
-    //     "navigationBarTitleText": "",
-    //     "enablePullDownRefresh": false
-    //   }
-    // },
-    // {
-    //   "path": "pages/walletManager/exportPrivatekey",
-    //   "style": {
-    //     "navigationBarTitleText": "",
-    //     "enablePullDownRefresh": false
-    //   }
-    // },
-    // {
-    //   "path": "pages/walletManager/exportMnemonicReminder",
-    //   "style": {
-    //     "navigationBarTitleText": "",
-    //     "enablePullDownRefresh": false
-    //   }
-    // },
-    // {
-    //   "path": "pages/walletManager/exportKeystoreReminder",
-    //   "style": {
-    //     "navigationBarTitleText": "",
-    //     "enablePullDownRefresh": false
-    //   }
-    // },
     {
-      "path": "pages/walletManager/exportKeystore",
+      "path": "pages/walletManager/exportPrivatekeyReminder",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-
     },
     {
-      "path": "pages/walletManager/exportMnemonic",
+      "path": "pages/walletManager/exportPrivatekey",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-
     },
     {
-      "path": "pages/walletManager/verifyMnemonic",
+      "path": "pages/walletManager/exportMnemonicReminder",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-
+    },
+    {
+      "path": "pages/walletManager/exportKeystoreReminder",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
     },
     {
       "path": "pages/account/index",
@@ -176,7 +153,8 @@
     "selectedColor": "#2B2E3D",
     "borderStyle": "black",
     "backgroundColor": "#FFFFFF",
-    "list": [{
+    "list": [
+      {
         "pagePath": "pages/account/index",
         "iconPath": "static/img/TabBar/tabbar/msg.png",
         "selectedIconPath": "static/img/TabBar/active/meg_active.png",

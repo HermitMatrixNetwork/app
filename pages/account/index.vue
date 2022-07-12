@@ -10,7 +10,7 @@
 				<text>我的钱包</text>
 				<view class="header-icon">
 					<u-icon name="scan" size="44rpx" color="#333655" @click="scanCode" />
-					<u-icon name="setting" size="44rpx" color="#333655" />
+					<u-icon name="setting" size="44rpx" color="#333655" @click="toGo('/pages/walletManager/index')"/>
 				</view>
 			</view>
 			<view class="basic-data">
@@ -95,10 +95,11 @@
 import {
 	  sliceAddress
 } from '@/utils/filters.js'
-
+import {exceptE6} from '@/utils/format.js'
 export default {
   filters:{
-	  sliceAddress
+	  sliceAddress,
+    exceptE6
   },
   data() {
     return {
@@ -151,8 +152,14 @@ export default {
     },
     //页面跳转
     goTo(e){
+      console.log(e)
       uni.navigateTo({
       	url:e.currentTarget.dataset.url
+      })
+    },//页面跳转
+    toGo(url){
+      uni.navigateTo({
+      	url
       })
     },
     scanCode() {
@@ -188,7 +195,7 @@ export default {
 
 
 <script lang="renderjs" module="render">
-import {getBalance} from './utils/index.js'
+import {getBalance,QueryStakingValidators} from '@/utils/account.js'
 	export default {
 		methods: {
 			async init(address){
@@ -196,6 +203,7 @@ import {getBalance} from './utils/index.js'
 				//获取主网币余额
 				let res = await getBalance(address)
 				console.log('res',res)
+				// let res2 = await QueryStakingValidators()
 			}
 		}
 	}
