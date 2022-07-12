@@ -65,34 +65,34 @@
       "path": "pages/walletManager/index",
       "style": {}
     },
-    // {
-    //   "path": "pages/walletManager/exportPrivatekeyReminder",
-    //   "style": {
-    //     "navigationBarTitleText": "",
-    //     "enablePullDownRefresh": false
-    //   }
-    // },
-    // {
-    //   "path": "pages/walletManager/exportPrivatekey",
-    //   "style": {
-    //     "navigationBarTitleText": "",
-    //     "enablePullDownRefresh": false
-    //   }
-    // },
-    // {
-    //   "path": "pages/walletManager/exportMnemonicReminder",
-    //   "style": {
-    //     "navigationBarTitleText": "",
-    //     "enablePullDownRefresh": false
-    //   }
-    // },
-    // {
-    //   "path": "pages/walletManager/exportKeystoreReminder",
-    //   "style": {
-    //     "navigationBarTitleText": "",
-    //     "enablePullDownRefresh": false
-    //   }
-    // },
+    {
+      "path": "pages/walletManager/exportPrivatekeyReminder",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/walletManager/exportPrivatekey",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/walletManager/exportMnemonicReminder",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/walletManager/exportKeystoreReminder",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
     {
       "path": "pages/walletManager/exportKeystore",
       "style": {
