@@ -13,3 +13,10 @@ export const sliceAddress =(address)=>{
   }
 	
 }
+
+/**
+ * 除e6
+ */
+export const exceptE6=(num)=>{
+  return Number(num)/1e6
+}

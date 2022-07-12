@@ -17,14 +17,13 @@ class NetworkClient {
       wallet,
       walletAddress
     })
-
     return new NetworkClient(secretjs)
   }
 
   constructor(secretjs) {
     this.secretjs = secretjs
   }
-
+	
   /* 
       查询用户余额
       @param { String } address 用户地址
