@@ -4,7 +4,7 @@
     <view class="import-container">
       <view class="import-type" v-for="(item, index) in importTypes" :key="index" @click="toPage(index)">
         <view class="import-type-icon">
-          <image src="../../static/img/placeholder.jpeg"></image>
+          <image :src='`/static/img/index/${ item.icon }`'></image>
         </view>
         <view class="import-type-content">
           <view class="import-type-content-name">{{ item.name }}</view>
@@ -26,17 +26,17 @@ export default {
     return {
       importTypes: [{
         name: '助记词',
-        icon: '',
+        icon: '助记词.png',
         describe: '助记词由单词组成，以空格隔开',
         page: './importFromMnemonic'
       }, {
         name: '私钥',
-        icon: '',
+        icon: '私钥.png',
         describe: '明文私钥字符',
         page: './importFromPrivatekey'
       }, {
         name: 'Keystore',
-        icon: '',
+        icon: 'keystore.png',
         describe: '加密的私钥JSON 文件',
         page: './importFromKeystore'
       }]

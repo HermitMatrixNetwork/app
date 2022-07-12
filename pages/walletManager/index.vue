@@ -144,19 +144,19 @@ export default {
           this.editNameError = true
           return
         }
-        this.editNameError = false
         this.wallet.name = name
         this.$cache.set('_currentWallet', this.wallet, 0)
+        this.editNameError = false
         this.showEditWalletNameModal = false
         this.name = ''
       } else if (target === 'password') {
         // @todo 解码
         const walletPassword = this.wallet.password
         const password = this.password.trim()
-        // @test
-        // if (password !== walletPassword) return this.confirmPasswordError = true
-        this.password = ''
+        if (password !== walletPassword) return this.confirmPasswordError = true
+        this.confirmPasswordError = false
         this.showConfirmPasswordModal = false
+        this.password = ''
         uni.navigateTo({
           url: `/pages/walletManager/export${this.target}Reminder`
         })

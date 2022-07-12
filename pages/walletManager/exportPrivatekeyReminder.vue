@@ -3,7 +3,7 @@
     <custom-header></custom-header>
 
     <view class="logo">
-      <image src="/static/img/placeholder.jpeg" style="width: 174rpx; height: 174rpx;"></image>
+      <image src="/static/img/index/tishi.png" style="width: 174rpx; height: 174rpx;"></image>
     </view>
 
     <view class="content">
