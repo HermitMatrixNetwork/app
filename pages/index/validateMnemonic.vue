@@ -81,7 +81,7 @@ export default {
     },
     confirm() {
       if (this.checkComplete()) {
-        uni.navigateTo({
+        uni.switchTab({
           url: '/pages/account/index'
         })
       }
