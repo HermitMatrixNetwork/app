@@ -1,5 +1,5 @@
 <template>
-  <view style="padding-left: 18rpx" :style="customStyle">
+  <view :style="customStyle">
     <!-- 状态栏 -->
     <view class="status_bar">
       <!-- APP下会占用系统原生消息因此需要该占位符 -->
