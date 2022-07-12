@@ -42,15 +42,17 @@
     <u-button type="primary" class="create-btn" @click="confrim">确认</u-button>
 
     <!-- 错误提示 -->
-    <u-notify class="notify" ref="uNotify"></u-notify>
+    <Notify ref="notify"></Notify>
   </view>
 </template>
 
 <script>
 import mixin from './mixins/index.js'
 import { validateAll } from '@/utils/validator.js'
+import Notify from './components/notify.vue' 
 export default {
   mixins: [mixin],
+  components: { Notify },
   data() {
     return {
       name: '',
@@ -61,7 +63,6 @@ export default {
       isValidate: false, // 表单校验状态 @test: true
       invalidFields: {}, // 校验失败的字段
       callRenderCreate: 0,
-      uNotify: false,
       rules: {
         name: {
           rule: 'required',
@@ -104,7 +105,7 @@ export default {
         this.callRenderCreate++ // 调用render.createWallet创建钱包
       } else {
         // 表单校验失败
-        this.showNotify('error', this.invalidFields.errMessage)
+        this.$refs.notify.show('error', this.invalidFields.errMessage)
       }
     },
     cbInitWallet() {
@@ -226,20 +227,6 @@ export default {
     border-radius: 16rpx;
     font-size: 32rpx;
     color: #FCFCFD;
-  }
-
-  /deep/ .u-notify {
-    border-radius: 0 0 16rpx 16rpx;
-
-    .u-notify__warpper {
-      align-items: flex-end !important;
-      justify-content: flex-start;
-      height: 200rpx;
-
-      .u-notify__warpper__text {
-        margin-bottom: 40rpx;
-      }
-    }
   }
 
   .error {

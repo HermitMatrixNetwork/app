@@ -28,12 +28,14 @@
     </view>
 
     <!-- 错误提示 -->
-    <u-notify class="notify" ref="uNotify"></u-notify>
+    <Notify ref="notify"></Notify>
   </view>
 </template>
 
 <script>
+import Notify from './components/notify.vue'
 export default {
+  components: { Notify },
   data() {
     return {
       mnemonicList: [], // 正确顺序的助记词
@@ -69,18 +71,9 @@ export default {
       })
       if (this.errorIndex > -1) {
         // 助记词填写顺序错误
-        this.$refs.uNotify.show({
-          top: .1, // 0在H5下无效
-          type: 'error',
-          color: '#FFFFFF',
-          bgColor: '#EC6665',
-          message: '助记词错误，请重新选择！',
-          duration: 1000 * 3,
-          fontSize: '28rpx', // 单位rpx
-          safeAreaInsetTop: false
-        })
+        this.$refs.notify.show('error', '助记词错误，请重新选择！')
       } else {
-        this.$refs.uNotify.open = false
+        this.$refs.notify.close()
       }
     },
     checkComplete() {
@@ -190,20 +183,6 @@ export default {
       color: #FCFCFD;
       line-height: 32rpx;
       opacity: .2;
-    }
-  }
-
-  /deep/ .u-notify {
-    border-radius: 0 0 16rpx 16rpx;
-
-    .u-notify__warpper {
-      align-items: flex-end !important;
-      justify-content: flex-start;
-      height: 200rpx;
-
-      .u-notify__warpper__text {
-        margin-bottom: 40rpx;
-      }
     }
   }
 
