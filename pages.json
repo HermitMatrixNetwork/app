@@ -91,30 +91,30 @@
                 "navigationBarTitleText" : "",
                 "enablePullDownRefresh" : false
             }
-        }
+        },
+    {
+         "path": "pages/index/importFromMnemonic",
+         "style": {
+           "navigationBarTitleText": "",
+           "enablePullDownRefresh": false
+         }
+    }, {
+      "path": "pages/index/importFromPrivatekey",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    }
+    ,{
+          "path" : "pages/index/importFromKeystore",
+          "style" :                                                                                    
+          {
+              "navigationBarTitleText": "",
+              "enablePullDownRefresh": false
+          }
+      }
         
     ],
-    // {
-    //      "path": "pages/index/importFromMnemonic",
-    //      "style": {
-    //        "navigationBarTitleText": "",
-    //        "enablePullDownRefresh": false
-    //      }
-    // }, {
-    //   "path": "pages/index/importFromPrivatekey",
-    //   "style": {
-    //     "navigationBarTitleText": "",
-    //     "enablePullDownRefresh": false
-    //   }
-    // }
-    // ,{
-    //       "path" : "pages/index/importFromKeystore",
-    //       "style" :                                                                                    
-    //       {
-    //           "navigationBarTitleText": "",
-    //           "enablePullDownRefresh": false
-    //       }
-    //   }
     "globalStyle" : {
         "navigationStyle" : "custom"
     },
