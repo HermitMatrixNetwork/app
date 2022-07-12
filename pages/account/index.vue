@@ -69,7 +69,7 @@
 			<view class="coin-list">
 				<u-tabs :list="coinList" lineColor="#2C365A" @click="click" :inactiveStyle="inactiveStyle"
 					:activeStyle="activeStyle" lineWidth="20" lineHeight="3" :itemStyle="itemStyle">
-					<view slot="right" style="padding-bottom: 8rpx;" data-url="/pages/account/assetManage/index" @click="goTo">
+					<view slot="right" style="padding-bottom: 8rpx;" data-url="/pages/assetManage/index" @click="goTo">
 						<u-icon name="plus-circle" size="48rpx" color="#8895b0" bold></u-icon>
 					</view>
 				</u-tabs>

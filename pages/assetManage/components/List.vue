@@ -2,7 +2,7 @@
 	<view class="list">
 		<view class="item">
 			<view class="left">
-					<u-icon :name="require('../../../../static/img/placeholder.jpeg')" size="72rpx"></u-icon>
+					<u-icon :name="require('../../../static/img/placeholder.jpeg')" size="72rpx"></u-icon>
 			</view>
 			<view class="center">
 				<view class="title">BTC</view>
@@ -11,7 +11,7 @@
 				</view>
 			</view>
 			<view class="right">
-				<u-icon :name="require('../../../../static/img/account/ic-add.png')" size="44rpx"></u-icon>
+				<u-icon :name="require('../../../static/img/account/ic-add.png')" size="44rpx"></u-icon>
 			</view>
 		</view>
 	</view>

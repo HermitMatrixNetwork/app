@@ -102,14 +102,14 @@
       }
     },
     {
-      "path": "pages/account/assetManage/index",
+      "path": "pages/assetManage/index",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
     },
     {
-      "path": "pages/account/assetManage/search",
+      "path": "pages/assetManage/search",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
