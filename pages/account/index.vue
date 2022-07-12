@@ -31,19 +31,19 @@
 
 			<view class="account-column">
 				<view class="column-item">
-					<u-icon name="level" size="80rpx"></u-icon>
+					<u-icon :name="require('../../static/img/account/send.png')" size="80rpx"></u-icon>
 					<text>发送</text>
 				</view>
 				<view class="column-item" @click="receivePopup">
-					<u-icon name="level" size="80rpx"></u-icon>
+					<u-icon :name="require('../../static/img/account/receive.png')" size="80rpx"></u-icon>
 					<text>接收</text>
 				</view>
 				<view class="column-item">
-					<u-icon name="level" size="80rpx"></u-icon>
+					<u-icon :name="require('../../static/img/account/entrust.png')" size="80rpx"></u-icon>
 					<text>委托</text>
 				</view>
 				<view class="column-item" @click="dealBtn">
-					<u-icon name="level" size="80rpx"></u-icon>
+					<u-icon :name="require('../../static/img/account/transaction.png')" size="80rpx"></u-icon>
 					<text>交易</text>
 				</view>
 			</view>
@@ -66,7 +66,7 @@
 			<view class="coin-list">
 				<u-tabs :list="coinList" lineColor="#2C365A" @click="click" :inactiveStyle="inactiveStyle"
 					:activeStyle="activeStyle" lineWidth="20" lineHeight="3" :itemStyle="itemStyle">
-					<view slot="right" style="padding-bottom: 8rpx;">
+					<view slot="right" style="padding-bottom: 8rpx;" data-url="/pages/account/assetManage/index" @click="goTo">
 						<u-icon name="plus-circle" size="48rpx" color="#8895b0" bold></u-icon>
 					</view>
 				</u-tabs>
@@ -84,77 +84,85 @@
 				</scroll-view>
 			</view>
 		</view>
+	 <TabBar />
 	</view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				coinList: [{
-						name: '代币'
-					},
-					{
-						name: 'NFT'
-					}
-				],
-				inactiveStyle: {
-					fontSize: '32rpx',
-					color: '#8397B1',
-					fontWeight: '500'
-				},
-				activeStyle: {
-					fontSize: '34rpx',
-					color: '#2C365A',
-					fontWeight: '600'
-				},
-				itemStyle: {
-					height: '60rpx',
-					alignItems: 'flex-start'
-				},
-				show: false,
-				allassets: 66666666, //总资产
-				eyeAsset: true,
-				userAdres: 'dalfjlkajflajflafsdafsafsadfsadfsdafsdfasdfasdfa', //用户地址
-				newuserAdres: '',
-				aa: true
-			}
-		},
-		onLoad() {
-			this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
-		},
-		methods: {
-			click(item) {
-				console.log('item', item)
-			},
-			scanCode() {
-				uni.scanCode({
-					onlyFromCamera: false,
-					scanType: ['qrCode'],
-					success(res) {
-						console.log('条码类型：' + res.scanType)
-						console.log('条码内容：' + res.result)
-					}
-				})
-			},
-			receivePopup() {
-				this.show = !this.show
-			},
-			close() {
-				this.show = false
-			},
-			dealBtn() {
-				uni.showToast({
-					title: '暂未开放',
-					icon: 'none'
-				})
-			},
-			assentIsShow() { //用户总资产是否显示
-				this.eyeAsset = !this.eyeAsset
-				this.aa = true
-			}
-		}
-	}
+export default {
+  data() {
+    return {
+			 // send: require('../../static/img/account/send.png'),
+      coinList: [{
+        name: '代币'
+      },
+      {
+        name: 'NFT'
+      }
+      ],
+      inactiveStyle: {
+        fontSize: '32rpx',
+        color: '#8397B1',
+        fontWeight: '500'
+      },
+      activeStyle: {
+        fontSize: '34rpx',
+        color: '#2C365A',
+        fontWeight: '600'
+      },
+      itemStyle: {
+        height: '60rpx',
+        alignItems: 'flex-start'
+      },
+      show: false,
+      allassets: 66666666, //总资产
+      eyeAsset: true,
+      userAdres: 'dalfjlkajflajflafsdafsafsadfsadfsdafsdfasdfasdfa', //用户地址
+      newuserAdres: '',
+      aa: true
+    }
+  },
+  onLoad() {
+    this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
+  },
+  methods: {
+    click(item) {
+      console.log('item', item)
+    },
+    //页面跳转
+    goTo(e){
+      uni.navigateTo({
+      	url:e.currentTarget.dataset.url
+      })
+    },
+    scanCode() {
+      uni.scanCode({
+        onlyFromCamera: false,
+        scanType: ['qrCode'],
+        success(res) {
+          console.log('条码类型：' + res.scanType)
+          console.log('条码内容：' + res.result)
+        }
+      })
+    },
+    receivePopup() {
+      this.show = !this.show
+    },
+    close() {
+      this.show = false
+    },
+    dealBtn() {
+      uni.showToast({
+        title: '暂未开放',
+        icon: 'none'
+      })
+    },
+    assentIsShow() { //用户总资产是否显示
+      this.eyeAsset = !this.eyeAsset
+      this.aa = true
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -279,7 +287,7 @@
 						align-items: flex-start;
 						width: 100%;
 						height: 120rpx;
-
+						border-bottom: 2rpx solid rgba(131, 151, 177, .16);
 						image {
 							width: 80rpx;
 							height: 80rpx;
