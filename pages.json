@@ -95,6 +95,27 @@
       }
     },
     {
+      "path": "pages/walletManager/exportKeystore",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/walletManager/exportMnemonic",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/walletManager/verifyMnemonic",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
       "path": "pages/account/index",
       "style": {
         "navigationBarTitleText": "",
