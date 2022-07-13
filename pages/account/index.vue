@@ -361,15 +361,17 @@ import {getBalance,QueryStakingValidators} from '@/utils/account.js'
 							}
 						}
 					}
+				
 				}
 			}
 		}
 	}
 
 	/deep/ .hintModal {
-		.u-modal{
+		.u-modal {
 			height: 510rpx;
 		}
+
 		.u-modal__content {
 			padding: 32rpx;
 			padding-top: 48rpx !important;
