@@ -30,7 +30,7 @@
 			</view>
 
 			<view class="account-column">
-				<view class="column-item">
+				<view class="column-item" @click="toSend">
 					<u-icon name="level" size="80rpx"></u-icon>
 					<text>发送</text>
 				</view>
@@ -88,73 +88,79 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				coinList: [{
-						name: '代币'
-					},
-					{
-						name: 'NFT'
-					}
-				],
-				inactiveStyle: {
-					fontSize: '32rpx',
-					color: '#8397B1',
-					fontWeight: '500'
-				},
-				activeStyle: {
-					fontSize: '34rpx',
-					color: '#2C365A',
-					fontWeight: '600'
-				},
-				itemStyle: {
-					height: '60rpx',
-					alignItems: 'flex-start'
-				},
-				show: false,
-				allassets: 66666666, //总资产
-				eyeAsset: true,
-				userAdres: 'dalfjlkajflajflafsdafsafsadfsadfsdafsdfasdfasdfa', //用户地址
-				newuserAdres: '',
-				aa: true
-			}
-		},
-		onLoad() {
-			this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
-		},
-		methods: {
-			click(item) {
-				console.log('item', item)
-			},
-			scanCode() {
-				uni.scanCode({
-					onlyFromCamera: false,
-					scanType: ['qrCode'],
-					success(res) {
-						console.log('条码类型：' + res.scanType)
-						console.log('条码内容：' + res.result)
-					}
-				})
-			},
-			receivePopup() {
-				this.show = !this.show
-			},
-			close() {
-				this.show = false
-			},
-			dealBtn() {
-				uni.showToast({
-					title: '暂未开放',
-					icon: 'none'
-				})
-			},
-			assentIsShow() { //用户总资产是否显示
-				this.eyeAsset = !this.eyeAsset
-				this.aa = true
-			}
-		}
-	}
+export default {
+  data() {
+    return {
+      coinList: [{
+        name: '代币'
+      },
+      {
+        name: 'NFT'
+      }
+      ],
+      inactiveStyle: {
+        fontSize: '32rpx',
+        color: '#8397B1',
+        fontWeight: '500'
+      },
+      activeStyle: {
+        fontSize: '34rpx',
+        color: '#2C365A',
+        fontWeight: '600'
+      },
+      itemStyle: {
+        height: '60rpx',
+        alignItems: 'flex-start'
+      },
+      show: false,
+      allassets: 66666666, //总资产
+      eyeAsset: true,
+      userAdres: 'dalfjlkajflajflafsdafsafsadfsadfsdafsdfasdfasdfa', //用户地址
+      newuserAdres: '',
+      aa: true
+    }
+  },
+  onLoad() {
+    this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
+  },
+  methods: {
+    click(item) {
+      console.log('item', item)
+    },
+    scanCode() {
+      uni.scanCode({
+        onlyFromCamera: false,
+        scanType: ['qrCode'],
+        success(res) {
+          console.log('条码类型：' + res.scanType)
+          console.log('条码内容：' + res.result)
+        }
+      })
+    },
+    receivePopup() {
+      this.show = !this.show
+    },
+    close() {
+      this.show = false
+    },
+    dealBtn() {
+      uni.showToast({
+        title: '暂未开放',
+        icon: 'none'
+      })
+    },
+    assentIsShow() { //用户总资产是否显示
+      this.eyeAsset = !this.eyeAsset
+      this.aa = true
+    },
+    toSend(){
+      console.log(111111111)
+      uni.navigateTo({
+        url:'./send/index'
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -310,15 +316,17 @@
 							}
 						}
 					}
+				
 				}
 			}
 		}
 	}
 
 	/deep/ .hintModal {
-		.u-modal{
+		.u-modal {
 			height: 510rpx;
 		}
+
 		.u-modal__content {
 			padding: 32rpx;
 			padding-top: 48rpx !important;
