@@ -4,12 +4,13 @@
 		<view class="status_bar">
 			<!-- APP下会占用系统原生消息因此需要该占位符 -->
 		</view>
+		<view :address="address" :change:address="render.init"></view>
 		<view class="main">
 			<view class="account-header">
 				<text>我的钱包</text>
 				<view class="header-icon">
 					<u-icon name="scan" size="44rpx" color="#333655" @click="scanCode" />
-					<u-icon name="setting" size="44rpx" color="#333655" />
+					<u-icon name="setting" size="44rpx" color="#333655" @click="toGo('/pages/walletManager/index')"/>
 				</view>
 			</view>
 			<view class="basic-data">
@@ -23,27 +24,29 @@
 						${{eyeAsset?allassets:"∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗"}}
 					</view>
 					<view class="user-address">
-						{{eyeAsset?newuserAdres:'∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗'}}
+						<text v-if="eyeAsset">{{currentWallet.address|sliceAddress}}</text>
+						<text v-else>∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗</text>
+						<!-- {{eyeAsset?(currentWallet.address|sliceAddress):'∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗'}} -->
 						<u-icon name="file-text" color="#FFFFFF" size="32rpx" />
 					</view>
 				</view>
 			</view>
 
 			<view class="account-column">
-				<view class="column-item" @click="toSend">
-					<u-icon name="level" size="80rpx"></u-icon>
+				<view class="column-item">
+					<u-icon :name="require('../../static/img/account/send.png')" size="80rpx"></u-icon>
 					<text>发送</text>
 				</view>
 				<view class="column-item" @click="receivePopup">
-					<u-icon name="level" size="80rpx"></u-icon>
+					<u-icon :name="require('../../static/img/account/receive.png')" size="80rpx"></u-icon>
 					<text>接收</text>
 				</view>
 				<view class="column-item">
-					<u-icon name="level" size="80rpx"></u-icon>
+					<u-icon :name="require('../../static/img/account/delegate.png')" size="80rpx"></u-icon>
 					<text>委托</text>
 				</view>
 				<view class="column-item" @click="dealBtn">
-					<u-icon name="level" size="80rpx"></u-icon>
+					<u-icon :name="require('../../static/img/account/transaction.png')" size="80rpx"></u-icon>
 					<text>交易</text>
 				</view>
 			</view>
@@ -66,7 +69,7 @@
 			<view class="coin-list">
 				<u-tabs :list="coinList" lineColor="#2C365A" @click="click" :inactiveStyle="inactiveStyle"
 					:activeStyle="activeStyle" lineWidth="20" lineHeight="3" :itemStyle="itemStyle">
-					<view slot="right" style="padding-bottom: 8rpx;">
+					<view slot="right" style="padding-bottom: 8rpx;" data-url="/pages/assetManage/index" @click="goTo">
 						<u-icon name="plus-circle" size="48rpx" color="#8895b0" bold></u-icon>
 					</view>
 				</u-tabs>
@@ -84,13 +87,24 @@
 				</scroll-view>
 			</view>
 		</view>
+	 <tab-bar />
 	</view>
 </template>
 
 <script>
+import {
+	  sliceAddress
+} from '@/utils/filters.js'
+import {exceptE6} from '@/utils/format.js'
 export default {
+  filters:{
+	  sliceAddress,
+    exceptE6
+  },
   data() {
     return {
+      address: '',
+      currentWallet: this.$cache.get('_currentWallet'),
       coinList: [{
         name: '代币'
       },
@@ -123,9 +137,30 @@ export default {
   onLoad() {
     this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
   },
+  created(){
+    this.address = this.currentWallet.address
+  },
+  mounted(){
+		 // console.log('_currentWallet',this.$cache.get('_currentWallet'))
+    //  this.currentWallet = this.$cache.get('_currentWallet')
+    // console.log('currentWallet',this.currentWallet)
+   
+  },
   methods: {
     click(item) {
       console.log('item', item)
+    },
+    //页面跳转
+    goTo(e){
+      console.log(e)
+      uni.navigateTo({
+      	url:e.currentTarget.dataset.url
+      })
+    },//页面跳转
+    toGo(url){
+      uni.navigateTo({
+      	url
+      })
     },
     scanCode() {
       uni.scanCode({
@@ -152,17 +187,27 @@ export default {
     assentIsShow() { //用户总资产是否显示
       this.eyeAsset = !this.eyeAsset
       this.aa = true
-    },
-    toSend(){
-      console.log(111111111)
-      uni.navigateTo({
-        url:'./send/index'
-      })
     }
   }
 }
 </script>
 
+
+
+<script lang="renderjs" module="render">
+import {getBalance,QueryStakingValidators} from '@/utils/account.js'
+	export default {
+		methods: {
+			async init(address){
+				console.log('address',address)
+				//获取主网币余额
+				let res = await getBalance(address)
+				console.log('res',res)
+				// let res2 = await QueryStakingValidators()
+			}
+		}
+	}
+</script>
 <style lang="scss" scoped>
 	page {
 		width: 100%;
@@ -285,7 +330,7 @@ export default {
 						align-items: flex-start;
 						width: 100%;
 						height: 120rpx;
-
+						border-bottom: 2rpx solid rgba(131, 151, 177, .16);
 						image {
 							width: 80rpx;
 							height: 80rpx;

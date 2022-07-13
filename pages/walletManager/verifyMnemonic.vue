@@ -71,7 +71,7 @@ export default {
       })
       if (this.errorIndex > -1) {
         // 助记词填写顺序错误
-        this.$refs.notify.show('error', '助记词错误，请重新选择！')
+        this.$refs.notify.show('error', '助记词错误，请重新选择！', { bgColor: '#EC6665' })
       } else {
         this.$refs.notify.close()
       }

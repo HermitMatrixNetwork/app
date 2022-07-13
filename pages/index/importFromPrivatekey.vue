@@ -28,14 +28,16 @@
     </view>
     <u-button class="btn" @click="importWallet">导入</u-button>
     <!-- 错误提示 -->
-    <u-notify class="notify" ref="uNotify"></u-notify>
+    <Notify ref="notify"></Notify>
   </view>
 </template>
 
 <script>
 import mixin from './mixins/index.js'
+import Notify from './components/notify.vue'
 export default {
   mixins: [mixin],
+  components: { Notify },
   data() {
     return {
       privateKey64: '', // 私钥
@@ -52,12 +54,13 @@ export default {
         
     },
     verifyForm() {
-      const isValidatePrivateKey64 = this.verifyPrivateKey64()
-      const isValidatePassword = this.verfiyPassowr('privateKey64', this.privateKey64)
+      // todo
+      // const isValidatePrivateKey64 = this.verifyPrivateKey64()
+      // const isValidatePassword = this.verfiyPassowr('privateKey64', this.privateKey64)
       if (this.privateKey64 === '') {
-        this.showNotify('error', '私钥不能为空')
+        this.$refs.notify.show('error', '私钥不能为空')
       } else if (isValidatePassword) {
-        this.showNotify('error', '资金密码错误')
+        this.$refs.notify.show('error', '资金密码错误')
       }
     }
   }

@@ -11,20 +11,29 @@
         备份提示
       </view>
       <view class="hint">
-        获得助记词等于拥有钱包资产所有权
+        获得私钥等于拥有钱包资产所有权
       </view>
       <view class="line"></view>
       <view class="rules">
         <view class="rules-item">
           <view class="rules-item-icon"></view>
           <view class="rules-item-describe">
-            助记词由英文单词组成，请抄写并妥善保管。
+            请离线保存，勿保存至邮箱、聊天应用等在线工具，
+            存在泄漏风险
           </view>
         </view>
         <view class="rules-item">
           <view class="rules-item-icon"></view>
           <view class="rules-item-describe">
-            助记词丢失，无法找回，请务必备份助记词。
+            请勿通过网络工具传输，如被获取将可能被盗取账
+            户资产，且无法找回
+          </view>
+        </view>
+        <view class="rules-item">
+          <view class="rules-item-icon"></view>
+          <view class="rules-item-describe">
+            请勿向任何人透漏或分享私钥，掌握私钥将获得资
+            产所有权
           </view>
         </view>
       </view>
@@ -38,7 +47,7 @@ export default {
   methods: {
     toNextStep() {
       uni.navigateTo({
-        url: './backupMnemonic'
+        url: './exportPrivatekey'
       })
     }
   }
@@ -93,7 +102,7 @@ export default {
 
       &-describe {
         font-size: 28rpx;
-        line-height: 28rpx;
+        line-height: 44rpx;
         color: #8397B1;
       }
     }

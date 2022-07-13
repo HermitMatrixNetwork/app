@@ -32,110 +32,114 @@
 
     <view :callRenderMnemonic="callRenderMnemonic" :change:callRenderMnemonic="render.getMnemonic"></view>
     <!-- 错误提示 -->
-    <u-notify class="notify" ref="uNotify"></u-notify>
+    <Notify ref="notify"></Notify>
 
   </view>
 </template>
 
 <script>
-import * as cosmosjs from '@cosmjs/crypto'
-import * as bip39 from 'bip39'
-import mixin from './mixins/index.js'
-export default {
-  mixins: [mixin],
-  data() {
-    return {
-      mnemonic: '', // 助记词
-      password: '', // 资金密码
-      name: '', // 钱包名称
-      passwordEye: false, // 是否明文显示资金密码
-      callRenderMnemonic: '', // 调用render.getMnemonic获取助记词
-      rules: {
-        'password': {
-          rule: 'min',
-          len: 8,
-          errMessage: '资金密码不能少于8位'
+  import * as cosmosjs from '@cosmjs/crypto'
+  import * as bip39 from 'bip39'
+  import mixin from './mixins/index.js'
+  import Notify from './components/notify.vue'
+  export default {
+    mixins: [mixin],
+    components: {
+      Notify
+    },
+    data() {
+      return {
+        mnemonic: '', // 助记词
+        password: '', // 资金密码
+        name: '', // 钱包名称
+        passwordEye: false, // 是否明文显示资金密码
+        callRenderMnemonic: '', // 调用render.getMnemonic获取助记词
+        rules: {
+          'password': {
+            rule: 'min',
+            len: 8,
+            errMessage: '资金密码不能少于8位'
+          }
+        }
+      }
+    },
+    methods: {
+      importWallet() {
+        // this.$cache.delete('_walletList') // @test
+        const isValidate = this.verifyForm()
+        // const isValidate = true // @test
+        if (!isValidate) return // 没有通过校验
+        // 还原钱包
+        const wallet = this.findWallet('mnemonic', this.mnemonic)
+        if (wallet) { // walletList 有钱包数据，直接拿来使用
+          wallet.name = this.name
+          this.$cache.set('_currentWallet', wallet, 0)
+          this.updateWalletList(wallet)
+          this.toAccount()
+        } else { // 没有钱包数据，通过助记词还原钱包
+          this.callRenderMnemonic = this.mnemonic.trim()
+        }
+      },
+      cbInitWallet() {
+        this.toAccount()
+      },
+      toAccount() {
+        uni.navigateTo({
+          url: '/pages/account/index'
+        })
+      },
+      mnemonicChange() {
+        const mnemonic = this.mnemonic.trim().split(' ')
+        const totalMnemonicList = cosmosjs.EnglishMnemonic.wordlist
+        this.verifySingleMnemonic(mnemonic, totalMnemonicList)
+      },
+      // 校验单个助记词
+      verifySingleMnemonic(target, source) {
+        let errorMnemonic
+        // #ifdef H5
+        errorMnemonic = target.findLast(mnemonic => !source.find(item => target.slice(-1)[0] == mnemonic ? item
+          .startsWith(mnemonic) : item == mnemonic
+        ))
+        // #endif
+        // #ifdef APP
+        for (let i = target.length; i >= 0; i--) {
+          let mnemonic = target[i]
+          // 就是不写注释 气死你
+          source.find(item => target.slice(-1)[0] == mnemonic ? item.startsWith(mnemonic) : item == mnemonic) ?
+            '' : errorMnemonic = mnemonic
+          if (errorMnemonic) break
+        }
+        // #endif
+
+        if (errorMnemonic) {
+          this.$refs.notify.show('error', `${errorMnemonic} 为无效助记词，请检查。`)
+        } else {
+          this.$refs.notify.close() // 关闭错误警告
+        }
+      },
+      // 校验一个完整的助记词
+      verifyTotalMnemonic() {
+        const mnemonic = this.mnemonic.trim()
+        return bip39.validateMnemonic(mnemonic)
+      },
+      verifyForm() {
+        const isEffectiveMnemonic = this.verifyTotalMnemonic()
+        const isEffectivePassword = this.verifyPassword('mnemonic', this.mnemonic.trim())
+        // const isEffectiveMnemonic = false // @test
+        // const isEffectivePassword = true // @test
+        if (!isEffectiveMnemonic) {
+          this.$refs.notify.show('error', '助记词校验位不正确')
+        } else if (!isEffectivePassword) {
+          this.$refs.notify.show('error', '资金密码错误')
+        } else if (!this.name) {
+          this.$refs.notify.show('error', '钱包名称不能为空')
+        } else {
+          // 通过校验
+          return true
         }
       }
     }
-  },
-  methods: {
-    importWallet() {
-      // this.$cache.delete('_walletList') // @test
-      const isValidate = this.verifyForm()
-      // const isValidate = true // @test
-      if (!isValidate) return // 没有通过校验
-      // 还原钱包
-      const wallet = this.findWallet('mnemonic', this.mnemonic)
-      if (wallet) { // walletList 有钱包数据，直接拿来使用
-        wallet.name = this.name
-        this.$cache.set('_currentWallet', wallet, 0)
-        this.updateWalletList(wallet)
-        this.toAccount()
-      } else { // 没有钱包数据，通过助记词还原钱包
-        this.callRenderMnemonic = this.mnemonic.trim()
-      }
-    },
-    cbInitWallet() {
-      this.toAccount()
-    },
-    toAccount() {
-      uni.navigateTo({
-        url: '/pages/account/index'
-      })
-    },
-    mnemonicChange() {
-      const mnemonic = this.mnemonic.trim().split(' ')
-      const totalMnemonicList = cosmosjs.EnglishMnemonic.wordlist
-      this.verifySingleMnemonic(mnemonic, totalMnemonicList)
-    },
-    // 校验单个助记词
-    verifySingleMnemonic(target, source) {
-      let errorMnemonic
-      // #ifdef H5
-      errorMnemonic = target.findLast(mnemonic => !source.find(item => target.slice(-1)[0] == mnemonic ? item
-        .startsWith(mnemonic) : item == mnemonic
-      ))
-      // #endif
-      // #ifdef APP
-      for (let i = target.length; i >= 0; i--) {
-        let mnemonic = target[i]
-        // 就是不写注释 气死你
-        source.find(item => target.slice(-1)[0] == mnemonic ? item.startsWith(mnemonic) : item == mnemonic) ?
-          '' : errorMnemonic = mnemonic
-        if (errorMnemonic) break
-      }
-      // #endif
-
-      if (errorMnemonic) {
-        this.showNotify('error', `${errorMnemonic} 为无效助记词，请检查。`)
-      } else {
-        this.$refs.uNotify.open = false // 关闭错误警告
-      }
-    },
-    // 校验一个完整的助记词
-    verifyTotalMnemonic() {
-      const mnemonic = this.mnemonic.trim()
-      return bip39.validateMnemonic(mnemonic)
-    },
-    verifyForm() {
-      const isEffectiveMnemonic = this.verifyTotalMnemonic()
-      const isEffectivePassword = this.verifyPassword('mnemonic', this.mnemonic.trim())
-      // const isEffectiveMnemonic = false // @test
-      // const isEffectivePassword = true // @test
-      if (!isEffectiveMnemonic) {
-        this.showNotify('error', '助记词校验位不正确')
-      } else if (!isEffectivePassword) {
-        this.showNotify('error', '资金密码错误')
-      } else if (!this.name) {
-        this.showNotify('error', '钱包名称不能为空')
-      } else {
-        // 通过校验
-        return true
-      }
-    }
   }
-}
 </script>
 
 <script lang="renderjs" module="render">
@@ -248,19 +252,5 @@ export default {
     font-weight: 400;
     font-size: 32rpx;
     color: #FCFCFD;
-  }
-
-  /deep/ .u-notify {
-    border-radius: 0 0 16rpx 16rpx;
-
-    .u-notify__warpper {
-      align-items: flex-end !important;
-      justify-content: flex-start;
-      height: 200rpx;
-
-      .u-notify__warpper__text {
-        margin-bottom: 40rpx;
-      }
-    }
   }
 </style>

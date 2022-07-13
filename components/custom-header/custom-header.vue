@@ -1,19 +1,21 @@
 <template>
-  <view style="padding-left: 18rpx" :style="customStyle">
+  <view :style="customStyle">
     <!-- 状态栏 -->
     <view class="status_bar">
       <!-- APP下会占用系统原生消息因此需要该占位符 -->
     </view>
 
     <view class="container">
-      <view class="goBack">
-        <u-icon name="arrow-left" color="#8397B1" @click="goBack"></u-icon>
+      <view class="left">
+        <u-icon v-if="showGoBack" name="arrow-left" color="#8397B1" @click="goBack"></u-icon>
+        <slot v-else name="left"></slot>
       </view>
-      <view class="title">
-        {{ title }}
+      <view class="center">
+        <text v-if="title">{{ title }}</text>
+        <slot v-else name="center"></slot>
       </view>
       <view class="right">
-        <slot name="customIcon"></slot>
+        <slot name="right"></slot>
       </view>
     </view>
   </view>
@@ -23,6 +25,10 @@
 export default {
   props: {
     customStyle: Object,
+    showGoBack: {
+      type: Boolean,
+      default: true
+    },
     title: {
       type: String,
       default: ''
@@ -53,7 +59,7 @@ export default {
     justify-content: space-between;
     height: 112rpx;
 
-    .title {
+    .center {
       height: 32rpx;
       font-weight: 500;
       font-size: 32rpx;
@@ -61,7 +67,7 @@ export default {
       line-height: 32rpx;
     }
 
-    .goBack {
+    .left {
       padding-left: 18rpx;
       display: flex;
       align-items: center;

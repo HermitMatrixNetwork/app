@@ -9,7 +9,7 @@
 
     <!--  -->
     <view class="logo">
-      <image class="logo-image" src="/static/img/placeholder.jpeg"></image>
+      <image class="logo-image" src="/static/img/index/位图.png"></image>
       <view class="logo-describe">
         创建您自己的钱包</view>
       <view class="logo-describe">
@@ -167,6 +167,8 @@ export default {
     }
 
     &-describe {
+      width: 370rpx;
+      margin: auto;
       font-weight: 700;
       font-size: 36rpx;
       color: #2C365A;
