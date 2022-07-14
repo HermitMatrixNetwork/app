@@ -30,7 +30,7 @@
         <view class="item-label">
           钱包名称
         </view>
-        <view class="item-input">
+        <view class="item-input item-input-name">
           <u-input v-model="name" placeholder="设置钱包名称"></u-input>
         </view>
       </view>
@@ -207,12 +207,10 @@ export default {
       }
 
       &-input {
-        background-color: #F2F4F8;
-        border-radius: 4rpx !important;
 
         .u-textarea {
           background-color: #F2F4F8;
-          border-radius: 4rpx !important;
+          border-radius: 16rpx !important;
           padding-left: 0 !important;
 
           /deep/ textarea {
@@ -220,14 +218,13 @@ export default {
             font-size: 28rpx !important;
             padding-left: 32rpx;
             line-height: 48rpx !important;
-
           }
         }
 
         .u-input {
           height: 96rpx;
           background-color: #F2F4F8;
-          border-radius: 4rpx 0 0 4rpx;
+          border-radius: 16rpx 0 0 16rpx;
           padding-left: 0 !important;
 
           /deep/ input {
@@ -254,11 +251,18 @@ export default {
             height: 96rpx;
             padding-right: 36rpx;
             background-color: #F2F4F8;
-            border-radius: 0 4rpx 4rpx 0 !important;
+            border-radius: 0 16rpx 16rpx 0 !important;
           }
         }
       }
-
+      
+      
+      &-input-name {
+        .u-input {
+          border-radius: 16rpx;
+        }
+      }
+      
       .password-check {
         margin-top: 32rpx;
       }

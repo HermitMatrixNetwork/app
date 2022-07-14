@@ -191,7 +191,7 @@ export default {
     }
 
     /deep/ .u-input {
-      border-radius: 4rpx !important;
+      border-radius: 16rpx !important;
     }
   }
 
@@ -201,18 +201,18 @@ export default {
       height: 96rpx;
       margin-bottom: 32rpx;
       background-color: #F2F4F8;
-      border-radius: 5rpx;
+      border-radius: 16rpx;
 
       .u-icon {
         height: 96rpx;
         padding-right: 36rpx;
         background-color: #F2F4F8;
-        border-radius: 0 4rpx 4rpx 0 !important;
+        border-radius: 0 16rpx 16rpx 0 !important;
       }
     }
 
     /deep/ .u-input {
-      border-radius: 4rpx 0 0 4rpx !important;
+      border-radius: 16rpx 0 0 16rpx !important;
     }
   }
 
