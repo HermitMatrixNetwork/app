@@ -4,13 +4,12 @@
 		<view class="status_bar">
 			<!-- APP下会占用系统原生消息因此需要该占位符 -->
 		</view>
-		<view :address="address" :change:address="render.init"></view>
 		<view class="main">
 			<view class="account-header">
 				<text>我的钱包</text>
 				<view class="header-icon">
 					<u-icon name="scan" size="44rpx" color="#333655" @click="scanCode" />
-					<u-icon name="setting" size="44rpx" color="#333655" @click="toGo('/pages/walletManager/index')"/>
+					<u-icon name="setting" size="44rpx" color="#333655" />
 				</view>
 			</view>
 			<view class="basic-data">
@@ -24,16 +23,14 @@
 						${{eyeAsset?allassets:"∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗"}}
 					</view>
 					<view class="user-address">
-						<text v-if="eyeAsset">{{currentWallet.address|sliceAddress}}</text>
-						<text v-else>∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗</text>
-						<!-- {{eyeAsset?(currentWallet.address|sliceAddress):'∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗'}} -->
-						<u-icon name="file-text" color="#FFFFFF" size="32rpx" />
+						{{newuserAdres}}
+						<u-icon :name="require('../../static/img/account/copy.png')" color="#FFFFFF" size="32rpx" />
 					</view>
 				</view>
 			</view>
 
 			<view class="account-column">
-				<view class="column-item">
+				<view class="column-item" @click="toSend">
 					<u-icon :name="require('../../static/img/account/send.png')" size="80rpx"></u-icon>
 					<text>发送</text>
 				</view>
@@ -69,42 +66,39 @@
 			<view class="coin-list">
 				<u-tabs :list="coinList" lineColor="#2C365A" @click="click" :inactiveStyle="inactiveStyle"
 					:activeStyle="activeStyle" lineWidth="20" lineHeight="3" :itemStyle="itemStyle">
-					<view slot="right" style="padding-bottom: 8rpx;" data-url="/pages/assetManage/index" @click="goTo">
-						<u-icon name="plus-circle" size="48rpx" color="#8895b0" bold></u-icon>
+					<view slot="right" style="padding-bottom: 8rpx;">
+						<u-icon :name="require('../../static/img/account/add.png')" size="48rpx" color="#8895b0" bold>
+						</u-icon>
 					</view>
 				</u-tabs>
 				<scroll-view class="coinbox" scroll-y>
 					<view class="content">
-						<view class="coinbox-item">
-							<image src="../../static/img/placeholder.jpeg"></image>
-							<text class="coinName">uGHM</text>
-							<view class="coinNumber">
-								<view class="number">0.00000000</view>
-								<view class="money">$0.00000</view>
-							</view>
-						</view>
+						<TokenColumn @click.native="queryToken">
+							<template #right>
+								<view class="coinNumber">
+									<view class="number">0.00000000</view>
+									<view class="money">$0.00000</view>
+								</view>
+							</template>
+						</TokenColumn>
 					</view>
 				</scroll-view>
 			</view>
 		</view>
-	 <tab-bar />
 	</view>
 </template>
 
 <script>
-import {
-	  sliceAddress
-} from '@/utils/filters.js'
-import {exceptE6} from '@/utils/format.js'
+import TokenColumn from './send/components/TokenColumn.vue'
+import languages from './language'
+import {sliceAddress} from '@/utils/filters.js'
 export default {
-  filters:{
-	  sliceAddress,
-    exceptE6
+  components: {
+    TokenColumn
   },
   data() {
     return {
-      address: '',
-      currentWallet: this.$cache.get('_currentWallet'),
+      languages: languages[this.$cache.get('_language')],
       coinList: [{
         name: '代币'
       },
@@ -129,38 +123,20 @@ export default {
       show: false,
       allassets: 66666666, //总资产
       eyeAsset: true,
-      userAdres: 'dalfjlkajflajflafsdafsafsadfsadfsdafsdfasdfasdfa', //用户地址
+      userAdres: '', //用户地址
       newuserAdres: '',
       aa: true
     }
   },
   onLoad() {
     this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
-  },
-  created(){
-    this.address = this.currentWallet.address
-  },
-  mounted(){
-		 // console.log('_currentWallet',this.$cache.get('_currentWallet'))
-    //  this.currentWallet = this.$cache.get('_currentWallet')
-    // console.log('currentWallet',this.currentWallet)
-   
+    const {address} = this.$cache.get('_currentWallet')
+    this.userAdres = address
+    this.newuserAdres = sliceAddress(address)
   },
   methods: {
     click(item) {
       console.log('item', item)
-    },
-    //页面跳转
-    goTo(e){
-      console.log(e)
-      uni.navigateTo({
-      	url:e.currentTarget.dataset.url
-      })
-    },//页面跳转
-    toGo(url){
-      uni.navigateTo({
-      	url
-      })
     },
     scanCode() {
       uni.scanCode({
@@ -187,27 +163,23 @@ export default {
     assentIsShow() { //用户总资产是否显示
       this.eyeAsset = !this.eyeAsset
       this.aa = true
+    },
+    toSend() {
+      console.log(111111111)
+      uni.navigateTo({
+        url: './send/index'
+      })
+    },
+    queryToken() {
+      console.log(222222222222222)
+      uni.navigateTo({
+        url: './send/token_content'
+      })
     }
   }
 }
 </script>
 
-
-
-<script lang="renderjs" module="render">
-import {getBalance,QueryStakingValidators} from '@/utils/account.js'
-	export default {
-		methods: {
-			async init(address){
-				console.log('address',address)
-				//获取主网币余额
-				let res = await getBalance(address)
-				console.log('res',res)
-				// let res2 = await QueryStakingValidators()
-			}
-		}
-	}
-</script>
 <style lang="scss" scoped>
 	page {
 		width: 100%;
@@ -252,7 +224,8 @@ import {getBalance,QueryStakingValidators} from '@/utils/account.js'
 		.basic-data {
 			width: 100%;
 			height: 280rpx;
-			background: #002FA8;
+			background-image: url('@/static/img/account/card1.png');
+			background-size: 100% 100%;
 			border-radius: 24rpx;
 
 			.user-msg {
@@ -320,49 +293,6 @@ import {getBalance,QueryStakingValidators} from '@/utils/account.js'
 				margin-top: 48rpx;
 				width: 100%;
 				height: 600rpx;
-
-				.content {
-					width: 100%;
-					position: relative;
-
-					.coinbox-item {
-						display: flex;
-						align-items: flex-start;
-						width: 100%;
-						height: 120rpx;
-						border-bottom: 2rpx solid rgba(131, 151, 177, .16);
-						image {
-							width: 80rpx;
-							height: 80rpx;
-						}
-
-						text {
-							padding: 24rpx 0 0 24rpx;
-							font-family: PingFangSC-Medium;
-							font-weight: 500;
-							font-size: 32rpx;
-							color: #2C365A;
-							line-height: 32rpx;
-						}
-
-						.coinNumber {
-							position: absolute;
-							right: 0;
-							top: 0;
-							text-align: right;
-							font-family: 'din-medium';
-
-							.number {
-								font-size: 32rpx;
-							}
-
-							.money {
-								font-size: 28rpx;
-							}
-						}
-					}
-				
-				}
 			}
 		}
 	}

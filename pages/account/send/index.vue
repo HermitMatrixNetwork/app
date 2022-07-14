@@ -23,7 +23,8 @@
 					<InputTitle :title="'收款地址'" :type="'text'" :placeholder="'输入或粘贴钱包地址'"
 						:inputVal.sync="receiveAddress">
 						<template #title-icon>
-							<u-icon name="scan" size="44rpx" @click="chooseAddress"></u-icon>
+							<u-icon :name="require('../../../static/img/account/addressbook.png')" size="44rpx"
+								@click="chooseAddress"></u-icon>
 						</template>
 					</InputTitle>
 				</view>
@@ -195,7 +196,7 @@ export default {
     }
   },
   onLoad(value) {
-
+    
   },
   methods: {
     chooseAddress() {
@@ -230,7 +231,11 @@ export default {
       this.selectedMiners = index
     },
     submitAgain() {
-
+      if (this.sendAmount > this.balance) return console.log('大于')
+      console.log(this.minersList[this.selectedMiners])
+      uni.navigateTo({
+        url: './transactionDetails'
+      })
     }
   },
 }
