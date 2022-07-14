@@ -34,6 +34,7 @@
 
 <script>
 import Notify from './components/notify.vue'
+import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   components: { Notify },
   data() {
@@ -46,8 +47,8 @@ export default {
   },
   created() {
     this.wallet = uni.getStorageSync('_currentWallet').data
-    this.mnemonicList = this.wallet.mnemonic.split(' ')
-    this.randomMnemonicList = this.wallet.mnemonic.split(' ').sort(() => Math.random() - 0.5)
+    this.mnemonicList = WalletCrypto.decode(this.wallet.mnemonic).split(' ')
+    this.randomMnemonicList = WalletCrypto.decode(this.wallet.mnemonic).split(' ').sort(() => Math.random() - 0.5)
   },
   methods: {
     // 删除选择的助记词

@@ -10,7 +10,7 @@
         <text class="label-tip">({{ language.clickToCopy }})</text>
       </view>
       <view class="item" @click="copy">
-        {{ wallet.privateKey64 }}
+        {{ rawPassword }}
       </view>
     </view>
     
@@ -23,6 +23,7 @@
 import Tooltip from './components/tooltip.vue'
 import Notify from './components/notify.vue'
 import language from './language'
+import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   components: {
     Tooltip,
@@ -31,13 +32,13 @@ export default {
   data() {
     return {
       language: language[this.$cache.get('_language')],
-      wallet: this.$cache.get('_currentWallet')
+      rawPassword: WalletCrypto.decode(this.$cache.get('_currentWallet').privateKey64)
     }
   },
   methods: {
     copy() {
       uni.setClipboardData({
-        data: this.wallet.privateKey64,
+        data: this.rawPassword,
         showToast: false,
         success: () => {
           this.$refs.notify.show('success', this.language.copySuccess)

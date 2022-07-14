@@ -104,6 +104,7 @@
 
 <script>
 import language from './language'
+import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   data() {
     return {
@@ -150,8 +151,7 @@ export default {
         this.showEditWalletNameModal = false
         this.name = ''
       } else if (target === 'password') {
-        // @todo 解码
-        const walletPassword = this.wallet.password
+        const walletPassword = WalletCrypto.decode(this.wallet.password)
         const password = this.password.trim()
         if (password !== walletPassword) return this.confirmPasswordError = true
         this.confirmPasswordError = false
