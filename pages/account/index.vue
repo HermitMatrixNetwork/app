@@ -6,8 +6,14 @@
     </view>
     <view class="main">
       <view class="account-header">
-        <text @click="showSwitchWallet = true">我的钱包</text>
-        <view class="header-icon">
+        <view class="header-left" @click="showSwitchWallet = true">	  
+				<view class="title">
+					我的钱包	
+				</view>
+					<u-icon :name="require('@/static/img/account/down.png')" size="32rpx" color="#333655" />
+				</view>
+		
+        <view class="header-icon" >
           <u-icon name="scan" size="44rpx" color="#333655" @click="scanCode" />
           <u-icon name="setting" size="44rpx" color="#333655" />
         </view>
@@ -137,84 +143,82 @@
       </view>
     </view>
     <tab-bar />
-    <!-- <SwitchWallet :showSwitchWallet="showSwitchWallet" @close="closeSwitchWalletPopup"/> -->
+    <SwitchWallet :showSwitchWallet="showSwitchWallet" @close="closeSwitchWalletPopup"/>
   </view>
 </template>
 
 <script>
-import { sliceAddress } from "@/utils/filters.js";
-import { exceptE6 } from "@/utils/format.js";
-import mainCoin from "@/config/index.js";
-// import SwitchWallet from '@/pages/walletManager/switchWallet.vue'
-import TokenColumn from "./send/components/TokenColumn.vue";
-import languages from "./language";
+import { sliceAddress } from '@/utils/filters.js'
+import { exceptE6 } from '@/utils/format.js'
+import mainCoin from '@/config/index.js'
+import SwitchWallet from '@/pages/walletManager/switchWallet.vue'
+import TokenColumn from './send/components/TokenColumn.vue'
+import languages from './language'
 export default {
   components: {
     TokenColumn,
+    SwitchWallet
   },
   filters: {
     sliceAddress,
   },
-  // components: {
-  //   SwitchWallet
-  // },
   data() {
     return {
       showSwitchWallet: false,
-      address: "",
-      currentWallet: this.$cache.get("_currentWallet"),
-      languages: languages[this.$cache.get("_language")],
+      address: '',
+      currentWallet: this.$cache.get('_currentWallet'),
+      languages: languages[this.$cache.get('_language')],
       coinList: [
         {
-          name: "代币",
+          name: '代币',
         },
         // {
         //   name: 'NFT'
         // }
       ],
       inactiveStyle: {
-        fontSize: "32rpx",
-        color: "#8397B1",
-        fontWeight: "500",
+        fontSize: '32rpx',
+        color: '#8397B1',
+        fontWeight: '500',
       },
       activeStyle: {
-        fontSize: "34rpx",
-        color: "#2C365A",
-        fontWeight: "600",
+        fontSize: '34rpx',
+        color: '#2C365A',
+        fontWeight: '600',
       },
       itemStyle: {
-        height: "60rpx",
-        alignItems: "flex-start",
+        height: '60rpx',
+        alignItems: 'flex-start',
       },
       show: false,
       allassets: 66666666, //总资产
       eyeAsset: true,
       aa: true,
-    };
+    }
   },
   onLoad() {
     // this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
   },
   created() {
-    this.address = this.currentWallet.address;
+    this.address = this.currentWallet.address
     //获取选择的代币
-    let coinList = this.$cache.get("_currentWallet").coinList || [];
+    let coinList = this.$cache.get('_currentWallet').coinList || []
     //代币数组为空时，为其添加主币
     if (coinList.length == 0) {
       coinList.push({
         label: mainCoin.label,
         logo: mainCoin.logo,
         address: this.address,
-      });
-      this.currentWallet.coinList = coinList;
-      let walletList = this.$cache.get("_walletList");
+      })
+      this.currentWallet.coinList = coinList
+      let walletList = this.$cache.get('_walletList')
       //找到当前钱包，为其钱包列表添加代币
       let curIndex = walletList.findIndex(
         (item) => item.address == this.address
-      );
-      walletList[curIndex] = this.currentWallet;
-      console.log(" this.currentWallet", this.currentWallet);
-      this.$cache.set("_walletList", walletList, 0);
+      )
+      walletList[curIndex] = this.currentWallet
+      console.log(' this.currentWallet', this.currentWallet)
+      this.$cache.set('_walletList', walletList, 0)
     }
   },
   mounted() {
@@ -224,73 +228,73 @@ export default {
   },
   methods: {
     click(item) {
-      console.log("item", item);
+      console.log('item', item)
     },
     //页面跳转
     goTo(e) {
       uni.navigateTo({
         url: e.currentTarget.dataset.url,
-      });
+      })
     },
     //页面跳转
     toGo(url) {
       uni.navigateTo({
         url,
-      });
+      })
     },
     //复制地址
     copy() {
       uni.setClipboardData({
         data: this.currentWallet.address,
         success: function () {
-          console.log("success");
+          console.log('success')
         },
-      });
+      })
     },
     scanCode() {
       uni.scanCode({
         onlyFromCamera: false,
-        scanType: ["qrCode"],
+        scanType: ['qrCode'],
         success(res) {
-          console.log("条码类型：" + res.scanType);
-          console.log("条码内容：" + res.result);
+          console.log('条码类型：' + res.scanType)
+          console.log('条码内容：' + res.result)
         },
-      });
+      })
     },
     receivePopup() {
-      this.show = !this.show;
+      this.show = !this.show
     },
     close() {
-      this.show = false;
+      this.show = false
     },
     dealBtn() {
       uni.showToast({
-        title: "暂未开放",
-        icon: "none",
-      });
+        title: '暂未开放',
+        icon: 'none',
+      })
     },
     assentIsShow() {
       //用户总资产是否显示
-      this.eyeAsset = !this.eyeAsset;
-      this.aa = true;
+      this.eyeAsset = !this.eyeAsset
+      this.aa = true
     },
     closeSwitchWalletPopup() {
-      this.showSwitchWallet = false;
+      this.showSwitchWallet = false
     },
     toSend() {
-      console.log(111111111);
+      console.log(111111111)
       uni.navigateTo({
-        url: "./send/index",
-      });
+        url: './send/index',
+      })
     },
     queryToken() {
-      console.log(222222222222222);
+      console.log(222222222222222)
       uni.navigateTo({
-        url: "./send/token_content",
-      });
+        url: './send/token_content',
+      })
     },
   },
-};
+}
 </script>
 
 <script lang="renderjs" module="render">
@@ -342,7 +346,9 @@ page {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
+		.header-left {
+			display: flex;
+		}
     .header-icon {
       display: flex;
       align-items: center;

@@ -4,8 +4,15 @@
 		<view class="top">
 			<u-search :placeholder="language.searchPlaceholder" shape="round" :clearabled="true" v-model="address" actionText="取消" :actionStyle="searchStyle"  @search="searchCoin" @custom="goBack"></u-search>
 		</view>
-		<view class="list">
+		<view class="list" v-if="list.length>0">
 			<List :list="list"/>
+		</view>
+		<view v-else class="noData">
+			<img v-if="reAddress!=''" class="data" src="@/static/img/account/nodata.png" alt="">
+			<img v-else class="searchbg" src="@/static/img/account/searchbg.png" alt="">
+			<view class="tip">
+				{{reAddress?'未搜索到相关代币':'支持所有 Hermit Matrix Network 代币请输入代币合约地址进行搜索'}}
+			</view>
 		</view>
 	</view>
 </template>
@@ -48,9 +55,14 @@ export default {
     },
     //查询结果
     searchData(data){
-      let list = []
-      list.push(data)
-      this.list = list
+      if(data){
+        let list = []
+        list.push(data)
+        this.list = list
+      }else {
+        this.list = []
+      }
+      
     }
   }
 }
@@ -64,14 +76,14 @@ export default {
 			console.log('address',address)
 			if(address=='') return
 			let data = await getContractInfo(address)
-			data = {
-				...data,
-				...data.ContractInfo,
-				logo: ''
+			if(data){
+				data = {
+					...data,
+					...data.ContractInfo,
+					logo: ''
+				}
 			}
 			renderUtils.runMethod(this._$id, 'searchData', data, this)
-		
-			console.log(data)
 		}
 	}
 }
@@ -89,5 +101,21 @@ export default {
 				font-weight: bold;
 				color: #2C365A;
 			}
+	}
+	.noData {
+		padding: 330rpx 130rpx 0 130rpx;
+		text-align: center;
+		.data {
+			width: 240rpx;
+			height: 240rpx;
+		}
+		.searchbg {
+			width: 200rpx;
+			height: 200rpx;
+		}
+		.tip {
+			font-size: 28rpx;
+			color: #8397B1;
+		}
 	}
 </style>

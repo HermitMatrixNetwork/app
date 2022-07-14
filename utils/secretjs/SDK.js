@@ -13,6 +13,7 @@ let walletAddress = wallet.address
 //获取secret
 async function getSecret(){
 	  let Secret= await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  console.log('Secret',Secret)
   return Secret
 }
 //查询余额
@@ -29,8 +30,14 @@ export async function getBalance(address){
 //获取合约信息
 export async function getContractInfo(address){
   let Secret = await getSecret()
-  const result = await Secret.query.compute.contractInfo(address)
-  return result
+  try{
+    const result = await Secret.query.compute.contractInfo(address)
+    return result
+  }catch(e){
+    return false
+    //TODO handle the exception
+  }
+ 
 }
 
 export async function QueryStakingValidators(){

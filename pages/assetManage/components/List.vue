@@ -39,9 +39,11 @@ export default {
   data(){
     return {
 			searchList: [],//选择的代币列表地址数组	
+			mainCoin: {}//主网币参数
     }
   },
 	created(){
+		this.mainCoin = mainCoin
 		let currentWallte = this.$cache.get('_currentWallet')
 		let coinList = currentWallte.coinList
 		coinList.forEach(item=>{

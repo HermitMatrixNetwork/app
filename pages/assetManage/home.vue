@@ -15,7 +15,7 @@
 <script>
 import languages from './language/index.js'
 import List from './components/List.vue'
-import mainCoin from '@/config/index.js'
+
 export default {
   data(){
     return {
