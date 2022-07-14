@@ -1,7 +1,7 @@
 <template>
 	<view class="">
 		市场
-		 <TabBar :current-page="1" />
+		 <tab-bar :current-page="1" />
 	</view>
 </template>
 

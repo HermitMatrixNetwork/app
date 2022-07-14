@@ -41,10 +41,10 @@ export default {
         centerItem: false
       }, {
         id: 2,
-        path: '/pages/entrust/index',
-        icon: require('../../static/img/tabbar/entrust.png'),
-        selectIcon: require('../../static/img/tabbar/entrust.png'),
-        text: 'entrust',
+        path: '/pages/delegate/index',
+        icon: require('../../static/img/tabbar/delegate.png'),
+        selectIcon: require('../../static/img/tabbar/delegate.png'),
+        text: 'delegate',
         centerItem: true
       }, {
         id: 3,

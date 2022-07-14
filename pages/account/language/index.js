@@ -22,7 +22,7 @@ const languages = {
     text02: 'Total assets',
     text03: 'send',
     text04: 'receive',
-    text05: 'entrust',
+    text05: 'delegate',
     text06: 'trading'
   }
 }

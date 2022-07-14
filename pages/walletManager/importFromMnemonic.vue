@@ -13,16 +13,9 @@
       <view class="item">
         <view class="item-label">资金密码</view>
         <view class="item-input item-input-password">
-          <u-input :password="!passwordEye" v-model="password" placeholder="设置钱包密码（不少于8位）">
+          <u-input :password="!passwordEye" v-model="password" placeholder="输入资金密码">
           </u-input>
           <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'" @click="passwordEye = !passwordEye">
-          </u-icon>
-        </view>
-        <view class="item-input item-input-password password-check">
-          <u-input :password="!checkPasswordEye" v-model="checkPassword" placeholder="重复输入确认钱包密码">
-          </u-input>
-          <u-icon color="#8F9BB3" size="20" :name="checkPasswordEye ? 'eye' : 'eye-off'"
-            @click="checkPasswordEye = !checkPasswordEye">
           </u-icon>
         </view>
       </view>
@@ -30,7 +23,7 @@
         <view class="item-label">
           钱包名称
         </view>
-        <view class="item-input item-input-name">
+        <view class="item-input">
           <u-input v-model="name" placeholder="设置钱包名称"></u-input>
         </view>
       </view>
@@ -47,13 +40,9 @@
 <script>
 import * as cosmosjs from '@cosmjs/crypto'
 import * as bip39 from 'bip39'
-import mixin from './mixins/index.js'
 import Notify from './components/notify.vue'
-import {
-  validateAll
-} from '@/utils/validator.js'
+import { validate } from '@/utils/validator.js' 
 export default {
-  mixins: [mixin],
   components: {
     Notify
   },
@@ -61,34 +50,14 @@ export default {
     return {
       mnemonic: '', // 助记词
       password: '', // 资金密码
-      checkPassword: '',
       name: '', // 钱包名称
       passwordEye: false, // 是否明文显示资金密码
-      checkPasswordEye: false,
       callRenderMnemonic: '', // 调用render.getMnemonic获取助记词
       rules: {
-        password: [{
+        'password': {
           rule: 'required',
-          errMessage: '钱包密码不能为空'
-        }, {
-          rule: 'min',
-          len: 8,
-          errMessage: '密码长度不能少于8位'
-        }, {
-          rule: 'max',
-          len: 48,
-          errMessage: '密码长度不能大于48位'
-        }],
-        checkPassword: [{
-          validator(value) {
-            if (value !== this.password) return false
-            return true
-          },
-          errMessage: '密码输入不一致，请重新输入。'
-        }, {
-          rule: 'required',
-          errMessage: '钱包密码不能为空'
-        }]
+          errMessage: '资金密码不能空'
+        }
       }
     }
   },
@@ -100,10 +69,32 @@ export default {
       if (!isValidate) return // 没有通过校验
       this.callRenderMnemonic = this.mnemonic.trim()
     },
-    cbInitWallet() {
+    initWallet({
+      wallet,
+      privateKey
+    }) {
+      // 加密密码
+      // const password = WalletCrypto.encode(this.password, 'hhaic')
+
+      // console.log(password)
+      if (!this.password || !this.name) return console.error('初始化钱包数据失败，请检查组件是否已经注册password、name字段作为钱包密码和钱包名字')
+      wallet.password = this.password
+      wallet.privateKey64 = privateKey
+      wallet.name = this.name
+
+      console.log('创建钱包数据:', {
+        wallet
+      })
+      this.$cache.set('_currentWallet', wallet, 0)
+      this.updateWalletList(wallet)
       this.toAccount()
+      // 解密密码
+      // const dePassword = WalletCrypto.decode(password)
+      // console.log(dePassword.join(''))
     },
     toAccount() {
+      const eventChannel = this.getOpenerEventChannel()
+      eventChannel.emit('close')
       uni.switchTab({
         url: '/pages/account/index'
       })
@@ -132,7 +123,9 @@ export default {
       // #endif
 
       if (errorMnemonic) {
-        this.$refs.notify.show('error', `${errorMnemonic} 为无效助记词，请检查。`)
+        this.$refs.notify.show('error', `${errorMnemonic} 为无效助记词，请检查。`, {
+          bgColor: '#EC6665'
+        })
       } else {
         this.$refs.notify.close() // 关闭错误警告
       }
@@ -142,31 +135,60 @@ export default {
       const mnemonic = this.mnemonic.trim()
       return bip39.validateMnemonic(mnemonic)
     },
+    // 校验密码
+    verifyPassword(target, value) {
+      const {
+        result
+      } = validate.call(this, 'password')
+      const currentWallet = this.$cache.get('_currentWallet')
+      return result && currentWallet.password == this.password
+    },
     verifyForm() {
       const isEffectiveMnemonic = this.verifyTotalMnemonic()
-      const result = validateAll.call(this, this.rules)
-      const invalidateField = result.find(item => !item.result)
+      const isEffectivePassword = this.verifyPassword('mnemonic', this.mnemonic.trim())
       // const isEffectiveMnemonic = false // @test
       // const isEffectivePassword = true // @test
       if (!isEffectiveMnemonic) {
-        this.$refs.notify.show('error', '助记词校验位不正确')
-      } else if (invalidateField) {
-        this.$refs.notify.show('error', invalidateField.errMessage)
+        this.$refs.notify.show('error', '助记词校验位不正确', {
+          bgColor: '#EC6665'
+        })
+      } else if (!isEffectivePassword) {
+        this.$refs.notify.show('error', '资金密码错误！', {
+          bgColor: '#EC6665'
+        })
       } else if (!this.name) {
-        this.$refs.notify.show('error', '钱包名称不能为空')
+        this.$refs.notify.show('error', '钱包名称不能为空', {
+          bgColor: '#EC6665'
+        })
       } else {
         // 通过校验
         return true
       }
+    },
+    findWallet(target, value) {
+      const walletList = this.$cache.get('_walletList')
+      if (!walletList) return
+      return walletList.find(item => item[target] === value)
+    },
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.privateKey64 === wallet.privateKey64)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.push(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
     }
   }
 }
 </script>
 
 <script lang="renderjs" module="render">
-  import {
-    createWallet
-  } from './utils/index.js'
+  import WalletCrypto from '@/utils/walletCrypto.js'
+  import secretjs from '@/utils/secretjs/index.js'
+  import renderUtils from '@/utils/render.base.js'
   export default {
     data() {
       return {
@@ -175,7 +197,17 @@ export default {
     },
     methods: {
       createWallet(newVal, oldVal, newVm) {
-        createWallet('initWallet', this, this.mnemonic, 'cbInitWallet')
+        const wallet = new secretjs.Wallet(this.mnemonic, {
+          bech32Prefix: 'ghm'
+        })
+
+        // 生成私钥
+        const privateKey = WalletCrypto.encode(wallet.privateKey)
+
+        renderUtils.runMethod(this._$id, 'initWallet', {
+          wallet,
+          privateKey
+        }, this)
       },
       getMnemonic(newVal) {
         if (newVal == '') return
@@ -207,10 +239,12 @@ export default {
       }
 
       &-input {
+        background-color: #F2F4F8;
+        border-radius: 4rpx !important;
 
         .u-textarea {
           background-color: #F2F4F8;
-          border-radius: 16rpx !important;
+          border-radius: 4rpx !important;
           padding-left: 0 !important;
 
           /deep/ textarea {
@@ -218,13 +252,14 @@ export default {
             font-size: 28rpx !important;
             padding-left: 32rpx;
             line-height: 48rpx !important;
+
           }
         }
 
         .u-input {
           height: 96rpx;
           background-color: #F2F4F8;
-          border-radius: 16rpx 0 0 16rpx;
+          border-radius: 4rpx 0 0 4rpx;
           padding-left: 0 !important;
 
           /deep/ input {
@@ -251,20 +286,9 @@ export default {
             height: 96rpx;
             padding-right: 36rpx;
             background-color: #F2F4F8;
-            border-radius: 0 16rpx 16rpx 0 !important;
+            border-radius: 0 4rpx 4rpx 0 !important;
           }
         }
-      }
-      
-      
-      &-input-name {
-        .u-input {
-          border-radius: 16rpx;
-        }
-      }
-      
-      .password-check {
-        margin-top: 32rpx;
       }
     }
   }

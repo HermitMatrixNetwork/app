@@ -45,7 +45,7 @@ export default {
     }
   },
   created() {
-    this.wallet = uni.getStorageSync('_currentWallet').data
+    this.wallet = this.$cache.get('_currentWallet')
     this.mnemonicList = this.wallet.mnemonic.split(' ')
     this.randomMnemonicList = this.wallet.mnemonic.split(' ').sort(() => Math.random() - 0.5)
   },

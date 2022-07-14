@@ -1,7 +1,7 @@
 <template>
 	<view class="">
 		我的
-		 <TabBar :current-page="4" />
+		 <tab-bar :current-page="4" />
 	</view>
 </template>
 

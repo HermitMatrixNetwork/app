@@ -107,8 +107,8 @@ import language from './language'
 export default {
   data() {
     return {
-      wallet: uni.getStorageSync('_currentWallet').data || {},
-      language: language[uni.getStorageSync('_language').data],
+      wallet: this.$cache.get('_currentWallet') || {},
+      language: language[this.$cache.get('_language')],
       name: '', // 钱包名称
       showEditWalletNameModal: false,
       editNameError: false, // 校验编辑钱包名称是否失败
