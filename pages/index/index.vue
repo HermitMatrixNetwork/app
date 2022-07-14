@@ -190,29 +190,33 @@ export default {
         flex-direction: column;
         justify-content: center;
         width: 622rpx;
-        padding: 12rpx 0;
+        padding: 24rpx 0;
         align-items: center;
         border-radius: 16rpx;
       }
 
       &-create {
+        height: 120rpx;
         font-size: 32rpx;
         color: #FFFFFF;
         background-color: #002FA7;
 
         &-describe {
+          margin-top: 5rpx;
           font-size: 24rpx;
           color: rgba(255, 255, 255, 0.60);
         }
       }
 
       &-import {
+        height: 120rpx;
         margin-top: 40rpx;
         font-size: 32rpx;
         color: #2C365A;
         background-color: #F2F2F4;
 
         &-describe {
+          margin-top: 5rpx;
           color: #748BAA;
           font-size: 24rpx;
         }
