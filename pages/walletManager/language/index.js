@@ -20,7 +20,12 @@ export default {
     'copyFailure': '复制失败',
     'keystore': 'Keystore',
     'mnemonic': '助记词',
-    'completeBackupToVerify': '完成备份，点击验证'
+    'completeBackupToVerify': '完成备份，点击验证',
+    'switchWallet': '切换钱包',
+    'addWallet': '添加钱包',
+    'createWallet': '创建钱包',
+    'hermitWalle': 'Hermit Walle',
+    'verifyWalletPassword': '验证钱包密码'
   },
   'CT': {
 

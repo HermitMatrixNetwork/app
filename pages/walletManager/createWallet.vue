@@ -1,15 +1,11 @@
 <template>
   <view class="create-wallet">
 
-    <custom-header></custom-header>
-
-    <view class="title">
-      创建钱包
-    </view>
-
+    <custom-header :title="language.createWallet"></custom-header>
+    <view class="border"></view>
     <view class="wallet-name">
       <view class="wallet-name-label">
-        钱包名称
+        {{ language.walletName }}
       </view>
       <u-input class="wallet-name-input" :class="{error: invalidFields.fieldName == 'name'}" v-model="name"
         placeholder="设置钱包名称"></u-input>
@@ -17,7 +13,7 @@
 
     <view class="wallet-password">
       <view class="wallet-password-label">
-        钱包密码
+        {{ language.verifyWalletPassword }}
       </view>
       <view class="wallet-password-item">
         <u-input :password="!passwordEye" class="wallet-password-input"
@@ -25,14 +21,6 @@
         </u-input>
         <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
           :class="{error: invalidFields.fieldName == 'password'}" @click="passwordEye = !passwordEye">
-        </u-icon>
-      </view>
-      <view class="wallet-password-item" :class="{error: invalidFields.fieldName == 'checkPassword'}">
-        <u-input :password="!checkPasswordEye" :class="{error: invalidFields.fieldName == 'checkPassword'}"
-          class="wallet-password-input" v-model="checkPassword" placeholder="重复输入确认钱包密码">
-        </u-input>
-        <u-icon color="#8F9BB3" size="20" :name="checkPasswordEye ? 'eye' : 'eye-off'"
-          :class="{error: invalidFields.fieldName == 'checkPassword'}" @click="checkPasswordEye = !checkPasswordEye">
         </u-icon>
       </view>
     </view>
@@ -47,22 +35,24 @@
 </template>
 
 <script>
-import mixin from './mixins/index.js'
-import { validateAll } from '@/utils/validator.js'
-import Notify from './components/notify.vue' 
+import {
+  validateAll
+} from '@/utils/validator.js'
+import language from './language'
+import Notify from './components/notify.vue'
 export default {
-  mixins: [mixin],
-  components: { Notify },
+  components: {
+    Notify
+  },
   data() {
     return {
       name: '',
       password: '', // 不能大于48位
-      checkPassword: '',
-      checkPasswordEye: false,
       passwordEye: false, // 是否明文显示密码
       isValidate: false, // 表单校验状态 @test: true
       invalidFields: {}, // 校验失败的字段
       callRenderCreate: 0,
+      language: language[this.$cache.get('_language')],
       rules: {
         name: {
           rule: 'required',
@@ -72,23 +62,13 @@ export default {
           rule: 'required',
           errMessage: '钱包密码不能为空'
         }, {
-          rule: 'min',
-          len: 8,
-          errMessage: '密码长度不能少于8位'
-        }, {
-          rule: 'max',
-          len: 48,
-          errMessage: '密码长度不能大于48位'
-        }],
-        checkPassword: [{
           validator(value) {
-            if (value !== this.password) return false
+            const currentWallet = this.$cache.get('_currentWallet')
+            // todo 解码
+            if (value !== currentWallet.password) return false
             return true
           },
-          errMessage: '密码输入不一致，请重新输入。'
-        }, {
-          rule: 'required',
-          errMessage: '钱包密码不能为空'
+          errMessage: '资金密码错误！'
         }]
       }
     }
@@ -105,15 +85,37 @@ export default {
         this.callRenderCreate++ // 调用render.createWallet创建钱包
       } else {
         // 表单校验失败
-        this.$refs.notify.show('error', this.invalidFields.errMessage)
+        this.$refs.notify.show('error', this.invalidFields.errMessage, { bgColor: '#EC6665' })
       }
     },
-    cbInitWallet() {
+    initWallet({wallet, privateKey}) {
+      wallet.password = this.password
+      wallet.privateKey64 = privateKey
+      wallet.name = this.name
+
+      console.log('创建钱包数据:', {
+        wallet
+      })
+      this.$cache.set('_currentWallet', wallet, 0)
+      this.updateWalletList(wallet)
       this.toBackupReminder()
     },
-    toBackupReminder(wallet, privateKey) {
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.privateKey64 === wallet.privateKey64)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.push(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
+    },
+    toBackupReminder() {
+      const eventChannel = this.getOpenerEventChannel()
+      eventChannel.emit('close')
       uni.navigateTo({
-        url: './backupReminder'
+        url: '/pages/index/backupReminder'
       })
     }
   }
@@ -121,14 +123,24 @@ export default {
 </script>
 
 <script lang="renderjs" module="render">
-  import {
-    createWallet
-  } from './utils/index.js'
+  import WalletCrypto from '@/utils/walletCrypto.js'
+  import secretjs from '@/utils/secretjs/index.js'
+  import renderUtils from '@/utils/render.base.js'
   export default {
     methods: {
       createWallet(newVal, oldVal, oldVm, newVm) {
         if (newVal == 0) return; // 第一次进入页面会默认调用一次
-        createWallet('initWallet', this, '', 'cbInitWallet')
+        const wallet = new secretjs.Wallet('', {
+          bech32Prefix: 'ghm'
+        })
+
+        // 生成私钥
+        const privateKey = WalletCrypto.encode(wallet.privateKey)
+
+        renderUtils.runMethod(this._$id, 'initWallet', {
+          wallet,
+          privateKey
+        }, this)
       }
     }
   }
@@ -139,16 +151,10 @@ export default {
     // padding: 0 32rpx;
   }
 
-  .title {
-    height: 48rpx;
-    margin-bottom: 64rpx;
-    margin-top: 64rpx;
-    margin-left: 32rpx;
-    font-weight: 500;
-    font-size: 48rpx;
-    color: #2C365A;
-    letter-spacing: 0;
-    line-height: 48rpx;
+  .border {
+    border-top: 1rpx solid #8397B1;
+    opacity: .16;
+    margin-bottom: 48rpx;
   }
 
   .wallet-name,
@@ -169,6 +175,8 @@ export default {
     .u-input {
       height: 96rpx;
       background-color: #F2F4F8;
+      border-radius: 16rpx !important;
+      padding-left: 32rpx !important;
 
       /deep/ input {
         color: #2C365A !important;
@@ -189,10 +197,6 @@ export default {
     &-input {
       margin-bottom: 48rpx;
     }
-
-    /deep/ .u-input {
-      border-radius: 16rpx !important;
-    }
   }
 
   .wallet-password {
@@ -211,7 +215,7 @@ export default {
       }
     }
 
-    /deep/ .u-input {
+    .u-input {
       border-radius: 16rpx 0 0 16rpx !important;
     }
   }
