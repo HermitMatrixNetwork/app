@@ -30,8 +30,8 @@ export default {
   },
   data() {
     return {
-      language: language[uni.getStorageSync('_language').data],
-      wallet: uni.getStorageSync('_currentWallet').data
+      language: language[this.$cache.get('_language')],
+      wallet: this.$cache.get('_currentWallet')
     }
   },
   methods: {

@@ -36,9 +36,9 @@ export default {
   },
   data() {
     return {
-      language: language[uni.getStorageSync('_language').data],
-      wallet: uni.getStorageSync('_currentWallet').data,
-      mnemonicList: uni.getStorageSync('_currentWallet').data.mnemonic.split(' ')
+      language: language[this.$cache.get('_language')],
+      wallet: this.$cache.get('_currentWallet'),
+      mnemonicList: this.$cache.get('_currentWallet').mnemonic.split(' ')
     }
   },
   methods: {
