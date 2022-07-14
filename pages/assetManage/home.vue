@@ -5,18 +5,9 @@
 				<u-search :placeholder="language.searchPlaceholder" shape="round" :clearabled="true" v-model="address" :showAction="false" @search="searchCoin"></u-search>
 			</view>
 		</custom-header>
-		<view class="home-assets" data-url="/pages/assetManage/home" @click="goTo">
-			<view class="title">
-				{{language.homeAssets}}
-			</view>
-			<u-icon class="right" name="arrow-right" color="#8397B1"></u-icon>
-		</view>
 		<view class="space"/>
-		<view class="hot-asset">
-			<view class="title">{{language.hotAssets}}</view>
-		</view>
 		<view class="list">
-			<List />
+			<List :list="list"/>
 		</view>
 	</view>
 </template>
@@ -24,11 +15,13 @@
 <script>
 import languages from './language/index.js'
 import List from './components/List.vue'
+import mainCoin from '@/config/index.js'
 export default {
   data(){
     return {
 		  language: languages[this.$cache.get('_language')],
-      address: ''//查询地址
+      address: '',//查询地址
+      list: this.$cache.get('_currentWallet').coinList
     }
   },
   components: {
@@ -82,8 +75,8 @@ export default {
 			}
 		}
 		.space {
-			height: 16rpx;
-			background-color: #F4F6FA;
+			height: 2rpx;
+			background-color: rgba(131, 151, 177, .2);
 		}
 		.hot-asset {
 			padding:32rpx 30rpx 32rpx 32rpx; 

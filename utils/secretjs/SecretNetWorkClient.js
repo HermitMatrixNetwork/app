@@ -17,7 +17,8 @@ class NetworkClient {
       wallet,
       walletAddress
     })
-    return new NetworkClient(secretjs)
+		return secretjs
+    // return new NetworkClient(secretjs)
   }
 
   constructor(secretjs) {

@@ -7,7 +7,7 @@
 		<view :address="address" :change:address="render.init"></view>
 		<view class="main">
 			<view class="account-header">
-				<text>我的钱包</text>
+				<text @click="showSwitchWallet= true">我的钱包</text>
 				<view class="header-icon">
 					<u-icon name="scan" size="44rpx" color="#333655" @click="scanCode" />
 					<u-icon name="setting" size="44rpx" color="#333655" @click="toGo('/pages/walletManager/index')"/>
@@ -27,7 +27,7 @@
 						<text v-if="eyeAsset">{{currentWallet.address|sliceAddress}}</text>
 						<text v-else>∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗</text>
 						<!-- {{eyeAsset?(currentWallet.address|sliceAddress):'∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗'}} -->
-						<u-icon name="file-text" color="#FFFFFF" size="32rpx" />
+						<u-icon name="file-text" color="#FFFFFF" size="32rpx" @click="copy" />
 					</view>
 				</view>
 			</view>
@@ -88,6 +88,7 @@
 			</view>
 		</view>
 	 <TabBar />
+	 <!-- <SwitchWallet :showSwitchWallet="showSwitchWallet" @close="closeSwitchWalletPopup"/> -->
 	</view>
 </template>
 
@@ -96,21 +97,27 @@ import {
 	  sliceAddress
 } from '@/utils/filters.js'
 import {exceptE6} from '@/utils/format.js'
+import mainCoin from '@/config/index.js'
+// import SwitchWallet from '@/pages/walletManager/switchWallet.vue'
 export default {
   filters:{
 	  sliceAddress,
     exceptE6
   },
+  // components: {
+  //   SwitchWallet
+  // },
   data() {
     return {
+      showSwitchWallet: false,
       address: '',
       currentWallet: this.$cache.get('_currentWallet'),
       coinList: [{
         name: '代币'
       },
-      {
-        name: 'NFT'
-      }
+      // {
+      //   name: 'NFT'
+      // }
       ],
       inactiveStyle: {
         fontSize: '32rpx',
@@ -129,16 +136,31 @@ export default {
       show: false,
       allassets: 66666666, //总资产
       eyeAsset: true,
-      userAdres: 'dalfjlkajflajflafsdafsafsadfsadfsdafsdfasdfasdfa', //用户地址
-      newuserAdres: '',
       aa: true
     }
   },
   onLoad() {
-    this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
+    // this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
   },
   created(){
     this.address = this.currentWallet.address
+    //获取选择的代币
+    let coinList = this.$cache.get('_currentWallet').coinList||[]
+    //代币数组为空时，为其添加主币
+    if(coinList.length==0){
+      coinList.push({
+        label: mainCoin.label,
+        logo: mainCoin.logo,
+        address: this.address
+      })
+      this.currentWallet.coinList = coinList
+      let walletList = this.$cache.get('_walletList')
+      //找到当前钱包，为其钱包列表添加代币
+      let curIndex = walletList.findIndex(item=>item.address==this.address)
+      walletList[curIndex] = this.currentWallet
+      console.log(' this.currentWallet', this.currentWallet)
+      this.$cache.set('_walletList', walletList, 0)
+    }
   },
   mounted(){
 		 // console.log('_currentWallet',this.$cache.get('_currentWallet'))
@@ -152,14 +174,23 @@ export default {
     },
     //页面跳转
     goTo(e){
-      console.log(e)
       uni.navigateTo({
       	url:e.currentTarget.dataset.url
       })
-    },//页面跳转
+    },
+    //页面跳转
     toGo(url){
       uni.navigateTo({
       	url
+      })
+    },
+    //复制地址
+    copy(){
+      uni.setClipboardData({
+        data: this.currentWallet.address,
+        success: function () {
+          console.log('success')
+        }
       })
     },
     scanCode() {
@@ -187,7 +218,10 @@ export default {
     assentIsShow() { //用户总资产是否显示
       this.eyeAsset = !this.eyeAsset
       this.aa = true
-    }
+    },
+		   closeSwitchWalletPopup() {
+		      this.showSwitchWallet = false
+		    }
   }
 }
 </script>
@@ -195,15 +229,18 @@ export default {
 
 
 <script lang="renderjs" module="render">
-import {getBalance,QueryStakingValidators} from '@/utils/account.js'
+	import {getBalance} from '@/utils/secretjs/SDK'
+
 	export default {
 		methods: {
 			async init(address){
-				console.log('address',address)
-				//获取主网币余额
-				let res = await getBalance(address)
-				console.log('res',res)
-				// let res2 = await QueryStakingValidators()
+								//获取主网币余额
+				let coinList = this.$cache.get('_currentWallet').coinList
+				for(let i= 0;i<coinList.length;i++){
+					   let res = await getBalance(coinList[i].address)
+							coinList[i] = {...coinList[i],...res.balance}
+				}
+				console.log('coinList',coinList)
 			}
 		}
 	}
