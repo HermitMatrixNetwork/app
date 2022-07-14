@@ -129,6 +129,13 @@
       }
     },
     {
+      "path": "pages/assetManage/home",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
       "path": "pages/assetManage/search",
       "style": {
         "navigationBarTitleText": "",
