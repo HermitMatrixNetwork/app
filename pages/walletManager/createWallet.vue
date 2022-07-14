@@ -97,7 +97,19 @@ export default {
         wallet
       })
       this.$cache.set('_currentWallet', wallet, 0)
+      this.updateWalletList(wallet)
       this.toBackupReminder()
+    },
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.privateKey64 === wallet.privateKey64)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.push(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
     },
     toBackupReminder() {
       const eventChannel = this.getOpenerEventChannel()
