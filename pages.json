@@ -175,14 +175,60 @@
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-
     }, {
       "path": "pages/walletManager/importFromMnemonic",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-
+    }, {
+      "path": "pages/account/send/adres_book",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/account/send/custom_cost",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/account/send/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/account/send/tokenInformation",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "./pages/account/send/token_content",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "./pages/account/send/token_list",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/account/send/transactionDetails",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
     }
   ],
   "globalStyle": {
