@@ -101,9 +101,9 @@ export default {
       wallet.privateKey64 = WalletCrypto.encode(privateKey64)
       
       
-      console.log('创建钱包数据:', {
-        wallet
-      })
+      // console.log('创建钱包数据:', {
+      //   wallet
+      // })
       this.$cache.set('_currentWallet', wallet, 0)
       this.updateWalletList(wallet)
       this.toBackupReminder()
@@ -115,7 +115,7 @@ export default {
       if (walletIndex > -1) {
         walletList.splice(walletIndex, 1)
       }
-      walletList.push(wallet)
+      walletList.unshift(wallet)
       this.$cache.set('_walletList', walletList, 0)
       return true
     },

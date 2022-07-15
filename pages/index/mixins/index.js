@@ -29,9 +29,10 @@ export default {
     }) {
       if (!this.password || !this.name) return console.error('初始化钱包数据失败，请检查组件是否已经注册password、name字段作为钱包密码和钱包名字')
       wallet.name = this.name
+
       // 删除隐私信息
-      // delete wallet.privateKey
-      // delete wallet.publicKey
+      delete wallet.privateKey
+      delete wallet.publicKey
       
       // 加密隐私信息 (mnemonic、password、privateKey64)
       wallet.mnemonic = WalletCrypto.encode(wallet.mnemonic)
@@ -39,9 +40,9 @@ export default {
       wallet.privateKey64 = WalletCrypto.encode(privateKey64)
       
       
-      console.log('创建钱包数据:', {
-        wallet
-      })
+      // console.log('创建钱包数据:', {
+      //   wallet
+      // })
       this.$cache.set('_currentWallet', wallet, 0)
       this.updateWalletList(wallet)
     },
@@ -56,7 +57,7 @@ export default {
       if (walletIndex > -1) {
         walletList.splice(walletIndex, 1)
       }
-      walletList.push(wallet)
+      walletList.unshift(wallet)
       this.$cache.set('_walletList', walletList, 0)
       return true
     },

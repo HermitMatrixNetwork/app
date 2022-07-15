@@ -23,7 +23,7 @@
         <view class="item-label">
           钱包名称
         </view>
-        <view class="item-input">
+        <view class="item-input item-input-name">
           <u-input v-model="name" placeholder="设置钱包名称"></u-input>
         </view>
       </view>
@@ -86,17 +86,15 @@ export default {
       wallet.password = WalletCrypto.encode(this.password)
       wallet.privateKey64 = WalletCrypto.encode(privateKey64)
 
-      console.log('创建钱包数据:', {
-        wallet
-      })
+      // console.log('创建钱包数据:', {
+      //   wallet
+      // })
       this.$cache.set('_currentWallet', wallet, 0)
       this.updateWalletList(wallet)
       this.toAccount()
     },
     toAccount() {
-      const eventChannel = this.getOpenerEventChannel()
-      eventChannel.emit('close')
-      uni.switchTab({
+      uni.reLaunch({
         url: '/pages/account/index'
       })
     },
@@ -178,7 +176,7 @@ export default {
       if (walletIndex > -1) {
         walletList.splice(walletIndex, 1)
       }
-      walletList.push(wallet)
+      walletList.unshift(wallet)
       this.$cache.set('_walletList', walletList, 0)
       return true
     }
@@ -240,12 +238,10 @@ export default {
       }
 
       &-input {
-        background-color: #F2F4F8;
-        border-radius: 4rpx !important;
 
         .u-textarea {
           background-color: #F2F4F8;
-          border-radius: 4rpx !important;
+          border-radius: 16rpx !important;
           padding-left: 0 !important;
 
           /deep/ textarea {
@@ -260,7 +256,7 @@ export default {
         .u-input {
           height: 96rpx;
           background-color: #F2F4F8;
-          border-radius: 4rpx 0 0 4rpx;
+          border-radius: 16rpx 0 0 16rpx;
           padding-left: 0 !important;
 
           /deep/ input {
@@ -287,8 +283,14 @@ export default {
             height: 96rpx;
             padding-right: 36rpx;
             background-color: #F2F4F8;
-            border-radius: 0 4rpx 4rpx 0 !important;
+            border-radius: 0 16rpx 16rpx 0 !important;
           }
+        }
+      }
+    
+      &-input-name {
+        .u-input {
+          border-radius: 16rpx;
         }
       }
     }
