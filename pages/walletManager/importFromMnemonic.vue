@@ -42,6 +42,7 @@ import * as cosmosjs from '@cosmjs/crypto'
 import * as bip39 from 'bip39'
 import Notify from './components/notify.vue'
 import { validate } from '@/utils/validator.js' 
+import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   components: {
     Notify
@@ -71,16 +72,19 @@ export default {
     },
     initWallet({
       wallet,
-      privateKey
+      privateKey64
     }) {
-      // 加密密码
-      // const password = WalletCrypto.encode(this.password, 'hhaic')
-
-      // console.log(password)
       if (!this.password || !this.name) return console.error('初始化钱包数据失败，请检查组件是否已经注册password、name字段作为钱包密码和钱包名字')
-      wallet.password = this.password
-      wallet.privateKey64 = privateKey
       wallet.name = this.name
+      
+      // 删除隐私信息
+      delete wallet.privateKey
+      delete wallet.publicKey
+      
+      // 加密隐私信息 (mnemonic、password、privateKey64)
+      wallet.mnemonic = WalletCrypto.encode(wallet.mnemonic)
+      wallet.password = WalletCrypto.encode(this.password)
+      wallet.privateKey64 = WalletCrypto.encode(privateKey64)
 
       console.log('创建钱包数据:', {
         wallet
@@ -88,9 +92,6 @@ export default {
       this.$cache.set('_currentWallet', wallet, 0)
       this.updateWalletList(wallet)
       this.toAccount()
-      // 解密密码
-      // const dePassword = WalletCrypto.decode(password)
-      // console.log(dePassword.join(''))
     },
     toAccount() {
       const eventChannel = this.getOpenerEventChannel()
@@ -136,16 +137,16 @@ export default {
       return bip39.validateMnemonic(mnemonic)
     },
     // 校验密码
-    verifyPassword(target, value) {
+    verifyPassword() {
       const {
         result
       } = validate.call(this, 'password')
       const currentWallet = this.$cache.get('_currentWallet')
-      return result && currentWallet.password == this.password
+      return result && WalletCrypto.decode(currentWallet.password) == this.password
     },
     verifyForm() {
       const isEffectiveMnemonic = this.verifyTotalMnemonic()
-      const isEffectivePassword = this.verifyPassword('mnemonic', this.mnemonic.trim())
+      const isEffectivePassword = this.verifyPassword()
       // const isEffectiveMnemonic = false // @test
       // const isEffectivePassword = true // @test
       if (!isEffectiveMnemonic) {
@@ -173,7 +174,7 @@ export default {
     updateWalletList(wallet) {
       const walletList = this.$cache.get('_walletList') || []
       if (!wallet) return false
-      const walletIndex = walletList.findIndex(item => item.privateKey64 === wallet.privateKey64)
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
       if (walletIndex > -1) {
         walletList.splice(walletIndex, 1)
       }
@@ -202,11 +203,11 @@ export default {
         })
 
         // 生成私钥
-        const privateKey = WalletCrypto.encode(wallet.privateKey)
+        const privateKey64 = WalletCrypto.UintToString(wallet.privateKey)
 
         renderUtils.runMethod(this._$id, 'initWallet', {
           wallet,
-          privateKey
+          privateKey64
         }, this)
       },
       getMnemonic(newVal) {

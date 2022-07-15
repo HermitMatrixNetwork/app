@@ -20,11 +20,11 @@ export function createWallet(fn, vm, mnemonic = '', cb) {
   })
 
   // 生成私钥
-  const privateKey = WalletCrypto.encode(wallet.privateKey)
+  const privateKey64 = WalletCrypto.UintToString(wallet.privateKey)
 
   renderUtils.runMethod(vm._$id, fn, {
     wallet,
-    privateKey
+    privateKey64
   }, vm)
   cb && renderUtils.runMethod(vm._$id, cb, '', vm)
 }

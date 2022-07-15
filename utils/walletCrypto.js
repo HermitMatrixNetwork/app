@@ -81,5 +81,20 @@ WalletCrypto.pubkeyToAddress = (pubkey, prefix = 'ghm') => {
   return result
 }
 
+<<<<<<< HEAD
 
 export default WalletCrypto
+=======
+/**
+ *   根据私钥推到公钥
+ *   @param { Uint8Array } privatekey 私钥
+ *   @return { Promise } Uint8Array publickey 公钥
+ */
+WalletCrypto.getPublickey = async (privatekey) => {
+  const makeKeypair = await cosmjs.Secp256k1.makeKeypair(privatekey)
+  const publickey = await cosmjs.Secp256k1.compressPubkey(makeKeypair.pubkey)
+  return publickey
+}
+
+export default WalletCrypto
+>>>>>>> 60d96be154718761338c22779e449fbc1c68b2b3
