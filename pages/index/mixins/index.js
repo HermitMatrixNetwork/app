@@ -29,7 +29,6 @@ export default {
     }) {
       if (!this.password || !this.name) return console.error('初始化钱包数据失败，请检查组件是否已经注册password、name字段作为钱包密码和钱包名字')
       wallet.name = this.name
-      window.wallet = wallet
       // 删除隐私信息
       // delete wallet.privateKey
       // delete wallet.publicKey
