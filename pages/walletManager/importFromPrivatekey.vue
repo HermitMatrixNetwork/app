@@ -11,16 +11,9 @@
       <view class="item">
         <view class="item-label">资金密码</view>
         <view class="item-input item-input-password">
-          <u-input :password="!passwordEye" v-model="password" placeholder="设置钱包密码（不少于8位）">
+          <u-input :password="!passwordEye" v-model="password" placeholder="输入资金密码">
           </u-input>
           <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'" @click="passwordEye = !passwordEye">
-          </u-icon>
-        </view>
-        <view class="item-input item-input-password password-check">
-          <u-input :password="!checkPasswordEye" v-model="checkPassword" placeholder="重复输入确认钱包密码">
-          </u-input>
-          <u-icon color="#8F9BB3" size="20" :name="checkPasswordEye ? 'eye' : 'eye-off'"
-            @click="checkPasswordEye = !checkPasswordEye">
           </u-icon>
         </view>
       </view>
@@ -34,7 +27,7 @@
       </view>
     </view>
     <u-button class="btn" @click="importWallet">导入</u-button>
-    
+
     <view :callRenderCreate="callRenderCreate" :change:callRenderCreate="render.createWallet"></view>
     <!-- 错误提示 -->
     <Notify ref="notify"></Notify>
@@ -42,14 +35,12 @@
 </template>
 
 <script>
-import mixin from './mixins/index.js'
 import Notify from './components/notify.vue'
 import {
   validateAll
 } from '@/utils/validator.js'
 import WalletCrypto from '@/utils/walletCrypto'
 export default {
-  mixins: [mixin],
   components: {
     Notify
   },
@@ -59,42 +50,28 @@ export default {
       password: '', // 资金密码
       name: '', // 钱包名称
       passwordEye: false, // 是否明文显示资金密码
-      checkPassword: '',
-      checkPasswordEye: false,
       callRenderCreate: 0,
       rules: {
         privateKey64: [{
           rule: 'required',
           errMessage: '私钥明文不能为空'
-        },{
+        }, {
           validator(value) {
             // 校验私钥合法性
             const reg = /^[A-Fa-f0-9]{64}$/
-            return reg.test(value) 
+            return reg.test(value)
           },
           errMessage: '请输入有效的私钥格式'
         }],
         password: [{
           rule: 'required',
-          errMessage: '钱包密码不能为空'
+          errMessage: '资金密码错误！'
         }, {
-          rule: 'min',
-          len: 8,
-          errMessage: '密码长度不能少于8位'
-        }, {
-          rule: 'max',
-          len: 48,
-          errMessage: '密码长度不能大于48位'
-        }],
-        checkPassword: [{
           validator(value) {
-            if (value !== this.password) return false
-            return true
+            const currentWallet = this.$cache.get('_currentWallet')
+            return WalletCrypto.decode(currentWallet.password) == this.password
           },
-          errMessage: '密码输入不一致，请重新输入。'
-        }, {
-          rule: 'required',
-          errMessage: '钱包密码不能为空'
+          errMessage: '资金密码错误！'
         }]
       }
     }
@@ -109,43 +86,59 @@ export default {
       const result = validateAll.call(this, this.rules)
       const invalidateField = result.find(item => !item.result)
       if (invalidateField) {
-        this.$refs.notify.show('error', invalidateField.errMessage)
+        this.$refs.notify.show('error', invalidateField.errMessage, {
+          bgColor: '#EC6665'
+        })
         return false
       } else if (!this.name) {
-        this.$refs.notify.show('error', '钱包名称不能为空')
+        this.$refs.notify.show('error', '钱包名称不能为空', {
+          bgColor: '#EC6665'
+        })
         return false
       } else {
         // 通过校验
         return true
       }
     },
-    async initWallet({ wallet }) {
-      console.log('initWallet', wallet)
-      
+    async initWallet({
+      wallet
+    }) {
+
       // 删除隐私信息
       delete wallet.privateKey
       delete wallet.publicKey
       delete wallet.mnemonic
       delete wallet.address
-      
+
       // 推导address
       const pubkey = await WalletCrypto.getPublickey(WalletCrypto.StringToUint(this.privateKey64))
       const address = WalletCrypto.pubkeyToAddress(pubkey)
-      
-      
+
       // 加密隐私信息
       wallet.password = WalletCrypto.encode(this.password)
       wallet.privateKey64 = WalletCrypto.encode(this.privateKey64)
       wallet.name = this.name
       wallet.address = address
-      
+
       // console.log('创建钱包数据:', {
       //   wallet
       // })
       this.$cache.set('_currentWallet', wallet, 0)
       this.updateWalletList(wallet)
+      this.toAccount()
     },
-    cbInitWallet() {
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.unshift(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
+    },
+    toAccount() {
       uni.reLaunch({
         url: '/pages/account/index'
       })
@@ -155,14 +148,19 @@ export default {
 </script>
 
 <script lang="renderjs" module="render">
-  import {
-    createWallet
-  } from './utils/index.js'
+  import secretjs from '@/utils/secretjs/index.js'
+  import renderUtils from '@/utils/render.base.js'
   export default {
     methods: {
       createWallet(newVal, oldVal, oldVm, newVm) {
         if (newVal == 0) return; // 第一次进入页面会默认调用一次
-        createWallet('initWallet', this, '', 'cbInitWallet')
+        const wallet = new secretjs.Wallet(this.mnemonic, {
+          bech32Prefix: 'ghm'
+        })
+
+        renderUtils.runMethod(this._$id, 'initWallet', {
+          wallet
+        }, this)
       }
     }
   }
@@ -245,9 +243,6 @@ export default {
         }
       }
 
-      .password-check {
-        margin-top: 32rpx;
-      }
     }
   }
 
