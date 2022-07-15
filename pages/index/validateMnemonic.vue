@@ -9,7 +9,7 @@
       </view>
       <view class="mnemonic-input">
         <view class="mnemonic-input-item" v-for="(item, index) in pickedMnemonicList" :key="index"
-          @click="resetItem(item)">
+          @click="resetItem(item, index)">
           <view class="item">{{ item }}</view>
           <view class="error-icon" v-show="errorIndex > -1 && index >= errorIndex">
             <u-icon name="close-circle-fill" color="#F53F3F" size="36rpx"></u-icon>
@@ -17,13 +17,11 @@
         </view>
       </view>
       <view class="mnemonic-content">
-        <view class="mnemonic-content-item" :class="{ disable: pickedMnemonicList.includes(item) }"
-          v-for="(item, index) in randomMnemonicList" :key="index" @click="pickItem(item)">
+        <view class="mnemonic-content-item" :class="{ disable: pickedMnemonicIndex.includes(index) }"
+          v-for="(item, index) in randomMnemonicList" :key="index" @click="pickItem(item, index)">
           {{ item }}
         </view>
       </view>
-      <!-- @test -->
-      <!-- {{mnemonicList.join('\n')}} -->
       <u-button class="mnemonic-confirm" :class="{complete: checkComplete()}" @click="confirm">确认</u-button>
     </view>
 
@@ -34,6 +32,7 @@
 
 <script>
 import Notify from './components/notify.vue'
+import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   components: { Notify },
   data() {
@@ -41,24 +40,26 @@ export default {
       mnemonicList: [], // 正确顺序的助记词
       randomMnemonicList: [], // 随机排序助记词 
       pickedMnemonicList: [], // 用户选择的助记词
+      pickedMnemonicIndex: [], // 用户选择助记词的索引 (基于随机助记词数组)
       errorIndex: -1, // 选择错误助记词的索引
     }
   },
   created() {
     this.wallet = this.$cache.get('_currentWallet')
-    this.mnemonicList = this.wallet.mnemonic.split(' ')
-    this.randomMnemonicList = this.wallet.mnemonic.split(' ').sort(() => Math.random() - 0.5)
+    this.mnemonicList = WalletCrypto.decode(this.wallet.mnemonic).split(' ')
+    this.randomMnemonicList = WalletCrypto.decode(this.wallet.mnemonic).split(' ').sort(() => Math.random() - 0.5)
   },
   methods: {
     // 删除选择的助记词
-    resetItem(item) {
-      const checkIndex = this.pickedMnemonicList.findIndex(val => val == item)
-      this.pickedMnemonicList.splice(checkIndex, 1)
+    resetItem(item, index) {
+      this.pickedMnemonicList.splice(index, 1)
+      this.pickedMnemonicIndex.splice(index, 1)
       this.validatePickedMnemonicList()
     },
     // 添加选中的助记词
-    pickItem(item) {
-      if (this.pickedMnemonicList.includes(item)) return
+    pickItem(item, index) {
+      if (this.pickedMnemonicIndex.includes(index)) return
+      this.pickedMnemonicIndex.push(index)
       this.pickedMnemonicList.push(item)
       this.validatePickedMnemonicList()
     },
