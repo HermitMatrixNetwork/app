@@ -115,6 +115,12 @@
       }
     },
     {
+      "path": "pages/walletManager/importWallet",
+      "style": {
+        "enablePullDownRefresh": false
+      }
+    },
+    {
       "path": "pages/account/index",
       "style": {
         "navigationBarTitleText": "",
@@ -230,7 +236,25 @@
         "enablePullDownRefresh": false
       }
     }
-  ],
+      ,{
+            "path" : "pages/walletManager/importFromPrivatekey",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/walletManager/importFromKeystore",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
   "globalStyle": {
     "navigationStyle": "custom"
   },
