@@ -8,7 +8,7 @@
 		</view>
 		<view>
 			<input :type="type" :placeholder="placeholder" class="common-input" v-model="childValue" :maxlength="maxlength"
-				:style="inputOtherStyle" @input="childValueChange" :class="warningStyleisShow?'beyondWarning':''">
+				:style="inputOtherStyle" @input ="childValueChange" :class="warningStyleisShow?'beyondWarning':''">
 			<slot name="inputRight"></slot>
 		</view>
 	</view>
@@ -35,10 +35,10 @@ export default {
       default: false
     },
     inputVal: {
-      type: String,
+      // type: String,
       default: ''
     },
-    maxlength:Number
+    maxlength:Number,
   },
   data() {
     return {
@@ -48,7 +48,8 @@ export default {
   watch: {
     childValue() {
       this.childValue = this.inputVal
-    }
+    },
+    deep:true
   },
   methods: {
     childValueChange(v) {

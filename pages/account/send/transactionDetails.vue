@@ -19,33 +19,30 @@
 
 <script>
 export default {
-  props: {
-    transactionType: {
-      type: String,
-      default: 'success'
-    },
-    status: {
-      type: String,
-      default: '成功'
-    },
-    transactionResult:Object
-  },
   data() {
     return {
       transactionMessage: {},
-      statusIcon:'../../../static/img/chenggong.png',
+      transactionResult: [],
+      transactionType: 'success',
+      status: '成功',
+      statusIcon: '../../../static/img/chenggong.png',
       success: ['金额', '矿工费', '收款地址', '付款地址', 'Memo', '交易号'],
       fail: ['金额', '矿工费', '收款地址', '付款地址', 'Memo', '交易号'],
       entrust: ['委托金额', '矿工费', '委托人', '被验证委托人', 'Memo', '交易号'],
       receive: ['领取金额', '矿工费', '操作账户', '领取接收地址', 'Memo', '交易号']
     }
   },
-  onLoad() {
+  onLoad(value) {
+    // console.log(this.transaction)
+    const obj = JSON.parse(value.transactionObject)
+    this.transactionResult = Object.values(obj)
     switch (this.transactionType) {
-    case 'success' || 'fail':
-      if(this.transactionType == 'fail'){
-        this.statusIcon = '../../../static/img/shibai1.png'
-      }
+    case 'success':
+      this.transactionMessage = this.transaction(this.success)
+      break
+    case 'fail':
+      this.status = '失败'
+      this.statusIcon = '../../../static/img/shibai1.png'
       this.transactionMessage = this.transaction(this.success)
       break
     case 'entrust':
@@ -57,17 +54,18 @@ export default {
     default:
       break
     }
-    // this.transaction()
+    // console.log('交易结果',this.transactionResult)
+    this.transaction()
   },
   methods: {
     transaction(array) {
       const obj = {}
-      const arr = ['+0.2 GHM', '0.002479 GHM', 'ghmhUAHv3pFYPbXK8ZssdW9XSc6qVjoUmTi2qPBobmniBkJ',
-        'ghmhUAHv3pFYPbXK8ZssdW9XSc6qVjoUmTi2qPBobmniBkJ', 'transfer',
-        'ghmhUAHv3pFYPbXK8ZssdW9XSc6qVjoUmTi2qPBobmniBkJ'
-      ]
+      // const arr = ['+0.2 GHM', '0.002479 GHM', 'ghmhUAHv3pFYPbXK8ZssdW9XSc6qVjoUmTi2qPBobmniBkJ',
+      //   'ghmhUAHv3pFYPbXK8ZssdW9XSc6qVjoUmTi2qPBobmniBkJ', 'transfer',
+      //   'ghmhUAHv3pFYPbXK8ZssdW9XSc6qVjoUmTi2qPBobmniBkJ'
+      // ]
       for (let i in array) {
-        obj[array[i]] = arr[i]
+        obj[array[i]] = this.transactionResult[i]
       }
       return obj
     }

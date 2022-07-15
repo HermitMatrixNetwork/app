@@ -54,7 +54,7 @@
 				</view>
 			</u-popup>
 
-			<u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
+			<u-modal :show="false" width="686rpx" :showConfirmButton="false" class="hintModal">
 				<view class="modalContent">
 					<u-icon name="info-circle" size="64rpx" color="#FFA033" />
 					<view class="modal-title">提示</view>
@@ -129,10 +129,10 @@ export default {
     }
   },
   onLoad() {
-    this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
     const {address} = this.$cache.get('_currentWallet')
     this.userAdres = address
     this.newuserAdres = sliceAddress(address)
+    this.getUserbalance()
   },
   methods: {
     click(item) {
@@ -171,11 +171,14 @@ export default {
       })
     },
     queryToken() {
-      console.log(222222222222222)
       uni.navigateTo({
         url: './send/token_content'
       })
+    },
+    async getUserbalance(){
+      
     }
+	
   }
 }
 </script>
