@@ -65,9 +65,8 @@ export default {
       }
       this.$emit('close')
     },
-    closeAddWalletPopup(isToAccount) {
+    closeAddWalletPopup() {
       this.showAddWallet = false
-      if (isToAccount) this.$emit('close')
     }
   },
   watch: {
