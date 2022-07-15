@@ -1,7 +1,7 @@
 import secretjs from './index.js'
 let wallet = {}
 //#ifdef APP-PLUS
-wallet= plus.storage.getItem('_currentWallet').data
+wallet= plus.storage.getItem('_currentWallet')
 //#endif
  
 //#ifndef APP-PLUS
