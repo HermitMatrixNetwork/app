@@ -29,6 +29,7 @@
 import Tooltip from './components/tooltip.vue'
 import Notify from './components/notify.vue'
 import language from './language'
+import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   components: {
     Tooltip,
@@ -38,13 +39,13 @@ export default {
     return {
       language: language[this.$cache.get('_language')],
       wallet: this.$cache.get('_currentWallet'),
-      mnemonicList: this.$cache.get('_currentWallet').mnemonic.split(' ')
+      mnemonicList: WalletCrypto.decode(this.$cache.get('_currentWallet').mnemonic).split(' ')
     }
   },
   methods: {
     copy() {
       uni.setClipboardData({
-        data: this.wallet.mnemonic,
+        data: WalletCrypto.decode(this.wallet.mnemonic),
         showToast: false,
         success: () => {
           this.$refs.notify.show('error', this.language.copySuccess)

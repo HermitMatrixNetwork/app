@@ -40,6 +40,7 @@ import {
 } from '@/utils/validator.js'
 import language from './language'
 import Notify from './components/notify.vue'
+import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   components: {
     Notify
@@ -64,8 +65,7 @@ export default {
         }, {
           validator(value) {
             const currentWallet = this.$cache.get('_currentWallet')
-            // todo 解码
-            if (value !== currentWallet.password) return false
+            if (value !== WalletCrypto.decode(currentWallet.password)) return false
             return true
           },
           errMessage: '资金密码错误！'
@@ -88,11 +88,19 @@ export default {
         this.$refs.notify.show('error', this.invalidFields.errMessage, { bgColor: '#EC6665' })
       }
     },
-    initWallet({wallet, privateKey}) {
-      wallet.password = this.password
-      wallet.privateKey64 = privateKey
+    initWallet({wallet, privateKey64}) {
       wallet.name = this.name
-
+      
+      // 删除隐私信息
+      delete wallet.privateKey
+      delete wallet.publicKey
+      
+      // 加密隐私信息 (mnemonic、password、privateKey64)
+      wallet.mnemonic = WalletCrypto.encode(wallet.mnemonic)
+      wallet.password = WalletCrypto.encode(this.password)
+      wallet.privateKey64 = WalletCrypto.encode(privateKey64)
+      
+      
       console.log('创建钱包数据:', {
         wallet
       })
@@ -103,7 +111,7 @@ export default {
     updateWalletList(wallet) {
       const walletList = this.$cache.get('_walletList') || []
       if (!wallet) return false
-      const walletIndex = walletList.findIndex(item => item.privateKey64 === wallet.privateKey64)
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
       if (walletIndex > -1) {
         walletList.splice(walletIndex, 1)
       }
@@ -135,11 +143,11 @@ export default {
         })
 
         // 生成私钥
-        const privateKey = WalletCrypto.encode(wallet.privateKey)
+        const privateKey64 = WalletCrypto.UintToString(wallet.privateKey)
 
         renderUtils.runMethod(this._$id, 'initWallet', {
           wallet,
-          privateKey
+          privateKey64
         }, this)
       }
     }

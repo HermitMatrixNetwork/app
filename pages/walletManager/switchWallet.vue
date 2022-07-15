@@ -7,7 +7,7 @@
       </view>
       <u-list class="content" height="1080rpx">
         <view class="item" v-for="(wallet, index) in walletList" :key="index"
-          :class="{ selected: selectedIndex == index }" @click="selectedIndex = index">
+          :class="{ selected: selectedIndex == index }" @click="close(index)">
           <view class="item-left">
             <view class="item-left-name">{{ wallet.name }}</view>
             <view class="item-left-address">{{ wallet.address | formatAddress }}</view>
@@ -55,9 +55,11 @@ export default {
     }
   },
   methods: {
-    close() {
-      this.currentWallet = this.walletList[this.selectedIndex]
-      this.$cache.set('_currentWallet', this.currentWallet, 0)
+    close(index) {
+      if (index > 0) {
+        this.currentWallet = this.walletList[this.selectedIndex]
+        this.$cache.set('_currentWallet', this.currentWallet, 0)
+      }
       this.$emit('close')
     },
     closeAddWalletPopup(isToAccount) {

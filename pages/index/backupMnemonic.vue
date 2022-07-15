@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import WalletCryto from '@/utils/walletCrypto.js'
 export default {
   data() {
     return {
@@ -64,7 +65,7 @@ export default {
   },
   created() {
     this.wallet = this.$cache.get('_currentWallet')
-    this.mnemonicList = this.wallet.mnemonic.split(' ')
+    this.mnemonicList = WalletCryto.decode(this.wallet.mnemonic).split(' ')
   },
   methods: {
     confrimHint() {
