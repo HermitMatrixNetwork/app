@@ -120,7 +120,6 @@ export default {
       }
     },
     async initWallet({ wallet }) {
-      console.log('initWallet', wallet)
       
       // 删除隐私信息
       delete wallet.privateKey
