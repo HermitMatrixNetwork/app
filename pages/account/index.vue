@@ -283,13 +283,11 @@ export default {
       this.showSwitchWallet = false
     },
     toSend() {
-      console.log(111111111)
       uni.navigateTo({
         url: './send/index',
       })
     },
     queryToken() {
-      console.log(222222222222222)
       uni.navigateTo({
         url: './send/token_content',
       })

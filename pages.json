@@ -210,14 +210,14 @@
       }
     },
     {
-      "path": "./pages/account/send/token_content",
+      "path": "pages/account/send/token_content",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
     },
     {
-      "path": "./pages/account/send/token_list",
+      "path": "pages/account/send/token_list",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
