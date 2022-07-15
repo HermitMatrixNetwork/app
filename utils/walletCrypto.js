@@ -5,18 +5,12 @@
  * @FilePath: /utils/walletCrypto.js
  * @Description: In User Settings Edit
  */
-import {
-  bech32
-} from 'bech32'
-import {
-  ripemd160
-} from '@noble/hashes/ripemd160'
-import {
-  sha256
-} from '@noble/hashes/sha256'
-import CryptoJS from 'crypto-js'
+import { bech32 } from "bech32";
+import { ripemd160 } from "@noble/hashes/ripemd160";
+import { sha256 } from "@noble/hashes/sha256";
+import CryptoJS from "crypto-js";
 
-const WalletCrypto = {}
+const WalletCrypto = {};
 
 /**
  *   @param { string } key 需要加密的数据
@@ -24,20 +18,20 @@ const WalletCrypto = {}
  *   @return { string } ciphertext 密文
  */
 
-WalletCrypto.encode = (key, msg = 'hhaic') => {
-  return CryptoJS.AES.encrypt(key, msg).toString()
-}
+WalletCrypto.encode = (key, msg = "hhaic") => {
+  return CryptoJS.AES.encrypt(key, msg).toString();
+};
 
 /**
  *   @param { string } ciphertext 需要解密的密文
  *   @param { string } msg 解密签名
  *   @return { string } originalText 明文
  */
-WalletCrypto.decode = (ciphertext, msg = 'hhaic') => {
-  const bytes = CryptoJS.AES.decrypt(ciphertext, msg)
-  const originalText = bytes.toString(CryptoJS.enc.Utf8)
-  return originalText
-}
+WalletCrypto.decode = (ciphertext, msg = "hhaic") => {
+  const bytes = CryptoJS.AES.decrypt(ciphertext, msg);
+  const originalText = bytes.toString(CryptoJS.enc.Utf8);
+  return originalText;
+};
 
 /**
  *   Uint8Array(32)私钥转换为string类型
@@ -45,9 +39,11 @@ WalletCrypto.decode = (ciphertext, msg = 'hhaic') => {
  *   @return { String } 64位字符串
  */
 WalletCrypto.UintToString = (source) => {
-  let result = Array.prototype.map.call(source, item => ('00' + item.toString(16)).slice(-2))
-  return result.join('')
-}
+  let result = Array.prototype.map.call(source, (item) =>
+    ("00" + item.toString(16)).slice(-2)
+  );
+  return result.join("");
+};
 
 /**
  *  string类型的私钥转换为Uint8Array
@@ -55,20 +51,19 @@ WalletCrypto.UintToString = (source) => {
  *  @return { Uint8Array } 32位ArrayBuffer
  */
 WalletCrypto.StringToUint = (source) => {
-  let result = []
-  let str = ''
-  source.split('').forEach((item, index) => {
+  let result = [];
+  let str = "";
+  source.split("").forEach((item, index) => {
     if (index % 2 !== 0) {
-      str += item
-      result.push(str)
-      str = ''
+      str += item;
+      result.push(str);
+      str = "";
     } else {
-      str = item
+      str = item;
     }
-  })
-  return new Uint8Array(result.map(item => parseInt(item, 16)))
-}
-
+  });
+  return new Uint8Array(result.map((item) => parseInt(item, 16)));
+};
 
 /**
   跟据公钥推导钱包地址
@@ -76,25 +71,23 @@ WalletCrypto.StringToUint = (source) => {
   @param { prefix } String 地址前缀
   @returns { string } 钱包地址
  */
-WalletCrypto.pubkeyToAddress = (pubkey, prefix = 'ghm') => {
-  const result = bech32.encode(prefix, bech32.toWords(ripemd160(sha256(pubkey))))
-  return result
-}
+WalletCrypto.pubkeyToAddress = (pubkey, prefix = "ghm") => {
+  const result = bech32.encode(
+    prefix,
+    bech32.toWords(ripemd160(sha256(pubkey)))
+  );
+  return result;
+};
 
-<<<<<<< HEAD
-
-export default WalletCrypto
-=======
 /**
  *   根据私钥推到公钥
  *   @param { Uint8Array } privatekey 私钥
  *   @return { Promise } Uint8Array publickey 公钥
  */
 WalletCrypto.getPublickey = async (privatekey) => {
-  const makeKeypair = await cosmjs.Secp256k1.makeKeypair(privatekey)
-  const publickey = await cosmjs.Secp256k1.compressPubkey(makeKeypair.pubkey)
-  return publickey
-}
+  const makeKeypair = await cosmjs.Secp256k1.makeKeypair(privatekey);
+  const publickey = await cosmjs.Secp256k1.compressPubkey(makeKeypair.pubkey);
+  return publickey;
+};
 
-export default WalletCrypto
->>>>>>> 60d96be154718761338c22779e449fbc1c68b2b3
+export default WalletCrypto;
