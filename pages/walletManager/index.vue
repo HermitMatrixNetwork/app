@@ -18,7 +18,7 @@
     </view>
 
     <view class="export-detail">
-      <view class="export-detail-mnemonic item" @click="clickItem('Mnemonic')">
+      <view v-show="wallet.mnemonic" class="export-detail-mnemonic item" @click="clickItem('Mnemonic')">
         <view class="label">
           {{ language.exportMnemonic }}
         </view>

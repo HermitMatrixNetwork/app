@@ -46,7 +46,7 @@ export default {
       const address = await this.getWalletAddress(wallet, action)
       
       // 加密隐私信息 (mnemonic、password、privateKey64)
-      this.encryptPrivateInfo(wallet)
+      this.encryptPrivateInfo(wallet, action)
 
       wallet.name = this.name
       wallet.address = address
@@ -104,10 +104,11 @@ export default {
       delete wallet.privateKey
       delete wallet.publicKey
     },
-    encryptPrivateInfo(wallet) {
+    encryptPrivateInfo(wallet, action) {
+      const useCurrentPrivateKeyPages = ['importFromPrivatekey', 'importFromKeystore']
       wallet.mnemonic = wallet.mnemonic && WalletCrypto.encode(wallet.mnemonic)
       wallet.password = WalletCrypto.encode(this.password)
-      wallet.privateKey64 = WalletCrypto.encode(wallet.privateKey64)
+      wallet.privateKey64 = useCurrentPrivateKeyPages.includes(action) ? WalletCrypto.encode(this.privateKey64) : WalletCrypto.encode(wallet.privateKey64)
     },
     async getWalletAddress(wallet, action) {
       const inferAddressPages = ['importFromPrivatekey', 'importFromKeystore']
