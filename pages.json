@@ -176,18 +176,6 @@
       }
 
     }, {
-      "path": "pages/walletManager/createWallet",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    }, {
-      "path": "pages/walletManager/importFromMnemonic",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    }, {
       "path": "pages/account/send/adres_book",
       "style": {
         "navigationBarTitleText": "",
@@ -236,25 +224,7 @@
         "enablePullDownRefresh": false
       }
     }
-      ,{
-            "path" : "pages/walletManager/importFromPrivatekey",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/walletManager/importFromKeystore",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+  ],
   "globalStyle": {
     "navigationStyle": "custom"
   },
