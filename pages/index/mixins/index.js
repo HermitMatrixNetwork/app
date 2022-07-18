@@ -52,11 +52,11 @@ export default {
       wallet.address = address
       
       // @test
-      window.WallectCrypto = WalletCrypto
-      window.wallet = wallet
-      console.log('创建钱包数据:', {
-        wallet
-      })
+      // window.WallectCrypto = WalletCrypto
+      // window.wallet = wallet
+      // console.log('创建钱包数据:', {
+      //   wallet
+      // })
       // end test
       
       if (from == 'walletManager' && this.checkExist(wallet)) {
