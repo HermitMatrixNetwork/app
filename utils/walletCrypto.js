@@ -182,7 +182,7 @@ WalletCrypto.generateKeystore = {
       },
     }
   },
-  async descrypt(keyStore, password, crypto = WalletCrypto.generateKeystore.crypto) {
+  async decrypt(keyStore, password, crypto = WalletCrypto.generateKeystore.crypto) {
     const derivedKey = await (async () => {
       return new Promise((resolve, reject) => {
         pbkdf2.pbkdf2(
