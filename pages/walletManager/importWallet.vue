@@ -28,17 +28,17 @@ export default {
         name: '助记词',
         icon: '助记词.png',
         describe: '助记词由单词组成，以空格隔开',
-        page: './importFromMnemonic'
+        page: '/pages/index/importFromMnemonic?from=walletManager'
       }, {
         name: '私钥',
         icon: '私钥.png',
         describe: '明文私钥字符',
-        page: './importFromPrivatekey'
+        page: '/pages/index/importFromPrivatekey?from=walletManager'
       }, {
         name: 'Keystore',
         icon: 'keystore.png',
         describe: '加密的私钥JSON 文件',
-        page: './importFromKeystore'
+        page: '/pages/index/importFromKeystore?from=walletManager'
       }]
     }
   },

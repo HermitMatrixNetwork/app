@@ -37,7 +37,7 @@ export default {
     },
     toCreateWallet() {
       uni.navigateTo({
-        url: '/pages/walletManager/createWallet',
+        url: '/pages/index/createWallet?from=walletManager',
       })
     },
     toImportWallet() {

@@ -104,7 +104,7 @@ export default {
       this.toAccount()
     },
     toAccount() {
-      uni.switchTab({
+      uni.reLaunch({
         url: '/pages/account/index'
       })
     },
@@ -146,8 +146,7 @@ export default {
       const isEffectiveMnemonic = this.verifyTotalMnemonic()
       const result = validateAll.call(this, this.rules)
       const invalidateField = result.find(item => !item.result)
-      // const isEffectiveMnemonic = false // @test
-      // const isEffectivePassword = true // @test
+
       if (!isEffectiveMnemonic) {
         this.$refs.notify.show('error', '助记词校验位不正确')
       } else if (invalidateField) {
