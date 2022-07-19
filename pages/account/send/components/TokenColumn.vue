@@ -6,8 +6,8 @@
 			</view>
 			<view class="center">
 				<view class="title">{{tokenName}}</view>
-				<view class="address" :style="{display:address?'':'none'}">
-					{{address}}
+				<view class="address" :style="{display:tokenAddress?'block':'none'}">
+					{{tokenAddress}}
 				</view>
 			</view>
 			<view class="right">
@@ -24,7 +24,7 @@ export default {
       type: String,
       default: 'uGHM'
     },
-    address: {
+    tokenAddress: {
       type: String,
       default: ''
     },
@@ -38,6 +38,9 @@ export default {
     return {
 
     }
+  },
+  onLoad() {
+
   }
 }
 </script>

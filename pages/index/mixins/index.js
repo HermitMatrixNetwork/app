@@ -8,42 +8,73 @@ import {
   validateAll
 } from '@/utils/validator.js'
 import WalletCrypto from '@/utils/walletCrypto'
+import renderUtils from '@/utils/render.base.js'
 export default {
   methods: {
     /** 
      * 查找钱包
-     * @param { string } target 字段名
-     * @param { string } value 字段值  
+     * @param { Object } wallet 钱包
      * @return { undefined | wallet }
      */
-    findWallet(target, value) {
+    findWallet(wallet) {
       const walletList = this.$cache.get('_walletList')
-      if (!walletList) return
-      return walletList.find(item => item[target] === value)
+      if (!walletList) return undefined
+      return walletList.find(item => item.address === wallet.address)
+    },
+    checkExist(wallet) {
+      const result = Boolean(this.findWallet(wallet))
+      return result
     },
     /** 设置 _currentWallet , 更新 _walletList
      */
-    initWallet({
+    async initWallet({
       wallet,
-      privateKey64
+      cb,
+      vm
     }) {
       if (!this.password || !this.name) return console.error('初始化钱包数据失败，请检查组件是否已经注册password、name字段作为钱包密码和钱包名字')
-      wallet.name = this.name
+
+      const currentRoutes = getCurrentPages() // 获取当前打开过的页面路由数组
+      const {
+        route,
+        options
+      } = currentRoutes[currentRoutes.length - 1] //获取当前页面路由
+      const action = route.split('/').slice(-1)[0]
+      const from = options.from || 'index'
+
       // 删除隐私信息
-      // delete wallet.privateKey
-      // delete wallet.publicKey
-      
+      this.deletePrivateInfo(wallet, action)
+
+      // keystore解密私钥(if it need)
+      this.getPrivateKeyFromKeystore && await this.getPrivateKeyFromKeystore(wallet)
+
+      // 推导钱包地址
+      const address = await this.getWalletAddress(wallet, action)
+
+      // 推导不出地址 直接跳出
+      if (!address) return
+
       // 加密隐私信息 (mnemonic、password、privateKey64)
-      wallet.mnemonic = WalletCrypto.encode(wallet.mnemonic)
-      wallet.password = WalletCrypto.encode(this.password)
-      wallet.privateKey64 = WalletCrypto.encode(privateKey64)
-      
-      
-      console.log('创建钱包数据:', {
-        wallet
-      })
+      this.encryptPrivateInfo(wallet, action)
+
+      wallet.name = this.name
+      wallet.address = address
+
+      // @test
+      // window.WallectCrypto = WalletCrypto
+      // window.wallet = wallet
+      // console.log('创建钱包数据:', {
+      //   wallet
+      // })
+      // end test
+
+      if (from == 'walletManager' && this.checkExist(wallet)) {
+        // 校验是否已经存在该钱包
+        return this.$refs.notify.show('error', '钱包已存在，请勿导入相同的钱包')
+      }
       this.$cache.set('_currentWallet', wallet, 0)
       this.updateWalletList(wallet)
+      cb && renderUtils.runMethod(vm._$id, cb, '', vm)
     },
     /** 更新本地 walletList 数据
      *  @param { object } wallet 钱包数据
@@ -56,7 +87,7 @@ export default {
       if (walletIndex > -1) {
         walletList.splice(walletIndex, 1)
       }
-      walletList.push(wallet)
+      walletList.unshift(wallet)
       this.$cache.set('_walletList', walletList, 0)
       return true
     },
@@ -68,6 +99,41 @@ export default {
       const wallet = this.findWallet(target, value)
       if (!wallet) return true
       return result && WalletCrypto.decode(wallet.password) == this.password
+    },
+    deletePrivateInfo(wallet, action) {
+      const deleteMnemonicPages = ['importFromPrivatekey', 'importFromKeystore']
+
+
+      if (deleteMnemonicPages.includes(action)) {
+        delete wallet.mnemonic
+        delete wallet.address
+      }
+
+      // 删除隐私信息
+      delete wallet.privateKey
+      delete wallet.publicKey
+    },
+    encryptPrivateInfo(wallet, action) {
+      const useCurrentPrivateKeyPages = ['importFromPrivatekey', 'importFromKeystore']
+      wallet.mnemonic = wallet.mnemonic && WalletCrypto.encode(wallet.mnemonic)
+      wallet.password = WalletCrypto.encode(this.password)
+      wallet.privateKey64 = useCurrentPrivateKeyPages.includes(action) ? WalletCrypto.encode(this.privateKey64) :
+        WalletCrypto.encode(wallet.privateKey64)
+    },
+    async getWalletAddress(wallet, action) {
+      try {
+        const inferAddressPages = ['importFromPrivatekey', 'importFromKeystore']
+        let address = wallet.address
+        if (inferAddressPages.includes(action)) {
+          const pubkey = await WalletCrypto.getPublickey(WalletCrypto.StringToUint(this.privateKey64))
+          address = WalletCrypto.pubkeyToAddress(pubkey)
+        }
+
+        return address
+      } catch (e) {
+        this.$refs.notify.show('error', '解密失败, keystore和密码不必配')
+        return false
+      }
     }
   }
 }

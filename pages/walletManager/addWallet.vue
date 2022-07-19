@@ -32,27 +32,17 @@ export default {
     }
   },
   methods: {
-    close($event, isToAccount = false) {
-      this.$emit('close', isToAccount)
+    close() {
+      this.$emit('close')
     },
     toCreateWallet() {
       uni.navigateTo({
-        url: '/pages/walletManager/createWallet',
-        events: {
-          close: () => {
-            this.close('', true)
-          }
-        }
+        url: '/pages/index/createWallet?from=walletManager',
       })
     },
     toImportWallet() {
       uni.navigateTo({
-        url: '/pages/walletManager/importFromMnemonic',
-        events: {
-          close: () => {
-            this.close('', true)
-          }
-        }
+        url: '/pages/walletManager/importWallet',
       })
     }
   }

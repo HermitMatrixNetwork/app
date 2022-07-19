@@ -82,7 +82,7 @@ export default {
     },
     confirm() {
       if (this.checkComplete()) {
-        uni.switchTab({
+        uni.reLaunch({
           url: '/pages/account/index'
         })
       }

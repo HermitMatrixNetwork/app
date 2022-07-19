@@ -3,26 +3,26 @@
 		<view class="header"></view>
 		<view class="account-box">
 			<view class="account-column">
-				  <view class="column-item" @click="toSend">
+				  <view class="column-item" @click="goTo('/pages/delegate/cancel')">
 				    <u-icon
 				      :name="require('@/static/img/account/send.png')"
 				      size="80rpx"
 				    ></u-icon>
-				    <text>发送</text>
+				    <text>取消委托</text>
 				  </view>
 				  <view class="column-item" @click="receivePopup">
 				    <u-icon
 				      :name="require('@/static/img/account/receive.png')"
 				      size="80rpx"
 				    ></u-icon>
-				    <text>接收</text>
+				    <text>收益领取</text>
 				  </view>
 				  <view class="column-item">
 				    <u-icon
 				      :name="require('@/static/img/account/delegate.png')"
 				      size="80rpx"
 				    ></u-icon>
-				    <text>委托</text>
+				    <text>交易记录</text>
 				  </view>
 			</view>
 		</view>
@@ -58,6 +58,15 @@
 </template>
 
 <script>
+export default {
+  methods: {
+    goTo(url){
+      uni.navigateTo({
+        url
+      })
+    }
+  }
+}
 	
 </script>
 

@@ -96,6 +96,8 @@ export default {
     // this.$cache.delete('_agree_protocol')
     // this.agree_protocol = this.$cache.get('_agree_protocol') || false
     // end
+    // 清空缓存
+    uni.clearStorageSync()
   },
   methods: {
     toCreateWallet() {

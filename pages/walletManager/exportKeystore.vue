@@ -10,7 +10,7 @@
         <text class="label-tip">({{ language.clickToCopy }})</text>
       </view>
       <view class="item" @click="copy">
-        {{ wallet.keystore }}
+        <view class="content">{{ keystore }}</view>
       </view>
     </view>
     
@@ -23,6 +23,7 @@
 import Tooltip from './components/tooltip.vue'
 import Notify from './components/notify.vue'
 import language from './language'
+import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   components: {
     Tooltip,
@@ -31,13 +32,23 @@ export default {
   data() {
     return {
       language: language[this.$cache.get('_language')],
-      wallet: this.$cache.get('_currentWallet')
+      wallet: this.$cache.get('_currentWallet'),
+      keystore: ''
     }
   },
+  created() {
+    this.generateKeystore()
+  },
   methods: {
+    async generateKeystore() {
+      const password = WalletCrypto.decode(this.wallet.password)
+      const privateKey64 = WalletCrypto.decode(this.wallet.privateKey64)
+      this.keystore = JSON.stringify(await WalletCrypto.generateKeystore.encrypt(privateKey64, password))
+      console.log(this.keystore)
+    },
     copy() {
       uni.setClipboardData({
-        data: this.wallet.keystore,
+        data: this.keystore,
         showToast: false,
         success: () => {
           this.$refs.notify.show('error', this.language.copySuccess)
@@ -76,15 +87,19 @@ export default {
 
     .item {
       width: 686rpx;
-      height: 180rpx;
+      height: 300rpx;
       border-radius: 16rpx;
       background-color: #F2F4F8;
-      padding: 24rpx 24rpx 0;
+      padding: 24rpx;
       word-break: break-all;
       font-weight: 400;
       font-size: 28rpx;
       color: #2C365A;
-      line-height: 48rpx;
+      .content {
+        height: 252rpx;
+        overflow: scroll;
+        line-height: 40rpx;
+      }
     }
   }
 </style>
