@@ -29,8 +29,7 @@ export default {
      */
     async initWallet({
       wallet,
-      cb,
-      vm
+      cb
     }) {
       if (!this.password || !this.name) return console.error('初始化钱包数据失败，请检查组件是否已经注册password、name字段作为钱包密码和钱包名字')
 
@@ -74,7 +73,7 @@ export default {
       }
       this.$cache.set('_currentWallet', wallet, 0)
       this.updateWalletList(wallet)
-      cb && renderUtils.runMethod(vm._$id, cb, '', vm)
+      cb && renderUtils.runMethod(this._$id, cb, '', this)
     },
     /** 更新本地 walletList 数据
      *  @param { object } wallet 钱包数据
