@@ -150,6 +150,13 @@
       }
     },
     {
+      "path": "pages/delegate/cancel",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
       "path": "pages/transaction/index",
       "style": {
         "navigationBarTitleText": "",
