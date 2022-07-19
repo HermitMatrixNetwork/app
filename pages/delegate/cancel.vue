@@ -1,8 +1,8 @@
 <template>
 	<view class="sendPage">
-		<custom-header :title="'发送'" :style="titleStyle">
-			<template #right>
-				<u-icon :name="require('@/static/img/account/saoma.png')" size="44rpx" @click="scanCode" />
+		<custom-header :title="'取消委托'" :style="titleStyle">
+			<template #customIcon>
+				<u-icon name="scan" size="44rpx" />
 			</template>
 		</custom-header>
 		<view class="main-top">
@@ -10,7 +10,7 @@
 			<view class="content">
 
 				<!-- 代币选择 -->
-				<view class="change-token" @click="toGo('/pages/account/send/token_list')">
+				<view class="change-token" @click="chooseToken">
 					<image :src="tokenUrl"></image>
 					<text>{{tokenName}}</text>
 					<view class="icon-right">
@@ -20,11 +20,11 @@
 
 				<!-- 收款地址 -->
 				<view class="collection-adres">
-					<InputTitle :title="'收款地址'" :type="'text'" :placeholder="'输入或粘贴钱包地址'" ref="addressInptval"
+					<InputTitle :title="'收款地址'" :type="'text'" :placeholder="'输入或粘贴钱包地址'"
 						:inputVal.sync="receiveAddress">
 						<template #title-icon>
-							<u-icon :name="require('../../../static/img/account/addressbook.png')" size="44rpx"
-								@click="toGo('/pages/account/send/adres_book')"></u-icon>
+							<u-icon :name="require('@/static/img/account/addressbook.png')" size="44rpx"
+								@click="chooseAddress"></u-icon>
 						</template>
 					</InputTitle>
 				</view>
@@ -58,7 +58,7 @@
 			<miners-column @getMinersCost="getMinersCost"></miners-column>
 
 			<view class="submit-btn" @click="transferConfirm">
-				<Submitbtn>确认</Submitbtn>
+				确认
 			</view>
 		</view>
 
@@ -68,7 +68,7 @@
 				<view class="main">
 					<view class="popup-title">
 						转账确认
-						<u-icon :name="require('../../../static/img/account/close.png')" size="32rpx"
+						<u-icon :name="require('@/static/img/account/close.png')" size="32rpx"
 							@click="submitPopupIsShow=false"></u-icon>
 					</view>
 
@@ -106,7 +106,7 @@
 					</view>
 				</view>
 				<view class="submit-btn" @click="submitAgain">
-						<Submitbtn>确认</Submitbtn>
+					确认
 				</view>
 			</view>
 		</u-popup>
@@ -115,42 +115,32 @@
 			<view class="modal_main">
 				<view class="modal_title">
 					密码确认
-					<u-icon :name="require('../../../static/img/account/close.png')" size="32rpx"
+					<u-icon :name="require('@/static/img/account/close.png')" size="32rpx"
 						@click="modalPasswordIsShow=false"></u-icon>
 				</view>
 				<InputTitle :type="'password'" :placeholder="'请输入资金密码'" :inputVal.sync="payPassword"
 					:warningStyleisShow="passwordCheck">
 				</InputTitle>
 				<text v-if="passwordCheck" class="waringPrompt">资金密码错误，请确认后重新输入!</text>
-				<!-- <button class="modal_submit" @click="passwordButton">确认</button> -->
-				<Submitbtn class="modal_submit" @click.native="passwordButton">确认</Submitbtn>
+				<button class="modal_submit" @click="passwordButton">确认</button>
 			</view>
 		</u-modal>
 	</view>
 </template>
 
 <script>
-import InputTitle from './components/Input-title.vue'
-import languages from '../language/index.js'
-import Submitbtn from './components/submit-btn.vue'
-import {
-  SendTokentoOtherAddress,
-  getBalance
-} from '@/utils/secretjs/SDK.js'
-import mixin from '../mixins/index.js'
+import InputTitle from '@/pages/account/send/components/Input-title.vue'
 export default {
-  mixins: [mixin],
   components: {
-    InputTitle,Submitbtn
+    InputTitle
   },
   data() {
     return {
-      language: languages[this.$cache.get('_language')],
-      tokenUrl: '../../../static/img/placeholder.jpeg',
+      tokenUrl: '@/static/img/placeholder.jpeg',
       tokenName: 'GHM',
       inputVal: '',
       balance: 1231,
-      receiveAddress: '', //接收地址
+      receiveAddress: '0xe5362b301e581d24507a91b8376139E03dBF04bb', //接收地址
       sendAmount: 123, //发送金额
       memoValue: '123', //Memo
       payPassword: '123', //资金密码
@@ -171,16 +161,26 @@ export default {
     }
   },
   onLoad(value) {
-    this.receiveAddress = value.receiveAddress
-    // console.log('languages ',languages);
-    // console.log('this.language',this.l);
+
   },
   methods: {
+    chooseAddress() {
+      console.log(1111111111)
+      uni.navigateTo({
+        url: './adres_book'
+      })
+    },
+    chooseToken() {
+      console.log('代币选择')
+      uni.navigateTo({
+        url: './token_list'
+      })
+    },
     submitAgain() {
       this.modalPasswordIsShow = true
       this.submitPopupIsShow = false
     },
-    async transferConfirm() { //转账确认
+    transferConfirm() { //转账确认
       const {
         receiveAddress,
         sendAmount,
@@ -188,15 +188,11 @@ export default {
         balance
       } = this.$data
       if (!(receiveAddress && sendAmount && memoValue)) {
-        return console.log('输入不能为空',this.$children[0])
+        return console.log('输入不能为空')
       }
       if (sendAmount > balance || balance == 0) {
         return console.log('余额不足')
       }
-
-      // const res = await SendTokentoOtherAddress(this.userAddress,this.receiveAddress,this.sendAmount)
-      // const res = await getBalance(this.userAddress)
-      // console.log('转账结果',res)
       this.submitPopupIsShow = true
     },
     passwordButton() {
@@ -218,6 +214,7 @@ export default {
         this.passwordCheck = true
       } else {
         this.passwordCheck = false
+        console.log()
         uni.navigateTo({
           url: `./transactionDetails?transactionObject=${JSON.stringify(obj)}`
         })
@@ -226,24 +223,14 @@ export default {
       this.payPassword = ''
     },
     testAmount() {
-      this.sendAmount = this.$refs.sendAmountInput.childValue = this.balance
+      // this.sendAmount = this.balance 
+      // console.log(this)
     },
-    getMinersCost(val) {
-      console.log('接收到值', val)
+    getMinersCost(val){
+      console.log('接收到值',val)
       this.minersMsg = val
-    },
-    scanCode(){ //扫码
-      let that = this
-      uni.scanCode({
-        onlyFromCamera: false,
-        scanType: ['qrCode'],
-        success(res) {
-          console.log('条码内容：' + res.result)
-          that.receiveAddress = that.$refs.addressInptval.childValue = res.result
-        },
-      })
     }
-  }
+  },
 }
 </script>
 
@@ -354,8 +341,16 @@ export default {
 
 		.submit-btn {
 			margin: 0 64rpx;
+			height: 96rpx;
 			position: relative;
 			top: 116rpx;
+			background: #002FA7;
+			border-radius: 16rpx;
+			text-align: center;
+			line-height: 96rpx;
+			font-weight: 400;
+			font-size: 32rpx;
+			color: #FCFCFD;
 		}
 	}
 
@@ -435,8 +430,16 @@ export default {
 
 	.submit-btn {
 		margin: 0 64rpx;
+		height: 96rpx;
 		position: relative;
 		top: 116rpx;
+		background: #002FA7;
+		border-radius: 16rpx;
+		text-align: center;
+		line-height: 96rpx;
+		font-weight: 400;
+		font-size: 32rpx;
+		color: #FCFCFD;
 	}
 
 	.modal_main {
@@ -454,6 +457,15 @@ export default {
 		}
 
 		.modal_submit {
+			background: #002FA7;
+			border-radius: 16rpx;
+			height: 96rpx;
+			font-family: PingFangSC-Regular;
+			font-weight: 400;
+			font-size: 32rpx;
+			color: #FCFCFD;
+			letter-spacing: 0;
+			line-height: 96rpx;
 			margin-top: 80rpx;
 		}
 	}
