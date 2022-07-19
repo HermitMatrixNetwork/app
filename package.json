@@ -11,11 +11,16 @@
   "license": "ISC",
   "dependencies": {
     "@cosmjs/crypto": "^0.28.7",
+    "@keplr-wallet/crypto": "^0.10.12",
+    "aes-js": "^3.1.2",
     "bech32": "^2.0.0",
     "bip39": "^3.0.4",
     "bn.js": "^5.2.1",
+    "buffer": "^6.0.3",
     "crypto-js": "^4.1.1",
     "secretjs-cjgs": "^1.0.0",
-    "tki-qrcode": "^0.1.6"
+    "tki-qrcode": "^0.1.6",
+    "pbkdf2": "^3.1.2",
+    "randombytes": "^2.1.0"
   }
 }

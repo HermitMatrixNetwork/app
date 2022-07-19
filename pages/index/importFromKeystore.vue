@@ -6,7 +6,7 @@
       <view class="item">
         <view class="item-label">Keystore导入</view>
         <view class="item-input">
-          <u--textarea v-model="privateKey" placeholder="输入Keystore文件内容"></u--textarea>
+          <u--textarea v-model="keystore" placeholder="输入Keystore文件内容" :maxlength="-1"></u--textarea>
         </view>
       </view>
       <view class="item">
@@ -28,23 +28,100 @@
       </view>
     </view>
     <u-button class="btn" @click="importWallet">导入</u-button>
+    <view :callRenderCreate="callRenderCreate" :change:callRenderCreate="render.createWallet"></view>
+    <!-- 错误提示 -->
+    <Notify ref="notify"></Notify>
   </view>
 </template>
 
 <script>
+import mixin from './mixins/index.js'
+import Notify from './components/notify.vue'
+import {
+  validateAll
+} from '@/utils/validator.js'
+import WalletCrypto from '@/utils/walletCrypto'
 export default {
+  mixins: [mixin],
+  components: {
+    Notify
+  },
   data() {
     return {
-      privateKey: '', // 助记词
+      keystore: '', // keystore
+      privateKey64: '', // 私钥
       password: '', // 资金密码
       name: '', // 钱包名称
       passwordEye: false, // 是否明文显示资金密码
+      callRenderCreate: 0,
+      rules: {
+        keystore: [{
+          rule: 'required',
+          errMessage: 'keystore不能为空'
+        }],
+        password: [{
+          rule: 'required',
+          errMessage: '钱包密码不能为空'
+        }, {
+          rule: 'min',
+          len: 8,
+          errMessage: '密码长度不能少于8位'
+        }, {
+          rule: 'max',
+          len: 48,
+          errMessage: '密码长度不能大于48位'
+        }]
+      }
     }
   },
   methods: {
-    importWallet() {}
+    importWallet() {
+      const result = this.verifyForm()
+      if (!result) return
+      this.callRenderCreate++ // 还原钱包，调用render.createWallet
+    },
+    verifyForm() {
+      const result = validateAll.call(this, this.rules)
+      const invalidateField = result.find(item => !item.result)
+      if (invalidateField) {
+        this.$refs.notify.show('error', invalidateField.errMessage)
+        return false
+      } else if (!this.name) {
+        this.$refs.notify.show('error', '钱包名称不能为空')
+        return false
+      } else {
+        // 通过校验
+        return true
+      }
+    },
+    async getPrivateKeyFromKeystore(wallet) {
+      const keystore = JSON.parse(this.keystore)
+        
+      this.privateKey64 = await WalletCrypto.generateKeystore.decrypt(keystore, this.password)
+      
+      wallet.privateKey64 = this.privateKey64  
+    },
+    cbInitWallet() {
+      uni.reLaunch({
+        url: '/pages/account/index'
+      })
+    }
   }
 }
+</script>
+
+<script lang="renderjs" module="render">
+  import {
+    createWallet
+  } from './utils/index.js'
+  export default {
+    methods: {
+      createWallet(newVal, oldVal, oldVm, newVm) {
+        if (newVal == 0) return; // 第一次进入页面会默认调用一次
+        createWallet('initWallet', this, '', 'cbInitWallet')
+      }
+    }
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -73,13 +150,13 @@ export default {
           background-color: #F2F4F8;
           height: 256rpx;
           border-radius: 16rpx !important;
-          padding-left: 0 !important;
-
+          padding: 24rpx !important;
+          
           /deep/ textarea {
             color: #2C365A !important;
             font-size: 28rpx !important;
-            padding-left: 32rpx;
             line-height: 48rpx !important;
+            height: 208rpx !important;
           }
         }
 
@@ -117,7 +194,7 @@ export default {
           }
         }
       }
-
+      
       &-input-name {
         .u-input {
           border-radius: 16rpx;

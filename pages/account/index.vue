@@ -15,7 +15,7 @@
 		
         <view class="header-icon" >
           <u-icon name="scan" size="44rpx" color="#333655" @click="scanCode" />
-          <u-icon name="setting" size="44rpx" color="#333655" />
+          <u-icon name="setting" size="44rpx" color="#333655" @click="toGo('/pages/walletManager/index')" />
         </view>
       </view>
       <view class="basic-data">
@@ -142,6 +142,7 @@
 </template>
 
 <script>
+
 import { sliceAddress } from '@/utils/filters.js'
 import { exceptE6 } from '@/utils/format.js'
 import mainCoin from '@/config/index.js'
@@ -261,7 +262,6 @@ export default {
       this.showSwitchWallet = false
     },
     toSend() {
-      console.log(111111111)
       uni.navigateTo({
         url: './send/index',
       })

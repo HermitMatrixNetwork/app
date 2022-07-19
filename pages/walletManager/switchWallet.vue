@@ -7,12 +7,12 @@
       </view>
       <u-list class="content" height="1080rpx">
         <view class="item" v-for="(wallet, index) in walletList" :key="index"
-          :class="{ selected: selectedIndex == index }" @click="close(index)">
+          :class="{ selected: index == 0 }" @click="close(index)">
           <view class="item-left">
             <view class="item-left-name">{{ wallet.name }}</view>
             <view class="item-left-address">{{ wallet.address | formatAddress }}</view>
           </view>
-          <view class="item-right" v-show="selectedIndex == index">
+          <view class="item-right" v-show="index == 0">
             <image src="@/static/img/walletManager/xuanzhong2.png"></image>
           </view>
         </view>
@@ -32,6 +32,7 @@
 <script>
 import addWallet from './addWallet'
 import language from './language'
+import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   components: { addWallet },
   props: {
@@ -44,8 +45,6 @@ export default {
     return {
       language: language[this.$cache.get('_language')],
       walletList: this.$cache.get('_walletList'),
-      selectedIndex: -1, // 当前选中的钱包索引
-      currentWallet: this.$cache.get('_currentWallet'),
       showAddWallet: false,
     }
   },
@@ -57,26 +56,23 @@ export default {
   methods: {
     close(index) {
       if (index > 0) {
-        this.currentWallet = this.walletList[this.selectedIndex]
-        this.$cache.set('_currentWallet', this.currentWallet, 0)
+        const walletList = this.walletList
+        const currentWalletList = walletList[index]
+        this.$cache.set('_currentWallet', currentWalletList, 0)
+        walletList.splice(index, 1)
+        walletList.unshift(currentWalletList)
+        this.$cache.set('_walletList', walletList, 0)
       }
       this.$emit('close')
     },
-    closeAddWalletPopup(isToAccount) {
+    closeAddWalletPopup() {
       this.showAddWallet = false
-      this.currentWallet = this.$cache.get('_currentWallet')
-      if (isToAccount) this.$emit('close')
     }
   },
   watch: {
-    currentWallet: {
-      deep: true,
-      immediate: true,
-      handler() {
-        this.selectedIndex = this.walletList.findIndex(item => item.privateKey64 == this.currentWallet.privateKey64)
-        this.walletList.splice(this.selectedIndex, 1)
-        this.walletList.unshift(this.currentWallet)
-        this.selectedIndex = 0
+    showSwitchWallet(newVal) {
+      if(newVal) {
+        this.walletList = this.$cache.get('_walletList')
       }
     }
   }

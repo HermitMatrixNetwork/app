@@ -119,27 +119,10 @@ export default {
         return true
       }
     },
-    initWallet({ wallet }) {
-      console.log('initWallet', wallet)
-      
-      // 删除隐私信息
-      delete wallet.privateKey
-      delete wallet.publicKey
-      delete wallet.mnemonic
-      
-      // 加密隐私信息
-      wallet.password = WalletCrypto.encode(this.password)
-      wallet.privateKey64 = WalletCrypto.encode(this.privateKey64)
-      wallet.name = this.name
-      
-      console.log('创建钱包数据:', {
-        wallet
-      })
-      this.$cache.set('_currentWallet', wallet, 0)
-      this.updateWalletList(wallet)
-    },
     cbInitWallet() {
-      console.log('cbInitWallet')
+      uni.reLaunch({
+        url: '/pages/account/index'
+      })
     }
   }
 }
