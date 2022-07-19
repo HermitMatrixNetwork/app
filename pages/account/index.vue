@@ -61,7 +61,7 @@
           ></u-icon>
           <text>发送</text>
         </view>
-        <view class="column-item" @click="receivePopup">
+        <view class="column-item" @click="toGo('./receive')">
           <u-icon
             :name="require('../../static/img/account/receive.png')"
             size="80rpx"
@@ -83,12 +83,6 @@
           <text>交易</text>
         </view>
       </view>
-
-      <u-popup :show="show" mode="bottom" @close="close" duration="400">
-        <view style="height: 800rpx">
-          这里是接收弹出层，点击接收弹出二维码
-        </view>
-      </u-popup>
 
       <u-modal
         :show="aa"
@@ -154,7 +148,9 @@ import mainCoin from '@/config/index.js'
 import SwitchWallet from '@/pages/walletManager/switchWallet.vue'
 import TokenColumn from './send/components/TokenColumn.vue'
 import languages from './language'
+import mixin from './mixins/index.js'
 export default {
+  mixins: [mixin],
   components: {
     TokenColumn,
     SwitchWallet
@@ -190,7 +186,6 @@ export default {
         height: '60rpx',
         alignItems: 'flex-start',
       },
-      show: false,
       allassets: 66666666, //总资产
       eyeAsset: true,
       aa: true,
@@ -250,22 +245,6 @@ export default {
           console.log('success')
         },
       })
-    },
-    scanCode() {
-      uni.scanCode({
-        onlyFromCamera: false,
-        scanType: ['qrCode'],
-        success(res) {
-          console.log('条码类型：' + res.scanType)
-          console.log('条码内容：' + res.result)
-        },
-      })
-    },
-    receivePopup() {
-      this.show = !this.show
-    },
-    close() {
-      this.show = false
     },
     dealBtn() {
       uni.showToast({

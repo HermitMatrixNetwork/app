@@ -2,7 +2,7 @@
 	<view class="token_content">
 		<custom-header :title="tokenName">
 			<template #right>
-				<text class="customIcon" @click="jumpDetails">详情</text>
+				<text class="customIcon" @click="toGo('/pages/account/send/tokenInformation')">详情</text>
 			</template>
 		</custom-header>
 
@@ -54,9 +54,9 @@
 		</view>
 
 		<view class="operation_btn">
-			<button @click="jumpSend">发送</button>
-			<button>接收</button>
-			<button>交易</button>
+			<button @click="toGo('/pages/account/send/index')">发送</button>
+			<button @click="toGo('/pages/account/receive')">接收</button>
+			<button @click="dealBtn">交易</button>
 			<button>委托</button>
 		</view>
 
@@ -65,7 +65,9 @@
 
 <script>
 import TokenColumn from './components/TokenColumn.vue'
+import mixin from '../mixins/index.js'
 export default {
+  mixins:[mixin],
   components: {
     TokenColumn
   },
@@ -103,12 +105,7 @@ export default {
       uni.navigateTo({
         url:'./tokenInformation'
       })
-    },
-		jumpSend(){
-			uni.navigateTo({
-				url:'./index'
-			})
-		}
+    }
   }
 }
 </script>
