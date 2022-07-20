@@ -24,7 +24,7 @@ export default {
   mixins:[mixin],
   data() {
     return {
-				viewkey:'1321313213213'
+      viewkey:'1321313213213'
     }
   }
 }
@@ -40,6 +40,7 @@ export default {
 
 .title{
 	height: 28rpx;
+	margin-top: 48rpx;
 	font-family: PingFangSC-Medium;
 	font-weight: 500;
 	font-size: 28rpx;

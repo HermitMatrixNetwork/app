@@ -35,6 +35,8 @@ export default {
   onLoad(value) {
     // console.log(this.transaction)
     const obj = JSON.parse(value.transactionObject)
+    this.transactionType = obj.status
+    console.log('aaaaaaaaaaa',this.transactionType)
     this.transactionResult = Object.values(obj)
     switch (this.transactionType) {
     case 'success':

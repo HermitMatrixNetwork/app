@@ -4,19 +4,25 @@
     <view class="status_bar">
       <!-- APP下会占用系统原生消息因此需要该占位符 -->
     </view>
-		<view :address="address" :change:address="render.init"></view>
     <view class="main">
       <view class="account-header">
-        <view class="header-left" @click="showSwitchWallet = true">	  
-				<view class="title">
-					我的钱包	
-				</view>
-					<u-icon :name="require('@/static/img/account/down.png')" size="32rpx" color="#333655" />
-				</view>
-		
-        <view class="header-icon" >
+        <view class="header-left" @click="showSwitchWallet = true">
+          <view class="title"> 我的钱包 </view>
+          <u-icon
+            :name="require('@/static/img/account/down.png')"
+            size="32rpx"
+            color="#333655"
+          />
+        </view>
+
+        <view class="header-icon">
           <u-icon name="scan" size="44rpx" color="#333655" @click="scanCode" />
-          <u-icon name="setting" size="44rpx" color="#333655" @click="toGo('/pages/walletManager/index')" />
+          <u-icon
+            name="setting"
+            size="44rpx"
+            color="#333655"
+            @click="toGo('/pages/walletManager/index')"
+          />
         </view>
       </view>
       <view class="basic-data">
@@ -36,7 +42,7 @@
             />
           </view>
           <view class="user-balance">
-            ${{ eyeAsset ? allassets : "∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗" }}
+            ${{ eyeAsset ? allassets : '∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗' }}
           </view>
           <view class="user-address">
             <text v-if="eyeAsset">{{
@@ -55,7 +61,7 @@
       </view>
 
       <view class="account-column">
-        <view class="column-item" @click="toSend">
+        <view class="column-item" @click="toGo('/pages/account/send/index')">
           <u-icon
             :name="require('../../static/img/account/send.png')"
             size="80rpx"
@@ -138,12 +144,14 @@
       </view>
     </view>
     <tab-bar />
-    <SwitchWallet :showSwitchWallet="showSwitchWallet" @close="closeSwitchWalletPopup"/>
+    <SwitchWallet
+      :showSwitchWallet="showSwitchWallet"
+      @close="closeSwitchWalletPopup"
+    />
   </view>
 </template>
 
 <script>
-
 import { sliceAddress } from '@/utils/filters.js'
 import { exceptE6 } from '@/utils/format.js'
 import mainCoin from '@/config/index.js'
@@ -151,6 +159,7 @@ import SwitchWallet from '@/pages/walletManager/switchWallet.vue'
 import TokenColumn from './send/components/TokenColumn.vue'
 import languages from './language'
 import mixin from './mixins/index.js'
+import {} from '@/utils/secretjs/SDK.js'
 export default {
   mixins: [mixin],
   components: {
@@ -158,7 +167,7 @@ export default {
     SwitchWallet
   },
   filters: {
-    sliceAddress,
+    sliceAddress
   },
   data() {
     return {
@@ -168,8 +177,8 @@ export default {
       languages: languages[this.$cache.get('_language')],
       coinList: [
         {
-          name: '代币',
-        },
+          name: '代币'
+        }
         // {
         //   name: 'NFT'
         // }
@@ -177,20 +186,20 @@ export default {
       inactiveStyle: {
         fontSize: '32rpx',
         color: '#8397B1',
-        fontWeight: '500',
+        fontWeight: '500'
       },
       activeStyle: {
         fontSize: '34rpx',
         color: '#2C365A',
-        fontWeight: '600',
+        fontWeight: '600'
       },
       itemStyle: {
         height: '60rpx',
-        alignItems: 'flex-start',
+        alignItems: 'flex-start'
       },
       allassets: 66666666, //总资产
       eyeAsset: true,
-      aa: true,
+      aa: true
     }
   },
   onLoad() {
@@ -205,7 +214,7 @@ export default {
       coinList.push({
         label: mainCoin.label,
         logo: mainCoin.logo,
-        address: this.address,
+        address: this.address
       })
       this.currentWallet.coinList = coinList
       let walletList = this.$cache.get('_walletList')
@@ -230,13 +239,13 @@ export default {
     //页面跳转
     goTo(e) {
       uni.navigateTo({
-        url: e.currentTarget.dataset.url,
+        url: e.currentTarget.dataset.url
       })
     },
     //页面跳转
     toGo(url) {
       uni.navigateTo({
-        url,
+        url
       })
     },
     //复制地址
@@ -245,13 +254,13 @@ export default {
         data: this.currentWallet.address,
         success: function () {
           console.log('success')
-        },
+        }
       })
     },
     dealBtn() {
       uni.showToast({
         title: '暂未开放',
-        icon: 'none',
+        icon: 'none'
       })
     },
     assentIsShow() {
@@ -262,33 +271,33 @@ export default {
     closeSwitchWalletPopup() {
       this.showSwitchWallet = false
     },
-    toSend() {
-      uni.navigateTo({
-        url: './send/index',
-      })
-    },
     queryToken() {
       uni.navigateTo({
-        url: './send/token_content',
+        url: './send/token_content'
       })
-    },
-  },
+    }
+  }
 }
 </script>
 
 <script lang="renderjs" module="render">
-import {getBalance} from '@/utils/secretjs/SDK'
+import {
+	getBalance
+} from '@/utils/secretjs/SDK'
 
 export default {
 	methods: {
-		async init(address){
-							//获取主网币余额
+		async init(address) {
+			//获取主网币余额
 			let coinList = this.$cache.get('_currentWallet').coinList
-			for(let i= 0;i<coinList.length;i++){
-				   let res = await getBalance(coinList[i].address)
-						coinList[i] = {...coinList[i],...res.balance}
+			for (let i = 0; i < coinList.length; i++) {
+				let res = await getBalance(coinList[i].address)
+				coinList[i] = {
+					...coinList[i],
+					...res.balance
+				}
 			}
-			console.log('coinList',coinList)
+			console.log('coinList', coinList)
 		}
 	}
 }
@@ -325,9 +334,11 @@ page {
     display: flex;
     justify-content: space-between;
     align-items: center;
-		.header-left {
-			display: flex;
-		}
+
+    .header-left {
+      display: flex;
+    }
+
     .header-icon {
       display: flex;
       align-items: center;
@@ -339,7 +350,7 @@ page {
   .basic-data {
     width: 100%;
     height: 280rpx;
-    background-image: url("@/static/img/account/card1.png");
+    background-image: url('@/static/img/account/card1.png');
     background-size: 100% 100%;
     border-radius: 24rpx;
 
