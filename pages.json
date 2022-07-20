@@ -161,6 +161,42 @@
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
+    },  {
+      "path": "pages/delegate/selectNode",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },{
+      "path": "pages/delegate/search",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },{
+      "path": "pages/delegate/income",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },{
+      "path": "pages/delegate/transaction",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },{
+      "path": "pages/delegate/transactionDetails",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },{
+      "path": "pages/delegate/confirm",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
     },
     {
       "path": "pages/transaction/index",

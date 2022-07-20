@@ -1,22 +1,26 @@
 <template>
 	<view class="sendPage">
-		<custom-header :title="'取消委托'" :style="titleStyle">
+		<custom-header :title="'收益领取'" :style="titleStyle">
+			<template #right>
+				<u-icon :name="require('@/static/img/account/saoma.png')" size="44rpx" @click="scanCode" />
+			</template>
 		</custom-header>
 		<view class="main-top">
 			<!-- 选择取消委托节点 -->
 			<view class="content">
 				<view class="content-top">
-					<view class="title">
-						选择取消委托节点
-					</view>
-					<view class="change-token" @click="chooseToken">
-						<text>点击去选择</text>
-						<view class="icon-right">
-							<u-icon name="arrow-right" />
-						</view>
+					<!-- 收款地址 -->
+					<view class="collection-adres">
+						<InputTitle :title="'收益领取接收地址'" :type="'text'" :placeholder="'输入或粘贴钱包地址'" ref="addressInptval"
+							:inputVal.sync="receiveAddress">
+							<template #title-icon>
+								<u-icon :name="require('@/static/img/account/addressbook.png')" size="44rpx"
+									@click="toGo('/pages/account/send/adres_book')"></u-icon>
+							</template>
+						</InputTitle>
 					</view>
 					<view class="tip">
-						注：取消委托交易成功后，需等待2天才可成功到账！
+						注：收益领取交易成功即到账！
 					</view>
 				</view>
 			</view>

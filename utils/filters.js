@@ -1,11 +1,13 @@
 /**
  *地址显示修改 
  * @param {String} address
+ * @param {Number} start
+ * @param {Number} end
  */
-export const sliceAddress =(address)=>{
+export const sliceAddress =(address,start=16,end=14)=>{
   if (address) {
-    let subStr1 = address.substr(0, 16)
-    let subStr2 = address.substr(address.length - 14, 14)
+    let subStr1 = address.substr(0, start)
+    let subStr2 = address.substr(address.length - end, end)
     let subStr = subStr1 + '...' + subStr2
     return subStr
   } else {

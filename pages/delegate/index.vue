@@ -2,30 +2,37 @@
 	<view class="delegate">
 		<view class="container">
 			<div class="top">
-					<view class="left">
-						我的委托
-						<view class="line"/>
+					<view class="left" @click="selindex=1">
+						{{language.myDelegate}}
+						<view v-if="selindex==1" class="line"/>
 					</view>
-					<view class="right">
-						验证人
-						<view class="line"/>
+					<view class="right" @click="selindex=2">
+							{{language.verifiedBy}}
+						<view v-if="selindex==2" class="line"/>
 					</view>
 			</div>
-			<My/>
+			<My v-if="selindex==1"/>
+			<Ident v-else/>
 		</view>
 		<tab-bar :current-page="2" />
 	</view>
 </template>
 
 <script>
+import language from './language'
 import My from './components/my.vue'
+import Ident from './components/Ident.vue'
 export default {
   components: {
-    My
+    My,
+    Ident
   },
   data() {
     return {
+      selindex: 2,
+      language: language[this.$cache.get('_language')],
       list: [{
+        // name: language.myDelegate,
         name: '我的委托',
       }, {
         name: '验证人',
