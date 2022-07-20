@@ -25,12 +25,15 @@ export default {
       const result = Boolean(this.findWallet(wallet))
       return result
     },
+    synchronizingLocalData(wallet) {
+      this.$cache.set('_currentWallet', wallet, 0)
+      this.updateWalletList(wallet)                
+    },
     /** 设置 _currentWallet , 更新 _walletList
      */
     async initWallet({
       wallet,
-      cb,
-      vm
+      cb
     }) {
       if (!this.password || !this.name) return console.error('初始化钱包数据失败，请检查组件是否已经注册password、name字段作为钱包密码和钱包名字')
 
@@ -41,6 +44,7 @@ export default {
       } = currentRoutes[currentRoutes.length - 1] //获取当前页面路由
       const action = route.split('/').slice(-1)[0]
       const from = options.from || 'index'
+      const validateMnemonicPages = ['createWallet']
 
       // 删除隐私信息
       this.deletePrivateInfo(wallet, action)
@@ -72,9 +76,16 @@ export default {
         // 校验是否已经存在该钱包
         return this.$refs.notify.show('error', '钱包已存在，请勿导入相同的钱包')
       }
-      this.$cache.set('_currentWallet', wallet, 0)
-      this.updateWalletList(wallet)
-      cb && renderUtils.runMethod(vm._$id, cb, '', vm)
+      
+      // 助记词校验成功后再同步到本地数据，否则不会同步到本地
+      if (validateMnemonicPages.includes(action)) {
+        this.$cache.delete('_temporaryWallet', wallet)
+        this.$cache.set('_temporaryWallet', wallet, 0)
+      } else {
+        this.synchronizingLocalData(wallet)
+      }
+      
+      cb && renderUtils.runMethod(this._$id, cb, { wallet }, this)
     },
     /** 更新本地 walletList 数据
      *  @param { object } wallet 钱包数据

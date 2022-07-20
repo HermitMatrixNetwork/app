@@ -44,7 +44,6 @@ export default {
       const password = WalletCrypto.decode(this.wallet.password)
       const privateKey64 = WalletCrypto.decode(this.wallet.privateKey64)
       this.keystore = JSON.stringify(await WalletCrypto.generateKeystore.encrypt(privateKey64, password))
-      console.log(this.keystore)
     },
     copy() {
       uni.setClipboardData({

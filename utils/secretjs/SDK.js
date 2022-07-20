@@ -51,8 +51,8 @@ export async function getContractInfo(address) {
     return false
     //TODO handle the exception
   }
-
 }
+
 
 export async function QueryStakingValidators() {
   const result = await Secret.secretjs.query.staking.validators(pagination, status)
@@ -90,3 +90,42 @@ export async function createViewKey(params, options) {
   return result
 }
 
+<<<<<<< HEAD
+=======
+//获取委托产生的总奖励
+export async function getDelegationTotalRewards(delegatorAddress) {
+  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  console.log('Secret',Secret)
+  const result = await Secret.query.distribution.delegationTotalRewards({
+    delegatorAddress
+  })
+  console.log('xxx',result)
+  return result
+ 
+}
+
+//委托记录
+export async function getDelegatorDelegations(status) {
+  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  const result = await Secret.query.staking.delegatorDelegations({
+    delegatorAddr: walletAddress
+  })
+
+  return result
+}
+
+
+//查询验证信息
+export async function getValidators(status) {
+  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+	console.log('Secret',Secret)
+  const result = await Secret.query.staking.validators({ status: status||'' })
+	  console.log('result',result)
+  return result
+}
+export async function getSigningInfo(consAddress) {
+  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  const result = await Secret.query.slashing.signingInfo({consAddress})
+  return result
+}
+>>>>>>> c32184defe42f693dcb1749e04b527785f46fa8c

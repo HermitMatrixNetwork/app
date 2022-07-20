@@ -33,8 +33,10 @@
 <script>
 import Notify from './components/notify.vue'
 import WalletCrypto from '@/utils/walletCrypto.js'
+import mixin from './mixins/index.js'
 export default {
   components: { Notify },
+  mixins: [mixin],
   data() {
     return {
       mnemonicList: [], // 正确顺序的助记词
@@ -45,7 +47,7 @@ export default {
     }
   },
   created() {
-    this.wallet = this.$cache.get('_currentWallet')
+    this.wallet = this.$cache.get('_temporaryWallet')
     this.mnemonicList = WalletCrypto.decode(this.wallet.mnemonic).split(' ')
     this.randomMnemonicList = WalletCrypto.decode(this.wallet.mnemonic).split(' ').sort(() => Math.random() - 0.5)
   },
@@ -82,6 +84,8 @@ export default {
     },
     confirm() {
       if (this.checkComplete()) {
+        this.synchronizingLocalData(this.wallet)
+        this.$cache.delete('_temporaryWallet')
         uni.reLaunch({
           url: '/pages/account/index'
         })
