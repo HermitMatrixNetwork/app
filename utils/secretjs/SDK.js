@@ -84,7 +84,6 @@ export async function getDelegatorDelegations(status) {
   const result = await Secret.query.staking.delegatorDelegations({
     delegatorAddr: walletAddress
   })
-
   return result
 }
 
@@ -92,7 +91,7 @@ export async function getDelegatorDelegations(status) {
 //查询验证信息
 export async function getValidators(status) {
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-	console.log('Secret',Secret)
+  console.log('Secret',Secret)
   const result = await Secret.query.staking.validators({ status: status||'' })
 	  console.log('result',result)
   return result
@@ -100,5 +99,11 @@ export async function getValidators(status) {
 export async function getSigningInfo(consAddress) {
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
   const result = await Secret.query.slashing.signingInfo({consAddress})
+  return result
+}
+//去委托
+export async function toDelegate(data1,data2) {
+  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  const result = await Secret.tx.staking.delegate(data1,data2)
   return result
 }

@@ -1,5 +1,6 @@
 <template>
 	<view class="confirm">
+		<view :confirm="confirm" :change:confirm="render.toDelegate"></view>
 		<custom-header :title="'确认委托'">
 		</custom-header>
 		<u-gap height="12" bgColor="#F4F6F9"></u-gap>
@@ -59,17 +60,44 @@
 export default {
   data(){
     return {
+      confirm: '',
       list:[]
     }
   },
   onLoad(option){
-    let data = JSON.parse(decodeURIComponent(option.data))
-    this.list = data
-    console.log('data',data)
+    // let data = JSON.parse(decodeURIComponent(option.data))
+    this.list = option.data
+    // console.log('data',data)
   }
 }
 </script>
-
+<script lang="renderjs" module="render">
+	import {
+		toDelegate
+	} from '@/utils/secretjs/SDK'
+	export default {
+		methods: {
+		 async	toDelegate() {
+				let data1 = {
+					amount: {
+						amount: 10,
+						denom: 'uGHM'
+					},
+					delegatorAddress: "ghm1s3f9cq3x0p3tvnn0lp3wugladzpynksfyysttc",
+					validatorAddress: "ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl"
+				}
+				let data2 = {
+					gasPriceInFeeDenom: 0.25,
+					feeDenom: 'uGHM',
+					gasLimit: 500
+				}
+				let data = await toDelegate(data1,data2)
+				console.log('data',data)
+			}
+		}
+	}
+	
+</script>
 <style lang="scss" scoped>
 	.confirm {
 		position: relative;

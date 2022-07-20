@@ -4,6 +4,7 @@
     <view class="status_bar">
       <!-- APP下会占用系统原生消息因此需要该占位符 -->
     </view>
+		<view :address="address" :change:address="render.init"></view>
     <view class="main">
       <view class="account-header">
         <view class="header-left" @click="showSwitchWallet = true">	  
