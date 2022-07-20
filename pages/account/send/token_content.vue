@@ -34,19 +34,20 @@
 			</view>
 
 		</view>
-		<view style="height: 16rpx;background: #F4F6FA;margin-top: 32rpx;"/>
+		<view style="height: 16rpx;background: #F4F6FA;margin-top: 32rpx;" />
 		<view class="transaction_history">
 			<view class="nav">
 				<u-tabs :list="list" :is-scroll="false">
 				</u-tabs>
 			</view>
 			<view class="transaction_history_item">
-				<TokenColumn :tokenName="tokenName" :address="'fdsafsdafsafdasfasf'"
-					:tokenColumnStyle="tokenColumnStyle">
+				<TokenColumn v-for="item in record" :tokenName="item.address" :key="item.address"
+					@click.native="jumpDetails(item)"
+					:tokenIcon="item.icon" :tokenColumnStyle="tokenColumnStyle" :tokenAddress="item.time">
 					<template #right>
 						<view class="token_price">
-							<view>0.00000000</view>
-							<view>$0.00000</view>
+							<view>{{item.num}}</view>
+							<view>{{item.price}}</view>
 						</view>
 					</template>
 				</TokenColumn>
@@ -67,7 +68,7 @@
 import TokenColumn from './components/TokenColumn.vue'
 import mixin from '../mixins/index.js'
 export default {
-  mixins:[mixin],
+  mixins: [mixin],
   components: {
     TokenColumn
   },
@@ -95,15 +96,30 @@ export default {
         name: '失败'
       }
       ],
+      record: [{
+        address: '321321',
+        status: '',
+        icon: require('@/static/img/account/fasong2.png'),
+        num: '- 90 GHM',
+        price: '$40',
+        time: '22/06/2022 14:55:03'
+      }, {
+        address: '3213331',
+        status: '',
+        icon: require('@/static/img/account/weituo2.png'),
+        num: '- 90 GHM',
+        price: '$40',
+        time: '22/06/2022 14:55:03'
+      },]
     }
   },
   onLoad() {
 
   },
-  methods:{
-    jumpDetails(){
+  methods: {
+    jumpDetails(obj) {
       uni.navigateTo({
-        url:'./tokenInformation'
+        url: `./transactionDetails?transactionObject=${JSON.stringify(obj)}`
       })
     }
   }
@@ -174,7 +190,7 @@ export default {
 			background: #8397B110;
 			border-radius: 8rpx;
 			padding: 0 24rpx;
-			
+
 			.available,
 			.lock {
 				display: flex;
@@ -194,18 +210,19 @@ export default {
 
 	}
 
-.token_price{
-	text-align: right;
-	view:nth-child(2){
-		height: 24rpx;
-		font-weight: 400;
-		font-size: 24rpx;
-		color: #8397B1;
-		letter-spacing: 0;
-		line-height: 24rpx;
-		padding-top: 12rpx;
+	.token_price {
+		text-align: right;
+
+		view:nth-child(2) {
+			height: 24rpx;
+			font-weight: 400;
+			font-size: 24rpx;
+			color: #8397B1;
+			letter-spacing: 0;
+			line-height: 24rpx;
+			padding-top: 12rpx;
+		}
 	}
-}
 
 	.transaction_history {
 		/deep/.nav {
@@ -238,20 +255,23 @@ export default {
 		justify-content: space-between;
 		align-items: center;
 		padding: 0 32rpx;
-		button{
+
+		button {
 			width: 152rpx;
 			height: 80rpx;
 			line-height: 80rpx;
 			font-weight: 400;
 			font-size: 28rpx;
-			background: rgba(255,255,255,0.00);
-			border: 2rpx solid rgba(131,151,177,0.31);
+			background: rgba(255, 255, 255, 0.00);
+			border: 2rpx solid rgba(131, 151, 177, 0.31);
 			border-radius: 16rpx;
-			&:nth-child(1){
+
+			&:nth-child(1) {
 				background: #265EF2;
 				color: #FCFCFD;
 			}
-			&:nth-child(2){
+
+			&:nth-child(2) {
 				background: #16C39A;
 				color: #FCFCFD;
 			}

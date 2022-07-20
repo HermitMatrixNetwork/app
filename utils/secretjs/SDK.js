@@ -1,3 +1,6 @@
+import async from 'pbkdf2/lib/async'
+import WalletCrpto from '@/utils/walletCrypto.js'
+
 import {
   Tx
 } from 'secretjs-cjgs/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
@@ -15,8 +18,16 @@ let walletAddress = wallet.address
 
 //获取secret
 async function getSecret() {
+  wallet.getAccounts = new secretjs.Wallet().getAccounts.bind(wallet)
+  wallet.signAmino = new secretjs.Wallet().signAmino.bind(wallet)
+  wallet.signDirect = new secretjs.Wallet().signDirect.bind(wallet)
+  let privateKey64 = WalletCrpto.decode(wallet.privateKey64)
+  let privateKey = WalletCrpto.StringToUint(privateKey64)
+  let publicKey = await WalletCrpto.getPublickey(privateKey)
+  wallet.privateKey = privateKey
+  wallet.publicKey = publicKey
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  console.log('Secret', Secret)
+  // console.log('Secret', Secret)
   return Secret
 }
 //查询余额
@@ -50,18 +61,32 @@ export async function QueryStakingValidators() {
 //发送其他地址
 export async function SendTokentoOtherAddress(myaddress, toaddress, amount) {
   let Secret = await getSecret()
-  console.log(amount)
-  const result = await Secret.tx.bank.send({
-    fromAddress: myaddress,
-    toAddress: toaddress,
-    amount: [{
-      denom: 'uGHM',
-      amount: amount
-    }],
-  }, {
-    gasPriceInFeeDenom: 0.25,
-    feeDenom: 'uGHM',
-    gasLimit: 20000,
-  })
+  console.log(myaddress,toaddress,amount)
+  // try{
+  console.log(1111111111111, Secret)
+	 const result = await Secret.tx.bank.send({
+	   fromAddress: myaddress,
+	   toAddress: toaddress,
+	   amount: [{
+	     denom: 'uGHM',
+	     amount: '1000'
+	   }],
+	 }, {
+	   gasPriceInFeeDenom: 0.25,
+	   feeDenom: 'uGHM',
+	   gasLimit: 20000,
+	 })
+	 
+	 return result
+  // } catch {
+	 // return result
+  // }
+}
+
+export async function createViewKey(params, options) {
+  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  // let Secret = await getSecret()
+  const result = await Secret.tx.snip20.createViewingKey(params, options)
   return result
 }
+

@@ -106,7 +106,7 @@
 					</view>
 				</view>
 				<view class="submit-btn" @click="submitAgain">
-						<Submitbtn>确认</Submitbtn>
+					<Submitbtn>确认</Submitbtn>
 				</view>
 			</view>
 		</u-popup>
@@ -122,7 +122,6 @@
 					:warningStyleisShow="passwordCheck">
 				</InputTitle>
 				<text v-if="passwordCheck" class="waringPrompt">资金密码错误，请确认后重新输入!</text>
-				<!-- <button class="modal_submit" @click="passwordButton">确认</button> -->
 				<Submitbtn class="modal_submit" @click.native="passwordButton">确认</Submitbtn>
 			</view>
 		</u-modal>
@@ -138,10 +137,12 @@ import {
   getBalance
 } from '@/utils/secretjs/SDK.js'
 import mixin from '../mixins/index.js'
+import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   mixins: [mixin],
   components: {
-    InputTitle,Submitbtn
+    InputTitle,
+    Submitbtn
   },
   data() {
     return {
@@ -149,11 +150,11 @@ export default {
       tokenUrl: '../../../static/img/placeholder.jpeg',
       tokenName: 'GHM',
       inputVal: '',
-      balance: 1231,
+      balance: 12345,
       receiveAddress: '', //接收地址
       sendAmount: 123, //发送金额
       memoValue: '123', //Memo
-      payPassword: '123', //资金密码
+      payPassword: '12345678', //资金密码
       passwordCheck: false, //密码校验
       submitPopupIsShow: false,
       modalPasswordIsShow: false,
@@ -174,6 +175,8 @@ export default {
     this.receiveAddress = value.receiveAddress
     // console.log('languages ',languages);
     // console.log('this.language',this.l);
+    // console.log(this.$cache.get('_currentWallet').password)
+    // console.log('解密',WalletCrypto.decode(this.$cache.get('_currentWallet').password))
   },
   methods: {
     submitAgain() {
@@ -187,19 +190,17 @@ export default {
         memoValue,
         balance
       } = this.$data
+      // const aaa = await getBalance(receiveAddress)
+      // console.log('余额',aaa)
       if (!(receiveAddress && sendAmount && memoValue)) {
-        return console.log('输入不能为空',this.$children[0])
+        return console.log('输入不能为空')
       }
       if (sendAmount > balance || balance == 0) {
         return console.log('余额不足')
       }
-
-      // const res = await SendTokentoOtherAddress(this.userAddress,this.receiveAddress,this.sendAmount)
-      // const res = await getBalance(this.userAddress)
-      // console.log('转账结果',res)
       this.submitPopupIsShow = true
     },
-    passwordButton() {
+    async passwordButton() {
       const {
         receiveAddress,
         sendAmount,
@@ -214,10 +215,19 @@ export default {
         memoValue,
         aaa: '交易号'
       }
-      if (this.payPassword != 123) {
+      
+      const decode = WalletCrypto.decode(this.$cache.get('_currentWallet').password)
+      if (this.payPassword != decode) {
         this.passwordCheck = true
       } else {
         this.passwordCheck = false
+        const res = await SendTokentoOtherAddress(this.userAddress,this.receiveAddress,this.sendAmount)
+        console.log('转账结果',res)
+        if(res){
+          obj.status = 'success'
+        }else{
+          obj.status = 'fail'
+        }
         uni.navigateTo({
           url: `./transactionDetails?transactionObject=${JSON.stringify(obj)}`
         })
@@ -232,7 +242,7 @@ export default {
       console.log('接收到值', val)
       this.minersMsg = val
     },
-    scanCode(){ //扫码
+    scanCode() { //扫码
       let that = this
       uni.scanCode({
         onlyFromCamera: false,
