@@ -25,7 +25,6 @@ export function createWallet(fn, vm, mnemonic = '', cb) {
   
   renderUtils.runMethod(vm._$id, fn, {
     wallet,
-    cb,
-    vm
+    cb
   }, vm)
 }

@@ -64,7 +64,7 @@ export default {
     }
   },
   created() {
-    this.wallet = this.$cache.get('_currentWallet')
+    this.wallet = this.$cache.get('_temporaryWallet')
     this.mnemonicList = WalletCryto.decode(this.wallet.mnemonic).split(' ')
   },
   methods: {

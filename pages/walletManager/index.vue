@@ -8,7 +8,7 @@
         <view class="item-address">{{ wallet.address }}</view>
       </view>
       <view class="border"></view>
-      <view class="wallet-detail-name item" @click="editWalletName">
+      <view class="wallet-detail-name item" @click="clickItem('editName')">
         <text class="label-name label left">{{ language.walletName }}</text>
         <view class="right">
           <text class="item-name">{{ wallet.name }}</text>
@@ -46,7 +46,7 @@
       </view>
     </view>
 
-    <uni-button class="remove-wallet-btn">{{ language.removeWallet }}</uni-button>
+    <uni-button class="remove-wallet-btn" @click="clickItem('removeWallet')">{{ language.removeWallet }}</uni-button>
 
     <!-- 修改钱包名字模态框 -->
     <u-modal class="edit-name-modal" :show="showEditWalletNameModal" :closeOnClickOverlay="false"
@@ -120,12 +120,13 @@ export default {
     }
   },
   methods: {
-    editWalletName() {
-      this.showEditWalletNameModal = true
-    },
     clickItem(target) {
       this.target = target
-      this.showConfirmPasswordModal = true
+      if (target === 'editName') {
+        this.showEditWalletNameModal = true
+      } else {
+        this.showConfirmPasswordModal = true
+      }
     },
     cancel(target) {
       if (target === 'name') {
@@ -138,8 +139,38 @@ export default {
         this.showConfirmPasswordModal = false
       }
     },
-    confirm(target) {
-      if (target === 'name') {
+    verifyPawword() {
+      const walletPassword = WalletCrypto.decode(this.wallet.password)
+      const password = this.password.trim()
+      if (password !== walletPassword) {
+        this.confirmPasswordError = true 
+        return false
+      }
+      this.confirmPasswordError = false
+      this.showConfirmPasswordModal = false
+      this.password = ''
+      return true
+    },
+    removeWallet() {
+      const walletList = this.$cache.get('_walletList')
+      
+      if (walletList.length > 1) {
+        walletList.shift()
+        this.$cache.set('_currentWallet', walletList[0], 0)
+        this.$cache.set('_walletList', walletList, 0)
+        uni.reLaunch({
+          url: '/pages/account/index'
+        })
+      } else {
+        this.$cache.delete('_walletList')
+        this.$cache.delete('_currentWallet')
+        uni.reLaunch({
+          url: '/pages/index/index'
+        })
+      }
+    },
+    confirm() {
+      if (this.target === 'editName') {
         const name = this.name.trim()
         if (name.length > 10) {
           this.editNameError = true
@@ -150,13 +181,14 @@ export default {
         this.editNameError = false
         this.showEditWalletNameModal = false
         this.name = ''
-      } else if (target === 'password') {
-        const walletPassword = WalletCrypto.decode(this.wallet.password)
-        const password = this.password.trim()
-        if (password !== walletPassword) return this.confirmPasswordError = true
-        this.confirmPasswordError = false
-        this.showConfirmPasswordModal = false
-        this.password = ''
+      } else if (this.target === 'removeWallet') {
+        const result = this.verifyPawword()
+        if (!result) return
+        // 删除当前钱包
+        this.removeWallet()
+      } else {
+        const result = this.verifyPawword()
+        if (!result) return
         uni.navigateTo({
           url: `/pages/walletManager/export${this.target}Reminder`
         })
