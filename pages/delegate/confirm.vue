@@ -80,7 +80,7 @@ export default {
 		 async	toDelegate() {
 				let data1 = {
 					amount: {
-						amount: 10,
+						amount: '1',
 						denom: 'uGHM'
 					},
 					delegatorAddress: "ghm1s3f9cq3x0p3tvnn0lp3wugladzpynksfyysttc",
@@ -89,7 +89,7 @@ export default {
 				let data2 = {
 					gasPriceInFeeDenom: 0.25,
 					feeDenom: 'uGHM',
-					gasLimit: 500
+					gasLimit: 50000
 				}
 				let data = await toDelegate(data1,data2)
 				console.log('data',data)

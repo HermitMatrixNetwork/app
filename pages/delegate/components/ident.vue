@@ -130,6 +130,7 @@ export default {
 			async getValidators(status) {
 				let data = await getValidators(status || '')
 				let validators = data.validators
+				console.log('validators1011',validators)
 				validators.forEach(item => {
 					item.select = []
 					item.amount = 0

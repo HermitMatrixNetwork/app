@@ -3,7 +3,7 @@
 		<view :address="address" :change:address="init"></view>
 		<view class="header-box">
 			<view class="header">
-				<headerItem :title="language.totalDelegate" />
+				<headerItem :title="language.totalDelegate" :value="allData.total"/>
 				<headerItem :title="language.receiveRewards" />
 				<headerItem :title="language.rewardsReceived" />
 				<headerItem :title="language.unlocking" />
@@ -45,16 +45,16 @@
 					<view class="right">委托数量</view>
 				</view>
 				<view class="list-data">
-					<view class="list-item">
+					<view class="list-item" v-for="(item,index) in list" :key="index">
 						<view class="left">
-							<view class="name">节点名称</view>
-							<view class="other">gh212AB...C22T5218</view>
+							<view class="name">{{item.validator.description.moniker}}</view>
+							<view class="other">{{item.validator.operatorAddress|sliceAddress(7,8)}}</view>
 						</view>
 						<view class="center">
 							0.00023 GHM
 						</view>
 						<view class="right">
-							<view class="name">10000.00</view>
+							<view class="name">{{item.balance.amount}}</view>
 							<view class="other">2022.06.28 11:30:30</view>
 						</view>
 					</view>
@@ -68,15 +68,22 @@
 <script>
 import language from '../language'
 import headerItem from './header-item'
+import {
+  sliceAddress
+} from '@/utils/filters.js'
 export default {
   components: {
     headerItem
   },
-
+  filters: {
+    sliceAddress
+  },
   data(){
     return {
       language: language[this.$cache.get('_language')],
       address: '',
+      list: [],
+      allData: {},
       currentWallet: this.$cache.get('_currentWallet'),
     }
   },
@@ -88,24 +95,41 @@ export default {
       uni.navigateTo({
         url
       })
+    },
+    initData(data){
+      this.allData= data
+      let {list} = data
+      this.list = list
+      console.log('allData',this.allData)
     }
   }
 }
 	
 </script>
 <script lang="renderjs" module="render">
-import {getDelegationTotalRewards} from '@/utils/secretjs/SDK'
+import {getDelegationTotalRewards,getDelegatorDelegations,getStakingValidator} from '@/utils/secretjs/SDK'
 import renderUtils from '@/utils/render.base.js'
+import mixin from '../mixins/render.js'
 export default {
+  mixins: [mixin],
 	methods:{
 		async init(address){
-			// let address = "ghm15fze8tn9gd9nsypw8s4z6yn42f2udj4step2ex"
-			console.log('address',address)
 			if(address=='') return
-			let data = await getDelegationTotalRewards(address)
-			console.log('data',data)
-			renderUtils.runMethod(this._$id, 'searchData', data, this)
-		}
+			// let totalRewards = await getDelegationTotalRewards(address)
+			// console.log('totalRewards',totalRewards)
+			let list = await this.getLists(address)
+			let total = 0
+			list.forEach(item=>{
+				total += Number(item.balance.amount)
+			})
+			let data ={}
+			data.total = total
+			data.list = list
+			renderUtils.runMethod(this._$id, 'initData', data, this)
+
+			// renderUtils.runMethod(this._$id, 'searchData', data, this)
+		},
+	
 	}
 }
 </script>
@@ -165,11 +189,12 @@ export default {
 					width: 212rpx;
 				}
 				.center {
-					width: 266rpx;
+					flex: 1;
+					// width: 266rpx;
 					text-align: center;
 				}
 				.right {
-					width: 212rpx;
+					width: 220rpx;
 					text-align: right;
 				} 
 				.list-title {

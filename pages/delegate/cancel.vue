@@ -1,5 +1,6 @@
 <template>
 	<view class="sendPage">
+		<view :updataDelegate="updataDelegate" :change:updataDelegate="render.unDelegate"></view>
 		<custom-header :title="'取消委托'" :style="titleStyle">
 		</custom-header>
 		<view class="main-top">
@@ -9,8 +10,13 @@
 					<view class="title">
 						选择取消委托节点
 					</view>
-					<view class="change-token" @click="chooseToken">
-						<text>点击去选择</text>
+					<view class="change-token" @click="goTo('/pages/delegate/selectNode')">
+
+						<view v-if="selData">
+							<view class="name">{{selData.validator.description.moniker}}</view>
+							<view class="address">{{selData.validator.operatorAddress|sliceAddress(7,8)}}</view>
+						</view>
+						<text v-else>点击去选择</text>
 						<view class="icon-right">
 							<u-icon name="arrow-right" />
 						</view>
@@ -25,16 +31,11 @@
 			</view>
 
 			<view class="content">
-
-
 				<!-- 输入取消委托数量 -->
 				<view class="send-amount">
 					<InputTitle title="输入取消委托数量" :type="'number'" :placeholder="'请输入金额'" :inputVal.sync="sendAmount"
 						ref="sendAmountInput" :maxlength="19" :warningStyleisShow="sendAmount>balance?true:false"
-						:inputOtherStyle="sendAmountStyle">
-				<!-- 		<template #title-icon>
-							<text class="balance">可用：{{balance.toFixed(2)}}GHM</text>
-						</template> -->
+						:inputOtherStyle="sendAmountStyle" update:inputVal="upDateVal">
 						<template #inputRight>
 							<view class="choose-num">
 								<text></text><text></text>
@@ -45,7 +46,8 @@
 					</InputTitle>
 					<view class="other">
 						<div class="title">当前节点委托：</div>
-						<div class="num">10.00 GHM</div>
+						<div class="num" v-if="selData">{{selData.balance.amount}} GHM</div>
+						<div class="num" v-else>0 GHM</div>
 					</view>
 					<text v-if="sendAmount>balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text>
 				</view>
@@ -56,10 +58,8 @@
 				</view>
 			</view>
 		</view>
-
+		<miners-column @getMinersCost="getMinersCost"></miners-column>
 		<view class="main-bottom">
-			<miners-column @getMinersCost="getMinersCost"></miners-column>
-
 			<view class="submit-btn" @click="transferConfirm">
 				确认
 			</view>
@@ -133,19 +133,24 @@
 
 <script>
 import InputTitle from '@/pages/account/send/components/Input-title.vue'
+import mixin from './mixins/index.js'
 export default {
+  mixins: [mixin],
   components: {
     InputTitle
   },
   data() {
     return {
+      selData: '',//选择的委托
+      confirmData: {},
+      updataDelegate: 0,//更新委托
       tokenUrl: '@/static/img/placeholder.jpeg',
       tokenName: 'GHM',
       inputVal: '',
-      balance: 1231,
-      receiveAddress: '0xe5362b301e581d24507a91b8376139E03dBF04bb', //接收地址
-      sendAmount: 123, //发送金额
-      memoValue: '123', //Memo
+      balance: 0,
+      receiveAddress: this.$cache.get('_currentWallet').address, //接收地址
+      sendAmount: '', //发送金额
+      memoValue: '', //Memo
       payPassword: '123', //资金密码
       passwordCheck: false, //密码校验
       submitPopupIsShow: false,
@@ -166,16 +171,22 @@ export default {
   onLoad(value) {
 
   },
+  onShow() {
+    uni.$on('selList', data => {
+      this.selData = data
+      console.log(data)
+      this.balance = Number(data.balance.amount)
+    })
+  },
   methods: {
     chooseAddress() {
       uni.navigateTo({
         url: './adres_book'
       })
     },
-    chooseToken() {
-      console.log('代币选择')
+    goTo(url) {
       uni.navigateTo({
-        url: './token_list'
+        url
       })
     },
     submitAgain() {
@@ -199,34 +210,24 @@ export default {
     },
     passwordButton() {
       const {
-        receiveAddress,
-        sendAmount,
         memoValue,
         balance
       } = this.$data
-      const obj = {
-        sendAmount,
-        minersfee: this.minersMsg,
-        receiveAddress,
-        payAddress: this.userAddress,
-        memoValue,
-        aaa: '交易号'
-      }
       if (this.payPassword != 123) {
         this.passwordCheck = true
       } else {
         this.passwordCheck = false
-        console.log()
-        uni.navigateTo({
-          url: `./transactionDetails?transactionObject=${JSON.stringify(obj)}`
-        })
-        this.modalPasswordIsShow = false
+        this.updataDelegate++
+				
+        // uni.navigateTo({
+        //   url: `./transactionDetails?transactionObject=${JSON.stringify(obj)}`
+        // })
+        // this.modalPasswordIsShow = false
       }
       this.payPassword = ''
     },
     testAmount() {
-      // this.sendAmount = this.balance 
-      // console.log(this)
+      this.sendAmount = this.$refs.sendAmountInput.childValue = this.balance
     },
     getMinersCost(val) {
       console.log('接收到值', val)
@@ -234,6 +235,39 @@ export default {
     }
   },
 }
+</script>
+
+<script lang="renderjs" module="render">
+	import {
+		unDelegate
+	} from '@/utils/secretjs/SDK'
+	export default {
+		methods: {
+			async unDelegate(newValue, oldValue, ownerInstance, instance) {
+				if(newValue==0) return
+				
+				// console.log('newVal',newValue)
+				// console.log('oldValue',oldValue)
+				// console.log('ownerInstance',ownerInstance.$vm)
+				// console.log('instance',instance)
+				// console.log('datarend',data);
+				// unDelegate(data)
+				let data = ownerInstance.$vm
+				let data1 = {
+				  amount: data.selData.balance,
+				  ...data.selData.delegation
+				}
+				delete data1.shares
+				data1.amount.amount = String(data.balance)
+				let data2= {
+				  gasPriceInFeeDenom: 0.25,
+				  feeDenom: 'uGHM',
+				  gasLimit: 50000
+				}
+				let result = await unDelegate(data1,data2)
+			}
+		},
+	}
 </script>
 
 <style lang="scss" scoped>
@@ -282,7 +316,17 @@ export default {
 			align-items: center;
 			position: relative;
 			padding: 52rpx 32rpx;
+
 			// margin-bottom: 24rpx;
+			.name {
+				font-size: 28rpx;
+				color: #2C365A;
+			}
+
+			.address {
+				font-size: 24rpx;
+				color: #8397B1
+			}
 
 			&>image {
 				width: 56rpx;
@@ -330,7 +374,7 @@ export default {
 				position: absolute;
 				top: 50%;
 				right: 32rpx;
-				transform: translateY(20%);
+				transform: translateY(-60%);
 				font-weight: 500;
 				font-size: 28rpx;
 				color: #2C365A;
@@ -348,20 +392,24 @@ export default {
 			}
 
 		}
+
 		.other {
 			display: flex;
 			height: 80rpx;
 			line-height: 80rpx;
 			font-size: 24rpx;
 			color: #2C365A;
+
 			.title {
 				flex: 1;
 			}
+
 			.num {
 				flex: 1;
 				text-align: right;
 			}
 		}
+
 		.send-memo {
 			margin-top: 32rpx;
 		}
