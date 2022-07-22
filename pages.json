@@ -325,6 +325,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/mine/yuyan/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
   "globalStyle": {
     "navigationStyle": "custom"
