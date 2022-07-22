@@ -5,7 +5,7 @@ import { Tx } from 'secretjs-cjgs/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
 import secretjs from './index.js'
 let wallet = {}
 //#ifdef APP-PLUS
-wallet = plus.storage.getItem('_currentWallet')
+wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
 //#endif
 
 //#ifndef APP-PLUS
@@ -16,16 +16,15 @@ let walletAddress = wallet.address
 
 //获取secret
 async function getSecret() {
-  wallet.getAccounts = new secretjs.Wallet().getAccounts.bind(wallet)
-  wallet.signAmino = new secretjs.Wallet().signAmino.bind(wallet)
-  wallet.signDirect = new secretjs.Wallet().signDirect.bind(wallet)
   let privateKey64 = WalletCrpto.decode(wallet.privateKey64)
   let privateKey = WalletCrpto.StringToUint(privateKey64)
   let publicKey = await WalletCrpto.getPublickey(privateKey)
   wallet.privateKey = privateKey
   wallet.publicKey = publicKey
+  wallet.getAccounts = new secretjs.Wallet().getAccounts.bind(wallet)
+  wallet.signAmino = new secretjs.Wallet().signAmino.bind(wallet)
+  wallet.signDirect = new secretjs.Wallet().signDirect.bind(wallet)
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  console.log('Secret', Secret)
   return Secret
 }
 //查询余额

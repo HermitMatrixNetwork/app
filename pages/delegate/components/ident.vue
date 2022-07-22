@@ -73,7 +73,8 @@ export default {
       // language: language[this.$cache.get('_language')],
       address: '',
       currentWallet: this.$cache.get('_currentWallet'),
-      validators: []
+      validators: [],
+      isDel: true, //在委托
     }
   },
   created() {
@@ -118,7 +119,6 @@ export default {
 			return {
 				address: '',
 				checked: '',
-				isDel: true, //在委托
 			}
 		},
 		methods: {

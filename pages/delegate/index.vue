@@ -12,7 +12,7 @@
 					</view>
 			</div>
 			<My v-if="selindex==1"/>
-			<!-- <Ident v-else/> -->
+			<Ident v-else/>
 		</view>
 		<tab-bar :current-page="2" />
 	</view>
@@ -21,10 +21,11 @@
 <script>
 import language from './language'
 import My from './components/my.vue'
-// import Ident from './components/Ident.vue'
+import Ident from './components/Ident.vue'
 export default {
   components: {
-    My
+    My,
+    Ident
   },
   data() {
     return {
