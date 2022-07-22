@@ -62,14 +62,14 @@ export async function QueryStakingValidators() {
 export async function SendTokentoOtherAddress(myaddress, toaddress, amount) {
   let Secret = await getSecret()
   console.log(myaddress,toaddress,amount)
-  // try{
-  console.log(1111111111111, Secret)
+  try{
+
 	 const result = await Secret.tx.bank.send({
 	   fromAddress: myaddress,
 	   toAddress: toaddress,
 	   amount: [{
 	     denom: 'uGHM',
-	     amount: '1000'
+	     amount: amount
 	   }],
 	 }, {
 	   gasPriceInFeeDenom: 0.25,
@@ -78,9 +78,9 @@ export async function SendTokentoOtherAddress(myaddress, toaddress, amount) {
 	 })
 	 
 	 return result
-  // } catch {
-	 // return result
-  // }
+  } catch {
+	 return false
+  }
 }
 
 export async function createViewKey(params, options) {
@@ -90,8 +90,6 @@ export async function createViewKey(params, options) {
   return result
 }
 
-<<<<<<< HEAD
-=======
 //获取委托产生的总奖励
 export async function getDelegationTotalRewards(delegatorAddress) {
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
@@ -118,7 +116,7 @@ export async function getDelegatorDelegations(status) {
 //查询验证信息
 export async function getValidators(status) {
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-	console.log('Secret',Secret)
+  console.log('Secret',Secret)
   const result = await Secret.query.staking.validators({ status: status||'' })
 	  console.log('result',result)
   return result
@@ -128,4 +126,17 @@ export async function getSigningInfo(consAddress) {
   const result = await Secret.query.slashing.signingInfo({consAddress})
   return result
 }
->>>>>>> c32184defe42f693dcb1749e04b527785f46fa8c
+
+//查询账户信息
+export async function queryAccountInformation(query){
+  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  const result = await Secret.query.txsQuery(query)
+  return result
+}
+
+//通过hash查找
+export async function queryAccountHash(hash){
+  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  const result = await Secret.query.getTx(hash)
+  return result
+}

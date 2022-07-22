@@ -10,7 +10,7 @@
 			<view class="content">
 
 				<!-- 代币选择 -->
-				<view class="change-token" @click="toGo('/pages/account/send/token_list')">
+				<view class="change-token" @click="jumpTokenlist">
 					<image :src="tokenUrl"></image>
 					<text>{{tokenName}}</text>
 					<view class="icon-right">
@@ -208,7 +208,7 @@ export default {
         balance
       } = this.$data
       const obj = {
-        sendAmount,
+        sendAmount:sendAmount + 'GHM',
         minersfee: this.minersMsg,
         receiveAddress,
         payAddress: this.userAddress,
@@ -229,7 +229,7 @@ export default {
           obj.status = 'fail'
         }
         uni.navigateTo({
-          url: `./transactionDetails?transactionObject=${JSON.stringify(obj)}`
+          url: `./transactionDetails?transactionHash=${res.transactionHash}`
         })
         this.modalPasswordIsShow = false
       }
@@ -251,6 +251,19 @@ export default {
           console.log('条码内容：' + res.result)
           that.receiveAddress = that.$refs.addressInptval.childValue = res.result
         },
+      })
+    },
+    jumpTokenlist(){ //代币选择
+      let that = this
+      uni.navigateTo({
+        url:'/pages/account/send/token_list',
+        events:{
+          changeToken(data){
+            console.log('接收到token选择里的数据',data)
+            that.tokenUrl = data.icon
+            that.tokenName = data.name
+          }
+        }
       })
     }
   }

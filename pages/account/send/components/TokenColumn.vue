@@ -30,7 +30,7 @@ export default {
     },
     tokenIcon: {
       type: String,
-      default: require('../../../../static/img/placeholder.jpeg')
+      default: require('@/static/img/account/uGHM.png')
     },
     tokenColumnStyle: Object
   },

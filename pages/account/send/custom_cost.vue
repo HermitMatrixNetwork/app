@@ -57,12 +57,22 @@ export default {
     submitCustom() {
       if (!(this.priceValue && this.numValue)) return
       console.log('提交自定义')
-      const eventChannel = this.$scope.eventChannel // 兼容APP-NVUE
+   
+      const eventChannel = this.getOpenerEventChannel()
       eventChannel.emit('someEvent', {
         price: this.priceValue,
         num: this.numValue
       })
       uni.navigateBack()
+     
+      
+      // this.$emit('someEvent', {
+      //   price: this.priceValue,
+      //   num: this.numValue
+      // })
+      // uni.navigateBack()
+      
+      // console.log('aaaaaaaaaaa',this.$scope)
     },
   }
 }

@@ -7,10 +7,11 @@
 		</custom-header>
 
 		<view class="main_token">
-			<TokenColumn :tokenName="tokenName" :tokenColumnStyle="tokenColumnStyle">
+			<TokenColumn :tokenName="tokenName" :tokenColumnStyle="tokenColumnStyle"
+				:tokenAddress="address | sliceAddress(8,12) ">
 				<template #right>
 					<view style="padding-right: 16rpx;" class="token_price">
-						<view>0.00000000</view>
+						<view>{{balance.toFixed(2)}}</view>
 						<view>$0.00000</view>
 					</view>
 				</template>
@@ -40,25 +41,32 @@
 				<u-tabs :list="list" :is-scroll="false">
 				</u-tabs>
 			</view>
-			<view class="transaction_history_item">
-				<TokenColumn v-for="item in record" :tokenName="item.address" :key="item.address"
-					@click.native="jumpDetails(item)"
-					:tokenIcon="item.icon" :tokenColumnStyle="tokenColumnStyle" :tokenAddress="item.time">
-					<template #right>
-						<view class="token_price">
-							<view>{{item.num}}</view>
-							<view>{{item.price}}</view>
-						</view>
-					</template>
-				</TokenColumn>
-			</view>
+			<swiper class="transaction_history_item">
+				<swiper-item v-for="item in list" :key="item.name">
+					<scroll-view :scroll-y="true" style="height: 800rpx;">
+						<TokenColumn v-for="record in accountTransfer[item.type]"
+							:tokenName="address | sliceAddress(8,12) " :key="record.transactionHash"
+							@click.native="jumpDetails(record.transactionHash)" :tokenIcon="item.icon"
+							:tokenColumnStyle="tokenColumnStyle" :tokenAddress="'22/06/2022 14:55:03'">
+							<template #right>
+								<view class="token_price">
+									<view :style="{color: item.type == 'sender'?'#275EF1':''}">
+										{{item.type=='recipient'?'+':'-'}}{{record.jsonLog[0].events[3].attributes[2].value}}
+									</view>
+									<view>1111</view>
+								</view>
+							</template>
+						</TokenColumn>
+					</scroll-view>
+				</swiper-item>
+			</swiper>
 		</view>
 
 		<view class="operation_btn">
 			<button @click="toGo('/pages/account/send/index')">发送</button>
 			<button @click="toGo('/pages/account/receive')">接收</button>
 			<button @click="dealBtn">交易</button>
-			<button>委托</button>
+			<button @click="queryHash">委托</button>
 		</view>
 
 	</view>
@@ -67,6 +75,14 @@
 <script>
 import TokenColumn from './components/TokenColumn.vue'
 import mixin from '../mixins/index.js'
+import {
+  queryAccountInformation,
+  queryAccountHash,
+  getBalance
+} from '@/utils/secretjs/SDK.js'
+import {
+  sliceAddress
+} from '@/utils/filters.js'
 export default {
   mixins: [mixin],
   components: {
@@ -74,17 +90,24 @@ export default {
   },
   data() {
     return {
-      tokenName: 'GHM',
+      tokenName: 'uGHM',
+      balance: 0,
+      address: this.$cache.get('_currentWallet').address,
       tokenColumnStyle: {
         paddingBottom: '32rpx',
         paddingTop: '32rpx',
       },
       list: [{
-        name: '全部'
+        name: '全部',
+        type: 'all'
       }, {
-        name: '发送'
+        name: '发送',
+        type: 'sender',
+        icon: require('@/static/img/account/fasong2.png')
       }, {
-        name: '收款'
+        name: '收款',
+        type: 'recipient',
+        icon: require('@/static/img/account/shoukuan2.png')
       },
       {
         name: '委托'
@@ -110,19 +133,55 @@ export default {
         num: '- 90 GHM',
         price: '$40',
         time: '22/06/2022 14:55:03'
-      },]
+      }, ],
+      accountTransfer: {
+        all: [],
+        sender: [],
+        recipient: []
+      }
     }
   },
-  onLoad() {
-
+  async onLoad() {
+    // this.balance = await getBalance(this.address)
+    const {
+      balance
+    } = await getBalance(this.address)
+    this.balance = balance.amount * 1
+    this.accountTransfer['sender'] = await this.querytest(
+      `transfer.sender='${this.address}' AND message.module = 'bank'`)
+    this.accountTransfer['recipient'] = await this.querytest(
+      `transfer.recipient='${this.address}' AND message.module = 'bank'`)
+    this.accountTransfer['entrust'] = await this.querytest(
+      `rewards.withdraw.address='${this.address}'`)
+    console.log('账户交易', this.accountTransfer)
+    setTimeout(() => {
+      this.accountTransfer['recipient'].forEach(item => item.icon = require(
+        '@/static/img/account/shoukuan2.png'))
+      this.accountTransfer['sender'].forEach(item => item.icon = require(
+        '@/static/img/account/fasong2.png'))
+    }, 500)
+    // entrust
   },
   methods: {
-    jumpDetails(obj) {
+    jumpDetails(hash) {
       uni.navigateTo({
-        url: `./transactionDetails?transactionObject=${JSON.stringify(obj)}`
+        url: `./transactionDetails?transactionHash=${hash}`
       })
+    },
+    querytest(query) {
+      return new Promise(async (resolve, reject) => {
+        const res = await queryAccountInformation(query)
+        resolve(res)
+      })
+    },
+    async queryHash() {
+      const res = await queryAccountHash('034ADCCBB782E26DB4FCAA5715CFF96E1B4576C6646E61019A25D890440B09FC')
+      console.log(111111111111111111111, res)
     }
-  }
+  },
+  filters: {
+    sliceAddress,
+  },
 }
 </script>
 
@@ -243,6 +302,7 @@ export default {
 		.transaction_history_item {
 			margin: 0 32rpx;
 			padding: 32rpx 0;
+			height: 840rpx;
 		}
 	}
 
