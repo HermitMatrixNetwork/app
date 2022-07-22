@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      selindex: 2,
+      selindex: 1,
       language: language[this.$cache.get('_language')],
       list: [{
         // name: language.myDelegate,

@@ -2,7 +2,7 @@
 	<view class="header-item">
 		<view class="hi-left" :style="'background:'+radioBg"></view>
 		<view class="hi-right">
-			<view class="num" :style="'color:'+radioBg">0.00</view>
+			<view class="num" :style="'color:'+radioBg">{{value}}</view>
 			<view class="tip" :style="'color:'+radioBg">{{title}}</view>
 		</view>
 	</view>
@@ -18,6 +18,10 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    value: {
+      type:Number|String,
+      default: 0
     }
   }
 }

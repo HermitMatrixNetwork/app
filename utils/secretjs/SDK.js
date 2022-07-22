@@ -25,7 +25,7 @@ async function getSecret() {
   wallet.privateKey = privateKey
   wallet.publicKey = publicKey
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  // console.log('Secret', Secret)
+  console.log('Secret', Secret)
   return Secret
 }
 //查询余额
@@ -51,7 +51,8 @@ export async function getContractInfo(address) {
   }
 }
 
-export async function QueryStakingValidators() {
+export async function QueryStakingValidators(status) {
+  let Secret = await getSecret()
   const result = await Secret.secretjs.query.staking.validators(
     pagination,
     status
@@ -61,39 +62,41 @@ export async function QueryStakingValidators() {
 //发送其他地址
 export async function SendTokentoOtherAddress(myaddress, toaddress, amount) {
   let Secret = await getSecret()
-  console.log(myaddress,toaddress,amount)
-  try{
+  console.log(myaddress, toaddress, amount)
+  try {
+    const result = await Secret.tx.bank.send(
+      {
+        fromAddress: myaddress,
+        toAddress: toaddress,
+        amount: [
+          {
+            denom: 'uGHM',
+            amount: amount
+          }
+        ]
+      },
+      {
+        gasPriceInFeeDenom: 0.25,
+        feeDenom: 'uGHM',
+        gasLimit: 20000
+      }
+    )
 
-	 const result = await Secret.tx.bank.send({
-	   fromAddress: myaddress,
-	   toAddress: toaddress,
-	   amount: [{
-	     denom: 'uGHM',
-	     amount: amount
-	   }],
-	 }, {
-	   gasPriceInFeeDenom: 0.25,
-	   feeDenom: 'uGHM',
-	   gasLimit: 20000,
-	 })
-	 
-	 return result
+    return result
   } catch {
-	 return false
+    return false
   }
 }
 
 export async function createViewKey(params, options) {
-  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  // let Secret = await getSecret()
+  let Secret = await getSecret()
   const result = await Secret.tx.snip20.createViewingKey(params, options)
   return result
 }
 
 //获取委托产生的总奖励
 export async function getDelegationTotalRewards(delegatorAddress) {
-  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  console.log('Secret', Secret)
+  let Secret = await getSecret()
   const result = await Secret.query.distribution.delegationTotalRewards({
     delegatorAddress
   })
@@ -102,43 +105,72 @@ export async function getDelegationTotalRewards(delegatorAddress) {
 }
 
 //委托记录
-export async function getDelegatorDelegations(status) {
-  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+export async function getDelegatorDelegations(delegatorAddr) {
+  let Secret = await getSecret()
   const result = await Secret.query.staking.delegatorDelegations({
-    delegatorAddr: walletAddress
+    delegatorAddr
   })
-  return result
+  return result.delegationResponses
 }
 
 //查询验证信息
 export async function getValidators(status) {
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  console.log('Secret',Secret)
-  const result = await Secret.query.staking.validators({ status: status||'' })
-	  console.log('result',result)
+  console.log('Secret', Secret)
+  const result = await Secret.query.staking.validators({ status: status || '' })
+  console.log('result', result)
   return result
 }
 export async function getSigningInfo(consAddress) {
-  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  const result = await Secret.query.slashing.signingInfo({ consAddress })
+  let Secret = await getSecret()
+  const result = await Secret.query.slashing.signingInfo({
+    consAddress
+  })
   return result
 }
 //去委托
 export async function toDelegate(data1, data2) {
-  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  let Secret = await getSecret()
   const result = await Secret.tx.staking.delegate(data1, data2)
+  // console.log('result', result)
+  return result
+}
+//通过获取验证信息
+export async function getStakingValidator(delegatorAddr, validatorAddr) {
+  let Secret = await getSecret()
+  const result = await Secret.query.staking.validator({
+    delegatorAddr,
+    validatorAddr
+  })
+  return result
+}
+
+//取消委托
+export async function getDelegationRewards(delegatorAddr, validatorAddr) {
+  let Secret = await getSecret()
+  const result = await Secret.query.staking.validator({
+    delegatorAddr,
+    validatorAddr
+  })
+  return result
+}
+
+export async function unDelegate(data1, data2) {
+  let Secret = await getSecret()
+  const result = await Secret.tx.staking.undelegate(data1, data2)
+  console.log(result)
   return result
 }
 
 //查询账户信息
-export async function queryAccountInformation(query){
+export async function queryAccountInformation(query) {
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
   const result = await Secret.query.txsQuery(query)
   return result
 }
 
 //通过hash查找
-export async function queryAccountHash(hash){
+export async function queryAccountHash(hash) {
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
   const result = await Secret.query.getTx(hash)
   return result
