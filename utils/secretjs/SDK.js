@@ -1,9 +1,7 @@
 import async from 'pbkdf2/lib/async'
 import WalletCrpto from '@/utils/walletCrypto.js'
 
-import {
-  Tx
-} from 'secretjs-cjgs/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
+import { Tx } from 'secretjs-cjgs/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
 import secretjs from './index.js'
 let wallet = {}
 //#ifdef APP-PLUS
@@ -53,9 +51,11 @@ export async function getContractInfo(address) {
   }
 }
 
-
 export async function QueryStakingValidators() {
-  const result = await Secret.secretjs.query.staking.validators(pagination, status)
+  const result = await Secret.secretjs.query.staking.validators(
+    pagination,
+    status
+  )
 }
 
 //发送其他地址
@@ -93,13 +93,12 @@ export async function createViewKey(params, options) {
 //获取委托产生的总奖励
 export async function getDelegationTotalRewards(delegatorAddress) {
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  console.log('Secret',Secret)
+  console.log('Secret', Secret)
   const result = await Secret.query.distribution.delegationTotalRewards({
     delegatorAddress
   })
-  console.log('xxx',result)
+  console.log('xxx', result)
   return result
- 
 }
 
 //委托记录
@@ -108,10 +107,8 @@ export async function getDelegatorDelegations(status) {
   const result = await Secret.query.staking.delegatorDelegations({
     delegatorAddr: walletAddress
   })
-
   return result
 }
-
 
 //查询验证信息
 export async function getValidators(status) {
@@ -123,7 +120,13 @@ export async function getValidators(status) {
 }
 export async function getSigningInfo(consAddress) {
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  const result = await Secret.query.slashing.signingInfo({consAddress})
+  const result = await Secret.query.slashing.signingInfo({ consAddress })
+  return result
+}
+//去委托
+export async function toDelegate(data1, data2) {
+  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  const result = await Secret.tx.staking.delegate(data1, data2)
   return result
 }
 

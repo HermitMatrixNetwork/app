@@ -87,16 +87,17 @@ export default {
     confirm() {
       console.log(this.validators)
       let selData = this.validators.filter(item => {
-        return item.select.length>=1
-        console.log('   item.select.length>=1', item.select.length>=1)
+        return item.select.length >= 1
+        console.log('   item.select.length>=1', item.select.length >= 1)
       })
-      if(selData.length==0){
+      if (selData.length == 0) {
         return uni.showToast({
-          icon:'none',
+          icon: 'none',
           title: '请选择节点'
         })
       }
-      let data =encodeURIComponent(JSON.stringify(selData))
+      // let data = encodeURIComponent(JSON.stringify(selData))
+      let data= []
       uni.navigateTo({
         url:`/pages/delegate/confirm?data=${data}`
       })
