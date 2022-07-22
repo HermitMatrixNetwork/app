@@ -25,7 +25,17 @@ export default {
     'addWallet': '添加钱包',
     'createWallet': '创建钱包',
     'hermitWalle': 'Hermit Walle',
-    'verifyWalletPassword': '验证钱包密码'
+    'verifyWalletPassword': '验证钱包密码',
+    'resetFundPassword': '重置资金密码',
+    'resetPassword': '重置密码',
+    'VerifyOriginalPassword': '原资金密码验证',
+    'resetFundPasswordPlaceholder': '输入原资金密码',
+    'setNewPassowrd': '设置新密码',
+    'confirmNewPassword': '确认新密码',
+    'passwordDuplication': '新密码不能与原密码一致！',
+    'verifyPasswordFail': '再次输入新密码与首次输入不一致，请确认！',
+    'verifyPasswordCheckPlaceholder': '再次输入信息密码确认'
+    
   },
   'CT': {
 

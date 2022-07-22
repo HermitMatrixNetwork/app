@@ -294,8 +294,38 @@
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
+    }, {
+      "path": "pages/mine/dae/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/mine/anquan/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/mine/anquan/verifyTouchId",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
     }
-  ],
+      ,{
+            "path" : "pages/walletManager/resetPassword",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
   "globalStyle": {
     "navigationStyle": "custom"
   },

@@ -29,7 +29,7 @@
           钱包名称
         </view>
         <view class="item-input item-input-name">
-          <u-input v-model="name" placeholder="设置钱包名称"></u-input>
+          <u-input v-model="name" placeholder="设置钱包名称" :adjust-position="false"></u-input>
         </view>
       </view>
     </view>
