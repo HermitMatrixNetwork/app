@@ -1,9 +1,7 @@
 import async from 'pbkdf2/lib/async'
 import WalletCrpto from '@/utils/walletCrypto.js'
 
-import {
-  Tx
-} from 'secretjs-cjgs/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
+import { Tx } from 'secretjs-cjgs/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
 import secretjs from './index.js'
 let wallet = {}
 //#ifdef APP-PLUS
@@ -54,7 +52,7 @@ export async function getContractInfo(address) {
 }
 
 export async function QueryStakingValidators(status) {
-	 let Secret = await getSecret()
+  let Secret = await getSecret()
   const result = await Secret.secretjs.query.staking.validators(
     pagination,
     status
@@ -64,43 +62,29 @@ export async function QueryStakingValidators(status) {
 //发送其他地址
 export async function SendTokentoOtherAddress(myaddress, toaddress, amount) {
   let Secret = await getSecret()
-<<<<<<< HEAD
   console.log(myaddress, toaddress, amount)
-  // try{
-  console.log(1111111111111, Secret)
-  const result = await Secret.tx.bank.send({
-    fromAddress: myaddress,
-    toAddress: toaddress,
-    amount: [{
-      denom: 'uGHM',
-      amount: '1000'
-    }]
-  }, {
-    gasPriceInFeeDenom: 0.25,
-    feeDenom: 'uGHM',
-    gasLimit: 20000
-  })
-=======
-  console.log(myaddress,toaddress,amount)
-  try{
->>>>>>> 9d35fe0b1c669cbef3a59a235333b5181db93dd8
+  try {
+    const result = await Secret.tx.bank.send(
+      {
+        fromAddress: myaddress,
+        toAddress: toaddress,
+        amount: [
+          {
+            denom: 'uGHM',
+            amount: amount
+          }
+        ]
+      },
+      {
+        gasPriceInFeeDenom: 0.25,
+        feeDenom: 'uGHM',
+        gasLimit: 20000
+      }
+    )
 
-	 const result = await Secret.tx.bank.send({
-	   fromAddress: myaddress,
-	   toAddress: toaddress,
-	   amount: [{
-	     denom: 'uGHM',
-	     amount: amount
-	   }],
-	 }, {
-	   gasPriceInFeeDenom: 0.25,
-	   feeDenom: 'uGHM',
-	   gasLimit: 20000,
-	 })
-	 
-	 return result
+    return result
   } catch {
-	 return false
+    return false
   }
 }
 
@@ -131,19 +115,10 @@ export async function getDelegatorDelegations(delegatorAddr) {
 
 //查询验证信息
 export async function getValidators(status) {
-<<<<<<< HEAD
-  let Secret = await getSecret()
-  console.log('Secret', Secret)
-  const result = await Secret.query.staking.validators({
-    status: status || ''
-  })
-  console.log('result', result)
-=======
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  console.log('Secret',Secret)
-  const result = await Secret.query.staking.validators({ status: status||'' })
-	  console.log('result',result)
->>>>>>> 9d35fe0b1c669cbef3a59a235333b5181db93dd8
+  console.log('Secret', Secret)
+  const result = await Secret.query.staking.validators({ status: status || '' })
+  console.log('result', result)
   return result
 }
 export async function getSigningInfo(consAddress) {
@@ -161,43 +136,41 @@ export async function toDelegate(data1, data2) {
   return result
 }
 //通过获取验证信息
-export async function getStakingValidator(delegatorAddr,validatorAddr) {
-	  let Secret = await getSecret()
-  const result = await Secret.query.staking.validator({delegatorAddr,
+export async function getStakingValidator(delegatorAddr, validatorAddr) {
+  let Secret = await getSecret()
+  const result = await Secret.query.staking.validator({
+    delegatorAddr,
     validatorAddr
   })
   return result
 }
 
 //取消委托
-export async function getDelegationRewards(delegatorAddr,validatorAddr) {
-	  let Secret = await getSecret()
-  const result = await Secret.query.staking.validator({delegatorAddr,
+export async function getDelegationRewards(delegatorAddr, validatorAddr) {
+  let Secret = await getSecret()
+  const result = await Secret.query.staking.validator({
+    delegatorAddr,
     validatorAddr
   })
   return result
 }
 
-
-
-
-
-export async function unDelegate(data1,data2) {
-	  let Secret = await getSecret()
-  const result = await Secret.tx.staking.undelegate(data1,data2)
+export async function unDelegate(data1, data2) {
+  let Secret = await getSecret()
+  const result = await Secret.tx.staking.undelegate(data1, data2)
   console.log(result)
   return result
 }
 
 //查询账户信息
-export async function queryAccountInformation(query){
+export async function queryAccountInformation(query) {
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
   const result = await Secret.query.txsQuery(query)
   return result
 }
 
 //通过hash查找
-export async function queryAccountHash(hash){
+export async function queryAccountHash(hash) {
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
   const result = await Secret.query.getTx(hash)
   return result
