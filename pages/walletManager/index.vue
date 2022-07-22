@@ -15,6 +15,12 @@
           <image src="@/static/img/ic-arrow1.png" class="arrow-right"></image>
         </view>
       </view>
+      <view class="wallet-detail-name item" @click="toResetPassword">
+        <text class="label-name label left">{{ language.resetFundPassword }}</text>
+        <view class="right">
+          <image src="@/static/img/ic-arrow1.png" class="arrow-right"></image>
+        </view>
+      </view>
     </view>
 
     <view class="export-detail">
@@ -120,6 +126,11 @@ export default {
     }
   },
   methods: {
+    toResetPassword() {
+      uni.navigateTo({
+        url: './resetPassword'
+      })
+    },
     clickItem(target) {
       this.target = target
       if (target === 'editName') {
@@ -352,10 +363,13 @@ export default {
         background-color: #002FA7;
       }
 
-      .cancel {
+      /deep/ .cancel {
         color: #8397B1;
         background-color: rgba(0, 47, 167, 0.00);
         border: 1px solid rgba(131, 151, 177, 0.30);
+        &:after {
+          border: 0 !important
+        }
       }
     }
   }

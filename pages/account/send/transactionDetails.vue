@@ -18,6 +18,9 @@
 </template>
 
 <script>
+import {
+	  queryAccountHash
+} from '@/utils/secretjs/SDK.js'
 export default {
   data() {
     return {
@@ -33,31 +36,7 @@ export default {
     }
   },
   onLoad(value) {
-    // console.log(this.transaction)
-    const obj = JSON.parse(value.transactionObject)
-    this.transactionType = obj.status
-    console.log('aaaaaaaaaaa',this.transactionType)
-    this.transactionResult = Object.values(obj)
-    switch (this.transactionType) {
-    case 'success':
-      this.transactionMessage = this.transaction(this.success)
-      break
-    case 'fail':
-      this.status = '失败'
-      this.statusIcon = '../../../static/img/shibai1.png'
-      this.transactionMessage = this.transaction(this.success)
-      break
-    case 'entrust':
-      this.transactionMessage = this.transaction(this.entrust)
-      break
-    case 'receive':
-      this.transactionMessage = this.transaction(this.receive)
-      break
-    default:
-      break
-    }
-    // console.log('交易结果',this.transactionResult)
-    this.transaction()
+    this.getTranctionHash(value.transactionHash)
   },
   methods: {
     transaction(array) {
@@ -70,7 +49,35 @@ export default {
         obj[array[i]] = this.transactionResult[i]
       }
       return obj
-    }
+    },
+    async getTranctionHash(hash){
+      const res = await queryAccountHash(hash)
+      const {jsonLog} = res
+      const obj = Object.values(jsonLog[0]['events'][3])
+      this.transactionResult[0] = obj[1][2].value
+      this.transactionResult[1] = '$10000'
+      this.transactionResult[2] = obj[1][0].value
+      this.transactionResult[3] = obj[1][1].value
+      switch (obj[0]) {
+      case 'transfer':
+			  this.transactionMessage = this.transaction(this.success)
+			  break
+        //  case 'fail':
+			  // this.status = '失败'
+			  // this.statusIcon = '../../../static/img/shibai1.png'
+			  // this.transactionMessage = this.transaction(this.success)
+			  // break
+      case 'entrust':
+			  this.transactionMessage = this.transaction(this.entrust)
+			  break
+      case 'receive':
+			  this.transactionMessage = this.transaction(this.receive)
+			  break
+      default:
+			  break
+      }
+    },
+		
   }
 }
 </script>
