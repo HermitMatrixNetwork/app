@@ -49,13 +49,8 @@
               currentWallet.address | sliceAddress
             }}</text>
             <text v-else>∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗</text>
+            <image class="copy-icon" src="/static/img/account/copy.png" @click="copy"></image>
             <!-- {{eyeAsset?(currentWallet.address|sliceAddress):'∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗'}} -->
-            <u-icon
-              name="file-text"
-              color="#FFFFFF"
-              size="32rpx"
-              @click="copy"
-            />
           </view>
         </view>
       </view>
@@ -377,7 +372,10 @@ page {
         font-size: 24rpx;
         display: flex;
         align-items: center;
-        width: 420rpx;
+        text {
+          opacity: 0.7;
+          margin-right: 4rpx;
+        }
         // overflow: hidden;
       }
     }
@@ -471,5 +469,15 @@ page {
 
 /deep/ .u-tabs__wrapper__scroll-view-wrapper {
   flex: none;
+}
+
+.title {
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.copy-icon {
+  width: 32rpx;
+  height: 32rpx;
 }
 </style>

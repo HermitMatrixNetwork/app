@@ -2,12 +2,12 @@
   <view class="mine">
     <custom-header :showGoBack="false" title="我的" :customStyle="{ 'background-color': '#fff' }">
       <template slot="right">
-        <view class="header-icon">
+        <view class="header-icon" @click="toMessage">
           <image src="@/static/img/mine/message.png"></image>
+          <view class="message-badge"><text>{{ messageNum }}</text></view>
         </view>
       </template>
     </custom-header>
-
     <view class="import-container">
       <view class="top">
         <view class="import-type" v-for="(item, index) in top" :key="item.name" @click="toPage('top', index)">
@@ -108,13 +108,19 @@ export default {
         name: '关于我们',
         icon: 'guanyu.png',
         page: './guanyu/index'
-      }]
+      }],
+      messageNum: 10,
     }
   },
   methods: {
     toPage(position, index) {
       uni.navigateTo({
         url: this[position][index].page
+      })
+    },
+    toMessage() {
+      uni.navigateTo({
+        url: './message/index'
       })
     }
   }
@@ -128,9 +134,30 @@ export default {
   }
 
   .header-icon {
+    position: relative;
     display: flex;
     align-items: center;
-    height: 112rpx;
+    height: 46rpx;
+    width: 46rpx;
+
+    image {
+      width: 46rpx;
+      height: 46rpx;
+    }
+
+    .message-badge {
+      position: absolute;
+      right: -8rpx;
+      top: -12rpx;
+      width: 34rpx;
+      height: 34rpx;
+      border-radius: 50%;
+      background-color: #EE2933;
+      font-size: 12rpx;
+      color: #fff;
+      text-align: center;
+      line-height: 34rpx;
+    }
   }
 
   image {

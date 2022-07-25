@@ -75,10 +75,16 @@ export default {
   methods: {
     //切换tabbar
     changeItem(item) {
-      uni.switchTab({
-        url: item.path
-      })
-
+      if (item.id == 3) { // 交易
+        uni.showToast({
+          title: '暂未开放',
+          icon: 'none'
+        })
+      } else {
+        uni.switchTab({
+          url: item.path
+        })
+      }
     }
   }
 }

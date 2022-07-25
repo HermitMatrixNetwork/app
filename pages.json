@@ -161,37 +161,37 @@
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-    },  {
+    }, {
       "path": "pages/delegate/selectNode",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-    },{
+    }, {
       "path": "pages/delegate/search",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-    },{
+    }, {
       "path": "pages/delegate/income",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-    },{
+    }, {
       "path": "pages/delegate/transaction",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-    },{
+    }, {
       "path": "pages/delegate/transactionDetails",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-    },{
+    }, {
       "path": "pages/delegate/confirm",
       "style": {
         "navigationBarTitleText": "",
@@ -315,9 +315,58 @@
         "enablePullDownRefresh": false
       }
 
+    }, {
+      "path": "pages/walletManager/resetPassword",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/mine/yuyan/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/mine/message/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/mine/message/detail",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/mine/jiedian/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/mine/jiedian/addNode",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/mine/jiedian/editNode",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
     }
       ,{
-            "path" : "pages/walletManager/resetPassword",
+            "path" : "pages/mine/bangzhu/index",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
@@ -326,7 +375,25 @@
             
         }
         ,{
-            "path" : "pages/mine/yuyan/index",
+            "path" : "pages/mine/lianxi/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/mine/wenti/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/mine/guanyu/index",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
