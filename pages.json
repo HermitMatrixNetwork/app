@@ -401,6 +401,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/market/recently",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
   "globalStyle": {
     "navigationStyle": "custom"

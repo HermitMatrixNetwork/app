@@ -126,7 +126,7 @@
         </u-tabs>
         <scroll-view class="coinbox" scroll-y>
           <view class="content">
-            <TokenColumn @click.native="queryToken">
+            <TokenColumn class="token" @click.native="queryToken">
               <template #right>
                 <view class="coinNumber">
                   <view class="number">0.00000000</view>
@@ -134,6 +134,32 @@
                 </view>
               </template>
             </TokenColumn>
+            <view class="border">
+            </view>
+          </view>
+          <view class="content">
+            <TokenColumn class="token" @click.native="queryToken">
+              <template #right>
+                <view class="coinNumber">
+                  <view class="number">0.00000000</view>
+                  <view class="money">$0.00000</view>
+                </view>
+              </template>
+            </TokenColumn>
+            <view class="border">
+            </view>
+          </view>
+          <view class="content">
+            <TokenColumn class="token" @click.native="queryToken">
+              <template #right>
+                <view class="coinNumber">
+                  <view class="number">0.00000000</view>
+                  <view class="money">$0.00000</view>
+                </view>
+              </template>
+            </TokenColumn>
+            <view class="border">
+            </view>
           </view>
         </scroll-view>
       </view>
@@ -173,10 +199,10 @@ export default {
       coinList: [
         {
           name: '代币'
+        },
+        {
+          name: 'NFT'
         }
-        // {
-        //   name: 'NFT'
-        // }
       ],
       inactiveStyle: {
         fontSize: '32rpx',
@@ -480,4 +506,33 @@ page {
   width: 32rpx;
   height: 32rpx;
 }
+
+.content {
+  /deep/ .token {
+    padding-bottom: 40rpx;
+  }
+  .coinNumber {
+    .number {
+      height: 32rpx;
+      font-weight: 600;
+      font-size: 32rpx;
+      color: #2C365A;
+      line-height: 32rpx;
+      margin-bottom: 20rpx;
+    }
+    .money {
+      height: 28rpx;
+      font-weight: 400;
+      font-size: 28rpx;
+      color: #8397B1;
+      line-height: 28rpx;
+    }
+  }
+  .border {
+    height: 2rpx;
+    opacity: 0.16;
+    background-color: #8397B1;
+  }
+}
+
 </style>

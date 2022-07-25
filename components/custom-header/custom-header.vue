@@ -61,7 +61,7 @@ export default {
 
     .center {
       height: 32rpx;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 32rpx;
       color: #0F172A;
       line-height: 32rpx;
