@@ -62,29 +62,29 @@ export async function QueryStakingValidators(status) {
 export async function SendTokentoOtherAddress(myaddress, toaddress, amount) {
   let Secret = await getSecret()
   console.log(myaddress, toaddress, amount)
-  try {
-    const result = await Secret.tx.bank.send(
-      {
-        fromAddress: myaddress,
-        toAddress: toaddress,
-        amount: [
-          {
-            denom: 'uGHM',
-            amount: amount
-          }
-        ]
-      },
-      {
-        gasPriceInFeeDenom: 0.25,
-        feeDenom: 'uGHM',
-        gasLimit: 20000
-      }
-    )
-
-    return result
-  } catch {
-    return false
-  }
+  // try {
+  const result = await Secret.tx.bank.send(
+    {
+      fromAddress: myaddress,
+      toAddress: toaddress,
+      amount: [
+        {
+          denom: 'uGHM',
+          amount: amount + ''
+        }
+      ]
+    },
+    {
+      gasPriceInFeeDenom: 0.25,
+      feeDenom: 'uGHM',
+      gasLimit: 20000
+    }
+  )
+  console.log(1111111111111111111)
+  return result
+  // } catch {
+  //   return false
+  // }
 }
 
 export async function createViewKey(params, options) {

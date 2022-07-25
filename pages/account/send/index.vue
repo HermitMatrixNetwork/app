@@ -21,7 +21,7 @@
 				<!-- 收款地址 -->
 				<view class="collection-adres">
 					<InputTitle :title="'收款地址'" :type="'text'" :placeholder="'输入或粘贴钱包地址'" ref="addressInptval"
-						:inputVal.sync="receiveAddress">
+						:inputVal.sync="sendFormData.receiveAddress">
 						<template #title-icon>
 							<u-icon :name="require('../../../static/img/account/addressbook.png')" size="44rpx"
 								@click="toGo('/pages/account/send/adres_book')"></u-icon>
@@ -31,8 +31,8 @@
 
 				<!-- 发送金额 -->
 				<view class="send-amount">
-					<InputTitle :title="'发送金额'" :type="'number'" :placeholder="'请输入金额'" :inputVal.sync="sendAmount"
-						ref="sendAmountInput" :maxlength="19" :warningStyleisShow="sendAmount>balance?true:false"
+					<InputTitle :title="'发送金额'" :type="'number'" :placeholder="'请输入金额'" :inputVal.sync="sendFormData.sendAmount"
+						ref="sendAmountInput" :maxlength="19" :warningStyleisShow="sendFormData.sendAmount>balance?true:false"
 						:inputOtherStyle="sendAmountStyle">
 						<template #title-icon>
 							<text class="balance">可用：{{balance.toFixed(2)}}GHM</text>
@@ -44,7 +44,7 @@
 							</view>
 						</template>
 					</InputTitle>
-					<text v-if="sendAmount>balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text>
+					<text v-if="sendFormData.sendAmount>balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text>
 				</view>
 
 				<view class="send-memo">
@@ -75,19 +75,19 @@
 					<!-- 发送账户 -->
 					<view class="send-address">
 						<text>发送账户</text>
-						<text>{{userAddress}}</text>
+						<text>{{sendFormData.userAddress}}</text>
 					</view>
 
 					<!-- 接收账户 -->
 					<view class="receive_address">
 						<text>接收账户</text>
-						<text>{{receiveAddress}}</text>
+						<text>{{sendFormData.receiveAddress}}</text>
 					</view>
 
 					<!-- 转账金额 -->
 					<view class="transfer_amount">
 						<text>转账金额</text>
-						<text>{{sendAmount?sendAmount:'0'}}{{tokenName}}</text>
+						<text>{{sendFormData.sendAmount?sendFormData.sendAmount:'0'}}{{tokenName}}</text>
 					</view>
 
 					<!--Memo-->
@@ -121,8 +121,11 @@
 				<InputTitle :type="'password'" :placeholder="'请输入资金密码'" :inputVal.sync="payPassword"
 					:warningStyleisShow="passwordCheck">
 				</InputTitle>
+				<!-- <input type="text"> -->
 				<text v-if="passwordCheck" class="waringPrompt">资金密码错误，请确认后重新输入!</text>
-				<Submitbtn class="modal_submit" @click.native="passwordButton">确认</Submitbtn>
+				<!-- <Submitbtn class="modal_submit" @click.native="passwordButton" >确认</Submitbtn> -->
+				<button @click="passwordButton" :sendFormData="sendFormData" :change:sendFormData="render.receiveMsg"
+					:check="chechSuccess" :change:check="render.sendToken">确认</button>
 			</view>
 		</u-modal>
 	</view>
@@ -151,14 +154,17 @@ export default {
       tokenName: 'GHM',
       inputVal: '',
       balance: 12345,
-      receiveAddress: '', //接收地址
-      sendAmount: 123, //发送金额
       memoValue: '123', //Memo
       payPassword: '12345678', //资金密码
       passwordCheck: false, //密码校验
       submitPopupIsShow: false,
       modalPasswordIsShow: false,
-      userAddress: this.$cache.get('_currentWallet').address,
+      chechSuccess:0,
+      sendFormData: {
+        userAddress: this.$cache.get('_currentWallet').address,
+        receiveAddress: 'ghm1s3f9cq3x0p3tvnn0lp3wugladzpynksfyysttc', //接收地址
+        sendAmount: 123, //发送金额
+      },
       titleStyle: {
         background: '#FFFFFF'
       },
@@ -187,11 +193,8 @@ export default {
       const {
         receiveAddress,
         sendAmount,
-        memoValue,
-        balance
-      } = this.$data
-      // const aaa = await getBalance(receiveAddress)
-      // console.log('余额',aaa)
+      } = this.sendFormData
+      const {balance,memoValue} = this.$data
       if (!(receiveAddress && sendAmount && memoValue)) {
         return console.log('输入不能为空')
       }
@@ -201,42 +204,17 @@ export default {
       this.submitPopupIsShow = true
     },
     async passwordButton() {
-      const {
-        receiveAddress,
-        sendAmount,
-        memoValue,
-        balance
-      } = this.$data
-      const obj = {
-        sendAmount:sendAmount + 'GHM',
-        minersfee: this.minersMsg,
-        receiveAddress,
-        payAddress: this.userAddress,
-        memoValue,
-        aaa: '交易号'
-      }
-      
       const decode = WalletCrypto.decode(this.$cache.get('_currentWallet').password)
       if (this.payPassword != decode) {
         this.passwordCheck = true
       } else {
         this.passwordCheck = false
-        const res = await SendTokentoOtherAddress(this.userAddress,this.receiveAddress,this.sendAmount)
-        console.log('转账结果',res)
-        if(res){
-          obj.status = 'success'
-        }else{
-          obj.status = 'fail'
-        }
-        uni.navigateTo({
-          url: `./transactionDetails?transactionHash=${res.transactionHash}`
-        })
-        this.modalPasswordIsShow = false
+        this.chechSuccess = 1
       }
       this.payPassword = ''
     },
     testAmount() {
-      this.sendAmount = this.$refs.sendAmountInput.childValue = this.balance
+      this.sendFormData.sendAmount = this.$refs.sendAmountInput.childValue = this.balance
     },
     getMinersCost(val) {
       console.log('接收到值', val)
@@ -253,23 +231,63 @@ export default {
         },
       })
     },
-    jumpTokenlist(){ //代币选择
+    jumpTokenlist() { //代币选择
       let that = this
       uni.navigateTo({
-        url:'/pages/account/send/token_list',
-        events:{
-          changeToken(data){
-            console.log('接收到token选择里的数据',data)
+        url: '/pages/account/send/token_list',
+        events: {
+          changeToken(data) {
+            console.log('接收到token选择里的数据', data)
             that.tokenUrl = data.icon
             that.tokenName = data.name
           }
         }
       })
+    },
+    dealSuccessJump(result){
+      console.log('接收renderjs',result)
+      uni.navigateTo({
+			  url: `./transactionDetails?transactionHash=${result.transactionHash}`
+      })
+      this.modalPasswordIsShow = false
     }
   }
 }
 </script>
-
+<script lang="renderjs" module="render">
+	import {
+		SendTokentoOtherAddress,
+		getBalance
+	} from '@/utils/secretjs/SDK.js'
+	import WalletCrypto from '@/utils/walletCrypto.js'
+	import renderUtils from '@/utils/render.base.js'
+	export default {
+		data() {
+			return {
+				message: {},
+			}
+		},
+		methods: {
+			async sendToken(newValue, oldValue, ownerVm, vm) { 
+				if(newValue == 0) return
+				console.log('校验通过开始调用');
+				const {
+					receiveAddress,
+					userAddress,
+					sendAmount
+				} = this.message
+				console.log('接收地址', receiveAddress);
+				const res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount)
+				renderUtils.runMethod(this._$id, 'dealSuccessJump', res, this)
+				
+			},
+			receiveMsg(value) {
+				console.log(value);
+				this.message = value
+			}
+		}
+	}
+</script>
 <style lang="scss" scoped>
 	.sendPage {
 		width: 100%;

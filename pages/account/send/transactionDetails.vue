@@ -82,6 +82,14 @@ export default {
 }
 </script>
 
+<script lang="renderjs" module="render">
+	import {
+		  queryAccountHash
+	} from '@/utils/secretjs/SDK.js'
+	export default{
+		
+	}
+</script>
 <style lang="scss" scoped>
 	.transacTionDestail {
 		width: 100%;
