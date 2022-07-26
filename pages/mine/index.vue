@@ -73,7 +73,7 @@ export default {
       top: [{
         name: '地址薄',
         icon: 'dizhipu.png',
-        page: './importFromMnemonic'
+        page: '/pages/account/send/adres_book'
       }, {
         name: '大额提醒',
         icon: 'dae.png',
