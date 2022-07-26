@@ -1,6 +1,6 @@
 const mainCoin = {
   label: 'GHM',
-  logo:'',
+  logo: '',
 }
 
 export default mainCoin

@@ -61,7 +61,6 @@ export async function QueryStakingValidators(status) {
 //发送其他地址
 export async function SendTokentoOtherAddress(myaddress, toaddress, amount) {
   let Secret = await getSecret()
-  console.log(myaddress, toaddress, amount)
   // try {
   const result = await Secret.tx.bank.send(
     {
@@ -80,7 +79,6 @@ export async function SendTokentoOtherAddress(myaddress, toaddress, amount) {
       gasLimit: 20000
     }
   )
-  console.log(1111111111111111111)
   return result
   // } catch {
   //   return false
@@ -99,7 +97,6 @@ export async function getDelegationTotalRewards(delegatorAddress) {
   const result = await Secret.query.distribution.delegationTotalRewards({
     delegatorAddress
   })
-  console.log('xxx', result)
   return result
 }
 
@@ -115,9 +112,7 @@ export async function getDelegatorDelegations(delegatorAddr) {
 //查询验证信息
 export async function getValidators(status) {
   let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  console.log('Secret', Secret)
   const result = await Secret.query.staking.validators({ status: status || '' })
-  console.log('result', result)
   return result
 }
 export async function getSigningInfo(consAddress) {

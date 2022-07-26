@@ -70,7 +70,7 @@
           ></u-icon>
           <text>接收</text>
         </view>
-        <view class="column-item">
+        <view class="column-item" @click="toDelegate">
           <u-icon
             :name="require('../../static/img/account/delegate.png')"
             size="80rpx"
@@ -254,6 +254,11 @@ export default {
     // console.log('currentWallet',this.currentWallet)
   },
   methods: {
+    toDelegate() {
+      uni.switchTab({
+        url: '/pages/delegate/index'
+      })
+    },
     click(item) {
       console.log('item', item)
     },

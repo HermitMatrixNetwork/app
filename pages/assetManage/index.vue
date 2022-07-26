@@ -9,14 +9,14 @@
 			<view class="title">
 				{{language.homeAssets}}
 			</view>
-			<u-icon class="right" name="arrow-right" color="#8397B1"></u-icon>
+			<image src="/static/img/ic-arrow1.png"></image>
 		</view>
 		<view class="space"/>
 		<view class="hot-asset">
 			<view class="title">{{language.hotAssets}}</view>
 		</view>
 		<view class="list">
-			<List />
+			<List :list="list" />
 		</view>
 	</view>
 </template>
@@ -28,7 +28,14 @@ export default {
   data(){
     return {
 		  language: languages[this.$cache.get('_language')],
-      address: ''//查询地址
+      address: '',//查询地址
+      list: [{
+        label: 'BTC',
+        address: '0x20591e93afasdasd9768c40eeb39'
+      },{
+        label: 'BTC',
+        address: '0x20591e93afasdasd971268c40eeb39'
+      }]
     }
   },
   components: {
@@ -64,19 +71,19 @@ export default {
 			.u-search__content {
 				width: 628rpx;
 			}
+      /deep/ input {
+        font-weight: 500 !important;
+        color: #8397B1 !important;
+      }
 		}
 		.home-assets {
 			display: flex;
-			height: 98rpx;
 			padding: 32rpx;
-			margin-bottom: 16rpx;
-			vertical-align: middle;
+      align-items: center;
+      justify-content: space-between;
 			font-size: 32rpx;
 			color: #2C365A;
-			.title {
-				width: 100%;
-			}
-			.right {
+			image {
 				width: 32rpx;
 				height: 32rpx;
 			}
@@ -88,10 +95,9 @@ export default {
 		.hot-asset {
 			padding:32rpx 30rpx 32rpx 32rpx; 
 			.title {
-				height: 62rpx;
 				padding-top: 16rpx;
 				font-size: 32rpx;
-				font-weight: bold;
+				font-weight: 600;
 				color: #2C365A;
 			}
 		}
