@@ -326,8 +326,7 @@ export default {
 			font-size: 24rpx;
 			color: #8397B1;
 			letter-spacing: 0;
-			line-height: 24rpx;
-			padding-top: 12rpx;
+			padding-top: 16rpx;
 		}
 	}
 

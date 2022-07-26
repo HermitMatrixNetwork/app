@@ -52,7 +52,7 @@ export default {
 			align-items: center;
 			justify-content: space-between;
 			width: 100%;
-			height: 121rpx;
+			height: 72rpx;
 			position: relative;
 
 			.left {
@@ -63,8 +63,7 @@ export default {
 				width: 332rpx;
 
 				.title {
-					font-family: PingFangSC-Medium;
-					font-weight: 600;
+					font-weight: 500;
 					font-size: 28rpx;
 					color: #2C365A;
 					letter-spacing: 0;
@@ -73,12 +72,12 @@ export default {
 
 				.address {
 					height: 24rpx;
-					font-family: PingFangSC-Regular;
 					font-weight: 400;
 					font-size: 24rpx;
 					color: #8397B1;
 					letter-spacing: 0;
 					line-height: 24rpx;
+					margin-top: 16rpx;
 				}
 			}
 

@@ -16,7 +16,7 @@
       <My v-if="selindex == 1" />
       
       <!-- 验证人 -->
-      <Ident v-else />
+      <!-- <Ident v-else /> -->
       
     </view>
     <tab-bar :current-page="2" />
@@ -26,11 +26,11 @@
 <script>
 import language from './language'
 import My from './components/my.vue'
-import Ident from './components/Ident.vue'
+// import Ident from './components/Ident.vue'
 export default {
   components: {
     My,
-    Ident
+    // Ident
   },
   data() {
     return {
