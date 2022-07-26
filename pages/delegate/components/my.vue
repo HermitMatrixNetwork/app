@@ -158,12 +158,9 @@ export default {
 		  justify-content: space-around;
 		  border: 2px solid rgba(44, 54, 90, 0.06);
 		  .column-item {
-		    width: 25%;
 		    color: #2c4364;
 		    font-size: 28rpx;
-		    font-weight: 400;
 		    text-align: center;
-		    height: 100%;
 		    display: flex;
 		    flex-direction: column;
 		    align-items: center;

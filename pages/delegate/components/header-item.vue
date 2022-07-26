@@ -2,7 +2,7 @@
 	<view class="header-item">
 		<view class="hi-left" :style="'background:'+radioBg"></view>
 		<view class="hi-right">
-			<view class="num" :style="'color:'+radioBg">{{value}}</view>
+			<view class="num" :style="'color:'+radioBg">{{ value | valueFormat }}</view>
 			<view class="tip" :style="'color:'+radioBg">{{title}}</view>
 		</view>
 	</view>
@@ -22,6 +22,11 @@ export default {
     value: {
       type:Number|String,
       default: 0
+    }
+  },
+  filters: {
+    valueFormat(val) {
+      return val.toFixed(2)
     }
   }
 }

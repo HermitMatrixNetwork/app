@@ -33,12 +33,13 @@ export default {
 
 <style lang="scss" scoped>
 	.no-data {
-		text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 		font-size: 28rpx;
 		color: #8397B1;
 		.no-img {
 			width: 240rpx;
-			height: 158rpx;
 			margin-bottom: 32rpx;
 		}
 		.btn {
