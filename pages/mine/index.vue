@@ -153,7 +153,7 @@ export default {
       height: 34rpx;
       border-radius: 50%;
       background-color: #EE2933;
-      font-size: 12rpx;
+      font-size: 22rpx;
       color: #fff;
       text-align: center;
       line-height: 34rpx;
