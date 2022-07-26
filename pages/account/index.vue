@@ -49,13 +49,8 @@
               currentWallet.address | sliceAddress
             }}</text>
             <text v-else>∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗</text>
+            <image class="copy-icon" src="/static/img/account/copy.png" @click="copy"></image>
             <!-- {{eyeAsset?(currentWallet.address|sliceAddress):'∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗'}} -->
-            <u-icon
-              name="file-text"
-              color="#FFFFFF"
-              size="32rpx"
-              @click="copy"
-            />
           </view>
         </view>
       </view>
@@ -75,7 +70,7 @@
           ></u-icon>
           <text>接收</text>
         </view>
-        <view class="column-item">
+        <view class="column-item" @click="toDelegate">
           <u-icon
             :name="require('../../static/img/account/delegate.png')"
             size="80rpx"
@@ -131,7 +126,7 @@
         </u-tabs>
         <scroll-view class="coinbox" scroll-y>
           <view class="content">
-            <TokenColumn @click.native="queryToken">
+            <TokenColumn class="token" @click.native="queryToken">
               <template #right>
                 <view class="coinNumber">
                   <view class="number">0.00000000</view>
@@ -139,6 +134,32 @@
                 </view>
               </template>
             </TokenColumn>
+            <view class="border">
+            </view>
+          </view>
+          <view class="content">
+            <TokenColumn class="token" @click.native="queryToken">
+              <template #right>
+                <view class="coinNumber">
+                  <view class="number">0.00000000</view>
+                  <view class="money">$0.00000</view>
+                </view>
+              </template>
+            </TokenColumn>
+            <view class="border">
+            </view>
+          </view>
+          <view class="content">
+            <TokenColumn class="token" @click.native="queryToken">
+              <template #right>
+                <view class="coinNumber">
+                  <view class="number">0.00000000</view>
+                  <view class="money">$0.00000</view>
+                </view>
+              </template>
+            </TokenColumn>
+            <view class="border">
+            </view>
           </view>
         </scroll-view>
       </view>
@@ -178,10 +199,10 @@ export default {
       coinList: [
         {
           name: '代币'
+        },
+        {
+          name: 'NFT'
         }
-        // {
-        //   name: 'NFT'
-        // }
       ],
       inactiveStyle: {
         fontSize: '32rpx',
@@ -233,6 +254,11 @@ export default {
     // console.log('currentWallet',this.currentWallet)
   },
   methods: {
+    toDelegate() {
+      uni.switchTab({
+        url: '/pages/delegate/index'
+      })
+    },
     click(item) {
       console.log('item', item)
     },
@@ -377,7 +403,10 @@ page {
         font-size: 24rpx;
         display: flex;
         align-items: center;
-        width: 420rpx;
+        text {
+          opacity: 0.7;
+          margin-right: 4rpx;
+        }
         // overflow: hidden;
       }
     }
@@ -472,4 +501,43 @@ page {
 /deep/ .u-tabs__wrapper__scroll-view-wrapper {
   flex: none;
 }
+
+.title {
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.copy-icon {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.content {
+  /deep/ .token {
+    padding-bottom: 40rpx;
+  }
+  .coinNumber {
+    .number {
+      height: 32rpx;
+      font-weight: 600;
+      font-size: 32rpx;
+      color: #2C365A;
+      line-height: 32rpx;
+      margin-bottom: 20rpx;
+    }
+    .money {
+      height: 28rpx;
+      font-weight: 400;
+      font-size: 28rpx;
+      color: #8397B1;
+      line-height: 28rpx;
+    }
+  }
+  .border {
+    height: 2rpx;
+    opacity: 0.16;
+    background-color: #8397B1;
+  }
+}
+
 </style>

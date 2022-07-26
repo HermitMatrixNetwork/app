@@ -1,31 +1,36 @@
 <template>
-	<view class="delegate">
-		<view class="container">
-			<div class="top">
-					<view class="left" @click="selindex=1">
-						{{language.myDelegate}}
-						<view v-if="selindex==1" class="line"/>
-					</view>
-					<view class="right" @click="selindex=2">
-							{{language.verifiedBy}}
-						<view v-if="selindex==2" class="line"/>
-					</view>
-			</div>
-			<My v-if="selindex==1"/>
-			<!-- <Ident v-else/> -->
-		</view>
-		<tab-bar :current-page="2" />
-	</view>
+  <view class="delegate">
+    <view class="container">
+      <div class="top">
+        <view class="left" @click="selindex = 1" :class="{ actived: selindex == 1 }">
+          {{language.myDelegate}}
+          <view v-if="selindex == 1" class="line" />
+        </view>
+        <view class="right" @click="selindex = 2" :class="{ actived: selindex == 2 }">
+          {{language.verifiedBy}}
+          <view v-if="selindex == 2" class="line" />
+        </view>
+      </div>
+      
+      <!-- 我的委托 -->
+      <My v-if="selindex == 1" />
+      
+      <!-- 验证人 -->
+      <Ident v-else />
+      
+    </view>
+    <tab-bar :current-page="2" />
+  </view>
 </template>
 
 <script>
 import language from './language'
 import My from './components/my.vue'
-// import Ident from './components/Ident.vue'
+import Ident from './components/Ident.vue'
 export default {
   components: {
     My,
-    // Ident
+    Ident
   },
   data() {
     return {
@@ -43,35 +48,42 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	.delegate {
-		.container {
-			.top {
-				display: flex;
-				height: 104rpx;
-				padding: 26rpx 32rpx;
-				font-size: 40rpx;
-				color: #2C365A;
-				border-radius: 2px;
-			}
+  .delegate {
+    .container {
+      .top {
+        display: flex;
+        padding: 26rpx 32rpx;
+        font-size: 40rpx;
+        color: #8397B1;
+        border-radius: 2px;
+        
+      }
 
-			.left {
-				width: 160rpx;
-				text-align: center;
+      .left {
+        width: 160rpx;
+        text-align: center;
 
-			}
+      }
 
-			.right {
-				width: 120rpx;
-				margin-left: 32rpx;
-			}
+      .right {
+        width: 120rpx;
+        margin-left: 32rpx;
+      }
 
-			.line {
-				height: 4rpx;
-				margin-top: 12rpx;
-				background: #275EF1;
-				border-radius: 32px;
+      .line {
+        height: 4rpx;
+        width: 80%;
+        margin: auto;
+        margin-top: 12rpx;
+        background: #275EF1;
+        border-radius: 32px;
+        opacity: .8;
+      }
+    }
+  }
 
-			}
-		}
-	}
+  .actived {
+    color: #2C365A;
+    font-weight: 600;
+  }
 </style>

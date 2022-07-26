@@ -52,7 +52,7 @@ export default {
 			align-items: center;
 			justify-content: space-between;
 			width: 100%;
-			height: 72rpx;
+			height: 121rpx;
 			position: relative;
 
 			.left {
@@ -64,7 +64,7 @@ export default {
 
 				.title {
 					font-family: PingFangSC-Medium;
-					font-weight: 500;
+					font-weight: 600;
 					font-size: 28rpx;
 					color: #2C365A;
 					letter-spacing: 0;
