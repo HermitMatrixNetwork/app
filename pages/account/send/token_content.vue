@@ -38,11 +38,11 @@
 		<view style="height: 16rpx;background: #F4F6FA;margin-top: 32rpx;" />
 		<view class="transaction_history">
 			<view class="nav">
-				<u-tabs :list="list" :is-scroll="false">
+				<u-tabs :list="list" :is-scroll="false" @click="switchTabs" :current="listCurrentIndex">
 				</u-tabs>
 			</view>
-			<swiper class="transaction_history_item">
-				<swiper-item v-for="item in list" :key="item.name">
+			<swiper class="transaction_history_item" :current="listCurrentIndex" @change="switchSwiper">
+				<swiper-item v-for="(item,index) in list" :key="item.name" :item-id="index+''">
 					<scroll-view :scroll-y="true" style="height: 800rpx;">
 						<TokenColumn v-for="record in accountTransfer[item.type]"
 							:tokenName="address | sliceAddress(8,12) " :key="record.transactionHash"
@@ -93,6 +93,7 @@ export default {
       tokenName: 'uGHM',
       balance: 0,
       address: this.$cache.get('_currentWallet').address,
+      listCurrentIndex:1,
       tokenColumnStyle: {
         paddingBottom: '32rpx',
         paddingTop: '32rpx',
@@ -176,7 +177,16 @@ export default {
     },
     async queryHash() {
       const res = await queryAccountHash('034ADCCBB782E26DB4FCAA5715CFF96E1B4576C6646E61019A25D890440B09FC')
-      console.log(111111111111111111111, res)
+      // console.log(111111111111111111111, res)
+    },
+    switchTabs(e){
+      const {index} = e
+      this.listCurrentIndex = index
+    },
+    switchSwiper(e){
+      const {detail:{current}} = e
+      this.listCurrentIndex = current
+			
     }
   },
   filters: {
@@ -184,6 +194,21 @@ export default {
   },
 }
 </script>
+<script lang="renderjs" module="render">
+	import {getBalance} from '@/utils/secretjs/SDK.js'
+	export default {
+		data(){
+			return{
+				address:''
+			}
+		},
+		methods:{
+			
+		}
+	}
+	
+</script>
+
 
 <style lang="scss" scoped>
 	.token_content {
@@ -256,9 +281,32 @@ export default {
 				align-items: center;
 				justify-content: space-between;
 				height: 103rpx;
+				font-family: PingFangSC-Regular;
+				font-weight: 400;
+				font-size: 24rpx;
+				color: #8397B1;
+				letter-spacing: 0;
+				line-height: 24rpx;
 
 				.quantity {
 					text-align: right;
+					view{
+						&:nth-child(1){
+							font-family: DIN-Medium;
+							font-weight: 500;
+							font-size: 28rpx;
+							color: #2C365A;
+							letter-spacing: 0;
+						}
+						&:nth-child(2){
+							padding-top: 10rpx;
+							font-family: DIN-Regular;
+							font-weight: 400;
+							font-size: 22rpx;
+							color: #8397B1;
+							letter-spacing: 0;
+						}
+					}
 				}
 			}
 
@@ -286,7 +334,6 @@ export default {
 	.transaction_history {
 		/deep/.nav {
 			height: 110rpx;
-			width: 530rpx;
 			padding-left: 32rpx;
 
 			.u-tabs__wrapper__nav__item {

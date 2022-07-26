@@ -1,8 +1,8 @@
 <template>
 	<view class="address-book">
 		<custom-header :title="'地址簿'">
-			<template #customIcon>
-				加
+			<template #right>
+				<u-icon :name="require('@/static/img/account/add2.png')" size="44rpx" @click="toGo('/pages/account/writeAddress')"></u-icon>
 			</template>
 		</custom-header>
 
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import mixin from '../mixins/index.js'
 export default {
   data() {
     return {
@@ -55,7 +56,8 @@ export default {
   },
   methods: {
 
-  }
+  },
+  mixins:[mixin]
 }
 </script>
 

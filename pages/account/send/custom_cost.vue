@@ -42,7 +42,7 @@ export default {
   },
   watch: {
     'priceValue'(val) {
-      if (val < 30) {
+      if (val < 2000) {
         this.waringIsShow = true
       } else {
         this.waringIsShow = false

@@ -7,8 +7,11 @@
 			<slot name="title-icon"></slot>
 		</view>
 		<view>
-			<input :type="type" :placeholder="placeholder" class="common-input" v-model="childValue" :maxlength="maxlength"
-				:style="inputOtherStyle" @input ="childValueChange" :class="warningStyleisShow?'beyondWarning':''">
+			<input v-if="!isTextarea" :type="type" :placeholder="placeholder" class="common-input" v-model="childValue"
+				:maxlength="maxlength" :style="inputOtherStyle" @input="childValueChange"
+				:class="warningStyleisShow?'beyondWarning':''">
+			<u--textarea v-model="textAreaValue" :placeholder="placeholder" autoHeight v-else class="textarea" maxlength="60">
+			</u--textarea>
 			<slot name="inputRight"></slot>
 		</view>
 	</view>
@@ -38,18 +41,23 @@ export default {
       // type: String,
       default: ''
     },
-    maxlength:Number,
+    maxlength: Number,
+    isTextarea: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
-      childValue: this.inputVal
+      childValue: this.inputVal,
+      textAreaValue:''
     }
   },
   watch: {
     childValue() {
       this.childValue = this.inputVal
     },
-    deep:true
+    deep: true
   },
   methods: {
     childValueChange(v) {
@@ -93,7 +101,7 @@ export default {
 		font-family: DIN-Medium;
 
 		.uni-input-placeholder {
-			color: #8397B1;
+			color: #8397B1 !important;
 			font-size: 28rpx !important;
 		}
 	}
@@ -103,5 +111,32 @@ export default {
 		background: rgba(236, 40, 40, 0.06) !important;
 		border: 2rpx solid #EC2828;
 		color: #EC2828 !important;
+	}
+
+	//自动换行input
+	.textarea {
+		/deep/ .u-textarea__field {
+			line-height: 60rpx !important;
+			font-size: 28rpx;
+			color: #2C365A;
+		}
+		/deep/ .uni-textarea-wrapper{
+			width: 560rpx !important;
+		}
+	}
+
+	.u-textarea {
+		background: #F2F4F8 !important;
+		margin-top: 16rpx;
+		padding: 18rpx 32rpx;
+
+		.uni-textarea-placeholder {
+			color: #8397B1 !important;
+			font-size: 28rpx !important;
+		}
+	}
+
+	.u-textarea--radius {
+		border-radius: 16rpx;
 	}
 </style>
