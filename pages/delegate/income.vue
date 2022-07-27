@@ -18,6 +18,7 @@
 									@click="toGo('/pages/account/send/adres_book')"></u-icon>
 							</template>
 						</InputTitle>
+            
 					</view>
 					<view class="tip">
 						注：收益领取交易成功即到账！
@@ -33,30 +34,24 @@
 
 				<!-- 输入取消委托数量 -->
 				<view class="send-amount">
-					<InputTitle title="输入取消委托数量" :type="'number'" :placeholder="'请输入金额'" :inputVal.sync="sendAmount"
-						ref="sendAmountInput" :maxlength="19" :warningStyleisShow="sendAmount>balance?true:false"
-						:inputOtherStyle="sendAmountStyle">
-				<!-- 		<template #title-icon>
-							<text class="balance">可用：{{balance.toFixed(2)}}GHM</text>
-						</template> -->
-						<template #inputRight>
-							<view class="choose-num">
-								<text></text><text></text>
-								<!-- <text>{{tokenName}}</text>|<text></text> -->
-								<text @click="testAmount">全部</text>
-							</view>
-						</template>
-					</InputTitle>
+          <view class="amount">
+            <view class="label">
+              <text>发送金额</text>
+            </view>
+            <view class="value">
+              <u--input placeholder="请输入金额" v-model="amount"></u--input>
+              <view class="right">
+                <text class="denom">GHM</text>
+                <view class="border"></view>
+                <text class="all" @click="testAmount">全部</text>
+              </view>
+            </view>
+          </view>
 					<view class="other">
 						<div class="title">当前节点委托：</div>
 						<div class="num">10.00 GHM</div>
 					</view>
 					<text v-if="sendAmount>balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text>
-				</view>
-
-				<view class="send-memo">
-					<InputTitle :title="'Memo'" :type="'text'" :placeholder="'请输入Memo（选填）'" :inputVal.sync="memoValue">
-					</InputTitle>
 				</view>
 			</view>
 		</view>
@@ -64,7 +59,7 @@
 		<view class="main-bottom">
 			<miners-column @getMinersCost="getMinersCost"></miners-column>
 
-			<view class="submit-btn" @click="transferConfirm">
+			<view class="btn" @click="transferConfirm">
 				确认
 			</view>
 		</view>
@@ -165,6 +160,7 @@ export default {
         color: '#2C365A',
         fontWeight: '500'
       },
+      amount: ''
     }
   },
   onLoad(value) {
@@ -242,15 +238,13 @@ export default {
 
 <style lang="scss" scoped>
 	.sendPage {
-		width: 100%;
-		height: 100%;
-		background: #F4F6FA;
+		height: 100vh;
+		overflow: hidden;
+		background: #F4F6F9;
 	}
 
 	.main-top {
 		background: #FFFFFF;
-		// padding-top: 48rpx;
-		height: 812rpx;
 		width: 100%;
 
 		.content {
@@ -315,43 +309,6 @@ export default {
 			height: 156rpx;
 		}
 
-		//发送金额
-		.send-amount {
-			margin-top: 32rpx;
-			position: relative;
-
-			.balance {
-				font-family: PingFangSC-Regular;
-				font-weight: 400;
-				font-size: 24rpx;
-				color: #8397B1;
-				letter-spacing: 0;
-				text-align: right;
-				line-height: 24rpx;
-			}
-
-			.choose-num {
-				position: absolute;
-				top: 50%;
-				right: 32rpx;
-				transform: translateY(20%);
-				font-weight: 500;
-				font-size: 28rpx;
-				color: #2C365A;
-				width: 172rpx;
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-
-				text:nth-child(2) {}
-
-				text:nth-child(3) {
-					color: #1E5EFF;
-				}
-
-			}
-
-		}
 		.other {
 			display: flex;
 			height: 80rpx;
@@ -411,7 +368,7 @@ export default {
 				line-height: 32rpx;
 			}
 
-			view {
+			> view {
 				font-size: 28rpx;
 				display: flex;
 				justify-content: space-between;
@@ -459,6 +416,7 @@ export default {
 
 					.price {
 						color: #8F9BB3;
+            margin-top: 24rpx;
 					}
 				}
 			}
@@ -528,4 +486,94 @@ export default {
 			padding: 48rpx 32rpx !important;
 		}
 	}
+  
+  .amount {
+  
+    .label {
+      margin-bottom: 24rpx;
+      padding-top: 32rpx;
+      
+      text {
+        font-weight: 600;
+        font-size: 28rpx;
+        color: #2C365A;
+      }
+    }
+  
+    .value {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 144rpx;
+      background-color: #F2F4F8;
+      padding: 0 32rpx;
+      border-radius: 16rpx;
+  
+      /deep/ .u-input {
+        color: #2C365A;
+        .uni-input-input {
+          font-size: 40rpx;
+          font-weight: 600;
+        }
+        .input-placeholder {
+          font-size: 28rpx;
+          color: #8397B1;
+          font-weight: 400;
+        }
+      }
+      
+      .right {
+        display: flex;
+        align-items: center;
+        text {
+          font-size: 28rpx;
+          color: #2C365A;
+        }
+        .border {
+          width: 2px;
+          height: 24rpx;
+          opacity: 0.4;
+          background-color: #8397B1;
+          margin: 0 23rpx;
+        }
+        .denom {
+          font-weight: 600;
+        }
+        .all {
+          color: #1E5EFF;
+        }
+      }
+
+    }
+  }
+  
+  .memo {
+    .value {
+      height: 96rpx;
+      /deep/ .u-input {
+        color: #2C365A;
+        .uni-input-input {
+          font-size: 32rpx;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+  
+  .btn {
+    position: absolute;
+    bottom: 64rpx;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 622rpx;
+    height: 96rpx;
+    border-radius: 16rpx;
+    background-color: #002FA7 !important;
+    font-weight: 400;
+    font-size: 32rpx;
+    color: #FCFCFD;
+    text-align: center;
+    line-height: 96rpx;
+  }
+  
 </style>

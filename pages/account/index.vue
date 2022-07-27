@@ -134,8 +134,6 @@
                 </view>
               </template>
             </TokenColumn>
-            <view class="border">
-            </view>
           </view>
           <view class="content">
             <TokenColumn class="token" @click.native="queryToken">
@@ -146,8 +144,6 @@
                 </view>
               </template>
             </TokenColumn>
-            <view class="border">
-            </view>
           </view>
           <view class="content">
             <TokenColumn class="token" @click.native="queryToken">
@@ -158,8 +154,6 @@
                 </view>
               </template>
             </TokenColumn>
-            <view class="border">
-            </view>
           </view>
         </scroll-view>
       </view>
@@ -513,6 +507,7 @@ page {
 }
 
 .content {
+  padding-top: 33rpx;
   /deep/ .token {
     padding-bottom: 40rpx;
   }

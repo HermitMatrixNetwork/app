@@ -1,49 +1,32 @@
 <template>
   <view class="sendPage">
     <view :updataDelegate="updataDelegate" :change:updataDelegate="render.unDelegate"></view>
-    <custom-header :title="'取消委托'" :style="titleStyle">
+    <custom-header :title="'确认委托'" :style="titleStyle">
     </custom-header>
+    <view class="border"></view>
     <view class="main-top">
-      <!-- 选择取消委托节点 -->
-      <view class="content">
-        <view class="content-top">
-          <view class="title">
-            选择取消委托节点
-          </view>
-          <view class="change-token" @click="goTo('/pages/delegate/selectNode')">
-
-            <view v-if="selData">
-              <view class="name">{{selData.validator.description.moniker}}</view>
-              <view class="address">{{selData.validator.operatorAddress|sliceAddress(7,8)}}</view>
-            </view>
-            <text v-else>点击去选择</text>
-            <view class="icon-right">
-              <image src="/static/img/ic-arrow1.png"></image>
-            </view>
-          </view>
-          <view class="tip">
-            注：取消委托交易成功后，需等待2天才可成功到账！
-          </view>
+      <view class="validator">
+        <view class="label">
+          <text>验证人名称</text>
+        </view>
+        <view class="value">
+          <text>ghm63212ABCBA108DDB2Ea21545Ff1515DdC22318</text>
         </view>
       </view>
-      <view class="line">
-
-      </view>
-
+      <view class="border"></view>
       <view class="content">
         <!-- 输入取消委托数量 -->
         <view class="send-amount">
           <view class="amount">
             <view class="label">
-              <text>输入取消委托数量</text>
+              <text>委托数量</text>
             </view>
             <view class="value">
-              <u--input placeholder="请输入金额" v-model="sendAmount"></u--input>
-              <text @click="testAmount">全部</text>
+              <u--input placeholder="请输入委托数量" v-model="sendAmount"></u--input>
             </view>
           </view>
           <view class="other">
-            <div class="title">当前节点委托：</div>
+            <div class="title">可用余额：</div>
             <div class="num" v-if="selData">{{selData.balance.amount}} GHM</div>
             <div class="num" v-else>0 GHM</div>
           </view>
@@ -280,10 +263,8 @@ export default {
 
   .main-top {
     background: #FFFFFF;
-    // padding-top: 48rpx;
-    height: 812rpx;
-    width: 100%;
-
+    padding-bottom: 48rpx;
+    
     .content {
       margin: 0 32rpx;
     }
@@ -624,5 +605,26 @@ export default {
     color: #FCFCFD;
     text-align: center;
     line-height: 96rpx;
+  }
+  
+  .validator {
+    background-color: #fff;
+    padding: 48rpx 32rpx 33rpx;
+    .label {
+      font-weight: 600;
+      font-size: 28rpx;
+      color: #2C365A;
+      margin-bottom: 16rpx;
+    }
+    .value {
+      font-size: 24rpx;
+      color: #8397B1;
+    }
+  }
+  
+  .border {
+    height: 2rpx;
+    background-color: rgba(131,151,177,0.20);
+    margin: 0 32rpx;
   }
 </style>

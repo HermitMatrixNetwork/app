@@ -1,12 +1,15 @@
 <template>
 	<view class="choose_token">
 		<custom-header :title="'代币选择'" />
+    <view class="border"></view>
 		<view class="token-list">
 			<TokenColumn :tokenName="item.name" v-for="item in tokenList" :key="item.name" :tokenIcon="item.icon"
 				@click.native="tokenChoose(item)" :tokenColumnStyle="tokenColumnStyle">
 				<template #right>
-					<view>0.00</view>
-					<view>0.00</view>
+					<view class="right">
+					  <view>0.00</view>
+					  <view>$ 0.00</view>
+					</view>
 				</template>
 			</TokenColumn>
 		</view>
@@ -54,4 +57,22 @@ export default {
 	.token-list {
 		margin: 32rpx 32rpx 0;
 	}
+  .border {
+    height: 2rpx;
+    opacity: 0.16;
+    background-color: #8397B1; 
+  }
+  
+  .right {
+    view:first-child {
+      font-weight: 600;
+      font-size: 36rpx;
+      color: #2C365A;
+      margin-bottom: 8rpx;
+    }
+    view:last-child {
+      font-size: 28rpx;
+      color: #8397B1;
+    }
+  }
 </style>

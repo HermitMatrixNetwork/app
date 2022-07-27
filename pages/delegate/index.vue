@@ -1,5 +1,9 @@
 <template>
   <view class="delegate">
+    
+    <view class="status_bar">
+      <!-- APP下会占用系统原生消息因此需要该占位符 -->
+    </view>
     <view class="container">
       <div class="top">
         <view class="left" @click="selindex = 1" :class="{ actived: selindex == 1 }">
@@ -16,8 +20,7 @@
       <My v-if="selindex == 1" />
       
       <!-- 验证人 -->
-      <!-- <Ident v-else /> -->
-      
+      <Ident v-else />
     </view>
     <tab-bar :current-page="2" />
   </view>
@@ -26,11 +29,11 @@
 <script>
 import language from './language'
 import My from './components/my.vue'
-// import Ident from './components/Ident.vue'
+import Ident from './components/ident.vue'
 export default {
   components: {
     My,
-    // Ident
+    Ident
   },
   data() {
     return {
@@ -48,6 +51,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .status_bar {
+    height: var(--status-bar-height);
+    width: 100%;
+  }
   .delegate {
     .container {
       .top {
@@ -72,7 +79,7 @@ export default {
 
       .line {
         height: 4rpx;
-        width: 80%;
+        width: 70%;
         margin: auto;
         margin-top: 12rpx;
         background: #275EF1;

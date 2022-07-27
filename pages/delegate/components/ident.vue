@@ -4,37 +4,56 @@
 		<!-- <view :state="state" :change:state="changeData"></view> -->
 		<view class="header-box">
 			<view class="header">
-				<headerItem />
-				<headerItem />
+				<headerItem title="当前可用余额" />
+				<headerItem title="当前锁定余额" />
 			</view>
 		</view>
 		<view class="my-delegate">
-			<view class="title">
-				<view class="name">
-					我的委托
-				</view>
-				<view class="btnBox">
-					<view v-if="isDel==false" class="btn" @click="isDel=true">
-						去委托
-					</view>
-					<view v-else class="btn" @click="confirm">
-						确认委托
-					</view>
-				</view>
-			</view>
+     <u-tabs
+        class="tabs"
+        :list="statusList"
+        lineColor="#1E5EFF"
+        @click="click"
+        :inactiveStyle="inactiveStyle"
+        :activeStyle="activeStyle"
+        lineWidth="20"
+        lineHeight="3"
+        :itemStyle="itemStyle"
+      >
+      </u-tabs>
+      
+      <view class="sort-list">
+        <view class="item" @click="sort('总委托数')">
+            <text>总委托数</text>
+            <view class="icon">
+              <image :class="[sortRule]" v-if="sortTarget == '总委托数'" src="/static/img/delegate/sort.png"></image>
+              <image v-else src="/static/img/delegate/unsort.png"></image>
+            </view>
+        </view>
+        <view class="item" @click="sort('活跃度')">
+          <text>活跃度</text>
+          <view class="icon">
+            <image :class="[sortRule]" v-if="sortTarget == '活跃度'" src="/static/img/delegate/sort.png"></image>
+            <image v-else src="/static/img/delegate/unsort.png"></image>
+          </view>
+        </view>
+        <view class="item" @click="sort('佣金率')">
+          <text>佣金率</text>
+          <view class="icon">
+            <image :class="[sortRule]" v-if="sortTarget == '佣金率'" src="/static/img/delegate/sort.png"></image>
+            <image v-else src="/static/img/delegate/unsort.png"></image>
+          </view>
+        </view>
+      </view>
 			<view class="list">
 				<view class="list-title">
-					<view class="sel-box" v-if="isDel" />
 					<view class="left">节点</view>
 					<view class="center">活跃度</view>
 					<view class="right">当前得票</view>
-					<view class="num-box" v-if="isDel" />
 				</view>
-				<view class="list-data">
-					<view class="list-item" v-for="(item,index) in validators" :key="index">
-						<u-checkbox-group v-if="isDel" v-model="item.select">
-							<u-checkbox class="sel-box" shape="circle"></u-checkbox>
-						</u-checkbox-group>
+				<custom-loading v-if="loading" class="loading"></custom-loading>
+        <view class="list-data" v-else-if="validators.length">
+					<view class="list-item" v-for="(item,index) in validators" :key="index" @click="toValidatorDetail(item)">
 						<view class="left">
 							<view class="name">{{item.description.moniker}}</view>
 							<view class="other">{{item.operatorAddress|sliceAddress(7,8)}}</view>
@@ -46,11 +65,9 @@
 							<view class="name">{{item.tokens}}</view>
 							<view class="other">佣金率:10%</view>
 						</view>
-						<u-number-box v-if="isDel" :min="0" class="num-box" button-size="20" bgColor="#fff"
-							v-model="item.amount"></u-number-box>
 					</view>
 				</view>
-				<no-data tip="暂无委托，点击" btnTx="参与委托" />
+				<no-data v-else tip="暂无委托，点击" btnTx="参与委托" />
 			</view>
 		</view>
 	</view>
@@ -74,15 +91,58 @@ export default {
       address: '',
       currentWallet: this.$cache.get('_currentWallet'),
       validators: [],
-      isDel: true, //在委托
+      loading: true,
+      isDel: true,
+      statusList: [{
+        name: '全部'
+      },{
+        name: '共识中'
+      },{
+        name: '候选中'
+      },{
+        name: '待解禁'
+      }],
+      inactiveStyle: {
+        fontSize: '32rpx',
+        color: '#8397B1',
+        fontWeight: '500',
+      },
+      activeStyle: {
+        fontSize: '32rpx',
+        color: '#1E5EFF',
+        fontWeight: '600'
+      },
+      itemStyle: {
+        height: '76rpx',
+        alignItems: 'flex-start',
+        padding: '0',
+      },
+      sortTarget: '总委托数',
+      sortRule: 'des', // asc:升序; des:降序
     }
   },
   created() {
     this.address = this.currentWallet.address
   },
   methods: {
+    click() {
+    },
+    toValidatorDetail(item) {
+      uni.navigateTo({
+        url : `./validatorDetail?validatorInfo=${JSON.stringify(item)}`
+      })
+    },
+    sort(val) {
+      if (val === this.sortTarget) {
+        this.sortRule = this.sortRule == 'des' ? 'asc' : 'des'
+      } else {
+        this.sortTarget = val
+        this.sortRule = 'des'
+      }
+    },
     ValidatorsData(data) {
       this.validators = data
+      this.loading = false
       console.log('validators', this.validators)
     },
     confirm() {
@@ -149,6 +209,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .loading {
+    margin-top: 10rpx;
+  }
+  .tabs {
+    margin-top: 34rpx;
+    width: 600rpx;
+  }
 	.ident {
 		// width: 686rpx;
 		height: 280rpx;
@@ -170,18 +237,29 @@ export default {
 	}
 
 	.my-delegate {
-		padding-top: 12rpx;
-
-		.title {
-			display: flex;
-			height: 80rpx;
-			line-height: 80rpx;
-			margin: 0 32rpx;
-			font-weight: bold;
-			font-size: 32rpx;
-			color: #2C365A;
-		}
-
+    .sort-list {
+      display: flex;
+      margin-left: 32rpx;
+      
+      .item {
+        display: flex;
+        font-size: 24rpx;
+        padding: 24rpx 0;
+        color: #8397B1;
+        margin-right: 64rpx;
+        .icon {
+          image {
+            width: 20rpx;
+            height: 20rpx;
+          }
+        }
+        .asc {
+          transform: rotate(180deg);
+        }
+      }
+    }
+    
+    
 		.list {
 			.sel-box {
 				width: 48rpx;
@@ -211,29 +289,34 @@ export default {
 				display: flex;
 				height: 64rpx;
 				line-height: 64rpx;
-				margin: 0 32rpx;
 				font-size: 24rpx;
 				background: rgba(30, 94, 255, 0.04);
 				color: #8397B1;
 			}
 
 			.list-data {
-				margin: 0 32rpx;
 
 				.list-item {
 					display: flex;
 					padding: 32rpx 0 36rpx 0;
 					border-bottom: 2rpx solid rgba(151, 151, 151, .1);
+          align-items: center;
 
 					.name {
-						font-size: 24rpx;
+						font-size: 26rpx;
 						color: #2C365A;
 					}
 
 					.other {
-						font-size: 22rpx;
+						font-size: 24rpx;
 						color: #8397B1;
 					}
+          
+          .center {
+            font-weight: 600;
+            font-size: 24rpx;
+            color: #2C365A;
+          }
 				}
 			}
 

@@ -14,6 +14,7 @@
 				<slot name="right"></slot>
 			</view>
 		</view>
+    <custom-border></custom-border>
 	</view>
 </template>
 
@@ -52,8 +53,8 @@ export default {
 			align-items: center;
 			justify-content: space-between;
 			width: 100%;
-			height: 72rpx;
 			position: relative;
+      padding-bottom: 38rpx;
 
 			.left {
 				padding-right: 24rpx;
@@ -63,7 +64,7 @@ export default {
 				width: 332rpx;
 
 				.title {
-					font-weight: 500;
+					font-weight: 600;
 					font-size: 28rpx;
 					color: #2C365A;
 					letter-spacing: 0;

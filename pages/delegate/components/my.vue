@@ -44,7 +44,8 @@
 					<view class="center">待领取收益</view>
 					<view class="right">委托数量</view>
 				</view>
-				<view class="list-data">
+        <custom-loading v-if="loading" class="loading"></custom-loading>
+				<view class="list-data" v-else-if="list.length">
 					<view class="list-item" v-for="(item,index) in list" :key="index">
 						<view class="left">
 							<view class="name">{{item.validator.description.moniker}}</view>
@@ -59,7 +60,7 @@
 						</view>
 					</view>
 				</view>
-				<no-data tip="暂无委托，点击" btnTx="参与委托" />
+        <no-data v-else tip="暂无委托，点击" btnTx="参与委托" />
 			</view>
 		</view>
 	</view>
@@ -85,6 +86,7 @@ export default {
       list: [],
       allData: {},
       currentWallet: this.$cache.get('_currentWallet'),
+      loading: true
     }
   },
   mounted(){
@@ -100,6 +102,7 @@ export default {
       this.allData= data
       let {list} = data
       this.list = list
+      this.loading = false
       console.log('allData',this.allData)
     }
   }
@@ -135,6 +138,9 @@ export default {
 </script>
 
 <style  lang="scss" scoped>
+  .loading {
+    margin-top: 10rpx;
+  }
 	.my {
 		.header-box, .account-box {
 			padding: 0 32rpx;
@@ -175,9 +181,8 @@ export default {
 			padding-top: 12rpx;
 			.title {
 				padding: 0 32rpx;
-				height: 80rpx;
 				line-height: 80rpx;
-				font-weight: bold;
+				font-weight: 600;
 				font-size: 32rpx;
 				color: #2C365A;
 			}
@@ -187,12 +192,12 @@ export default {
 				}
 				.center {
 					flex: 1;
-					// width: 266rpx;
-					text-align: center;
+          text-align: center;
 				}
 				.right {
 					width: 220rpx;
 					text-align: right;
+          flex: 1;
 				} 
 				.list-title {
 					display: flex;
@@ -207,6 +212,7 @@ export default {
 					padding: 0 32rpx;
 					.list-item {
 						display: flex;
+            align-items: center;
 						padding:  32rpx 0 36rpx 0;
 						border-bottom: 2rpx solid rgba(151, 151, 151, .1) ;
 						.name {
@@ -217,6 +223,12 @@ export default {
 							font-size: 22rpx;
 							color: #8397B1;
 						}
+            .center {
+              font-weight: 600;
+              font-size: 24rpx;
+              color: #2C365A;
+              line-height: 24rpx;
+            }
 					}
 				}
 	

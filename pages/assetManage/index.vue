@@ -55,7 +55,7 @@ export default {
     },
     goTo(e){
       uni.navigateTo({
-      	url:e.currentTarget.dataset.url
+      	url: e.currentTarget.dataset.url
       })
     },
   }
