@@ -1,13 +1,13 @@
 <template>
   <view class="token_content">
-    <custom-header :title="tokenName">
+    <custom-header :title="token.alia_name">
       <template #right>
-        <text class="customIcon" @click="toGo('/pages/account/send/tokenInformation')">详情</text>
+        <text class="customIcon" @click="toTokenDetail()">详情</text>
       </template>
     </custom-header>
 
     <view class="main_token">
-      <TokenColumn :tokenName="tokenName" :tokenColumnStyle="tokenColumnStyle"
+      <TokenColumn :tokenName="token.alia_name" :tokenColumnStyle="tokenColumnStyle"
         :tokenAddress="address | sliceAddress(6, -16) ">
         <template #right>
           <view style="padding-right: 16rpx;" class="token_price">
@@ -64,7 +64,7 @@
                   <view class="content-time">{{ record.timestamp }}</view>
                 </view>
                 <view class="right">
-                  <view class="amount" :class="[`${item.type}-amount`]">{{ record.validator_address ? '' : (record.to_address == address ? '+' : '-') }} {{ record.amount }}</view>
+                  <view class="amount" :class="[record.validator_address ? 'delegate-amount' : (record.to_address == address ? 'recipient-amount' : 'sender-amount')]">{{ record.validator_address ? '' : (record.to_address == address ? '+' : '-') }} {{ record.amount }}</view>
                   <view class="real-money">
                     <text class="rate">$</text>
                     <text class="money">0.00</text>
@@ -109,7 +109,6 @@ export default {
   },
   data() {
     return {
-      tokenName: 'GHM',
       token: {},
       balance: 0,
       address: this.$cache.get('_currentWallet').address,
@@ -169,6 +168,7 @@ export default {
           item.to_address = item.tx.body.messages[0].to_address
           item.delegator_address = item.tx.body.messages[0].delegator_address
           item.validator_address = item.tx.body.messages[0].validator_address
+          item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
           item.tx.body.messages.forEach(cur => {
             if (cur.amount) {
               if (Array.isArray(cur.amount)) {
@@ -178,7 +178,7 @@ export default {
               }
             }
           })
-          item.amount = item.amount / mainCoin.rate + mainCoin.full_name
+          item.amount = item.amount / mainCoin.rate + mainCoin.alia_name
           switch (type) {
           case 'recipient':
             item.icon = require('@/static/img/account/shoukuan2.png')
@@ -197,8 +197,11 @@ export default {
       // #ifdef H5
       console.log(this.accountTransfer)
       // #endif
-      
+      list.forEach(type => {
+        this.accountTransfer[type].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      })
       this.accountTransfer['all'] = [...this.accountTransfer['sender'], ...this.accountTransfer['recipient'], ...this.accountTransfer['delegate']]
+      this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
       this.loading = false
     },
     setLockAmount({ result }) {
@@ -235,10 +238,15 @@ export default {
       uni.navigateTo({
         url: `${url}?token=${JSON.stringify(params)}`
       })
+    },
+    toTokenDetail() {
+      uni.navigateTo({
+        url: `/pages/account/send/tokenInformation?token=${JSON.stringify(this.token)}`
+      })
     }
   },
   filters: {
-    sliceAddress,
+    sliceAddress
   },
 }
 </script>

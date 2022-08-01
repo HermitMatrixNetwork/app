@@ -1,16 +1,16 @@
 <template>
-  <view>
-    <custom-header :title="'GHM'"></custom-header>
+  <view class="token-information">
+    <custom-header class="header" :title="'GHM'"></custom-header>
 
     <view class="basic">
       <view class="title">基本信息</view>
       <view class="content">
-        <view v-for="(item, key) in describe" :key="key" class="content-item">
-          <text>{{language[key]}} :</text>
-          <text class="value">
-            <text>{{ item }}</text>
-            <image v-if="['official_website', 'full_name'].includes(key)" src="/static/img/account/copy2.png"></image>
-          </text>
+        <view v-for="(item, key) in showLabelList" :key="key" class="content-item">
+          <text class="label">{{language[item]}} :</text>
+          <view class="value">
+            <text>{{ describe[item] || '暂无'}}</text>
+            <image v-if="['official_website', 'full_name'].includes(item)" src="/static/img/account/copy2.png"></image>
+          </view>
         </view>
       </view>
     </view>
@@ -32,13 +32,28 @@ export default {
   data() {
     return {
       describe: mainCoin.describe,
-      language: language[this.$cache.get('_language')]
+      language: language[this.$cache.get('_language')],
+      showLabelList: ['alia_name', 'full_name', 'official_website', 'contract_address']
     }
+  },
+  onLoad(options) {
+    if (options.token)
+      this.describe = JSON.parse(options.token)
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .token-information {
+    height: 100vh;
+    background-color: #F4F6F9;
+  }
+  
+  .header {
+    background-color: #fff;
+    margin-bottom: 2rpx;
+  }
+  
   .basic {
     width: 750rpx;
     background: #FFFFFF;
@@ -62,7 +77,7 @@ export default {
 
   .title {
     font-family: PingFangSC-Medium;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 28rpx;
     color: #2C365A;
     letter-spacing: 0;
@@ -77,23 +92,31 @@ export default {
     font-size: 24rpx;
     letter-spacing: 0;
     color: #2C365A;
-    padding-bottom: 36rpx;
-
-    text:nth-child(1) {
-      color: #8397B1;
+    
+    &:not(:last-child) {
+      padding-bottom: 36rpx;
     }
 
     &:nth-child(1) {
       margin-top: 32rpx;
     }
+    
+    .label {
+      color: #8397B1;
+    }
   }
 
   .value {
     display: flex;
+    align-items: center;
+    font-size: 24rpx;
+    color: #2C365A;
 
-    /deep/ .copy,
-    /deep/ image,
-    span {
+    text {
+      margin-right: 12rpx;
+    }
+    
+    image {
       width: 28rpx !important;
       height: 28rpx !important;
     }

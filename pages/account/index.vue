@@ -125,7 +125,7 @@
         </u-tabs>
         <scroll-view v-if="tokenList.length" class="coinbox" scroll-y>
           <view class="content"  v-for="item in tokenList" :key="item.full_name">
-           <TokenColumn  :tokenName="item.full_name" :tokenAddress="item.contract_address" :tokenIcon="item.logo" class="token" @click.native="queryToken(item)">
+           <TokenColumn  :tokenName="item.alia_name" :tokenAddress="item.contract_address" :tokenIcon="item.logo" class="token" @click.native="queryToken(item)">
               <template #right>
                 <view class="coinNumber">
                   <view class="number">{{ item.balance || 0 }}</view>
