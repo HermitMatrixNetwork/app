@@ -101,7 +101,6 @@
           <button @click="aa = false">确认</button>
         </view>
       </u-modal>
-
       <view class="coin-list">
         <u-tabs
           :list="coinList"
@@ -124,32 +123,12 @@
             </u-icon>
           </view>
         </u-tabs>
-        <scroll-view class="coinbox" scroll-y>
-          <view class="content">
-            <TokenColumn class="token" @click.native="queryToken">
+        <scroll-view v-if="tokenList.length" class="coinbox" scroll-y>
+          <view class="content"  v-for="item in tokenList" :key="item.full_name">
+           <TokenColumn  :tokenName="item.full_name" :tokenAddress="item.contract_address" :tokenIcon="item.logo" class="token" @click.native="queryToken(item)">
               <template #right>
                 <view class="coinNumber">
-                  <view class="number">0.00000000</view>
-                  <view class="money">$0.00000</view>
-                </view>
-              </template>
-            </TokenColumn>
-          </view>
-          <view class="content">
-            <TokenColumn class="token" @click.native="queryToken">
-              <template #right>
-                <view class="coinNumber">
-                  <view class="number">0.00000000</view>
-                  <view class="money">$0.00000</view>
-                </view>
-              </template>
-            </TokenColumn>
-          </view>
-          <view class="content">
-            <TokenColumn class="token" @click.native="queryToken">
-              <template #right>
-                <view class="coinNumber">
-                  <view class="number">0.00000000</view>
+                  <view class="number">{{ item.balance || 0 }}</view>
                   <view class="money">$0.00000</view>
                 </view>
               </template>
@@ -163,6 +142,8 @@
       :showSwitchWallet="showSwitchWallet"
       @close="closeSwitchWalletPopup"
     />
+    
+    <view :initRender="initRender" :change:initRender="render.init"></view>
   </view>
 </template>
 
@@ -214,7 +195,9 @@ export default {
       },
       allassets: 66666666, //总资产
       eyeAsset: true,
-      aa: true
+      aa: true,
+      tokenList: [],
+      initRender: '', // call render.init
     }
   },
   onLoad() {
@@ -226,26 +209,12 @@ export default {
     let coinList = this.$cache.get('_currentWallet').coinList || []
     //代币数组为空时，为其添加主币
     if (coinList.length == 0) {
-      coinList.push({
-        label: mainCoin.label,
-        logo: mainCoin.logo,
-        address: this.address
-      })
+      coinList.push(mainCoin)
       this.currentWallet.coinList = coinList
-      let walletList = this.$cache.get('_walletList')
-      //找到当前钱包，为其钱包列表添加代币
-      let curIndex = walletList.findIndex(
-        (item) => item.address == this.address
-      )
-      walletList[curIndex] = this.currentWallet
-      console.log(' this.currentWallet', this.currentWallet)
-      this.$cache.set('_walletList', walletList, 0)
+      this.tokenList = coinList
+      this.$cache.set('_currentWallet', this.currentWallet, 0)
+      this.updateWalletList(this.currentWallet)
     }
-  },
-  mounted() {
-    // console.log('_currentWallet',this.$cache.get('_currentWallet'))
-    //  this.currentWallet = this.$cache.get('_currentWallet')
-    // console.log('currentWallet',this.currentWallet)
   },
   methods: {
     toDelegate() {
@@ -291,10 +260,29 @@ export default {
     closeSwitchWalletPopup() {
       this.showSwitchWallet = false
     },
-    queryToken() {
+    queryToken(token) {
       uni.navigateTo({
-        url: './send/token_content'
+        url: `./send/token_content?token=${JSON.stringify(token)}`
       })
+    },
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.unshift(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
+    },
+    updateCoinList(coinList) {
+      console.log(coinList)
+      this.tokenList = coinList
+      const wallet = this.$cache.get('_currentWallet')
+      wallet.coinList = coinList
+      this.$cache.set('_currentWallet', this.currentWallet, 0)
+      this.updateWalletList(this.currentWallet)
     }
   }
 }
@@ -304,20 +292,28 @@ export default {
 import {
 	getBalance
 } from '@/utils/secretjs/SDK'
+import renderUtils from '@/utils/render.base.js'
 
 export default {
 	methods: {
-		async init(address) {
+		async init() {
+      let wallet;
+      //#ifdef APP-PLUS
+      wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+      //#endif
+      
+      //#ifndef APP-PLUS 
+      wallet = uni.getStorageSync('_currentWallet').data
+      //#endif
 			//获取主网币余额
-			let coinList = this.$cache.get('_currentWallet').coinList
+			let { coinList, address } = wallet
 			for (let i = 0; i < coinList.length; i++) {
-				let res = await getBalance(coinList[i].address)
-				coinList[i] = {
-					...coinList[i],
-					...res.balance
-				}
+				let res = await getBalance(address)
+        let balance = res.balance.amount
+        if (coinList[i].rate) balance = balance / coinList[i].rate
+        coinList[i].balance = balance
 			}
-			console.log('coinList', coinList)
+      renderUtils.runMethod(this._$id, 'updateCoinList', coinList, this)
 		}
 	}
 }
@@ -435,11 +431,9 @@ page {
 
   .coin-list {
     width: 100%;
-    height: 60rpx;
     margin-top: 48rpx;
 
     .coinbox {
-      margin-top: 48rpx;
       width: 100%;
       height: 600rpx;
     }

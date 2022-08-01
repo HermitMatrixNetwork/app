@@ -48,10 +48,10 @@ export default {
   },
   data() {
     return {
-      keystore: '', // keystore
+      keystore: '{"version":"1.2","coinTypeForChain":{},"crypto":{"cipher":"aes-128-ctr","cipherparams":{"iv":"94f598f39aff49221010d4b41a6ef351"},"ciphertext":"6a28fd9c52d34417b4566b35a20756a622fb5bab118428feb51b2f41b9e43e34fa1f661930e8359fa2e872f3b97f927568b908a84cc93d1e61f9facdbc3f1079","kdf":"pbkdf2","kdfparams":{"salt":"27bdb1b8ff27bdd20309a93a6b8451ea2dc0d5f47e3710ff7f3d47154d011f1d","dklen":32,"n":131072,"r":8,"p":1},"mac":"94a59f7ac4fa0469f1d7a3ab796d7f9c30ba2c1ae0c92e3129a84036d9120c69"}}', // keystore
       privateKey64: '', // 私钥
-      password: '', // 资金密码
-      name: '', // 钱包名称
+      password: '11111111', // 资金密码
+      name: '1', // 钱包名称
       passwordEye: false, // 是否明文显示资金密码
       callRenderCreate: 0,
       rules: {

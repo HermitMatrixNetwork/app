@@ -1,5 +1,18 @@
 {
-  "pages": [{
+  "pages": [
+    {
+      "path": "pages/index/importWallet",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },{
+      "path": "pages/index/importFromKeystore",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    }, {
       "path": "pages/index/index",
       "style": {
         "navigationBarTitleText": "钱包首页"
@@ -7,13 +20,6 @@
     },
     {
       "path": "pages/index/createWallet",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/index/importWallet",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
@@ -49,13 +55,6 @@
     },
     {
       "path": "pages/index/importFromPrivatekey",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/index/importFromKeystore",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
@@ -427,6 +426,13 @@
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
+    }, {
+      "path": "pages/account/send/token_content_other",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
     }
   ],
   "globalStyle": {
@@ -440,32 +446,22 @@
     "backgroundColor": "#FFFFFF",
     "list": [{
         "pagePath": "pages/account/index",
-        "iconPath": "static/img/TabBar/tabbar/msg.png",
-        "selectedIconPath": "static/img/TabBar/active/meg_active.png",
         "text": "资产"
       },
       {
         "pagePath": "pages/market/index",
-        "iconPath": "static/img/tabbar/market.png",
-        "selectedIconPath": "static/img/tabbar/selMarket.png",
         "text": "市场"
       },
       {
         "text": "",
-        "pagePath": "pages/delegate/index",
-        "iconPath": "static/img/tabbar/entrust.png",
-        "selectedIconPath": "static/img/tabbar/entrust.png"
+        "pagePath": "pages/delegate/index"
       },
       {
         "pagePath": "pages/transaction/index",
-        "iconPath": "static/img/TabBar/tabbar/transaction.png",
-        "selectedIconPath": "static/img/tabbar/selTransaction.png",
         "text": "交易"
       },
       {
         "pagePath": "pages/mine/index",
-        "iconPath": "static/img/TabBar/tabbar/mine.png",
-        "selectedIconPath": "static/img/tabbar/selMine.png",
         "text": "我的"
       }
     ]

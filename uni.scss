@@ -1,5 +1,9 @@
 @import '@/uni_modules/uview-ui/theme.scss';
 * { box-sizing: border-box; }
+
+html {
+  overflow: hidden;
+}
 /**
  * 这里是uni-app内置的常用样式变量
  *

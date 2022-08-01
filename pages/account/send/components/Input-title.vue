@@ -7,9 +7,9 @@
       <slot name="title-icon"></slot>
     </view>
     <view :class="inputContainerStyle">
-      <input v-if="!isTextarea" :type="type" :placeholder="placeholder" class="common-input" v-model="childValue"
+      <input v-if="!isTextarea" :type="type" :placeholder="placeholder" class="common-input input-content" v-model="childValue"
         :maxlength="maxlength" :style="inputOtherStyle" @input="childValueChange"
-        :class="[warningStyleisShow?'beyondWarning':'']" />
+        :class="[warningStyleisShow?'beyondWarning':'']"/>
 
       <u--textarea v-model="textAreaValue" :placeholder="placeholder" autoHeight v-else class="textarea" maxlength="60">
       </u--textarea>
@@ -67,6 +67,7 @@ export default {
   },
   methods: {
     childValueChange(v) {
+      console.log(v.target.value)
       this.$emit('update:inputVal', v.target.value)
     }
   }
@@ -82,7 +83,7 @@ export default {
     font-family: PingFangSC-Medium;
 
     text {
-      font-weight: 500;
+      font-weight: 600;
       font-size: 28rpx;
       color: #2C365A;
       letter-spacing: 0;
@@ -106,8 +107,12 @@ export default {
     font-family: DIN-Medium;
 
     .uni-input-placeholder {
-      // color: #8397B1 !important;
-      // font-size: 28rpx !important;
+      // #ifdef APP-PLUS
+      font-size: 28rpx;
+      color: #8397B1 !important;
+      font-size: 28rpx !important;
+      // #endif
+
     }
   }
 
@@ -148,5 +153,13 @@ export default {
 
   .blod {
     font-weight: 600 !important;
+  }
+  
+  .input-content::placeholder {
+    // #ifdef H5
+    font-size: 28rpx;
+    color: #8397B1 !important;
+    line-height: 96rpx !important;
+    // #endif
   }
 </style>

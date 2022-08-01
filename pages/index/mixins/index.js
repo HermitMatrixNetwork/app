@@ -85,7 +85,8 @@ export default {
         this.synchronizingLocalData(wallet)
       }
       
-      cb && renderUtils.runMethod(this._$id, cb, { wallet }, this)
+      // cb && renderUtils.runMethod(this._$id, cb, { wallet }, this)
+      cb && this[cb]({wallet})
     },
     /** 更新本地 walletList 数据
      *  @param { object } wallet 钱包数据

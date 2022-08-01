@@ -32,6 +32,14 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    backUrl: {
+      type: String,
+      default: ''
+    },
+    tabUrl: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -41,7 +49,17 @@ export default {
   },
   methods: {
     goBack() {
-      uni.navigateBack()
+      if (this.backUrl) {
+        uni.navigateTo({
+          url: this.backUrl
+        })
+      } else if(this.tabUrl) {
+        uni.switchTab({
+          url: this.tabUrl
+        })
+      } else {
+        uni.navigateBack()
+      }
     }
   }
 }

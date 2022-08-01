@@ -84,7 +84,7 @@ export default {
             title: '修改密码成功',
             message: '修改密码成功',
             complete: () => {
-              uni.navigateTo({
+              uni.redirectTo({
                 url: '/pages/walletManager/index'
               })
             }

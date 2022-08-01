@@ -20,7 +20,6 @@ export default {
 		  })
     },
     toGo(url) {
-      console.log(url)
 		  uni.navigateTo({
 		    url,
 		  })

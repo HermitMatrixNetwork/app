@@ -28,15 +28,16 @@ async function getSecret() {
   return Secret
 }
 //查询余额
-export async function getBalance(address) {
+export async function getBalance(address, denom = 'uGHM') {
   let Secret = await getSecret()
   const result = await Secret.query.bank.balance({
     address,
-    denom: 'uGHM'
+    denom
   })
 
   return result
 }
+
 
 //获取合约信息
 export async function getContractInfo(address) {
@@ -59,7 +60,7 @@ export async function QueryStakingValidators(status) {
 }
 
 //发送其他地址
-export async function SendTokentoOtherAddress(myaddress, toaddress, amount) {
+export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo = '') {
   let Secret = await getSecret()
   // try {
   const result = await Secret.tx.bank.send(
@@ -76,7 +77,8 @@ export async function SendTokentoOtherAddress(myaddress, toaddress, amount) {
     {
       gasPriceInFeeDenom: 0.25,
       feeDenom: 'uGHM',
-      gasLimit: 20000
+      gasLimit: 20000,
+      memo
     }
   )
   return result
@@ -158,14 +160,27 @@ export async function unDelegate(data1, data2) {
 
 //查询账户信息
 export async function queryAccountInformation(query) {
-  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  let Secret = await getSecret()
   const result = await Secret.query.txsQuery(query)
   return result
 }
 
 //通过hash查找
 export async function queryAccountHash(hash) {
-  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  let Secret = await getSecret()
   const result = await Secret.query.getTx(hash)
+  return result
+}
+
+export async function getDelegationRecord(address) {
+  let Secret = await getSecret()
+  const result = await Secret.query.staking.delegatorDelegations({ delegatorAddr: address })
+  return result
+}
+
+export async function getUnbondingDelegationRecord(address) {
+  let Secret = await getSecret()
+  const result = await Secret.query.staking.delegatorUnbondingDelegations({ delegatorAddr: address })
+  const delegation = await Secret.query.staking.delegation({ delegatorAddr: address, validatorAddr: 'ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl' })
   return result
 }

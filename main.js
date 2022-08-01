@@ -4,7 +4,6 @@ import {
   secretjs
 } from '@/utils/index.js'
 import miniCache from '@/utils/appCache'
-import '@/static/font/font.css'
 
 Vue.prototype.$secretjs = secretjs
 Vue.use(uView)

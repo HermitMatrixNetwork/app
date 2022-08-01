@@ -2,7 +2,7 @@
 	<view class="TokenVolumn" :style="tokenColumnStyle">
 		<view class="item">
 			<view class="left">
-				<u-icon :name="tokenIcon" size="72rpx"></u-icon>
+        <image :src="tokenIcon" style="width: 72rpx; height: 72rpx"></image>
 			</view>
 			<view class="center">
 				<view class="title">{{tokenName}}</view>
@@ -61,7 +61,7 @@ export default {
 			}
 
 			.center {
-				width: 332rpx;
+				flex: 1;
 
 				.title {
 					font-weight: 600;
@@ -83,7 +83,6 @@ export default {
 			}
 
 			.right {
-				width: 250rpx;
 				height: 72rpx;
 				font-size: 28rpx;
 				font-family: DIN-Medium;

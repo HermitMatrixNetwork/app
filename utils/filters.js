@@ -4,10 +4,10 @@
  * @param {Number} start
  * @param {Number} end
  */
-export const sliceAddress =(address,start=16,end=14)=>{
+export const sliceAddress =(address,start=16,end = -6)=>{
   if (address) {
     let subStr1 = address.substr(0, start)
-    let subStr2 = address.substr(address.length - end, end)
+    let subStr2 = address.substr(end)
     let subStr = subStr1 + '...' + subStr2
     return subStr
   } else {

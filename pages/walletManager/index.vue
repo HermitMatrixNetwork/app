@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <custom-header class="header" title="钱包管理"></custom-header>
+    <custom-header tabUrl="/pages/account/index" class="header" title="钱包管理"></custom-header>
 
     <view class="wallet-detail">
       <view class="wallet-detail-address item">
@@ -127,7 +127,7 @@ export default {
   },
   methods: {
     toResetPassword() {
-      uni.navigateTo({
+      uni.redirectTo({
         url: './resetPassword'
       })
     },
