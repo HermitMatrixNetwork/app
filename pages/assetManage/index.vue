@@ -16,7 +16,7 @@
 			<view class="title">{{language.hotAssets}}</view>
 		</view>
 		<view class="list">
-			<List :list="list" />
+			<List v-if="refresh" :list="list" />
 		</view>
 	</view>
 </template>
@@ -29,17 +29,21 @@ export default {
     return {
 		  language: languages[this.$cache.get('_language')],
       address: '',//查询地址
-      list: [{
-        label: 'BTC',
-        address: '0x20591e93afasdasd9768c40eeb39'
-      },{
-        label: 'BTC',
-        address: '0x20591e93afasdasd971268c40eeb39'
-      }]
+      list: [
+        // {
+        //   alia_name: 'BTC',
+        //   contract_address: '0x20591e93afasdasd9768c40eeb39',
+        //   apply_type: 'token'
+        // },
+      ],
+      refresh: true
     }
   },
   components: {
     List
+  },
+  onShow() {
+    this.refreshList()
   },
   methods: {
     searchCoin(){
@@ -55,9 +59,15 @@ export default {
     },
     goTo(e){
       uni.navigateTo({
-      	url: e.currentTarget.dataset.url
+      	url: e.currentTarget.dataset.url,
       })
     },
+    refreshList() {
+      this.refresh = false
+      this.$nextTick(() => {
+        this.refresh = true
+      })
+    }
   }
 }
 </script>

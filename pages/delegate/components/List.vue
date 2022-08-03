@@ -6,7 +6,7 @@
 					{{item.validator.description.moniker}}
 				</view>
 				<view class="address">
-					{{item.validator.operatorAddress|sliceAddress(7,8)}}
+					{{item.validator.operatorAddress|sliceAddress(7, -8)}}
 				</view>
 			</view>
 			<div class="right">

@@ -1,13 +1,13 @@
 /*
- * @Author: 黄海聪
+ * @Author: Huanghaicong
  * @Date: 2022-06-22 16:27:58
- * @LastEditors: 黄海聪
+ * @LastEditors: Huanghaicong
  * @FilePath: /utils/secretjs/SecretNetWorkClient.js
  * @Description: In User Settings Edit
  */
 import {
   SecretNetworkClient
-} from 'secretjs-cjgs'
+} from 'secretjs-hmt'
 
 class NetworkClient {
   static async create(wallet, walletAddress) {

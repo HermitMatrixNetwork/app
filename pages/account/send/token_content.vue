@@ -7,11 +7,11 @@
     </custom-header>
 
     <view class="main_token">
-      <TokenColumn :tokenName="token.alia_name" :tokenColumnStyle="tokenColumnStyle"
+      <TokenColumn :tokenIcon="token.logo" :tokenName="token.alia_name" :tokenColumnStyle="tokenColumnStyle"
         :tokenAddress="address | sliceAddress(6, -16) ">
         <template #right>
           <view style="padding-right: 16rpx;" class="token_price">
-            <view class="balance">{{balance.toFixed(2)}}</view>
+            <view class="balance" v-if="token.balance">{{ token.balance | formatBalance }}</view>
             <view>
               <text class="symbol">$</text>
               <text>0.00000</text>
@@ -24,7 +24,7 @@
         <view class="available">
           <text>可用</text>
           <view class="quantity">
-            <view class="top">0.00000000</view>
+            <view class="top" v-if="token.balance">{{ token.balance | formatBalance }}</view>
             <view class="bottom">
               <text class="symbol">$</text>
               <text>0.00000</text>
@@ -33,7 +33,8 @@
         </view>
         <view class="lock">
           <text>锁定</text>
-          <view class="quantity">
+          <custom-loading v-if="lockAmountLoading"></custom-loading>
+          <view v-else class="quantity">
             <view class="top">{{ lockAmount }}</view>
             <view class="bottom">
               <text class="symbol">$</text>
@@ -54,25 +55,28 @@
       <swiper v-else class="transaction_history_item" :current="listCurrentIndex" @change="switchSwiper" style="height: 670rpx">
         <swiper-item v-for="(item,index) in list" :key="item.name" :item-id="index+''">
           <scroll-view scroll-y class="scroll-container" style="height: 670rpx">
-            <view class="list-item" v-for="(record, index) in accountTransfer[item.type]" :key="index">
-              <view class="container">
-                <view class="logo">
-                  <image :src="record.icon"></image>
-                </view>
-                <view class="content">
-                  <view class="content-address">{{ (record.to_address || record.validator_address) | sliceAddress(6, -6) }}</view>
-                  <view class="content-time">{{ record.timestamp }}</view>
-                </view>
-                <view class="right">
-                  <view class="amount" :class="[record.validator_address ? 'delegate-amount' : (record.to_address == address ? 'recipient-amount' : 'sender-amount')]">{{ record.validator_address ? '' : (record.to_address == address ? '+' : '-') }} {{ record.amount }}</view>
-                  <view class="real-money">
-                    <text class="rate">$</text>
-                    <text class="money">0.00</text>
+            <template v-if="accountTransfer[item.type].length">
+              <view class="list-item" v-for="(record, index) in accountTransfer[item.type]" :key="index" @click.native="toRecordDetail(record)">
+                <view class="container">
+                  <view class="logo">
+                    <image :src="record.icon"></image>
+                  </view>
+                  <view class="content">
+                    <view class="content-address">{{ (record.to_address || record.validator_address) | sliceAddress(6, -6) }}</view>
+                    <view class="content-time">{{ record.timestamp }}</view>
+                  </view>
+                  <view class="right">
+                    <view class="amount" :class="[record.validator_address ? 'delegate-amount' : (record.to_address == address ? 'recipient-amount' : 'sender-amount')]">{{ record.validator_address ? '' : (record.to_address == address ? '+' : '-') }} {{ record.amount }}</view>
+                    <view class="real-money">
+                      <text class="rate">$</text>
+                      <text class="money">0.00</text>
+                    </view>
                   </view>
                 </view>
+                <view class="border"></view>
               </view>
-              <view class="border"></view>
-            </view>
+            </template>
+            <no-data v-else tip="暂无记录" />
           </scroll-view>
         </swiper-item>
       </swiper>
@@ -91,9 +95,7 @@
 import TokenColumn from './components/TokenColumn.vue'
 import mixin from '../mixins/index.js'
 import {
-  queryAccountInformation,
-  queryAccountHash,
-  getBalance
+  queryAccountHash
 } from '@/utils/secretjs/SDK.js'
 import mainCoin from '@/config/index.js'
 import {
@@ -110,7 +112,6 @@ export default {
   data() {
     return {
       token: {},
-      balance: 0,
       address: this.$cache.get('_currentWallet').address,
       listCurrentIndex: 0,
       tokenColumnStyle: {
@@ -134,34 +135,57 @@ export default {
         type: 'delegate'
       },
       {
-        name: '领取'
+        name: '领取',
+        type: 'draw'
       },
       {
-        name: '失败'
+        name: '失败',
+        type: 'fail'
       }],
-      accountTransfer: {},
+      accountTransfer: {
+        'sender': [],
+        'recipient': [],
+        'delegate': [],
+        'draw': [],
+        'fail': [],
+        'all': []
+      },
       loading: true,
+      lockAmountLoading: true,
       callRenderDelegateRecord: '',
       lockAmount: 0,
     }
   },
   async onLoad(options) {
     this.token = JSON.parse(options.token)
-    this.balance = this.token.balance
     this.callRenderDelegateRecord = this.address
+  },
+  onShow() {
+    this.token = this.$cache.get('_currentWallet').coinList.find(item => item.alia_name == this.token.alia_name)
   },
   created() {
     this.init()
   },
   methods: {
     async init() {
-      this.accountTransfer['sender'] = (await txsQuery([`message.module='${'bank'}'`,`transfer.sender='${this.address}'`])).data.tx_responses
-      this.accountTransfer['recipient'] = (await txsQuery([`message.module='${'bank'}'`,`transfer.recipient='${this.address}'`])).data.tx_responses
-      this.accountTransfer['delegate'] = (await txsQuery([`message.module='${'staking'}'`,`message.sender='${this.address}'`])).data.tx_responses
+      // to del
+      await Promise.all([
+        txsQuery([`events=message.module='${'bank'}'`,`events=transfer.sender='${this.address}'`, 'order_by=ORDER_BY_DESC']),
+        txsQuery([`events=message.module='${'bank'}'`,`events=transfer.recipient='${this.address}'`, 'order_by=ORDER_BY_DESC']),
+        txsQuery([`events=message.module='${'staking'}'`,`events=message.sender='${this.address}'`, 'order_by=ORDER_BY_DESC'])
+      ]).then(res => {
+        this.accountTransfer['sender'] = res[0].data.tx_responses
+        this.accountTransfer['recipient'] = res[1].data.tx_responses
+        this.accountTransfer['delegate'] = res[2].data.tx_responses
+      })
+      // this.accountTransfer['sender'] = (await txsQuery([`events=message.module='${'bank'}'`,`events=transfer.sender='${this.address}'`, 'order_by=ORDER_BY_DESC'])).data.tx_responses
+      // this.accountTransfer['recipient'] = (await txsQuery([`events=message.module='${'bank'}'`,`events=transfer.recipient='${this.address}'`, 'order_by=ORDER_BY_DESC'])).data.tx_responses
+      // this.accountTransfer['delegate'] = (await txsQuery([`events=message.module='${'staking'}'`,`events=message.sender='${this.address}'`, 'order_by=ORDER_BY_DESC'])).data.tx_responses
       const list = ['recipient', 'sender', 'delegate']
       list.forEach(type => {
         for (let i = 0, len = this.accountTransfer[type].length; i < len; i++) {
           const item = this.accountTransfer[type][i]
+          item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.rate + mainCoin.alia_name
           item.amount = 0
           item.memo = item.tx.body.memo
           item.from_address = item.tx.body.messages[0].from_address
@@ -197,9 +221,9 @@ export default {
       // #ifdef H5
       console.log(this.accountTransfer)
       // #endif
-      list.forEach(type => {
-        this.accountTransfer[type].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      })
+      // list.forEach(type => {
+      //   this.accountTransfer[type].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      // })
       this.accountTransfer['all'] = [...this.accountTransfer['sender'], ...this.accountTransfer['recipient'], ...this.accountTransfer['delegate']]
       this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
       this.loading = false
@@ -209,6 +233,7 @@ export default {
       result.delegationResponses.forEach(item => {
         lock += Number(item.balance.amount) 
       })
+      this.lockAmountLoading = false
       this.lockAmount = lock
     },
     jumpDetails(hash) {
@@ -236,17 +261,63 @@ export default {
     },
     toSend(url, params) {
       uni.navigateTo({
-        url: `${url}?token=${JSON.stringify(params)}`
+        url: `${url}?token=${JSON.stringify(params)}`,
+        events: {
+          addRecordToSendList: (data) => {
+            data.from_address = data.tx.body.messages[0].value.fromAddress
+            data.to_address = data.tx.body.messages[0].value.toAddress
+            data.amount = 0
+            data.tx.body.messages.forEach(cur => {
+              if (cur.value.amount) {
+                if (Array.isArray(cur.value.amount)) {
+                  data.amount += Number(cur.value.amount[0].amount)
+                } else {
+                  data.amount += Number(cur.value.amount.amount)
+                }
+              }
+            })
+            
+            mainCoin.rate && (data.amount = data.amount / mainCoin.rate)
+            data.amount += mainCoin.alia_name
+            
+            data.icon = require(
+              '@/static/img/account/fasong2.png')
+
+            data.timestamp = data.timestamp.replace(/T|Z/g, ' ')
+            
+            
+            this.accountTransfer['all'].unshift(data)
+            
+            this.accountTransfer['sender'].unshift(data)
+            
+            this.$forceUpdate()
+            
+            console.log('添加记录数据', data)
+          }
+        }
       })
     },
     toTokenDetail() {
       uni.navigateTo({
         url: `/pages/account/send/tokenInformation?token=${JSON.stringify(this.token)}`
       })
+    },
+    toRecordDetail(record) {
+      uni.navigateTo({
+        url: `./transactionDetails?data=${JSON.stringify(record)}`
+      })
     }
   },
   filters: {
-    sliceAddress
+    sliceAddress,
+    formatBalance(val) {
+      const int = (val + '').split('.')[0]
+      let float = (val + '').split('.')[1]
+      if (float) {
+        float = float.substr(0, 2)
+      }
+      return int + '.' + float
+    }
   },
 }
 </script>
@@ -268,8 +339,8 @@ export default {
         renderUtils.runMethod(this._$id, 'setLockAmount', { result }, this)
       },
       async getUnbondingDelegationRecord(address) {
-        const result = await getUnbondingDelegationRecord(address)
-        console.log('getUnbondingDelegationRecord', result.unbondingResponses);
+        // const result = await getUnbondingDelegationRecord(address)
+        // console.log('getUnbondingDelegationRecord', result.unbondingResponses);
       },
     }
   }
@@ -413,7 +484,6 @@ export default {
     button {
       width: 152rpx;
       height: 80rpx;
-      line-height: 80rpx;
       font-weight: 400;
       font-size: 28rpx;
       background: rgba(255, 255, 255, 0.00);

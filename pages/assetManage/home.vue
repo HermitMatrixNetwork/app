@@ -43,7 +43,7 @@ export default {
       uni.navigateTo({
       	url:e.currentTarget.dataset.url
       })
-    },
+    }
   }
 }
 </script>

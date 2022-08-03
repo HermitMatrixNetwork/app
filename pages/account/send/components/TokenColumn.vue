@@ -7,7 +7,7 @@
 			<view class="center">
 				<view class="title">{{tokenName}}</view>
 				<view class="address" :style="{display:tokenAddress?'block':'none'}">
-					{{tokenAddress}}
+					{{ tokenAddress | sliceAddress }}
 				</view>
 			</view>
 			<view class="right">
@@ -31,17 +31,15 @@ export default {
     },
     tokenIcon: {
       type: String,
-      default: require('@/static/img/account/uGHM.png')
+      // default: require('@/static/img/account/uGHM.png')
+      default: ''
     },
     tokenColumnStyle: Object
   },
-  data() {
-    return {
-
+  filters: {
+    sliceAddress(val) {
+      return val.substr(0, 8) + '...' + val.substr(-8)
     }
-  },
-  onLoad() {
-
   }
 }
 </script>

@@ -1,7 +1,7 @@
 /*
- * @Author: 黄海聪
+ * @Author: Huanghaicong
  * @Date: 2022-06-23 15:17:17
- * @LastEditors: 黄海聪
+ * @LastEditors: Huanghaicong
  * @FilePath: /utils/validator.js
  * @Description: In User Settings Edit
  */

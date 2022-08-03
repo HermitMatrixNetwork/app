@@ -11,8 +11,8 @@
 
         <!-- 代币选择 -->
         <view class="change-token" @click="jumpTokenlist">
-          <image :src="tokenUrl"></image>
-          <text>{{tokenName}}</text>
+          <image :src="token.logo"></image>
+          <text>{{ token.alia_name }}</text>
           <view class="icon-right">
             <u-icon name="arrow-right" />
           </view>
@@ -27,6 +27,7 @@
                 @click="toGo('/pages/account/send/adres_book')"></u-icon>
             </template>
           </InputTitle>
+          <text v-if="showAddressErrorTip" class="waringPrompt">{{ language['addressErrorTip'] }}</text>
         </view>
 
         <!-- 发送金额 -->
@@ -36,21 +37,21 @@
               <view class="label">
                 <text>发送金额</text>
                 <view class="can-be-use">
-                  <text>可用： {{ token.balance }} {{ token.full_name }}</text>
+                  <text>可用： {{ token.balance }} {{ token.alia_name }}</text>
                 </view>
               </view>
               <view class="value">
                 <u--input placeholder="请输入金额" v-model.number="sendFormData.sendAmount"></u--input>
                 <view class="value-info">
-                  <text class="denom">{{ tokenName }}</text>
+                  <text class="denom">{{ token.alia_name }}</text>
                   <view class="border"></view>
                   <text class="all" @click="testAmount">全部</text>
                 </view>
               </view>
             </view>
-            <!--          <text v-if="sendAmount>balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text> -->
           </view>
-          <text v-if="sendFormData.sendAmount>balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text>
+          <text v-if="sendFormData.sendAmount > token.balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text>
+          <text v-if="showAmountErrorTip" class="waringPrompt">{{ language.amountErrorTip }}</text>
         </view>
 
         <view class="send-memo">
@@ -68,7 +69,7 @@
       </view>
     </view>
 
-    <u-popup :show="submitPopupIsShow" @close="submitPopupIsShow=false" mode="bottom" round="16rpx"
+    <u-popup :show="submitPopupIsShow" @close="submitPopupIsShow=false" mode="bottom" class="double-check-popup"
       :safeAreaInsetBottom="true">
       <view class="submitPopup">
         <view class="main">
@@ -93,13 +94,13 @@
           <!-- 转账金额 -->
           <view class="transfer_amount">
             <text>转账金额</text>
-            <text>{{sendFormData.sendAmount?sendFormData.sendAmount:'0'}}{{tokenName}}</text>
+            <text>{{sendFormData.sendAmount?sendFormData.sendAmount:'0'}} {{ token.alia_name }}</text>
           </view>
 
           <!--Memo-->
           <view class="memo_type">
             <text>Meno</text>
-            <text>transfer</text>
+            <text>{{ sendFormData.memo }}</text>
           </view>
 
           <!--矿工费-->
@@ -117,21 +118,27 @@
       </view>
     </u-popup>
 
-    <u-modal :show="modalPasswordIsShow" :showConfirmButton="false">
+    <u-modal :show="modalPasswordIsShow" :showConfirmButton="false" @close="close">
       <view class="modal_main">
         <view class="modal_title">
           密码确认
           <u-icon :name="require('../../../static/img/account/close.png')" size="32rpx"
             @click="modalPasswordIsShow=false"></u-icon>
         </view>
-        <InputTitle :type="'password'" :placeholder="'请输入资金密码'" :inputVal.sync="payPassword"
-          :warningStyleisShow="passwordCheck" placeholderStyle="color: red;">
-        </InputTitle>
+        <view class="item">
+          <view class="item-input item-input-password">
+            <u-input :password="!passwordEye" v-model="payPassword" placeholder="输入资金密码">
+            </u-input>
+            <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
+              @click="passwordEye = !passwordEye">
+            </u-icon>
+          </view>
+        </view>
         <!-- <input type="text"> -->
         <text v-if="passwordCheck" class="waringPrompt">资金密码错误，请确认后重新输入!</text>
         <!-- <Submitbtn class="modal_submit" @click.native="passwordButton" >确认</Submitbtn> -->
-        <button @click="passwordButton" :sendFormData="sendFormData" :change:sendFormData="render.receiveMsg"
-          :check="chechSuccess" :change:check="render.sendToken">确认</button>
+        <u-button @click="passwordButton" :sendFormData="sendFormData" :change:sendFormData="render.receiveMsg"
+          :check="chechSuccess" :change:check="render.sendToken" class="btn">确认</u-button>
       </view>
     </u-modal>
   </view>
@@ -139,7 +146,7 @@
 
 <script>
 import InputTitle from './components/Input-title.vue'
-import languages from '../language/index.js'
+import languages from './language/index.js'
 import Submitbtn from './components/submit-btn.vue'
 import {
   SendTokentoOtherAddress,
@@ -159,8 +166,6 @@ export default {
       tokenUrl: '/static/img/account/uGHM.png',
       tokenName: 'GHM',
       inputVal: '',
-      balance: '',
-      memoValue: '', //Memo
       payPassword: '', //资金密码
       passwordCheck: false, //密码校验
       submitPopupIsShow: false,
@@ -168,9 +173,10 @@ export default {
       chechSuccess: 0,
       sendFormData: {
         userAddress: this.$cache.get('_currentWallet').address,
-        receiveAddress: '', //接收地址
-        sendAmount: '', //发送金额
-        memo: ''
+        receiveAddress: 'ghm189k0gud8npz4jsyz0nvvku8x2ul9n4pdalq6yt', //接收地址
+        sendAmount: 100, //发送金额
+        memo: 'test1',
+        gas: '',
       },
       titleStyle: {
         background: '#FFFFFF'
@@ -182,11 +188,19 @@ export default {
         color: '#2C365A',
         fontWeight: '500'
       },
-      token: {}
+      token: {},
+      showAddressErrorTip: false,
+      showAmountErrorTip: false,
+      passwordEye: false
     }
   },
   onLoad(value) {
-    this.token = JSON.parse(value.token)
+    if (value.token) {
+      this.token = JSON.parse(value.token)
+    } else {
+      this.token = this.$cache.get('_currentWallet').coinList[0]
+    }
+    this.sendFormData.rate = this.token.rate || 1
     this.receiveAddress = value.receiveAddress
   },
   methods: {
@@ -198,18 +212,25 @@ export default {
       const {
         receiveAddress,
         sendAmount,
+        memo
       } = this.sendFormData
-      const {
-        balance,
-        memoValue
-      } = this.$data
-      if (!(receiveAddress && sendAmount && memoValue)) {
-        return console.log('输入不能为空')
+
+      if (receiveAddress.trim() === '') {
+        this.showAddressErrorTip = true
+      } else {
+        this.showAddressErrorTip = false
       }
-      if (sendAmount > balance || balance == 0) {
-        return console.log('余额不足')
+
+      if (sendAmount == '') {
+        this.showAmountErrorTip = true
+      } else {
+        this.showAmountErrorTip = false
       }
-      this.submitPopupIsShow = true
+      
+      // && this.sendFormData.sendAmount < this.token.balance
+      if (!this.showAddressErrorTip && !this.showAmountErrorTip ) {
+        this.submitPopupIsShow = true
+      }
     },
     async passwordButton() {
       const decode = WalletCrypto.decode(this.$cache.get('_currentWallet').password)
@@ -217,47 +238,99 @@ export default {
         this.passwordCheck = true
       } else {
         this.passwordCheck = false
-        this.chechSuccess = 1
+        this.chechSuccess = 1 // 调用render.sendToken
+        uni.showToast({
+          title: '交易中',
+          icon: 'loading',
+          mask: true,
+          duration: 999999999
+        })
       }
-      this.payPassword = ''
     },
     testAmount() {
-      this.sendFormData.sendAmount = this.balance
+      this.sendFormData.sendAmount = this.token.balance
     },
     getMinersCost(val) {
       console.log('接收到值', val)
       this.minersMsg = val
     },
     scanCode() { //扫码
-      let that = this
       uni.scanCode({
         onlyFromCamera: false,
         scanType: ['qrCode'],
-        success(res) {
+        success: (res) => {
           console.log('条码内容：' + res.result)
-          that.receiveAddress = that.$refs.addressInptval.childValue = res.result
+          this.receiveAddress = this.$refs.addressInptval.childValue = res.result
         },
       })
     },
     jumpTokenlist() { //代币选择
-      let that = this
       uni.navigateTo({
         url: '/pages/account/send/token_list',
         events: {
-          changeToken(data) {
-            console.log('接收到token选择里的数据', data)
-            that.tokenUrl = data.icon
-            that.tokenName = data.name
+          changeToken: (data) => {
+            this.token = data
           }
         }
       })
     },
     dealSuccessJump(result) {
-      console.log('接收renderjs', result)
-      uni.navigateTo({
-        url: `./transactionDetails?transactionHash=${result.transactionHash}`
-      })
-      this.modalPasswordIsShow = false
+      console.log('交易结果', result)
+      const fee = result.tx.authInfo.fee.amount[0].amount / (this.token.rate || 1)
+      const usedAmount = this.sendFormData.sendAmount
+      uni.hideToast()
+      const eventChannel = this.getOpenerEventChannel()
+      if (result.code == 0) {
+        uni.showToast({
+          title: '交易成功',
+          image: '/static/img/chenggong.png',
+          mask: true,
+          duration: 3000,
+          complete: () => {
+            this.chechSuccess = 0
+            this.modalPasswordIsShow = false
+            setTimeout(() => {
+              uni.redirectTo({
+                url: `./transactionDetails?transactionHash=${result.transactionHash}`
+              })
+              eventChannel.emit('addRecordToSendList', result)
+            }, 1500)
+          }
+        })
+        
+        this.token.balance = this.token.balance - fee - usedAmount
+      } else {
+        this.token.balance = this.token.balance - fee
+      }
+      
+      const wallet = this.$cache.get('_currentWallet')
+      
+      const tokenList = wallet.coinList
+      
+      const tokenIndex = tokenList.findIndex(item => item.alia_name == this.token.alia_name)
+      
+      tokenList.splice(tokenIndex, 1, this.token)
+
+      wallet.coinList = tokenList
+
+      this.$cache.set('_currentWallet', wallet, 0)
+
+      this.updateWalletList(wallet)
+    },
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.unshift(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
+    },
+    close() {
+      this.passwordCheck = false
+      this.payPassword = ''
     }
   }
 }
@@ -284,11 +357,14 @@ export default {
           receiveAddress,
           userAddress,
           sendAmount,
-          memo
+          memo,
+          gas,
+          rate
         } = this.message
+        console.log(rate);
         sendAmount = sendAmount * mainCoin.rate
         console.log('接收地址', receiveAddress);
-        const res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo)
+        const res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas)
         renderUtils.runMethod(this._$id, 'dealSuccessJump', res, this)
 
       },
@@ -336,8 +412,7 @@ export default {
         font-size: 32rpx;
         color: #2C365A;
         font-family: PingFangSC-Medium;
-        font-weight: 500;
-        letter-spacing: 0;
+        font-weight: 600;
       }
 
       .icon-right {
@@ -419,15 +494,16 @@ export default {
       margin: 0 32rpx;
 
       .popup-title {
-        font-weight: 500;
+        font-weight: 600;
         font-size: 32rpx;
         color: #2C365A;
         letter-spacing: 0;
         padding: 48rpx 0 16rpx 0;
         line-height: 32rpx;
+        border-bottom: 0 !important;
       }
 
-      view {
+      >view {
         font-size: 28rpx;
         display: flex;
         justify-content: space-between;
@@ -463,18 +539,23 @@ export default {
         padding-bottom: 43rpx;
       }
 
+      .transfer_amount {}
+
       .miners_fee {
         padding: 33rpx 0 39rpx 0;
-
+        
         view {
           height: 80rpx;
           display: flex;
           flex-direction: column;
           align-items: flex-end;
           line-height: 28rpx;
+          font-size: 28rpx;
+          color: #030319;
 
           .price {
             color: #8F9BB3;
+            margin-top: 24rpx;
           }
         }
       }
@@ -495,7 +576,7 @@ export default {
 
     .modal_title {
       font-family: PingFangSC-Medium;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 32rpx;
       color: #2C365A;
       letter-spacing: 0;
@@ -521,7 +602,8 @@ export default {
   }
 
   /deep/ .u-popup__content {
-    border-radius: 16rpx !important;
+    border-top-right-radius: 16rpx;
+    border-top-left-radius: 16rpx;
 
     .u-modal__content {
       padding: 48rpx 32rpx !important;
@@ -565,7 +647,7 @@ export default {
         font-size: 28rpx;
         color: #2C365A;
       }
-      
+
       .can-be-use {
         text {
           font-weight: 400;
@@ -617,14 +699,65 @@ export default {
           font-size: 28rpx;
           line-height: 28rpx;
         }
-        
+
         .denom {
           font-weight: 600;
-          color: #2C365A;  
+          color: #2C365A;
         }
-        
+
         .all {
           color: #1E5EFF;
+        }
+      }
+    }
+  }
+
+  .btn {
+    height: 96rpx;
+    margin-top: 80rpx;
+    border-radius: 16rpx;
+    background-color: #002FA7 !important;
+    font-weight: 400;
+    font-size: 32rpx;
+    color: #FCFCFD;
+  }
+
+  .item {
+    margin-top: 64rpx;
+
+    &-input {
+
+      .u-input {
+        height: 96rpx;
+        background-color: #F2F4F8;
+        border-radius: 16rpx 0 0 16rpx;
+        padding-left: 0 !important;
+
+        /deep/ input {
+          color: #2C365A !important;
+          font-size: 28rpx !important;
+          padding-left: 32rpx;
+          line-height: 48rpx !important;
+        }
+      }
+
+      /deep/ .input-placeholder {
+        // height: 48rpx !important;
+        font-weight: 400 !important;
+        font-size: 28rpx !important;
+        // color: #8397B1 !important;
+        color: #8397B1 !important;
+        // line-height: 48rpx !important;
+      }
+
+      &-password {
+        display: flex;
+
+        .u-icon {
+          height: 96rpx;
+          padding-right: 36rpx;
+          background-color: #F2F4F8;
+          border-radius: 0 16rpx 16rpx 0 !important;
         }
       }
     }

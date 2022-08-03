@@ -73,7 +73,7 @@ export default {
       top: [{
         name: '地址薄',
         icon: 'dizhipu.png',
-        page: '/pages/account/send/adres_book'
+        page: '/pages/account/send/adres_book?edit=true'
       }, {
         name: '大额提醒',
         icon: 'dae.png',

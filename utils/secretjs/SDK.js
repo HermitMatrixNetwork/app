@@ -1,7 +1,7 @@
 import async from 'pbkdf2/lib/async'
 import WalletCrpto from '@/utils/walletCrypto.js'
 
-import { Tx } from 'secretjs-cjgs/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
+import { Tx } from 'secretjs-hmt/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
 import secretjs from './index.js'
 let wallet = {}
 //#ifdef APP-PLUS
@@ -41,14 +41,15 @@ export async function getBalance(address, denom = 'uGHM') {
 
 //获取合约信息
 export async function getContractInfo(address) {
-  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  try {
-    const result = await Secret.query.compute.contractInfo(address)
-    return result
-  } catch (e) {
-    return false
-    //TODO handle the exception
-  }
+  let Secret = await getSecret()
+  // try {
+  const result = await Secret.query.compute.contractInfo(address)
+  console.log(222)
+  // return result
+  // } catch (e) {
+  // return false
+  //TODO handle the exception
+  // }
 }
 
 export async function QueryStakingValidators(status) {
@@ -62,7 +63,6 @@ export async function QueryStakingValidators(status) {
 //发送其他地址
 export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo = '') {
   let Secret = await getSecret()
-  // try {
   const result = await Secret.tx.bank.send(
     {
       fromAddress: myaddress,
@@ -75,16 +75,13 @@ export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo
       ]
     },
     {
-      gasPriceInFeeDenom: 0.25,
+      gasPriceInFeeDenom: 0.0215,
       feeDenom: 'uGHM',
       gasLimit: 20000,
       memo
     }
   )
   return result
-  // } catch {
-  //   return false
-  // }
 }
 
 export async function createViewKey(params, options) {

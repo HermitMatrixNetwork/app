@@ -3,12 +3,13 @@
 		<view :address="address" :change:address="init"></view>
 		<custom-header :title="'节点选择'" >
 			<template #right>
-				<u-icon name="search" size="44rpx" />
+				<u-icon name="search" size="44rpx" @click="toSearch" />
 			</template>
 		</custom-header>
 		<view class="lists">
-			<List :list="list"/>
-			<no-data></no-data>
+      <custom-loading class="loading" v-if="loading"></custom-loading>
+			<List v-else-if="list.length" :list="list"/>
+			<no-data v-else></no-data>
 		</view>
 	</view>
 </template>
@@ -24,7 +25,7 @@ export default {
   data(){
     return {
       list: [],
-		
+      loading: true
     }
   },
   mounted(){
@@ -34,7 +35,13 @@ export default {
   methods: {
     initData(data){
       this.list = data.list
+      this.loading = false
       console.log(data)
+    },
+    toSearch() {
+      uni.navigateTo({
+        url: './search'
+      })
     }
   }
 }
@@ -61,4 +68,8 @@ export default {
 		padding: 0 32rpx;
 		border-top: 2rpx solid rgba(131,151,177,0.20);
 	}
+  
+  .loading {
+    margin-top: 20rpx;
+  }
 </style>

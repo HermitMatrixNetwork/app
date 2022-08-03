@@ -56,7 +56,7 @@
 					<view class="list-item" v-for="(item,index) in validators" :key="index" @click="toValidatorDetail(item)">
 						<view class="left">
 							<view class="name">{{item.description.moniker}}</view>
-							<view class="other">{{item.operatorAddress|sliceAddress(7,8)}}</view>
+							<view class="other">{{item.operatorAddress|sliceAddress(7, -8)}}</view>
 						</view>
 						<view class="center">
 							99

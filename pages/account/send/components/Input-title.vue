@@ -8,10 +8,10 @@
     </view>
     <view :class="inputContainerStyle">
       <input v-if="!isTextarea" :type="type" :placeholder="placeholder" class="common-input input-content" v-model="childValue"
-        :maxlength="maxlength" :style="inputOtherStyle" @input="childValueChange"
+        :maxlength="maxlength" :style="inputOtherStyle"
         :class="[warningStyleisShow?'beyondWarning':'']"/>
 
-      <u--textarea v-model="textAreaValue" :placeholder="placeholder" autoHeight v-else class="textarea" maxlength="60">
+      <u--textarea v-model="childValue" :placeholder="placeholder" autoHeight v-else class="textarea" maxlength="60" :disabled="disabled">
       </u--textarea>
       <slot name="inputRight"></slot>
     </view>
@@ -21,6 +21,10 @@
 <script>
 export default {
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     title: {
       type: String,
       default: ''
@@ -62,13 +66,13 @@ export default {
   data() {
     return {
       childValue: this.inputVal,
-      textAreaValue: ''
     }
   },
-  methods: {
-    childValueChange(v) {
-      console.log(v.target.value)
-      this.$emit('update:inputVal', v.target.value)
+  watch: {
+    childValue: {
+      handler(newVal) {
+        this.$emit('update:inputVal', newVal)
+      }
     }
   }
 }

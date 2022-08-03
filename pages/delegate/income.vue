@@ -15,7 +15,7 @@
 							:inputVal.sync="receiveAddress">
 							<template #title-icon>
 								<u-icon :name="require('@/static/img/account/addressbook.png')" size="44rpx"
-									@click="toGo('/pages/account/send/adres_book')"></u-icon>
+									@click="toAddressBook()"></u-icon>
 							</template>
 						</InputTitle>
             
@@ -231,6 +231,11 @@ export default {
     getMinersCost(val) {
       console.log('接收到值', val)
       this.minersMsg = val
+    },
+    toAddressBook() {
+      uni.navigateTo({
+        url: '/pages/account/send/adres_book'
+      })
     }
   },
 }

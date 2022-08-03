@@ -3,7 +3,9 @@ import isTor from 'is-tor'
 export default {
   onLaunch() {
     this.$cache.get('_language') !== null || this.$cache.set('_language', 'CN', 0)
+    this.$cache.get('_addressBook') !== null || this.$cache.set('_addressBook', [], 0)
     this.$cache.get('_touchId') !== null || this.$cache.set('_touchId', 0, 0)
+    
     // uni.request({
     //   url:'http://pv.sohu.com/cityjson?ie=utf-8',
     //   method:'POST',

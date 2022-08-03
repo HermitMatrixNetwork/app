@@ -1,5 +1,9 @@
 import baseServer from '@/config/requestConfig.js'
 
+import Request from '@/utils/luch-request/index.js'
+
+const http = new Request()
+
 const devServer = '/goServer'
 
 // const devServer = ''
@@ -12,8 +16,5 @@ const devServer = '/goServer'
 
 // 根据合约搜索代币
 export const searchCoin = async (contractAddress) => {
-  return uni.request({
-    method: 'GET',
-    url: `${devServer}/search_assets/${contractAddress}`
-  })
+  return http.get(`${devServer}/search_assets/${contractAddress}`)
 }

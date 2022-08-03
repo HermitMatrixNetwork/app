@@ -91,10 +91,11 @@ export default {
     },
     //查询结果
     searchData(data) {
-      console.log(data)
-      this.list[0] = data
-      this.loading = false
-      this.reAddress = ''
+      if (data) {
+        this.list[0] = data
+        this.loading = false
+        this.reAddress = ''
+      }
     },
     addToken(token) {
       const { contract_address, full_name, logo } = token
@@ -136,6 +137,8 @@ export default {
       async search(address) {
         if (address == '') return
         let data = await searchCoin(address)
+        
+        let result = data.data.data.result || null
         renderUtils.runMethod(this._$id, 'searchData', data.data.data.result, this)
       }
     }

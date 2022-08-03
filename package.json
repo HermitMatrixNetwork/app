@@ -19,9 +19,9 @@
     "buffer": "^6.0.3",
     "crypto-js": "^4.1.1",
     "is-tor": "^3.5.1",
-    "secretjs-cjgs": "^1.0.0",
-    "tki-qrcode": "^0.1.6",
     "pbkdf2": "^3.1.2",
-    "randombytes": "^2.1.0"
+    "randombytes": "^2.1.0",
+    "secretjs-hmt": "^1.0.0",
+    "tki-qrcode": "^0.1.6"
   }
 }

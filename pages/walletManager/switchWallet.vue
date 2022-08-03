@@ -57,10 +57,10 @@ export default {
     close(index) {
       if (index > 0) {
         const walletList = this.walletList
-        const currentWalletList = walletList[index]
-        this.$cache.set('_currentWallet', currentWalletList, 0)
+        const currentWallet = walletList[index]
+        this.$cache.set('_currentWallet', currentWallet, 0)
         walletList.splice(index, 1)
-        walletList.unshift(currentWalletList)
+        walletList.unshift(currentWallet)
         this.$cache.set('_walletList', walletList, 0)
       }
       this.$emit('close')

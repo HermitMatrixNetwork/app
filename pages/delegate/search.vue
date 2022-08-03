@@ -4,14 +4,14 @@
 		<view class="top">
 			<u-search placeholder="输入验证名称或地址查询" shape="round" :clearabled="true" v-model="address" actionText="取消" :actionStyle="searchStyle"  @search="searchCoin" @custom="goBack"></u-search>
 		</view>
-		<view class="list" v-if="list.length>0">
+		<view class="list" v-if="list.length > 0">
 			<List :list="list"/>
 		</view>
 		<view v-else class="noData">
 			<img v-if="reAddress!=''" class="data" src="@/static/img/account/nodata.png" alt="">
 			<img v-else class="searchbg" src="@/static/img/account/searchbg.png" alt="">
 			<view class="tip">
-				{{reAddress?'未搜索到相关代币':'支持所有 Hermit Matrix Network 代币请输入代币合约地址进行搜索'}}
+				{{ reAddress ? '未搜索到相关节点' : '请输入验证人地址进行搜索' }}
 			</view>
 		</view>
 	</view>
@@ -71,21 +71,22 @@ export default {
 import {getContractInfo} from '@/utils/secretjs/SDK'
 import renderUtils from '@/utils/render.base.js'
 export default {
-	// methods:{
-	// 	async search(address){
-	// 		console.log('address',address)
-	// 		if(address=='') return
-	// 		let data = await getContractInfo(address)
-	// 		if(data){
-	// 			data = {
-	// 				...data,
-	// 				...data.ContractInfo,
-	// 				logo: ''
-	// 			}
-	// 		}
-	// 		renderUtils.runMethod(this._$id, 'searchData', data, this)
-	// 	}
-	// }
+	methods:{
+		async search(address){
+			console.log('address',address)
+			if(address=='') return
+			let data = await getContractInfo(address)
+      console.log('111111111111', data);
+			// if(data){
+			// 	data = {
+			// 		...data,
+			// 		...data.ContractInfo,
+			// 		logo: ''
+			// 	}
+			// }
+			// renderUtils.runMethod(this._$id, 'searchData', data, this)
+		}
+	}
 }
 </script>
 <style lang="scss" scoped>

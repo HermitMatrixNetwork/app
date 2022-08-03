@@ -1,27 +1,32 @@
 <template>
 	<view class="address-book">
-		<custom-header :title="'地址簿'">
+		<custom-header class="header" :title="'地址簿'">
 			<template #right>
 				<u-icon :name="require('@/static/img/account/add2.png')" size="44rpx" @click="toGo('/pages/account/writeAddress')"></u-icon>
 			</template>
 		</custom-header>
-
+    <view class="border">
+      
+    </view>
 		<view class="address-list" v-if="addressList.length">
-			<view class="address-item" v-for="(item,index) in addressList" :key="index">
-				<view class="token-image">
-					<image :src="item.icon"/>
+			<view v-for="(item,index) in addressList" :key="index">
+				<view class="address-item" @click="toEditAddress(item)">
+				  <view class="token-image">
+				  	<image :src="item.icon || '/static/img/account/uGHM.png'"/>
+				  </view>
+				  <view class="token-content">
+				  	<view>{{ item.walletName }}</view>
+				  	<view>{{ item.walletAddress }}</view>
+				  	<view>{{ item.walletDescribe }}</view>
+				  </view>
 				</view>
-				<view class="token-content" :style="{height:item.remark?'136rpx':'96rpx'}">
-					<view>{{item.title}}</view>
-					<text>{{item.address}}</text>
-					<view>{{item.remark}}</view>
-				</view>
+        <view class="border"></view>
 			</view>
 		</view>
 		
 		<view class="no-address" v-else>
 			<image src="../../../static/img/mipmap.png" />
-			<view>暂无地址，点击<text class="add">添加</text></view>
+			<view>暂无地址，点击<text class="add" @click="toGo('/pages/account/writeAddress')">添加</text></view>
 		</view>
 	</view>
 </template>
@@ -31,51 +36,40 @@ import mixin from '../mixins/index.js'
 export default {
   data() {
     return {
-      addressList: [{
-        icon: '../../../static/img/placeholder.jpeg',
-        title: '我的地址',
-        address: '0xd7B650061b098247A9C756D3c184002C93060e4c',
-        remark: '这里是备注内容'
-      },
-      {
-			  icon: '../../../static/img/placeholder.jpeg',
-			  title: '我的地址',
-			  address: '0xd7B650061b098247A9C756D3c184002C93060e4c',
-			  remark: ''
-      },
-      {
-			  icon: '../../../static/img/placeholder.jpeg',
-			  title: '我的地址',
-			  address: '0xd7B650061b098247A9C756D3c184002C93060e4c',
-			  remark: ''
-      }]
+      addressList: this.$cache.get('_addressBook') || []
     }
   },
-  onLoad() {
-
+  onLoad(options) {
+    this.edit = options.edit
   },
   methods: {
-
+    toEditAddress(item) {
+      if (this.edit) {
+        uni.navigateTo({
+          url: `/pages/account/editAddress?book=${JSON.stringify(item)}`
+        })
+      }
+      this.$emit('clickAddress', item)
+    }
   },
   mixins:[mixin]
 }
 </script>
 
 <style lang="scss" scoped>
-	page {
-		width: 100%;
-		height: 100%;
-	}
+  .border {
+    height: 2rpx;
+    opacity: 0.16;
+    background-color: #8397B1;
+  }
 
 	.address-book {
 		width: 100%;
-		height: 100%;
 		background: #FFFFFF;
 	}
 
 	.address-list {
 		margin: 0 32rpx;
-		height: auto;
 
 		.address-item {
 			width: 100%;
@@ -83,7 +77,6 @@ export default {
 			// height: 96rpx;
 			display: flex;
 			align-items: center;
-			border-bottom: 1rpx solid #80808080;
 
 			.token-image {
 				padding-right: 32rpx;
@@ -96,10 +89,8 @@ export default {
 
 			.token-content {
 				width: 542rpx;
-				height: 136rpx;
 				display: flex;
 				flex-direction: column;
-				justify-content: space-between;
 
 				view:nth-child(1),
 				view:nth-child(3) {
@@ -109,17 +100,16 @@ export default {
 					letter-spacing: 0;
 					line-height: 24rpx;
 				}
-
-				text {
-					width: 542rpx;
-					height: 56rpx;
-					font-weight: 400;
-					font-size: 24rpx;
-					color: #2C365A;
-					letter-spacing: 0;
-					line-height: 28rpx;
-					word-wrap: break-word;
-				}
+        
+        view:nth-child(2) {
+          margin-top: 16rpx;
+          margin-bottom: 18rpx;
+          font-weight: 400;
+          font-size: 24rpx;
+          color: #2C365A;
+          line-height: 28rpx;
+          word-wrap: break-word;
+        }
 			}
 		}
 	}

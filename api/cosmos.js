@@ -19,9 +19,9 @@ export const txsQuery = async (events) => {
   let params = ''
   events.forEach((item, index) => {
     if (index) {
-      params += '&events=' + item
+      params += '&' + item
     } else {
-      params += 'events=' + item
+      params += '' + item
     }
   })
   return http.get(`${baseServer.cosmosServer}/cosmos/tx/v1beta1/txs?${params}`)

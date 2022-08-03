@@ -1,7 +1,7 @@
 /**
- * @Author: 黄海聪
+ * @Author: Huanghaicong
  * @Date: 2022-06-22 16:11:38
- * @LastEditors: 黄海聪
+ * @LastEditors: Huanghaicong
  * @FilePath: /utils/walletCrypto.js
  * @Description: In User Settings Edit
  */

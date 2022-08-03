@@ -2,16 +2,16 @@
   <view class="list">
     <view class="item" v-for="(item,index) in list" :key="index">
       <view class="left">
-        <u-icon :name="require('../../../static/img/placeholder.jpeg')" size="72rpx"></u-icon>
+        <image :src="item.logo" style="width: 72rpx; height: 72rpx;" />
       </view>
       <view class="center">
-        <view class="title">{{item.label}}</view>
+        <view class="title">{{item.alia_name}}</view>
         <view class="address">
-          {{item.address|sliceAddress}}
+          {{ item.contract_address }}
         </view>
       </view>
-      <view class="right" v-if="item.label!=mainCoin.label">
-        <u-icon v-if="searchList.includes(item.address)" :name="require('@/static/img/account/ic-delect.png')"
+      <view class="right" v-if="item.alia_name != mainCoin.alia_name">
+        <u-icon v-if="searchList.includes(item.contract_address)" :name="require('@/static/img/account/ic-delect.png')"
           size="44rpx" @click="changeCoin(item,'del')"></u-icon>
         <u-icon v-else :name="require('@/static/img/account/ic-add.png')" size="44rpx" @click="changeCoin(item,'add')">
         </u-icon>
@@ -21,14 +21,8 @@
 </template>
 
 <script>
-import {
-  sliceAddress
-} from '@/utils/filters.js'
 import mainCoin from '@/config/index.js'
 export default {
-  filters: {
-    sliceAddress
-  },
   props: {
     list: {
       type: Array,
@@ -48,7 +42,7 @@ export default {
     let currentWallte = this.$cache.get('_currentWallet')
     let coinList = currentWallte.coinList
     coinList.forEach(item => {
-      this.searchList.push(item.address)
+      this.searchList.push(item.contract_address)
     })
   },
   methods: {
@@ -58,16 +52,15 @@ export default {
       let coinList = currentWallte.coinList || []
       if (type == 'add') {
         coinList.push(item)
-        this.searchList.push(item.address)
+        this.searchList.push(item.contract_address)
       } else {
-        const index = coinList.findIndex(coin => coin.address == item.address)
-        const searchListIndex = this.searchList.findIndex(address => address == item.address)
+        const index = coinList.findIndex(coin => coin.contract_address == item.contract_address)
+        const searchListIndex = this.searchList.findIndex(address => address == item.contract_address)
         coinList.splice(index, 1)
         this.searchList.splice(searchListIndex, 1)
       }
 
       currentWallte.coinList = coinList
-      console.log('currentWallte', currentWallte)
       this.$cache.set('_currentWallet', currentWallte, 0)
       this.updateWalletList(currentWallte)
       // uni.showToast({

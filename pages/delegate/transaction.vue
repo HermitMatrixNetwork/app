@@ -2,7 +2,7 @@
 	<view class="transtion">
 		<custom-header :title="'交易记录'" >
 		</custom-header>
-		<u-tabs :list="list1" lineColor="#1E5EFF" lineHeight="4"></u-tabs>
+		<u-tabs class="tabs" :inactiveStyle="inactiveStyle" :activeStyle="activeStyle" :itemStyle="itemStyle" :list="list1" lineColor="#1E5EFF" lineHeight="4"></u-tabs>
 		<view class="lists">
 			<TranList />
 		</view>
@@ -25,7 +25,19 @@ export default {
         name: '取消委托'
       }, {
         name: '奖励领取'
-      }]
+      }],
+      inactiveStyle: {
+        fontSize: '28rpx',
+        color: '#8397B1',
+      },
+      activeStyle: {
+        fontSize: '28rpx',
+        color: '#1E5EFF',
+        fontWeight: '600'
+      },
+      itemStyle: {
+        height: '80rpx'
+      }
     }
   },
 
@@ -36,6 +48,9 @@ export default {
 <style  lang="scss" scoped>
 	.lists {
 		padding: 0 32rpx;
-		border-top: 2rpx solid rgba(131,151,177,0.20);
 	}
+  
+  .tabs {
+    border-bottom: 2rpx solid rgba(131,151,177,0.20);
+  }
 </style>
