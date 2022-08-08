@@ -5,12 +5,12 @@
         <image :src="item.logo" style="width: 72rpx; height: 72rpx;" />
       </view>
       <view class="center">
-        <view class="title">{{item.alia_name}}</view>
+        <view class="title">{{item.alias_name}}</view>
         <view class="address">
-          {{ item.contract_address }}
+          {{ item.contract_address | sliceAddress(8, -10) }}
         </view>
       </view>
-      <view class="right" v-if="item.alia_name != mainCoin.alia_name">
+      <view class="right" v-if="item.alias_name != mainCoin.alias_name">
         <u-icon v-if="searchList.includes(item.contract_address)" :name="require('@/static/img/account/ic-delect.png')"
           size="44rpx" @click="changeCoin(item,'del')"></u-icon>
         <u-icon v-else :name="require('@/static/img/account/ic-add.png')" size="44rpx" @click="changeCoin(item,'add')">
@@ -22,6 +22,7 @@
 
 <script>
 import mainCoin from '@/config/index.js'
+import { sliceAddress } from '@/utils/filters.js'
 export default {
   props: {
     list: {
@@ -51,6 +52,7 @@ export default {
       let currentWallte = this.$cache.get('_currentWallet')
       let coinList = currentWallte.coinList || []
       if (type == 'add') {
+        item.view_key = ''
         coinList.push(item)
         this.searchList.push(item.contract_address)
       } else {
@@ -79,6 +81,9 @@ export default {
       this.$cache.set('_walletList', walletList, 0)
       return true
     },
+  },
+  filters: {
+    sliceAddress
   }
 }
 </script>

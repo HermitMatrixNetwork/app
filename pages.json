@@ -433,17 +433,15 @@
         "enablePullDownRefresh": false
       }
 
+    }, {
+      "path": "pages/account/editAddress",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
     }
-      ,{
-            "path" : "pages/account/editAddress",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+  ],
   "globalStyle": {
     "navigationStyle": "custom"
   },
@@ -481,8 +479,8 @@
       "name": "", //模式名称
       "path": "pages/index/importFromKeystore", //启动页面，必选
       "query": "" //启动参数，在页面的onLoad函数里面得到
-    },{
-      "path": "pages/account/writeAddress"
+    }, {
+      "path": "pages/account/send/settingViewKey"
     }]
   }
 }

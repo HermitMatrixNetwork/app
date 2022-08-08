@@ -40,6 +40,10 @@ export default {
     tabUrl: {
       type: String,
       default: ''
+    },
+    redirUrl: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -56,6 +60,10 @@ export default {
       } else if(this.tabUrl) {
         uni.switchTab({
           url: this.tabUrl
+        })
+      } else if (this.redirUrl) {
+        uni.redirectTo({
+          url: this.redirUrl
         })
       } else {
         uni.navigateBack()

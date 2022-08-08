@@ -1,6 +1,6 @@
 <template>
 	<view class="asset-manage">
-		<custom-header :showRight="false">
+		<custom-header redirUrl="/pages/assetManage/index" :showRight="false">
 			<view slot="center" class="search">
 				<u-search :placeholder="language.searchPlaceholder" shape="round" :clearabled="true" v-model="address" :showAction="false" @search="searchCoin"></u-search>
 			</view>

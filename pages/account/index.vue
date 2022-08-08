@@ -75,7 +75,7 @@
         </u-tabs>
         <scroll-view v-if="visibaleTokenList.length" class="coinbox" scroll-y>
           <view class="content" v-for="item in visibaleTokenList" :key="item.full_name">
-            <TokenColumn :tokenName="item.alia_name" :tokenAddress="item.contract_address" :tokenIcon="item.logo"
+            <TokenColumn :tokenName="item.alias_name" :tokenAddress="item.contract_address" :tokenIcon="item.logo"
               class="token" @click.native="queryToken(item)">
               <template #right>
                 <view class="coinNumber">
@@ -268,7 +268,8 @@ export default {
 
 <script lang="renderjs" module="render">
   import {
-    getBalance
+    getBalance,
+    getCodeHash
   } from '@/utils/secretjs/SDK'
   import renderUtils from '@/utils/render.base.js'
   import mainCoin from '@/config/index.js'
@@ -299,7 +300,7 @@ export default {
         for (let i = 0; i < coinList.length; i++) {
           let coin = coinList[i]
           let balance = 0
-          if (coin.alia_name == mainCoin.alia_name) {
+          if (coin.alias_name == mainCoin.alias_name) {
            
             // await new Promise((resolve) => {
             //   setTimeout(async () => {
@@ -314,7 +315,16 @@ export default {
             balance = res.balance.amount
             
           } else { // 非主网币
-        
+            if (coin.view_key == '') {
+            } else {
+              let codeHash = await getCodeHash(coin.contract_address)
+              coin.codeHash = codeHash
+              let res = await getOtherBalance({
+                address: wallet.address,
+                contract: { address: coin.contract_address, codeHash: codeHash },
+                auth: { key: coin.view_key }
+              })
+            }
           }
         
           if (coin.rate) balance = balance / coin.rate

@@ -12,7 +12,7 @@
         <!-- 代币选择 -->
         <view class="change-token" @click="jumpTokenlist">
           <image :src="token.logo"></image>
-          <text>{{ token.alia_name }}</text>
+          <text>{{ token.alias_name }}</text>
           <view class="icon-right">
             <u-icon name="arrow-right" />
           </view>
@@ -37,13 +37,13 @@
               <view class="label">
                 <text>发送金额</text>
                 <view class="can-be-use">
-                  <text>可用： {{ token.balance }} {{ token.alia_name }}</text>
+                  <text>可用： {{ token.balance }} {{ token.alias_name }}</text>
                 </view>
               </view>
               <view class="value">
                 <u--input placeholder="请输入金额" v-model.number="sendFormData.sendAmount"></u--input>
                 <view class="value-info">
-                  <text class="denom">{{ token.alia_name }}</text>
+                  <text class="denom">{{ token.alias_name }}</text>
                   <view class="border"></view>
                   <text class="all" @click="testAmount">全部</text>
                 </view>
@@ -94,7 +94,7 @@
           <!-- 转账金额 -->
           <view class="transfer_amount">
             <text>转账金额</text>
-            <text>{{sendFormData.sendAmount?sendFormData.sendAmount:'0'}} {{ token.alia_name }}</text>
+            <text>{{sendFormData.sendAmount?sendFormData.sendAmount:'0'}} {{ token.alias_name }}</text>
           </view>
 
           <!--Memo-->
@@ -307,7 +307,7 @@ export default {
       
       const tokenList = wallet.coinList
       
-      const tokenIndex = tokenList.findIndex(item => item.alia_name == this.token.alia_name)
+      const tokenIndex = tokenList.findIndex(item => item.alias_name == this.token.alias_name)
       
       tokenList.splice(tokenIndex, 1, this.token)
 
@@ -762,4 +762,5 @@ export default {
       }
     }
   }
+
 </style>

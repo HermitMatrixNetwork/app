@@ -3,7 +3,7 @@
     <custom-header :title="'代币选择'" />
     <view class="border"></view>
     <view class="token-list">
-      <TokenColumn :tokenName="item.alia_name" v-for="item in tokenList" :key="item.full_name" :tokenIcon="item.logo"
+      <TokenColumn :tokenName="item.alias_name" v-for="item in tokenList" :key="item.full_name" :tokenIcon="item.logo"
         @click.native="tokenChoose(item)" :tokenColumnStyle="tokenColumnStyle">
         <template #right>
           <view class="right">

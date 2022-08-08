@@ -1,13 +1,13 @@
 <template>
   <view class="token_content">
-    <custom-header :title="token.alia_name">
+    <custom-header :title="token.alias_name">
       <template #right>
         <text class="customIcon" @click="toTokenDetail()">详情</text>
       </template>
     </custom-header>
 
     <view class="main_token">
-      <TokenColumn :tokenIcon="token.logo" :tokenName="token.alia_name" :tokenColumnStyle="tokenColumnStyle"
+      <TokenColumn :tokenIcon="token.logo" :tokenName="token.alias_name" :tokenColumnStyle="tokenColumnStyle"
         :tokenAddress="address | sliceAddress(6, -16) ">
         <template #right>
           <view style="padding-right: 16rpx;" class="token_price">
@@ -52,21 +52,30 @@
         </u-tabs>
       </view>
       <custom-loading v-if="loading" class="loading"></custom-loading>
-      <swiper v-else class="transaction_history_item" :current="listCurrentIndex" @change="switchSwiper" style="height: 670rpx">
+      <swiper v-else class="transaction_history_item" :current="listCurrentIndex" @change="switchSwiper"
+        style="height: 670rpx">
         <swiper-item v-for="(item,index) in list" :key="item.name" :item-id="index+''">
+          <!-- @scrolltolower="loadMore(item.type)" -->
           <scroll-view scroll-y class="scroll-container" style="height: 670rpx">
             <template v-if="accountTransfer[item.type].length">
-              <view class="list-item" v-for="(record, index) in accountTransfer[item.type]" :key="index" @click.native="toRecordDetail(record)">
+              <view class="list-item" v-for="(record, index) in accountTransfer[item.type]" :key="index"
+                @click.native="toRecordDetail(record)">
                 <view class="container">
                   <view class="logo">
                     <image :src="record.icon"></image>
                   </view>
                   <view class="content">
-                    <view class="content-address">{{ (record.to_address || record.validator_address) | sliceAddress(6, -6) }}</view>
+                    <view class="content-address">
+                      {{ (record.to_address || record.validator_address) | sliceAddress(6, -6) }}
+                    </view>
                     <view class="content-time">{{ record.timestamp }}</view>
                   </view>
                   <view class="right">
-                    <view class="amount" :class="[record.validator_address ? 'delegate-amount' : (record.to_address == address ? 'recipient-amount' : 'sender-amount')]">{{ record.validator_address ? '' : (record.to_address == address ? '+' : '-') }} {{ record.amount }}</view>
+                    <view class="amount"
+                      :class="[record.validator_address ? 'delegate-amount' : (record.to_address == address ? 'recipient-amount' : 'sender-amount')]">
+                      {{ record.validator_address ? '' : (record.to_address == address ? '+' : '-') }}
+                      {{ record.amount }}
+                    </view>
                     <view class="real-money">
                       <text class="rate">$</text>
                       <text class="money">0.00</text>
@@ -75,13 +84,23 @@
                 </view>
                 <view class="border"></view>
               </view>
+              <view v-if="item.type !== 'all'">
+                <view v-if="!pagination[item.type].nodata && !pagination[item.type].loading" class="loading-more"
+                  @click="loadMore(item.type)">
+                  点击加载更多
+                </view>
+                <u-loading-icon v-else-if="pagination[item.type].loading" class="loading-more" mode="circle" text="加载中">
+                </u-loading-icon>
+                <view v-else-if="pagination[item.type].nodata" class="loading-more">已全部加载完毕</view>
+              </view>
             </template>
             <no-data v-else tip="暂无记录" />
           </scroll-view>
         </swiper-item>
       </swiper>
     </view>
-    <view :callRenderDelegateRecord="callRenderDelegateRecord" :change:callRenderDelegateRecord="render.getAddress"></view>
+    <view :callRenderDelegateRecord="callRenderDelegateRecord" :change:callRenderDelegateRecord="render.getAddress">
+    </view>
     <view class="operation_btn">
       <button @click="toSend('/pages/account/send/index', token)">发送</button>
       <button @click="toGo('/pages/account/receive')">接收</button>
@@ -92,6 +111,7 @@
 </template>
 
 <script>
+// 究极不可维护代码之无脑复制黏贴☢
 import TokenColumn from './components/TokenColumn.vue'
 import mixin from '../mixins/index.js'
 import {
@@ -138,10 +158,12 @@ export default {
         name: '领取',
         type: 'draw'
       },
+      
       {
         name: '失败',
         type: 'fail'
-      }],
+      }
+      ],
       accountTransfer: {
         'sender': [],
         'recipient': [],
@@ -150,10 +172,39 @@ export default {
         'fail': [],
         'all': []
       },
+      pagination: {
+        sender: {
+          page: 0,
+          size: 5,
+          total: 0,
+          loading: false
+        },
+        recipient: {
+          page: 0,
+          size: 5,
+          total: 0,
+          loading: false
+        },
+        delegate: {
+          page: 0,
+          size: 5,
+          total: 0,
+          loading: false
+        },
+        fail: {
+          page: 0,
+          size: 5,
+          total: 0,
+          loading: false
+        },
+        all: {
+          loading: false
+        }
+      },
       loading: true,
       lockAmountLoading: true,
       callRenderDelegateRecord: '',
-      lockAmount: 0,
+      lockAmount: 0
     }
   },
   async onLoad(options) {
@@ -161,7 +212,7 @@ export default {
     this.callRenderDelegateRecord = this.address
   },
   onShow() {
-    this.token = this.$cache.get('_currentWallet').coinList.find(item => item.alia_name == this.token.alia_name)
+    this.token = this.$cache.get('_currentWallet').coinList.find(item => item.alias_name == this.token.alias_name)
   },
   created() {
     this.init()
@@ -170,22 +221,183 @@ export default {
     async init() {
       // to del
       await Promise.all([
-        txsQuery([`events=message.module='${'bank'}'`,`events=transfer.sender='${this.address}'`, 'order_by=ORDER_BY_DESC']),
-        txsQuery([`events=message.module='${'bank'}'`,`events=transfer.recipient='${this.address}'`, 'order_by=ORDER_BY_DESC']),
-        txsQuery([`events=message.module='${'staking'}'`,`events=message.sender='${this.address}'`, 'order_by=ORDER_BY_DESC'])
+        txsQuery([`events=message.module='${'bank'}'`, `events=transfer.sender='${this.address}'`,
+          'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.sender.page}`,
+          `pagination.limit=${this.pagination.sender.size}`
+        ]),
+        txsQuery([`events=message.module='${'bank'}'`, `events=transfer.recipient='${this.address}'`,
+          'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.sender.page}`,
+          `pagination.limit=${this.pagination.sender.size}`
+        ]),
+        txsQuery([`events=message.module='${'staking'}'`, `events=message.sender='${this.address}'`,
+          'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.sender.page}`,
+          `pagination.limit=${this.pagination.sender.size}`
+        ])
       ]).then(res => {
+        if (this.pagination.sender.total == 0) {
+          this.pagination.sender.total = res[0].data.pagination.total
+          this.pagination.recipient.total = res[1].data.pagination.total
+          this.pagination.delegate.total = res[2].data.pagination.total
+
+        }
+        
+        res.forEach((result, type) => {
+          const records = result.data.tx_responses
+          for (let i = 0, len = records.length; i < len; i++) {
+            const item = records[i]
+            item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.rate + mainCoin.alias_name
+            item.amount = 0
+            item.memo = item.tx.body.memo
+            item.from_address = item.tx.body.messages[0].from_address
+            item.to_address = item.tx.body.messages[0].to_address
+            item.delegator_address = item.tx.body.messages[0].delegator_address
+            item.validator_address = item.tx.body.messages[0].validator_address
+            item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
+            item.tx.body.messages.forEach(cur => {
+              if (cur.amount) {
+                if (Array.isArray(cur.amount)) {
+                  item.amount += Number(cur.amount[0].amount)
+                } else {
+                  item.amount += Number(cur.amount.amount)
+                }
+              }
+            })
+            item.amount = item.amount / mainCoin.rate + mainCoin.alias_name
+            switch (type) {
+            case 1:
+              item.icon = require('@/static/img/account/shoukuan2.png')
+              break
+            case 0:
+              item.icon = require(
+                '@/static/img/account/fasong2.png')
+              break
+            case 2:
+              item.icon = require(
+                '@/static/img/account/weituo2.png')
+              break
+            }
+          }
+          this.accountTransfer['all'].push(...records)
+        })
+
         this.accountTransfer['sender'] = res[0].data.tx_responses
         this.accountTransfer['recipient'] = res[1].data.tx_responses
         this.accountTransfer['delegate'] = res[2].data.tx_responses
+        
+        if (this.accountTransfer['sender'].length == Number(this.pagination.sender.total)) {
+          this.pagination.sender.nodata = true
+        }
+        
+        if (this.accountTransfer['recipient'].length == Number(this.pagination.recipient.total)) {
+          this.pagination.recipient.nodata = true
+        }
+        
+        if (this.accountTransfer['delegate'].length == Number(this.pagination.delegate.total)) {
+          this.pagination.delegate.nodata = true
+        }
+        
+        
+        
+        this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+
+
+        this.loading = false
       })
+      // return
       // this.accountTransfer['sender'] = (await txsQuery([`events=message.module='${'bank'}'`,`events=transfer.sender='${this.address}'`, 'order_by=ORDER_BY_DESC'])).data.tx_responses
       // this.accountTransfer['recipient'] = (await txsQuery([`events=message.module='${'bank'}'`,`events=transfer.recipient='${this.address}'`, 'order_by=ORDER_BY_DESC'])).data.tx_responses
       // this.accountTransfer['delegate'] = (await txsQuery([`events=message.module='${'staking'}'`,`events=message.sender='${this.address}'`, 'order_by=ORDER_BY_DESC'])).data.tx_responses
-      const list = ['recipient', 'sender', 'delegate']
-      list.forEach(type => {
-        for (let i = 0, len = this.accountTransfer[type].length; i < len; i++) {
-          const item = this.accountTransfer[type][i]
-          item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.rate + mainCoin.alia_name
+      // const list = ['recipient', 'sender', 'delegate']
+      // list.forEach(type => {
+      //   for (let i = 0, len = this.accountTransfer[type].length; i < len; i++) {
+      //     const item = this.accountTransfer[type][i]
+      //     item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.rate + mainCoin.alias_name
+      //     item.amount = 0
+      //     item.memo = item.tx.body.memo
+      //     item.from_address = item.tx.body.messages[0].from_address
+      //     item.to_address = item.tx.body.messages[0].to_address
+      //     item.delegator_address = item.tx.body.messages[0].delegator_address
+      //     item.validator_address = item.tx.body.messages[0].validator_address
+      //     item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
+      //     item.tx.body.messages.forEach(cur => {
+      //       if (cur.amount) {
+      //         if (Array.isArray(cur.amount)) {
+      //           item.amount += Number(cur.amount[0].amount)
+      //         } else {
+      //           item.amount += Number(cur.amount.amount)
+      //         }
+      //       }
+      //     })
+      //     item.amount = item.amount / mainCoin.rate + mainCoin.alias_name
+      //     switch (type) {
+      //     case 'recipient':
+      //       item.icon = require('@/static/img/account/shoukuan2.png')
+      //       break
+      //     case 'sender':
+      //       item.icon = require(
+      //         '@/static/img/account/fasong2.png')
+      //       break
+      //     case 'delegate':
+      //       item.icon = require(
+      //         '@/static/img/account/weituo2.png')
+      //       break
+      //     }
+      //   }
+      // })
+      // // #ifdef H5
+      // console.log(this.accountTransfer)
+      // // #endif
+      // list.forEach(type => {
+      //   this.accountTransfer[type].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      // })
+      // this.accountTransfer['all'] = [...this.accountTransfer['sender'], ...this.accountTransfer['recipient'], ...this.accountTransfer['delegate']]
+      // this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      // this.loading = false
+    },
+    setLockAmount({
+      result
+    }) {
+      let lock = 0
+      result.delegationResponses.forEach(item => {
+        lock += Number(item.balance.amount)
+      })
+      this.lockAmountLoading = false
+      this.lockAmount = lock
+    },
+    async loadMore(type) {
+      if (type == 'all' || this.pagination[type].loading || this.pagination[type].nodata) return
+      this.pagination[type].loading = true
+      this.pagination[type].page += 1
+      let result
+      try {
+        switch (type) {
+        case 'sender':
+          result = (await txsQuery([`events=message.module='${'bank'}'`,
+            `events=transfer.sender='${this.address}'`,
+            'order_by=ORDER_BY_DESC',
+            `pagination.offset=${this.pagination[type].page * this.pagination[type].size}`,
+            `pagination.limit=${this.pagination[type].size}`
+          ])).data.tx_responses
+          break
+        case 'recipient':
+          result = (await txsQuery([`events=message.module='${'bank'}'`,
+            `events=transfer.recipient='${this.address}'`, 'order_by=ORDER_BY_DESC',
+            `pagination.offset=${this.pagination[type].page * this.pagination[type].size}`,
+            `pagination.limit=${this.pagination[type].size}`
+          ])).data.tx_responses
+          break
+        case 'delegate':
+          result = (await txsQuery([`events=message.module='${'staking'}'`,
+            `events=message.sender='${this.address}'`, 'order_by=ORDER_BY_DESC',
+            `pagination.offset=${this.pagination[type].page * this.pagination[type].size}`,
+            `pagination.limit=${this.pagination[type].size}`
+          ])).data.tx_responses
+          break
+        }
+
+        for (let i = 0, len = result.length; i < len; i++) {
+          const item = result[i]
+          item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.rate + mainCoin.alias_name
           item.amount = 0
           item.memo = item.tx.body.memo
           item.from_address = item.tx.body.messages[0].from_address
@@ -202,7 +414,7 @@ export default {
               }
             }
           })
-          item.amount = item.amount / mainCoin.rate + mainCoin.alia_name
+          item.amount = item.amount / mainCoin.rate + mainCoin.alias_name
           switch (type) {
           case 'recipient':
             item.icon = require('@/static/img/account/shoukuan2.png')
@@ -217,24 +429,24 @@ export default {
             break
           }
         }
+
+        this.accountTransfer[type].push(...result)
+        this.accountTransfer['all'].push(...result)
+        if (Number(this.pagination[type].total) == this.accountTransfer[type].length) this.pagination[type].nodata = true
+        this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+
+      } catch {
+        this.pagination[type].nodata = true
+      }
+
+
+
+
+      this.$nextTick(() => {
+        this.pagination[type].loading = false
       })
-      // #ifdef H5
-      console.log(this.accountTransfer)
-      // #endif
-      // list.forEach(type => {
-      //   this.accountTransfer[type].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      // })
-      this.accountTransfer['all'] = [...this.accountTransfer['sender'], ...this.accountTransfer['recipient'], ...this.accountTransfer['delegate']]
-      this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      this.loading = false
-    },
-    setLockAmount({ result }) {
-      let lock = 0
-      result.delegationResponses.forEach(item => {
-        lock += Number(item.balance.amount) 
-      })
-      this.lockAmountLoading = false
-      this.lockAmount = lock
+
+
     },
     jumpDetails(hash) {
       uni.navigateTo({
@@ -276,22 +488,22 @@ export default {
                 }
               }
             })
-            
+
             mainCoin.rate && (data.amount = data.amount / mainCoin.rate)
-            data.amount += mainCoin.alia_name
-            
+            data.amount += mainCoin.alias_name
+
             data.icon = require(
               '@/static/img/account/fasong2.png')
 
             data.timestamp = data.timestamp.replace(/T|Z/g, ' ')
-            
-            
+
+
             this.accountTransfer['all'].unshift(data)
-            
+
             this.accountTransfer['sender'].unshift(data)
-            
+
             this.$forceUpdate()
-            
+
             console.log('添加记录数据', data)
           }
         }
@@ -318,7 +530,7 @@ export default {
       }
       return int + '.' + float
     }
-  },
+  }
 }
 </script>
 <script lang="renderjs" module="render">
@@ -336,7 +548,9 @@ export default {
       },
       async getDelegationRecord(address) {
         const result = await getDelegationRecord(address)
-        renderUtils.runMethod(this._$id, 'setLockAmount', { result }, this)
+        renderUtils.runMethod(this._$id, 'setLockAmount', {
+          result
+        }, this)
       },
       async getUnbondingDelegationRecord(address) {
         // const result = await getUnbondingDelegationRecord(address)
@@ -479,7 +693,7 @@ export default {
     align-items: center;
     padding: 0 32rpx;
     background-color: #fff;
-    border-top: 2rpx solid rgba(131,151,177,0.20);
+    border-top: 2rpx solid rgba(131, 151, 177, 0.20);
 
     button {
       width: 152rpx;
@@ -508,6 +722,7 @@ export default {
 
   .quantity {
     text-align: right;
+
     .top {
       font-weight: 600;
       font-size: 28rpx;
@@ -532,68 +747,76 @@ export default {
   .symbol {
     margin-right: 4rpx;
   }
-  
+
   .list-item {
     padding: 32rpx 0 0 0;
-    
+
     .container {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding-bottom: 38rpx;
     }
-    
-    .border{
+
+    .border {
       height: 2rpx;
       opacity: 0.1;
       background-color: #979797;
     }
-    
+
     .logo {
       image {
         width: 72rpx;
         height: 72rpx;
       }
     }
-    
+
     .content {
       flex: 1;
       margin-left: 20rpx;
-      
+
       &-address {
         font-weight: 600;
         font-size: 28rpx;
         color: #2C365A;
         margin-bottom: 16rpx;
       }
-      
+
       &-time {
         font-size: 24rpx;
         color: #8397B1;
       }
     }
-    
+
     .right {
       text-align: right;
-      
+
       .sender-amount {
         color: #275EF1
       }
-      
+
       .recipient-amount {
         color: #17C499
       }
-      
+
       .amount {
         font-weight: 600;
         font-size: 28rpx;
         margin-bottom: 16rpx;
       }
-      
+
       .real-money {
         font-size: 24rpx;
         color: #8F9BB3;
       }
     }
+  }
+
+  .loading-more {
+    height: 90rpx;
+    line-height: 90rpx;
+    text-align: center;
+    font-size: 28rpx;
+    color: #2C365A;
   }
 </style>

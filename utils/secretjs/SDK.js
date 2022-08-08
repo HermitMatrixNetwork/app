@@ -1,7 +1,9 @@
 import async from 'pbkdf2/lib/async'
 import WalletCrpto from '@/utils/walletCrypto.js'
 
-import { Tx } from 'secretjs-hmt/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
+import {
+  Tx
+} from 'secretjs-hmt/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
 import secretjs from './index.js'
 let wallet = {}
 //#ifdef APP-PLUS
@@ -63,24 +65,19 @@ export async function QueryStakingValidators(status) {
 //发送其他地址
 export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo = '') {
   let Secret = await getSecret()
-  const result = await Secret.tx.bank.send(
-    {
-      fromAddress: myaddress,
-      toAddress: toaddress,
-      amount: [
-        {
-          denom: 'uGHM',
-          amount: amount + ''
-        }
-      ]
-    },
-    {
-      gasPriceInFeeDenom: 0.0215,
-      feeDenom: 'uGHM',
-      gasLimit: 20000,
-      memo
-    }
-  )
+  const result = await Secret.tx.bank.send({
+    fromAddress: myaddress,
+    toAddress: toaddress,
+    amount: [{
+      denom: 'uGHM',
+      amount: amount + ''
+    }]
+  }, {
+    gasPriceInFeeDenom: 0.0215,
+    feeDenom: 'uGHM',
+    gasLimit: 20000,
+    memo
+  })
   return result
 }
 
@@ -110,8 +107,10 @@ export async function getDelegatorDelegations(delegatorAddr) {
 
 //查询验证信息
 export async function getValidators(status) {
-  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
-  const result = await Secret.query.staking.validators({ status: status || '' })
+  let Secret = await getSecret()
+  const result = await Secret.query.staking.validators({
+    status: status || ''
+  })
   return result
 }
 export async function getSigningInfo(consAddress) {
@@ -171,13 +170,49 @@ export async function queryAccountHash(hash) {
 
 export async function getDelegationRecord(address) {
   let Secret = await getSecret()
-  const result = await Secret.query.staking.delegatorDelegations({ delegatorAddr: address })
+  const result = await Secret.query.staking.delegatorDelegations({
+    delegatorAddr: address
+  })
   return result
 }
 
 export async function getUnbondingDelegationRecord(address) {
   let Secret = await getSecret()
-  const result = await Secret.query.staking.delegatorUnbondingDelegations({ delegatorAddr: address })
-  const delegation = await Secret.query.staking.delegation({ delegatorAddr: address, validatorAddr: 'ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl' })
+  const result = await Secret.query.staking.delegatorUnbondingDelegations({
+    delegatorAddr: address
+  })
+  const delegation = await Secret.query.staking.delegation({
+    delegatorAddr: address,
+    validatorAddr: 'ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl'
+  })
   return result
+}
+
+export async function setViewKey(data) {
+  let Secret = await getSecret()
+  const codeHash = await Secret.query.snip20(data.contract_address)
+  const result = await Secret.tx.snip20.setViewingKey(
+    {
+      sender: data.address,
+      contractAddress: data.contract_address,
+      codeHash,
+      msg: { set_viewing_key: { key: data.viewkey } }
+    }
+    , {
+      gasPriceInFeeDenom: 0.02,
+      feeDenom: 'uGHM',
+      gasLimit: 30000
+    })
+  return result
+}
+
+
+export async function getOtherBlance() {
+  
+}
+
+export async function getCodeHash(data) {
+  let Secret = await getSecret()
+  const codeHash = await Secret.query.snip20.contractCodeHash(data)
+  return codeHash
 }

@@ -1,6 +1,6 @@
 <template>
 	<view class="asset-manage">
-		<custom-header :showRight="false">
+		<custom-header tabUrl="/pages/account/index" :showRight="false">
 			<view slot="center" class="search">
 				<u-search :placeholder="language.searchPlaceholder" shape="round" :clearabled="true" v-model="address" :showAction="false" @search="searchCoin"></u-search>
 			</view>
@@ -15,15 +15,23 @@
 		<view class="hot-asset">
 			<view class="title">{{language.hotAssets}}</view>
 		</view>
-		<view class="list">
-			<List v-if="refresh" :list="list" />
+    <custom-loading v-if="loading" style="margin-top: 100rpx;"></custom-loading>
+		<view class="list" v-else-if="list.length">
+			<List :list="list" />
 		</view>
+    <view v-else class="noData">
+      <image class="data" src="@/static/img/account/nodata.png" />
+      <view class="tip">
+        暂无热门代币
+      </view>
+    </view>
 	</view>
 </template>
 
 <script>
 import languages from './language/index.js'
 import List from './components/List.vue'
+import { getHotList } from '@/api/token.js'
 export default {
   data(){
     return {
@@ -31,12 +39,13 @@ export default {
       address: '',//查询地址
       list: [
         // {
-        //   alia_name: 'BTC',
+        //   alias_name: 'BTC',
         //   contract_address: '0x20591e93afasdasd9768c40eeb39',
         //   apply_type: 'token'
         // },
       ],
-      refresh: true
+      refresh: true,
+      loading: true
     }
   },
   components: {
@@ -44,6 +53,11 @@ export default {
   },
   onShow() {
     this.refreshList()
+  },
+  async created() {
+    const res = (await getHotList()).data.data
+    this.list = res.hot_assets_list
+    this.loading = false
   },
   methods: {
     searchCoin(){
@@ -53,9 +67,11 @@ export default {
           title: '合约地址不能为空'
         })
       }
+      this.address = this.address.trim()
       uni.navigateTo({
         url:`/pages/assetManage/search?address=${this.address}`
       })
+      this.address = ''
     },
     goTo(e){
       uni.navigateTo({
@@ -112,4 +128,23 @@ export default {
 			}
 		}
 	}
+  
+  .noData {
+    text-align: center;
+  
+    .data {
+      width: 240rpx;
+      height: 240rpx;
+    }
+  
+    .searchbg {
+      width: 200rpx;
+      height: 200rpx;
+    }
+  
+    .tip {
+      font-size: 28rpx;
+      color: #8397B1;
+    }
+  }
 </style>

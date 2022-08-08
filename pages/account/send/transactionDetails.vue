@@ -62,8 +62,8 @@ export default {
       res.to_address = res.tx.body.messages[0].value.toAddress
       res.from_address = res.tx.body.messages[0].value.fromAddress
       mainCoin.rate && (res.amount = res.amount / mainCoin.rate)
-      res.fee = res.tx.authInfo.fee.amount[0].amount / mainCoin.rate + mainCoin.alia_name
-      res.amount += mainCoin.alia_name
+      res.fee = res.tx.authInfo.fee.amount[0].amount / mainCoin.rate + mainCoin.alias_name
+      res.amount += mainCoin.alias_name
       this.formData(res, typeUrl)
     },
     formData(res, typeUrl) {

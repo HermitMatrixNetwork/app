@@ -17,7 +17,7 @@
               <text>{{ item.full_name }}</text>
             </view>
             <view class="contract-address">
-              <text>{{ item.contract_address }}</text>
+              <text>{{ item.contract_address | sliceAddress(8, -10) }}</text>
             </view>
           </view>
           <view class="right" v-if="item.full_name !== mainCoin.full_name">
@@ -45,6 +45,7 @@
 import languages from './language/index.js'
 import List from './components/List.vue'
 import mainCoin from '@/config/index.js'
+import { sliceAddress } from '@/utils/filters.js'
 export default {
   data() {
     return {
@@ -73,9 +74,12 @@ export default {
     }
   },
   created() {
+    console.log(this.tokenAddressList)
     this.currentWallet = this.$cache.get('_currentWallet')
     this.tokenList = this.currentWallet.coinList
-    this.tokenList.forEach(item => this.tokenAddressList.push(item.contract_address))
+    if (this.tokenList.length) {
+      this.tokenList.forEach(item => this.tokenAddressList.push(item.contract_address))
+    }
   },
   methods: {
     //查询合约
@@ -84,7 +88,10 @@ export default {
       this.reAddress = this.address
     },
     goBack() {
-      uni.navigateBack()
+      this.reAddress = ''
+      uni.redirectTo({
+        url: './index'
+      })
     },
     goTo() {
 
@@ -98,8 +105,8 @@ export default {
       }
     },
     addToken(token) {
-      const { contract_address, full_name, logo } = token
-      this.tokenList.push({ contract_address, full_name, logo })
+      token.view_key = ''
+      this.tokenList.push(token)
       
       this.tokenAddressList.push(token.contract_address)
       this.currentWallet.coinList = this.tokenList
@@ -107,11 +114,13 @@ export default {
       this.updateWalletList(this.currentWallet)
     },
     deleteToken(token) {
-      this.tokenAddressList = this.tokenAddressList.filter(item => item.contract_address !== token.contract_address)
-      this.tokenList = this.tokenList.filter(item => item.contract_address !== token.contract_address)
-      this.currentWallet.coinList = this.tokenList
-      this.$cache.set('_currentWallet', this.currentWallet, 0)
-      this.updateWalletList(this.currentWallet)
+      console.log(token)
+      console.log(this.tokenAddressList)
+      // this.tokenAddressList = this.tokenAddressList.filter(item => item.contract_address !== token.contract_address)
+      // this.tokenList = this.tokenList.filter(item => item.contract_address !== token.contract_address)
+      // this.currentWallet.coinList = this.tokenList
+      // this.$cache.set('_currentWallet', this.currentWallet, 0)
+      // this.updateWalletList(this.currentWallet)
     },
     updateWalletList(wallet) {
       const walletList = this.$cache.get('_walletList') || []
@@ -124,6 +133,9 @@ export default {
       this.$cache.set('_walletList', walletList, 0)
       return true
     }
+  },
+  filters: {
+    sliceAddress
   }
 }
 </script>

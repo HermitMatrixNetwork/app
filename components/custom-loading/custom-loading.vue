@@ -1,6 +1,7 @@
 <template>
   <view>
-    <u-loading-icon></u-loading-icon>
+    <u-loading-icon>
+    </u-loading-icon>
   </view>
 </template>
 

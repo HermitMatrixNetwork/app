@@ -7,24 +7,48 @@
 			</view>
 			<textarea v-model="viewkey" cols="30" rows="10" placeholder="当前viewkey" class="viewkey_input"></textarea>
 			
-			<view class="viewkey_btn">
-				<button @click="copy(viewkey)">复制viewkey</button>
-				<button @click="toGo('/pages/account/send/settingViewKey')">设置viewkey</button>
-			</view>
+
 		</view>
 		
+    
+    <view class="viewkey_btn">
+    	<button @click="copy">复制viewkey</button>
+    	<button @click="toSetViewKey">设置viewkey</button>
+    </view>
+    
+    <Notify ref="notify"></Notify>
 	</view>
 </template>
 
 <script>
 import InputTitle from './components/Input-title.vue'
 import mixin from '../mixins/index.js'
+import Notify from './components/notify.vue'
 export default {
-  components:{InputTitle},
+  components: { InputTitle, Notify },
   mixins:[mixin],
   data() {
     return {
       viewkey:'1321313213213'
+    }
+  },
+  methods: {
+    copy() {
+      uni.setClipboardData({
+        data: this.viewkey,
+        showToast: false,
+        success: () => {
+          this.$refs.notify.show('error', '复制成功')
+        },
+        fail: () => {
+          this.$refs.notify.show('error', '复制失败')
+        }
+      })
+    },
+    toSetViewKey() {
+      uni.redirectTo({
+        url: '/pages/account/send/settingViewKey'
+      })
     }
   }
 }
@@ -65,9 +89,8 @@ export default {
 	padding: 32rpx;
 }
 .viewkey_btn{
-	width: 100%;
-	padding: 0 32rpx;
-	position: absolute;
+	position: fixed;
+  width: 100vw;
 	bottom: 48rpx;
 	display: flex;
 	justify-content: space-around;
@@ -78,10 +101,8 @@ export default {
 		border: 2rpx solid rgba(131,151,177,0.31);
 		border-radius: 16rpx;
 		line-height: 96rpx;
-		font-weight: 400;
 		font-size: 32rpx;
 		color: #2C3457;
-		letter-spacing: 0;
 		&:nth-child(2){
 			background: #002FA8;
 			color: #FFFFFF;

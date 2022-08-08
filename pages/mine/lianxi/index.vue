@@ -11,7 +11,8 @@
           <view>{{ item.label }}</view>
         </view>
         <view class="arrow" @click="copy(item.value)">
-          <text>{{ item.value }}</text>
+          <custom-loading v-if="loading" class="loading"></custom-loading>
+          <text v-else>{{ item.value }}</text>
           <image src="/static/img/mine/contact/copy.png"></image>
         </view>
       </view>
@@ -24,6 +25,7 @@
 <script>
 import Notify from '@/pages/index/components/notify.vue'
 import language from './language/index.js'
+import { getLinkList } from '@/api/token.js'
 export default {
   components: { Notify },
   data() {
@@ -31,41 +33,49 @@ export default {
       language: language[this.$cache.get('_language')],
       list: [{
         label: '官网',
-        page: '',
+        flag: 'official_website',
         icon: '/static/img/mine/contact/wallet.png',
-        value: 'https://xxxxxx.com'
+        value: ''
       }, {
         label: '推特',
-        page: '',
+        flag: 'twitter',
         icon: '/static/img/mine/contact/twitter.png',
-        value: 'https://xxxxxx.com'
+        value: ''
       }, {
         label: '电报群',
-        page: '',
+        flag: 'telegram',
         icon: '/static/img/mine/contact/telegram.png',
-        value: 'https://xxxxxx.com'
+        value: ''
       }, {
         label: 'GitHup',
-        page: '',
+        flag: 'github',
         icon: '/static/img/mine/contact/github.png',
-        value: 'https://xxxxxx.com'
+        value: ''
       },{
         label: 'Medium',
-        page: '',
+        flag: 'medium',
         icon: '/static/img/mine/contact/medium.png',
-        value: 'https://xxxxxx.com'
+        value: ''
       },{
         label: 'Email',
-        page: '',
+        flag: 'email',
         icon: '/static/img/mine/contact/email.png',
-        value: 'https://xxxxxx.com'
+        value: ''
       },{
         label: '微信号',
-        page: '',
+        flag: 'wechat',
         icon: '/static/img/mine/contact/wechat.png',
-        value: 'https://xxxxxx.com'
-      }]
+        value: ''
+      }],
+      loading: true
     }
+  },
+  async created() {
+    const res = (await getLinkList()).data.data.contract_info
+    this.list.forEach(item => {
+      item.value = res[item.flag]
+    })
+    this.loading = false
   },
   methods: {
     copy(val) {
@@ -133,5 +143,9 @@ export default {
         height: 32rpx;
       }
     }
+  }
+  
+  .loading {
+    margin-right: 20rpx;
   }
 </style>

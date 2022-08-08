@@ -33,7 +33,7 @@ export default {
     return {
       describe: mainCoin.describe,
       language: language[this.$cache.get('_language')],
-      showLabelList: ['alia_name', 'full_name', 'official_website', 'contract_address']
+      showLabelList: ['alias_name', 'full_name', 'official_website', 'contract_address']
     }
   },
   onLoad(options) {

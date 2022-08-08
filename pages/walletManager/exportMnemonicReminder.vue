@@ -46,7 +46,7 @@
 export default {
   methods: {
     toNextStep() {
-      uni.navigateTo({
+      uni.redirectTo({
         url: './exportMnemonic'
       })
     }

@@ -2,7 +2,7 @@
   <view>
     <custom-header title="问题反馈">
       <template slot="right">
-        <view class="record">记录</view>
+        <view class="record" @click="showEditWalletNameModal = true">记录</view>
       </template>
     </custom-header>
 
@@ -54,7 +54,40 @@
         </view>
       </view>
     </view>
-
+    
+    <!-- 修改钱包名字模态框 -->
+    <u-modal class="edit-name-modal" :show="showEditWalletNameModal" :closeOnClickOverlay="false"
+      :showConfirmButton="false">
+      <template slot="default">
+        <view>
+          <view class="title">
+            <!-- <text>{{ language.editName }}</text> -->
+            <text>查询邮箱</text>
+          </view>
+          <u--input placeholder="输入邮箱查询" border="surround" v-model="email" class="edit-name-input"
+            :class="{ 'error-edit-name': editNameError }" clearable>
+          </u--input>
+          <view class="error-tip" :style="{ opacity: editNameError ? 1 : 0 }">
+            邮箱格式不正确, 请出入正确的邮箱
+          </view>
+          <!-- <u--input :placeholder="language.editNamePlaceholder" border="surround" v-model="name" class="edit-name-input"
+            :class="{ 'error-edit-name': editNameError }" clearable>
+          </u--input>
+          <view class="error-tip" :style="{ opacity: editNameError ? 1 : 0 }">
+            {{ language.editNameErrorTip }}
+          </view> -->
+        </view>
+      </template>
+      <template slot="confirmButton">
+        <view class="confirm-button">
+          <uni-button class="cancel" @click="cancel()">取消</uni-button>
+          <uni-button class="confirm" @click="confirm()">确认</uni-button>
+<!--          <uni-button class="cancel" @click="cancel('name')">{{ language.cancel }}</uni-button>
+          <uni-button class="confirm" @click="confirm('name')">{{ language.confirm }}</uni-button> -->
+        </view>
+      </template>
+    </u-modal>
+    
   </view>
 </template>
 
@@ -66,7 +99,10 @@ export default {
       name: '',
       describe: '',
       language: language[this.$cache.get('_language')],
-      fileList: []
+      fileList: [],
+      showEditWalletNameModal: false,
+      email: '',
+      editNameError: false
     }
   },
   methods: {
@@ -74,6 +110,12 @@ export default {
       console.log({ file, lists, name })
       this.fileList.push(file.file)
       console.log(this.fileList)
+    },
+    cancel() {
+      this.showEditWalletNameModal = false
+    },
+    confirm() {
+      
     }
   }
 }
@@ -204,6 +246,91 @@ export default {
 
     /deep/ .uni-input-wrapper .input-placeholder {
       color: #E63733 !important;
+    }
+  }
+  
+  .edit-name-modal {
+    /deep/ .u-modal {
+      width: 686rpx !important;
+    }
+  
+    /deep/ .u-modal__content {
+      display: block !important;
+      padding: 0 32rpx 0;
+    }
+  
+    .title {
+      height: 32rpx;
+      font-weight: 500;
+      font-size: 32rpx;
+      color: #2C365A;
+      line-height: 32rpx;
+      margin-bottom: 64rpx;
+    }
+  
+    /deep/ .edit-name-input {
+      background-color: #F2F4F8;
+      height: 96rpx;
+  
+      .uni-input-input {
+        height: 48rpx;
+        font-weight: 500;
+        font-size: 28rpx;
+        color: #2C365A;
+        line-height: 48rpx;
+      }
+  
+      .input-placeholder {
+        height: 48rpx !important;
+        font-weight: 400 !important;
+        font-size: 28rpx !important;
+        color: #8397B1 !important;
+        line-height: 48rpx !important;
+      }
+    }
+  
+    .error-tip {
+      height: 24rpx;
+      margin-top: 16rpx;
+      font-weight: 400;
+      font-size: 24rpx;
+      color: #EC2828;
+      line-height: 24rpx;
+    }
+  
+    /deep/ .u-modal__button-group--confirm-button {
+      padding: 0;
+    }
+  
+    .confirm-button {
+      display: flex;
+      margin-top: 40rpx;
+      margin-bottom: 48rpx;
+      padding: 0 32rpx;
+      justify-content: space-between;
+  
+      uni-button {
+        width: 292rpx;
+        height: 96rpx;
+        font-weight: 400;
+        font-size: 32rpx;
+        line-height: 96rpx;
+        color: #FCFCFD;
+        border-radius: 16rpx;
+      }
+  
+      .confirm {
+        background-color: #002FA7;
+      }
+  
+      /deep/ .cancel {
+        color: #8397B1;
+        background-color: rgba(0, 47, 167, 0.00);
+        border: 1px solid rgba(131, 151, 177, 0.30);
+        &:after {
+          border: 0 !important
+        }
+      }
     }
   }
 </style>

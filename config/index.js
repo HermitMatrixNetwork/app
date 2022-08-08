@@ -1,5 +1,5 @@
 const mainCoin = {
-  alia_name: 'GHM',
+  alias_name: 'GHM',
   full_name: 'Hermit Matrix Network',
   logo: '/static/img/account/uGHM.png',
   contract_address: '',
