@@ -37,7 +37,9 @@
               <view class="label">
                 <text>发送金额</text>
                 <view class="can-be-use">
-                  <text>可用： {{ token.balance }} {{ token.alias_name }}</text>
+                  可用： 
+                  <custom-loading v-if="loading"></custom-loading>
+                  <text v-else>{{ token.balance || '0.00' }} {{ token.alias_name }}</text>
                 </view>
               </view>
               <view class="value">
@@ -51,7 +53,7 @@
             </view>
           </view>
           <text v-if="sendFormData.sendAmount > token.balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text>
-          <text v-if="showAmountErrorTip" class="waringPrompt">{{ language.amountErrorTip }}</text>
+          <text v-else-if="showAmountErrorTip" class="waringPrompt">{{ language.amountErrorTip }}</text>
         </view>
 
         <view class="send-memo">
@@ -173,9 +175,10 @@ export default {
       chechSuccess: 0,
       sendFormData: {
         userAddress: this.$cache.get('_currentWallet').address,
-        receiveAddress: 'ghm189k0gud8npz4jsyz0nvvku8x2ul9n4pdalq6yt', //接收地址
-        sendAmount: 100, //发送金额
-        memo: 'test1',
+        receiveAddress: '', //接收地址
+        sendAmount: '', //发送金额
+        memo: '',
+        token: {},
         gas: '',
       },
       titleStyle: {
@@ -191,17 +194,32 @@ export default {
       token: {},
       showAddressErrorTip: false,
       showAmountErrorTip: false,
-      passwordEye: false
+      passwordEye: false,
+      loading: false
     }
   },
-  onLoad(value) {
-    if (value.token) {
-      this.token = JSON.parse(value.token)
+  onLoad(options) {
+    if (options.tokenID) {
+      this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
     } else {
       this.token = this.$cache.get('_currentWallet').coinList[0]
     }
-    this.sendFormData.rate = this.token.rate || 1
-    this.receiveAddress = value.receiveAddress
+    this.sendFormData.decimals = this.token.decimals || 1
+    
+    this.sendFormData.token = this.token
+    
+    clearInterval(this.timer)
+    if (this.token.loadingBalance) {
+      this.loading = true
+      this.timer = setInterval(() => {
+        const latestTokenInfo = this.$cache.get('_currentWallet').coinList.find(item => item.ID == this.token.ID)
+        this.token.balance = latestTokenInfo.balance
+        if (!latestTokenInfo.loadingBalance) {
+          clearInterval(this.timer)
+          this.loading = false
+        }
+      }, 1000)
+    }
   },
   methods: {
     submitAgain() {
@@ -221,14 +239,14 @@ export default {
         this.showAddressErrorTip = false
       }
 
-      if (sendAmount == '') {
+      if (sendAmount == '' || sendAmount <= 0 || !(/^[0-9]+$/.test(sendAmount))) {
         this.showAmountErrorTip = true
       } else {
         this.showAmountErrorTip = false
       }
-      
+
       // && this.sendFormData.sendAmount < this.token.balance
-      if (!this.showAddressErrorTip && !this.showAmountErrorTip ) {
+      if (!this.showAddressErrorTip && !this.showAmountErrorTip && this.sendFormData.sendAmount < this.token.balance) {
         this.submitPopupIsShow = true
       }
     },
@@ -251,7 +269,6 @@ export default {
       this.sendFormData.sendAmount = this.token.balance
     },
     getMinersCost(val) {
-      console.log('接收到值', val)
       this.minersMsg = val
     },
     scanCode() { //扫码
@@ -259,7 +276,6 @@ export default {
         onlyFromCamera: false,
         scanType: ['qrCode'],
         success: (res) => {
-          console.log('条码内容：' + res.result)
           this.receiveAddress = this.$refs.addressInptval.childValue = res.result
         },
       })
@@ -270,14 +286,29 @@ export default {
         events: {
           changeToken: (data) => {
             this.token = data
+            this.sendFormData.token = this.token
+            clearInterval(this.timer)
+            if (this.token.loadingBalance) {
+              this.loading = true
+              this.timer = setInterval(() => {
+                const latestTokenInfo = this.$cache.get('_currentWallet').coinList.find(item => item.ID == this.token.ID)
+                this.token.balance = latestTokenInfo.balance
+                if (!latestTokenInfo.loadingBalance) {
+                  clearInterval(this.timer)
+                  this.loading = false
+                }
+              }, 1000)
+            }
           }
         }
       })
     },
-    dealSuccessJump(result) {
-      console.log('交易结果', result)
-      const fee = result.tx.authInfo.fee.amount[0].amount / (this.token.rate || 1)
-      const usedAmount = this.sendFormData.sendAmount
+    dealSuccessJump({ res: result, otherToken }) {
+      let fee, usedAmount
+      if (!otherToken) {
+        fee = result.tx.authInfo.fee.amount[0].amount / (this.token.decimals || 1)
+        usedAmount = this.sendFormData.sendAmount
+      }
       uni.hideToast()
       const eventChannel = this.getOpenerEventChannel()
       if (result.code == 0) {
@@ -291,24 +322,24 @@ export default {
             this.modalPasswordIsShow = false
             setTimeout(() => {
               uni.redirectTo({
-                url: `./transactionDetails?transactionHash=${result.transactionHash}`
+                url: `./transactionDetails?data=${JSON.stringify(result)}`
               })
               eventChannel.emit('addRecordToSendList', result)
             }, 1500)
           }
         })
-        
-        this.token.balance = this.token.balance - fee - usedAmount
+
+        !otherToken && (this.token.balance = this.token.balance - fee - usedAmount)
       } else {
-        this.token.balance = this.token.balance - fee
+        !otherToken && (this.token.balance = this.token.balance - fee)
       }
-      
+
       const wallet = this.$cache.get('_currentWallet')
-      
+
       const tokenList = wallet.coinList
-      
+
       const tokenIndex = tokenList.findIndex(item => item.alias_name == this.token.alias_name)
-      
+
       tokenList.splice(tokenIndex, 1, this.token)
 
       wallet.coinList = tokenList
@@ -338,7 +369,9 @@ export default {
 <script lang="renderjs" module="render">
   import {
     SendTokentoOtherAddress,
-    getBalance
+    getBalance,
+    transferOtherToken,
+    getOtherTransationHistory
   } from '@/utils/secretjs/SDK.js'
   import WalletCrypto from '@/utils/walletCrypto.js'
   import renderUtils from '@/utils/render.base.js'
@@ -352,20 +385,58 @@ export default {
     methods: {
       async sendToken(newValue, oldValue, ownerVm, vm) {
         if (newValue == 0) return
-        console.log('校验通过开始调用');
+        let res;
+        let otherToken = false
         let {
           receiveAddress,
           userAddress,
           sendAmount,
           memo,
           gas,
-          rate
+          decimals
         } = this.message
-        console.log(rate);
-        sendAmount = sendAmount * mainCoin.rate
-        console.log('接收地址', receiveAddress);
-        const res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas)
-        renderUtils.runMethod(this._$id, 'dealSuccessJump', res, this)
+        if (this.message.token.alias_name == mainCoin.alias_name) {
+          sendAmount = sendAmount * mainCoin.decimals
+          res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas)
+        } else {
+          try {
+            otherToken = true
+            await transferOtherToken({
+              sender: userAddress,
+              contractAddress: this.message.token.contract_address,
+              codeHash: this.message.token.codeHash,
+              msg: {
+                transfer: {
+                  recipient: receiveAddress,
+                  amount: sendAmount * this.message.token.decimals + ''
+                }
+              }
+            }, this.message.memo)
+            // res = 
+            res = (await getOtherTransationHistory({
+              contract: { address: this.message.token.contract_address, codeHash: this.message.token.codeHash },
+              address: userAddress,
+              auth: { key: this.message.token.view_key }
+            }, {
+              page_size: 1,
+              page: 1
+            }, this.message.token)).transaction_history.txs[0]
+            for(let val of Object.values(res.action)) {
+              res.to_address = val.recipient
+              res.from_address = val.from
+              res.sender = val.sender
+            }
+            res.type = res.to_address == userAddress ? 'recipient' : 'transfer'
+            
+            res.amount = res.coins.amount / this.message.token.decimals + this.message.token.alias_name
+            res.timestamp = new Date(res.block_time * 1000).toLocaleString()
+            res.code = 0
+          } catch(e) {
+            console.log(e);
+            res.code = 7
+          }
+        }
+        renderUtils.runMethod(this._$id, 'dealSuccessJump', { res, otherToken }, this)
 
       },
       receiveMsg(value) {
@@ -543,7 +614,7 @@ export default {
 
       .miners_fee {
         padding: 33rpx 0 39rpx 0;
-        
+
         view {
           height: 80rpx;
           display: flex;
@@ -649,6 +720,11 @@ export default {
       }
 
       .can-be-use {
+        display: flex;
+        align-items: center;
+        font-weight: 400;
+        font-size: 24rpx;
+        color: #8397B1;
         text {
           font-weight: 400;
           font-size: 24rpx;
@@ -762,5 +838,4 @@ export default {
       }
     }
   }
-
 </style>

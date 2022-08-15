@@ -5,19 +5,20 @@ import {
   Tx
 } from 'secretjs-hmt/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
 import secretjs from './index.js'
-let wallet = {}
-//#ifdef APP-PLUS
-wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
-//#endif
 
-//#ifndef APP-PLUS
-wallet = uni.getStorageSync('_currentWallet').data
-//#endif
-
-let walletAddress = wallet.address
 
 //获取secret
 async function getSecret() {
+  let wallet = {}
+  //#ifdef APP-PLUS
+  wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+  //#endif
+  
+  //#ifndef APP-PLUS
+  wallet = uni.getStorageSync('_currentWallet').data
+  //#endif
+  
+  let walletAddress = wallet.address
   let privateKey64 = WalletCrpto.decode(wallet.privateKey64)
   let privateKey = WalletCrpto.StringToUint(privateKey64)
   let publicKey = await WalletCrpto.getPublickey(privateKey)
@@ -190,13 +191,16 @@ export async function getUnbondingDelegationRecord(address) {
 
 export async function setViewKey(data) {
   let Secret = await getSecret()
-  const codeHash = await Secret.query.snip20(data.contract_address)
+  let codeHash = data.codeHash
+  if (!data.codeHash) {
+    codeHash = await Secret.query.snip20.contractCodeHash(data.contract_address)
+  }
   const result = await Secret.tx.snip20.setViewingKey(
     {
       sender: data.address,
       contractAddress: data.contract_address,
       codeHash,
-      msg: { set_viewing_key: { key: data.viewkey } }
+      msg: { set_viewing_key: { key: data.view_key } }
     }
     , {
       gasPriceInFeeDenom: 0.02,
@@ -207,8 +211,10 @@ export async function setViewKey(data) {
 }
 
 
-export async function getOtherBlance() {
-  
+export async function getOtherBalance(data) {
+  let Secret = await getSecret()
+  const result = await Secret.query.snip20.getBalance(data)
+  return result
 }
 
 export async function getCodeHash(data) {
@@ -216,3 +222,65 @@ export async function getCodeHash(data) {
   const codeHash = await Secret.query.snip20.contractCodeHash(data)
   return codeHash
 }
+
+export async function getOtherTransationHistory(data, pagination, token) {
+  let Secret = await getSecret()
+  // const result = querySnip.getTransactionHistory({
+  //       contract: { address: 'ghm18hxq6kypae4arzxda4dvuwdr0p23rrg5pqffx9', codeHash: '188609c5d1fee7b0917d4fedccd04bb8286181bd45e2f77ccac364cda7f164c5' },
+  //       address: wallet.address,
+  //       auth: { key: "hello kitty" },
+  //       page_size: 10,
+  //       page: 1
+  // })
+  let codeHash = data.contract.codeHash
+  if (!token.codeHash) {
+    codeHash = await Secret.query.snip20.contractCodeHash(token.contract_address)
+  }
+  data.contract.codeHash = codeHash
+  const result = Secret.query.snip20.getTransactionHistory({
+    ...data,
+    page: pagination.page - 1,
+    page_size: pagination.page_size
+    
+  })
+  return result
+}
+
+export const getTokenDecimals = async (data) => {
+  let Secret = await getSecret()
+  const result = await Secret.query.snip20.getSnip20Params(data)
+  return result
+}
+
+export const transferOtherToken = async (data, memo = '') => {
+  let Secret = await getSecret()
+  console.log(memo)
+  const result = await Secret.tx.snip20.transfer(data, {
+    feeDenom: 'uGHM',
+    gasLimit: 5000000,
+    memo
+  })
+  return result
+}
+
+// 根据指定验证器查相应信息
+export const getDelegatorHistory = async (data) => {
+  let Secret = await getSecret()
+  const result = await Secret.query.txsQuery(`message.sender='${Secret.wallet.address}' AND delegate.validator='ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl'`)
+  console.log(result)
+}
+
+export const alla = async (data) => {
+  let Secret = await getSecret()
+  const result = await Secret.query.txsQuery(`message.sender='${Secret.wallet.address}' AND message.module='staking'`)
+  console.log(result)
+}
+
+export const getRewards = async (delegatorAddress, validatorAddress) => {
+  let Secret = await getSecret()
+  const result = await Secret.query.distribution.delegationRewards({
+    delegatorAddress,
+    validatorAddress
+  })
+  return result
+} 

@@ -7,7 +7,7 @@
 
     <view class="container">
       <view class="left">
-        <u-icon v-if="showGoBack" name="arrow-left" color="#8397B1" @click="goBack"></u-icon>
+        <u-icon v-if="showGoBack" name="arrow-left" color="#8397B1" @click="beforeGoBack"></u-icon>
         <slot v-else name="left"></slot>
       </view>
       <view class="center">
@@ -44,7 +44,9 @@ export default {
     redirUrl: {
       type: String,
       default: ''
-    }
+    },
+    delay: Number,
+    delayHandler: Function
   },
   data() {
     return {
@@ -52,6 +54,14 @@ export default {
     }
   },
   methods: {
+    beforeGoBack() {
+      if (this.delay) {
+        this.delayHandler()
+        setTimeout(this.goBack, this.delay)
+      } else {
+        this.goBack()
+      }
+    },
     goBack() {
       if (this.backUrl) {
         uni.navigateTo({

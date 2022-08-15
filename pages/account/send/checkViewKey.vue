@@ -5,7 +5,7 @@
 			<view class="title">
 				当前viewkey
 			</view>
-			<textarea v-model="viewkey" cols="30" rows="10" placeholder="当前viewkey" class="viewkey_input"></textarea>
+			<u--textarea v-model="view_key" cols="30" rows="10" placeholder="当前viewkey" class="viewkey_input" disabled></u--textarea>
 			
 
 		</view>
@@ -29,13 +29,17 @@ export default {
   mixins:[mixin],
   data() {
     return {
-      viewkey:'1321313213213'
+      view_key: ''
     }
+  },
+  onLoad(options) {
+    this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
+    this.view_key = this.token.view_key
   },
   methods: {
     copy() {
       uni.setClipboardData({
-        data: this.viewkey,
+        data: this.view_key,
         showToast: false,
         success: () => {
           this.$refs.notify.show('error', '复制成功')
@@ -47,7 +51,7 @@ export default {
     },
     toSetViewKey() {
       uni.redirectTo({
-        url: '/pages/account/send/settingViewKey'
+        url: `/pages/account/send/settingViewKey?tokenID=${this.token.ID}`
       })
     }
   }

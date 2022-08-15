@@ -36,7 +36,6 @@
           </view>
         </view>
       </view>
-
       <view class="account-column">
         <view class="column-item" @click="toGo('/pages/account/send/index')">
           <u-icon :name="require('../../static/img/account/send.png')" size="80rpx"></u-icon>
@@ -56,29 +55,30 @@
         </view>
       </view>
 
-   <!--   <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
+      <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
         <view class="modalContent">
           <u-icon name="info-circle" size="64rpx" color="#FFA033" />
           <view class="modal-title">提示</view>
           <text class="modal-content">当前viewkey与链上不一致，代币余额和交易记录将无法获取，请进入代币详情页点击设置viewkey。</text>
           <button @click="aa = false">确认</button>
         </view>
-      </u-modal> -->
+      </u-modal>
       <view class="coin-list">
         <u-tabs :list="coinList" lineColor="#2C365A" @click="click" :inactiveStyle="inactiveStyle"
           :activeStyle="activeStyle" lineWidth="20" lineHeight="3" :itemStyle="itemStyle">
           <view slot="right" style="padding-bottom: 8rpx">
-            <u-icon @click="toGo('/pages/assetManage/index')" :name="require('../../static/img/account/add.png')"
-              size="48rpx" color="#8895b0" bold>
+            <u-icon @click="toAsset" :name="require('../../static/img/account/add.png')" size="48rpx" color="#8895b0"
+              bold>
             </u-icon>
           </view>
         </u-tabs>
         <scroll-view v-if="visibaleTokenList.length" class="coinbox" scroll-y>
-          <view class="content" v-for="item in visibaleTokenList" :key="item.full_name">
-            <TokenColumn :tokenName="item.alias_name" :tokenAddress="item.contract_address" :tokenIcon="item.logo"
-              class="token" @click.native="queryToken(item)">
+          <view class="content" v-for="item in visibaleTokenList" :key="item.ID">
+            <TokenColumn :showWarn="item.showWarn" :tokenName="item.alias_name" :tokenAddress="item.contract_address"
+              :tokenIcon="item.logo" class="token" @click.native="queryToken(item)">
               <template #right>
-                <view class="coinNumber">
+                <custom-loading v-if="item.loadingBalance"></custom-loading>
+                <view class="coinNumber" v-else>
                   <view class="number">{{ item.balance || 0 }}</view>
                   <view class="money">$0.00000</view>
                 </view>
@@ -92,6 +92,9 @@
     <SwitchWallet :showSwitchWallet="showSwitchWallet" @close="closeSwitchWalletPopup" />
 
     <view :initRender="initRender" :change:initRender="render.init"></view>
+    <view :callBalanceLoading="callBalanceLoading" :change:callBalanceLoading="render.setBalanceLoading"></view>
+
+    <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
@@ -138,17 +141,21 @@ export default {
         height: '60rpx',
         alignItems: 'flex-start'
       },
-      allassets: 66666666, //总资产
+      allassets: 0, //总资产
       eyeAsset: true,
-      aa: true,
+      aa: false,
+      firstShowAa: true,
       tokenList: [],
       coinType: 'All',
-      initRender: '', // call render.init
+      initRender: 0, // call render.init
+      callBalanceLoading: 0
     }
   },
   onShow() {
     // this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
     this.initCoinList()
+    this.aa = false
+    this.firstShowAa = true
     this.initRender++
   },
   created() {
@@ -215,7 +222,6 @@ export default {
     assentIsShow() {
       //用户总资产是否显示
       this.eyeAsset = !this.eyeAsset
-      this.aa = true
     },
     closeSwitchWalletPopup() {
       this.showSwitchWallet = false
@@ -224,15 +230,14 @@ export default {
       this.tokenList = this.currentWallet.coinList
     },
     queryToken(token) {
-      console.log(token)
       if (token.apply_type) {
         uni.navigateTo({
-          url: `./send/token_content_other?token=${JSON.stringify(token)}`
+          url: `./send/token_content_other?tokenID=${token.ID}`
         })
       } else {
         uni.navigateTo({
-          url: `./send/token_content?token=${JSON.stringify(token)}`
-        })        
+          url: `./send/token_content?tokenID=${token.ID}`
+        })
       }
     },
     updateWalletList(wallet) {
@@ -252,6 +257,17 @@ export default {
       wallet.coinList = coinList
       this.$cache.set('_currentWallet', this.currentWallet, 0)
       this.updateWalletList(this.currentWallet)
+    },
+    showError(msg) {
+      this.$refs.notify.show('error', msg)
+    },
+    toAsset() {
+      this.$nextTick(() => {
+        uni.navigateTo({
+          url: '/pages/assetManage/index'
+        })
+      })
+      this.callBalanceLoading += 1
     }
   },
   computed: {
@@ -260,7 +276,19 @@ export default {
         'token': 'SNIP20',
         'default': 'NFT'
       }
-      return this.coinType === 'All' ? this.tokenList : this.tokenList.filter(item => type[item.apply_type || 'default'] === this.coinType)
+      return this.coinType === 'All' ? this.tokenList : this.tokenList.filter(item => type[item.apply_type ||
+          'default'] === this.coinType)
+    }
+  },
+  watch: {
+    tokenList: {
+      deep: true,
+      handler(newVal) {
+        if (this.firstShowAa) {
+          this.aa = newVal.find(item => item.showWarn) ? true : false
+          if (this.aa) this.firstShowAa = false
+        }
+      }
     }
   }
 }
@@ -269,14 +297,22 @@ export default {
 <script lang="renderjs" module="render">
   import {
     getBalance,
-    getCodeHash
+    getCodeHash,
+    getOtherBalance,
+    getTokenDecimals
   } from '@/utils/secretjs/SDK'
   import renderUtils from '@/utils/render.base.js'
   import mainCoin from '@/config/index.js'
 
   export default {
+    data() {
+      return {
+        balanceLoading: true
+      }
+    },
     methods: {
       async init() {
+        this.balanceLoading = true
         let wallet;
         //#ifdef APP-PLUS
         wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
@@ -286,13 +322,13 @@ export default {
         wallet = uni.getStorageSync('_currentWallet').data
         //#endif
         //获取主网币余额
-        
+
         let coinList = wallet.coinList || []
         //代币数组为空时，为其添加主币
-        if (coinList.length == 0) coinList.push(mainCoin) 
-        
+        if (coinList.length == 0) coinList.push(mainCoin)
+
         renderUtils.runMethod(this._$id, 'updateCoinList', coinList, this)
-        
+
         this.getBalance(coinList, wallet)
       },
       async getBalance(coin, wallet) {
@@ -301,36 +337,67 @@ export default {
           let coin = coinList[i]
           let balance = 0
           if (coin.alias_name == mainCoin.alias_name) {
-           
-            // await new Promise((resolve) => {
-            //   setTimeout(async () => {
-            //     let res = await getBalance(wallet.address)
-            //     balance = res.balance.amount
-            //     console.log(balance);
-            //     resolve()
-            //   }, 5000)
-            // })
-           
+            coin.showWarn = false
+
             let res = await getBalance(wallet.address)
             balance = res.balance.amount
-            
           } else { // 非主网币
             if (coin.view_key == '') {
+              coin.showWarn = true
             } else {
-              let codeHash = await getCodeHash(coin.contract_address)
-              coin.codeHash = codeHash
-              let res = await getOtherBalance({
-                address: wallet.address,
-                contract: { address: coin.contract_address, codeHash: codeHash },
-                auth: { key: coin.view_key }
-              })
+              if (!coin.codeHash) {
+                try {
+                  let codeHash = await getCodeHash(coin.contract_address)
+                  coin.codeHash = codeHash
+                  balance = await this.getOtherTokenBalance(coin, wallet)
+                } catch (e) {
+                  let msg = '获取codeHash失败，请检查合约地址是否正确'
+                  console.log('获取codeHash失败，请检查合约地址是否正确');
+                  // renderUtils.runMethod(this._$id, 'showError', msg, this)
+                }
+              } else {
+                balance = await this.getOtherTokenBalance(coin, wallet)
+              }
             }
           }
-        
-          if (coin.rate) balance = balance / coin.rate
+
+          if (coin.decimals) balance = balance / coin.decimals
           coin.balance = balance
+          coin.loadingBalance = false
         }
-        renderUtils.runMethod(this._$id, 'updateCoinList', coinList, this)
+        this.balanceLoading && renderUtils.runMethod(this._$id, 'updateCoinList', coinList, this)
+      },
+      setBalanceLoading(newVal) {
+        if (newVal == 0) return
+        this.balanceLoading = false
+      },
+      async getOtherTokenBalance(coin, wallet) {
+        let balance = 0
+        let res = await getOtherBalance({
+          address: wallet.address,
+          contract: {
+            address: coin.contract_address,
+            codeHash: coin.codeHash
+          },
+          auth: {
+            key: coin.view_key
+          }
+        })
+        if (res.viewing_key_error) {
+          coin.showWarn = true
+        } else {
+          const tokeninfo = await getTokenDecimals({
+            contract: {
+              address: coin.contract_address,
+              codeHash: coin.codeHash
+            }
+          })
+
+          coin.decimals = Math.pow(10, tokeninfo.token_info.decimals) || 1
+          balance = res.balance.amount
+          coin.showWarn = false
+        }
+        return balance
       }
     }
   }
@@ -460,9 +527,6 @@ export default {
   }
 
   /deep/ .hintModal {
-    .u-modal {
-      height: 510rpx;
-    }
 
     .u-modal__content {
       padding: 32rpx;
@@ -470,7 +534,6 @@ export default {
     }
 
     .modalContent {
-      height: 430rpx;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -479,15 +542,17 @@ export default {
       .modal-title {
         font-size: 32rpx;
         color: #2c365a;
-        font-weight: 500;
+        font-weight: 600;
         line-height: 32rpx;
+         margin-top: 32rpx;
       }
 
       .modal-content {
-        width: 564rpx;
         font-size: 28rpx;
         color: #8397b1;
         line-height: 42rpx;
+        margin-top: 32rpx;
+        margin-bottom: 48rpx;
       }
 
       button {

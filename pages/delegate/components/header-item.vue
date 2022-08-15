@@ -26,7 +26,7 @@ export default {
   },
   filters: {
     valueFormat(val) {
-      return val.toFixed(2)
+      return Number(val).toFixed(2)
     }
   }
 }
@@ -45,6 +45,7 @@ export default {
 			margin: 12rpx 30rpx 0 0;
 			border-radius: 14rpx;
 			opacity: 0.5;
+      flex-shrink: 0;
 		}
 		.hi-right {
 			height: 68rpx;

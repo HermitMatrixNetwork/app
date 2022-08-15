@@ -1,12 +1,14 @@
 const mainCoin = {
+  ID: 0,
   alias_name: 'GHM',
   full_name: 'Hermit Matrix Network',
   logo: '/static/img/account/uGHM.png',
   contract_address: '',
-  rate: 10 ** 6,
+  decimals: 10 ** 6,
   view_key: '',
-  official_website: 'https://ghmchain.org',
-  contract_address: ''
+  official: 'https://ghmchain.org',
+  contract_address: '',
+  loadingBalance: true
 }
 
 export default mainCoin

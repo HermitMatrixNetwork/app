@@ -1,44 +1,119 @@
 <template>
   <view class="list">
-    <view class="item" @click="goTo('/pages/delegate/transactionDetails')">
+    <custom-loading style="margin-top: 30rpx;" v-if="loading"></custom-loading>
+    <view class="item" v-for="(item, index) in list[types[currentTab]]" :key="index">
       <view class="left">
-        <image :src="'/static/img/placeholder.jpeg'" style="width: 72rpx; height: 72rpx;" />
+        <image :src="item.icon" style="width: 72rpx; height: 72rpx;" />
       </view>
       <view class="center">
         <view class="address">
-          {{ 'ghm63212AB...15DdC2' | sliceAddress(6, -6) }}
+          {{ item.validator_address | sliceAddress(6, -6) }}
         </view>
         <view class="name">
-          22/06/2022 14:55:03
+          {{ item.timestamp }}
         </view>
       </view>
       <div class="right">
-        <text class="num">0.2 GHM</text>
+        <text class="num">{{ item.amount }} {{ mainCoin.alias_name }}</text>
       </div>
     </view>
   </view>
 </template>
 
 <script>
-  import {
-    sliceAddress
-  } from '@/utils/filters.js'
-  export default {
-    methods: {
-      goTo(url) {
-        uni.navigateTo({
-          url
-        })
-      }
-    },
-    filters: {
-      sliceAddress
+import { txsQuery } from '@/api/cosmos.js'
+import {
+  sliceAddress
+} from '@/utils/filters.js'
+import mainCoin from '@/config/index.js'
+export default {
+  props: {
+    currentTab: Number
+  },
+  data() {
+    return {
+      wallet: this.$cache.get('_currentWallet'),
+      list: {
+        all: [],
+        delegate: [],
+        undelegate: [],
+        withdraw: []
+      },
+      types: ['all', 'delegate', 'undelegate', 'withdraw'],
+      mainCoin,
+      loading: true
     }
+  },
+  methods: {
+    goTo(url) {
+      uni.navigateTo({
+        url
+      })
+    }
+  },
+  async created() {
+    Promise.all([
+      txsQuery([`events=message.sender='${ this.wallet.address }'`, 'events=message.module=\'staking\'', 'order_by=ORDER_BY_DESC']),
+      txsQuery([`events=message.sender='${ this.wallet.address }'`, 'events=message.module=\'distribution\'', 'order_by=ORDER_BY_DESC'])
+    ]).then(res => {
+      const result = res[0].data.tx_responses
+      const withdraw = res[1].data.tx_responses
+      result.forEach(item => {
+        const type = item.tx.body.messages[0]['@type']
+        
+        item.validator_address = item.tx.body.messages[0].validator_address
+        item.delegator_address = item.tx.body.messages[0].delegator_address
+        item.amount = item.tx.body.messages[0].amount.amount / mainCoin.decimals
+
+        if (type.includes('MsgUndelegate')) {
+          item.icon = '/static/img/delegate/fasong2.png'
+          this.list['undelegate'].push(item)
+          
+          
+        } else if (type.includes('MsgDelegate')) {
+          item.icon = '/static/img/delegate/weituo2.png'
+          this.list['delegate'].push(item)
+        }
+        
+        item.timestamp = item.timestamp.replace(/Z|T/g, ' ')
+        
+      })
+      
+      
+      
+      withdraw.forEach(item => {
+        const type = item.tx.body.messages[0]['@type']
+        item.validator_address = item.tx.body.messages[0].validator_address
+        item.delegator_address = item.tx.body.messages[0].delegator_address
+        item.raw_log.replace(/\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match, p1) => {
+          item.amount = p1 / mainCoin.decimals
+        })
+        if (type.includes('MsgWithdrawDelegatorReward')) {
+          item.icon = '/static/img/delegate/shoukuan2.png'
+          this.list['withdraw'].push(item)
+        }
+        
+        item.timestamp = item.timestamp.replace(/Z|T/g, ' ')
+      })
+      this.list['all'].push(...result, ...withdraw)
+      this.loading = false
+      this.list['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      console.log(this.list['all'])
+    })
+  },
+  filters: {
+    sliceAddress
   }
+}
 </script>
 
 <style lang="scss" scoped>
   .list {
+    height: calc(100vh - 80rpx - 112rpx);
+    // #ifdef APP-PLUS
+    height: calc(100vh - 80rpx - 112rpx - var(--status-bar-height));
+    // #endif
+    overflow-y: scroll;
     .item {
       display: flex;
       align-items: center;

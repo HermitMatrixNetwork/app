@@ -5,13 +5,16 @@
       <view class="main_status">
         <image :src="statusIcon" />
         <text class="status"> {{ status }} </text>
-        <text class="times">{{ result.timestamp.replace(/T|Z/g, ' ') }}</text>
+        <text class="times">{{ result.timestamp }}</text>
       </view>
-      <view class="main_message">
-        <view v-for="(item,key) in transactionMessage" :key="key" class="main_message_column">
-          <view>{{key}}</view>
-          <view>{{item}}</view>
-        </view>
+      <custom-loading v-if="loading" style="margin-top: 50rpx"></custom-loading>
+      <view class="main_message" v-else>
+        <template v-for="(item,key) in transactionMessage" >
+          <view v-if="item" class="main_message_column" :key="key">
+              <view>{{key}}</view>
+              <view>{{item}}</view>
+          </view>
+        </template>
       </view>
     </view>
     <view :transactionHash="transactionHash"  :change:transactionHash="render.getTransationInfo"></view>
@@ -28,25 +31,25 @@ export default {
       transactionHash: '',
       status: '',
       statusIcon: '',
-      transation: ['金额', '矿工费', '收款地址', '付款地址', 'Memo', '交易号'],
-      fail: ['金额', '矿工费', '收款地址', '付款地址', 'Memo', '交易号'],
-      delegate: ['委托金额', '矿工费', '委托人', '被验证委托人', 'Memo', '交易号'],
-      receive: ['领取金额', '矿工费', '操作账户', '领取接收地址', 'Memo', '交易号'],
       result: {
         timestamp: ''
       },
+      loading: true,
     }
   },
-  onLoad(value) {
-    if (value.transactionHash) {
-      this.transactionHash = value.transactionHash
+  onLoad(options) {
+    let data = JSON.parse(options.data)
+    if (data.txhash) {
+      this.transactionHash = data.txhash
+    } else if(data.transactionHash) {
+      this.transactionHash = data.transactionHash
     } else {
-      let result = JSON.parse(value.data)
-      this.formData(result, result.tx.body.messages[0]['@type'])
+      this.formOtherToken(data)
     }
   },
   methods: {
     init(res) {
+      console.log(res)
       this.result = res
       const typeUrl = res.tx.body.messages[0].typeUrl
       res.amount = 0
@@ -61,13 +64,33 @@ export default {
       })
       res.to_address = res.tx.body.messages[0].value.toAddress
       res.from_address = res.tx.body.messages[0].value.fromAddress
-      mainCoin.rate && (res.amount = res.amount / mainCoin.rate)
-      res.fee = res.tx.authInfo.fee.amount[0].amount / mainCoin.rate + mainCoin.alias_name
+      mainCoin.decimals && (res.amount = res.amount / mainCoin.decimals)
+      res.fee = res.tx.authInfo.fee.amount[0].amount / mainCoin.decimals + mainCoin.alias_name
       res.amount += mainCoin.alias_name
       this.formData(res, typeUrl)
     },
     formData(res, typeUrl) {
-      // console.log(res) // code = 0 不一定成功噢，特殊情况自己猜 
+      
+      function format(time) {
+        let date = new Date(time)
+        let y = date.getFullYear()
+        let m = (date.getMonth() + 1 + '').padStart(2, '0')
+        let d = (date.getDate() + '').padStart(2, '0')
+        let hh = (date.getHours() + '').padStart(2, '0')
+        let mm = (date.getMinutes() + '').padStart(2, '0')
+        let ss = (date.getSeconds() + '').padStart(2, '0')
+      
+        return `${y}年${m}月${d}日 ${hh}:${mm}:${ss}`
+      }
+      
+      // this.result.timestamp = format(item.block_time * 1000)
+      this.result.timestamp = res.timestamp.trim().replace(/\-/g, (match, p1, p2) => {
+        if (p1 == 4) {
+          return '年'
+        } else {
+          return '月'
+        }
+      }).split('T').join('日 ').replace(/Z/, '')
       if (res.code == 0) {
         this.status = '成功'
         this.statusIcon = '/static/img/chenggong.png'
@@ -75,17 +98,61 @@ export default {
         this.status = '失败'
         this.statusIcon = '/static/img/shibai1.png'
       }
-      
       if (typeUrl.includes('MsgSend')) {
         this.transactionMessage = {
-          '金额': res.amount,
+          '金额': res.to_address === this.$cache.get('_currentWallet').address ? '+' + res.amount : '-' + res.amount,
           '矿工费': res.fee,
           '收款地址': res.to_address,
           '付款地址': res.from_address,
           'Memo': res.tx.body.memo,
-          '交易号': res.from_address
+          '交易号': res.transactionHash
+        }
+      } else if (typeUrl.includes('MsgDelegate')) {
+        this.transactionMessage = {
+          '金额': res.amount,
+          '矿工费': res.fee,
+          '委托人': res.tx.body.messages[0].value.delegatorAddress,
+          '被委托验证人': res.tx.body.messages[0].value.validatorAddress,
+          'Memo': res.tx.body.memo,
+          '交易号': res.transactionHash
+        }
+      } else if (typeUrl.includes('MsgExecuteContract')) {
+        this.transactionMessage = {
+          '金额': res.amount,
+          '矿工费': res.fee,
+          '委托人': res.tx.body.messages[0].value.delegatorAddress,
+          '被委托验证人': res.tx.body.messages[0].value.validatorAddress,
+          'Memo': res.tx.body.memo,
+          '交易号': res.transactionHash
         }
       }
+      
+      this.loading = false
+    },
+    formOtherToken(res) {
+      this.status = '成功'
+      this.statusIcon = '/static/img/chenggong.png'
+      function format(time) {
+        let date = new Date(time)
+        let y = date.getFullYear()
+        let m = (date.getMonth() + 1 + '').padStart(2, '0')
+        let d = (date.getDate() + '').padStart(2, '0')
+        let hh = (date.getHours() + '').padStart(2, '0')
+        let mm = (date.getMinutes() + '').padStart(2, '0')
+        let ss = (date.getSeconds() + '').padStart(2, '0')
+      
+        return `${y}年${m}月${d}日 ${hh}:${mm}:${ss}`
+      }
+      
+      this.result.timestamp = format(res.block_time * 1000)
+      this.transactionMessage = {
+        '金额': res.amount,
+        '收款地址': res.to_address,
+        '付款地址': res.from_address,
+        '执行者': res.sender,
+        'Memo': res.memo
+      }
+      this.loading = false
     }
   }
 }
@@ -101,7 +168,7 @@ export default {
       async getTransationInfo(hash) {
         if (hash == '') return;
         const result = await queryAccountHash(hash)
-        renderUtils.runMethod(this.$_id, 'init', result, this)
+        renderUtils.runMethod(this._$id, 'init', result, this)
       }
     }
   }

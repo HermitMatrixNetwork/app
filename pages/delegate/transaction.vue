@@ -2,9 +2,9 @@
 	<view class="transtion">
 		<custom-header :title="'交易记录'" >
 		</custom-header>
-		<u-tabs class="tabs" :inactiveStyle="inactiveStyle" :activeStyle="activeStyle" :itemStyle="itemStyle" :list="list1" lineColor="#1E5EFF" lineHeight="4"></u-tabs>
+		<u-tabs class="tabs" :inactiveStyle="inactiveStyle" :activeStyle="activeStyle" :itemStyle="itemStyle" :list="list1" lineColor="#1E5EFF" lineHeight="4" @change	="changeTab"></u-tabs>
 		<view class="lists">
-			<TranList />
+			<TranList :currentTab="currentTab" />
 		</view>
 	</view>
 </template>
@@ -37,10 +37,15 @@ export default {
       },
       itemStyle: {
         height: '80rpx'
-      }
+      },
+      currentTab: 0
     }
   },
-
+  methods: {
+    changeTab(item) {
+      this.currentTab = item.index
+    }
+  }
 
 }
 </script>
@@ -52,5 +57,6 @@ export default {
   
   .tabs {
     border-bottom: 2rpx solid rgba(131,151,177,0.20);
+    height: 80rpx;
   }
 </style>
