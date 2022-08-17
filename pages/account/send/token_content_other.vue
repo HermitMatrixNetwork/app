@@ -1,49 +1,35 @@
 <template>
   <view class="token_content">
-    <custom-header :title="token.alias_name">
+    <custom-header :delay="300" :delayHandler="delayHandler" tabUrl="/pages/account/index" :title="token.alias_name">
       <template #right>
         <text class="customIcon" @click="toTokenDetail()">详情</text>
       </template>
     </custom-header>
 
     <view class="main_token">
-      <TokenColumn :tokenIcon="token.logo" :tokenName="token.alias_name" :tokenColumnStyle="tokenColumnStyle"
-        :tokenAddress="address | sliceAddress(6, -16) ">
-        <template #right>
-          <view style="padding-right: 16rpx;" class="token_price">
-            <view class="balance" v-if="token.balance">{{ token.balance | formatBalance }}</view>
-            <view>
-              <text class="symbol">$</text>
-              <text>0.00000</text>
+      <view class="TokenVolumn" :style="tokenColumnStyle">
+        <view class="item">
+          <view class="left">
+            <image :src="token.logo" style="width: 72rpx; height: 72rpx"></image>
+          </view>
+          <view class="center">
+            <view class="title">{{token.alias_name}}</view>
+            <view class="address" :style="{display:address?'block':'none'}">
+              {{ address | sliceAddress(6, -16) }}
             </view>
           </view>
-        </template>
-      </TokenColumn>
-
-      <view class="token_details">
-        <view class="available">
-          <text>可用</text>
-          <view class="quantity">
-            <view class="top" v-if="token.balance">{{ token.balance | formatBalance }}</view>
-            <view class="bottom">
-              <text class="symbol">$</text>
-              <text>0.00000</text>
-            </view>
-          </view>
-        </view>
-        <view class="lock">
-          <text>锁定</text>
-          <custom-loading v-if="lockAmountLoading"></custom-loading>
-          <view v-else class="quantity">
-            <view class="top">{{ lockAmount }}</view>
-            <view class="bottom">
-              <text class="symbol">$</text>
-              <text>0.00000</text>
+          <view class="right">
+            <custom-loading v-if="token.loadingBalance"></custom-loading>
+            <view v-else style="padding-right: 16rpx;" class="token_price">
+              <view class="balance">{{ token.balance | formatBalance }}</view>
+              <view>
+                <text class="symbol">$</text>
+                <text>0.00000</text>
+              </view>
             </view>
           </view>
         </view>
       </view>
-
     </view>
     <view style="height: 16rpx;background: #F4F6FA;margin-top: 32rpx;" />
     <view class="transaction_history">
@@ -51,15 +37,23 @@
         <u-tabs :list="list" :is-scroll="false" @click="switchTabs" :current="listCurrentIndex">
         </u-tabs>
       </view>
-      <custom-loading v-if="loading" class="loading"></custom-loading>
+      <view v-if="token.showWarn || !token.view_key" class="no-data">
+        <image class="no-img" src="@/static/img/noviewkey.png" />
+        <view class="tip" style="text-align: center;">
+          <text>当前没有viewkey或本地viewkey与链上不一致，
+            无法获取记录，请先设置！</text>
+        </view>
+      </view>
+
+      <custom-loading v-else-if="loading" class="loading"></custom-loading>
       <swiper v-else class="transaction_history_item" :current="listCurrentIndex" @change="switchSwiper"
-        style="height: 670rpx">
+        style="height: 1000rpx">
         <swiper-item v-for="(item,index) in list" :key="item.name" :item-id="index+''">
           <!-- @scrolltolower="loadMore(item.type)" -->
-          <scroll-view scroll-y class="scroll-container" style="height: 670rpx">
+          <scroll-view scroll-y class="scroll-container" style="height: 1000rpx">
             <template v-if="accountTransfer[item.type].length">
               <view class="list-item" v-for="(record, index) in accountTransfer[item.type]" :key="index"
-                @click.native="toRecordDetail(record)">
+                @click="toRecordDetail(record)">
                 <view class="container">
                   <view class="logo">
                     <image :src="record.icon"></image>
@@ -84,14 +78,14 @@
                 </view>
                 <view class="border"></view>
               </view>
-              <view v-if="item.type !== 'all'">
-                <view v-if="!pagination[item.type].nodata && !pagination[item.type].loading" class="loading-more"
-                  @click="loadMore(item.type)">
+              <!-- todo -->
+              <view v-if="item.type == 'all'">
+                <view v-if="!pagination.nodata && !pagination.loading" class="loading-more" @click="nextPage">
                   点击加载更多
                 </view>
-                <u-loading-icon v-else-if="pagination[item.type].loading" class="loading-more" mode="circle" text="加载中">
+                <u-loading-icon v-else-if="pagination.loading" class="loading-more" mode="circle" text="加载中">
                 </u-loading-icon>
-                <view v-else-if="pagination[item.type].nodata" class="loading-more">已全部加载完毕</view>
+                <view v-else-if="pagination.nodata" class="loading-more">已全部加载完毕</view>
               </view>
             </template>
             <no-data v-else tip="暂无记录" />
@@ -99,24 +93,22 @@
         </swiper-item>
       </swiper>
     </view>
-    <view :callRenderDelegateRecord="callRenderDelegateRecord" :change:callRenderDelegateRecord="render.getAddress">
-    </view>
     <view class="operation_btn">
-      <button @click="toSend('/pages/account/send/index', token)">发送</button>
-      <button @click="toGo('/pages/account/receive')">接收</button>
-      <button @click="dealBtn">交易</button>
-      <view class="operation_btn">
-        <u-button @click="toSend('/pages/account/send/index', token)">转账</u-button>
-        <u-button @click="toGo('/pages/account/receive')">接收</u-button>
-        <u-button @click="dealBtn">交易</u-button>
-        <u-button class="view-key" @click="toViewKey">
-          <view class="view-key-text">
-            <view>查看/设置</view>
-            <view>viewkey</view>
-          </view>
-        </u-button>
-      </view>
+      <u-button @click="toSend('/pages/account/send/index', token)">转账</u-button>
+      <u-button @click="toGo('/pages/account/receive')">接收</u-button>
+      <u-button @click="dealBtn">交易</u-button>
+      <u-button class="view-key" @click="toViewKey">
+        <view class="view-key-text">
+          <view>查看/设置</view>
+          <view>viewkey</view>
+        </view>
+      </u-button>
     </view>
+    <view :callRenderTransationHistory="callRenderTransationHistory"
+      :change:callRenderTransationHistory="render.getAddress">
+    </view>
+    <view :callRenderLoadMore="callRenderLoadMore" :change:callRenderLoadMore="render.more"></view>
+    <view :callBalanceLoading="callBalanceLoading" :change:callBalanceLoading="render.setBalanceLoading"></view>
   </view>
 </template>
 
@@ -124,16 +116,10 @@
 // 究极不可维护代码之无脑复制黏贴☢
 import TokenColumn from './components/TokenColumn.vue'
 import mixin from '../mixins/index.js'
-import {
-  queryAccountHash
-} from '@/utils/secretjs/SDK.js'
 import mainCoin from '@/config/index.js'
 import {
   sliceAddress
 } from '@/utils/filters.js'
-import {
-  txsQuery
-} from '@/api/cosmos.js'
 export default {
   mixins: [mixin],
   components: {
@@ -141,11 +127,11 @@ export default {
   },
   data() {
     return {
+      callBalanceLoading: 0,
       token: {},
       address: this.$cache.get('_currentWallet').address,
       listCurrentIndex: 0,
       tokenColumnStyle: {
-        paddingBottom: '32rpx',
         paddingTop: '32rpx',
       },
       list: [{
@@ -153,7 +139,7 @@ export default {
         type: 'all'
       }, {
         name: '发送',
-        type: 'sender',
+        type: 'transfer',
         icon: require('@/static/img/account/fasong2.png')
       }, {
         name: '收款',
@@ -161,209 +147,96 @@ export default {
         icon: require('@/static/img/account/shoukuan2.png')
       },
       {
-        name: '委托',
-        type: 'delegate'
-      },
-      {
-        name: '领取',
-        type: 'draw'
-      },
-
-      {
         name: '失败',
         type: 'fail'
       }
       ],
       accountTransfer: {
-        'sender': [],
+        'transfer': [],
         'recipient': [],
-        'delegate': [],
-        'draw': [],
         'fail': [],
         'all': []
       },
       pagination: {
-        sender: {
-          page: 0,
-          size: 5,
-          total: 0,
-          loading: false
-        },
-        recipient: {
-          page: 0,
-          size: 5,
-          total: 0,
-          loading: false
-        },
-        delegate: {
-          page: 0,
-          size: 5,
-          total: 0,
-          loading: false
-        },
-        fail: {
-          page: 0,
-          size: 5,
-          total: 0,
-          loading: false
-        },
-        all: {
-          loading: false
-        }
+        page: 1,
+        size: 5,
+        total: 0,
+        loading: false
       },
-      loading: true,
+      loading: false,
       lockAmountLoading: true,
-      callRenderDelegateRecord: '',
-      lockAmount: 0
+      callRenderTransationHistory: {},
+      lockAmount: 0,
+      callRenderLoadMore: 1,
     }
   },
   async onLoad(options) {
-    this.token = JSON.parse(options.token)
-    this.token.view
-    this.callRenderDelegateRecord = this.address
+    this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
   },
-  onShow() {
-    this.token = this.$cache.get('_currentWallet').coinList.find(item => item.alias_name == this.token.alias_name)
-  },
-  created() {
-    this.init()
+  mounted() {
+    if (this.token.view_key) {
+      this.callRenderTransationHistory = this.token
+      this.loading = true
+    }
   },
   methods: {
-    async init() {
-      // to del
-      await Promise.all([
-        txsQuery([`events=message.module='${'bank'}'`, `events=transfer.sender='${this.address}'`,
-          'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.sender.page}`,
-          `pagination.limit=${this.pagination.sender.size}`
-        ]),
-        txsQuery([`events=message.module='${'bank'}'`, `events=transfer.recipient='${this.address}'`,
-          'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.sender.page}`,
-          `pagination.limit=${this.pagination.sender.size}`
-        ]),
-        txsQuery([`events=message.module='${'staking'}'`, `events=message.sender='${this.address}'`,
-          'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.sender.page}`,
-          `pagination.limit=${this.pagination.sender.size}`
-        ])
-      ]).then(res => {
-        if (this.pagination.sender.total == 0) {
-          this.pagination.sender.total = res[0].data.pagination.total
-          this.pagination.recipient.total = res[1].data.pagination.total
-          this.pagination.delegate.total = res[2].data.pagination.total
-
+    delayHandler() {
+      this.callBalanceLoading++
+    },
+    async init({
+      res,
+      token
+    }) {
+      if (res.viewing_key_error || res.parse_err) {
+        console.log('出现了预期之外的错误', res.viewing_key_error)
+      } else {
+        let wallet = this.$cache.get('_currentWallet')
+        let result = res.transaction_history
+        let list = ['all', 'sender', 'recipient', 'fail']
+        this.pagination.total = result.total
+        if (result.total <= result.txs.length) {
+          this.pagination.nodata = true
         }
 
-        res.forEach((result, type) => {
-          const records = result.data.tx_responses
-          for (let i = 0, len = records.length; i < len; i++) {
-            const item = records[i]
-            item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.rate + mainCoin.alias_name
-            item.amount = 0
-            item.memo = item.tx.body.memo
-            item.from_address = item.tx.body.messages[0].from_address
-            item.to_address = item.tx.body.messages[0].to_address
-            item.delegator_address = item.tx.body.messages[0].delegator_address
-            item.validator_address = item.tx.body.messages[0].validator_address
-            item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
-            item.tx.body.messages.forEach(cur => {
-              if (cur.amount) {
-                if (Array.isArray(cur.amount)) {
-                  item.amount += Number(cur.amount[0].amount)
-                } else {
-                  item.amount += Number(cur.amount.amount)
-                }
-              }
-            })
-            item.amount = item.amount / mainCoin.rate + mainCoin.alias_name
-            switch (type) {
-            case 1:
-              item.icon = require('@/static/img/account/shoukuan2.png')
-              break
-            case 0:
-              item.icon = require(
-                '@/static/img/account/fasong2.png')
-              break
-            case 2:
-              item.icon = require(
-                '@/static/img/account/weituo2.png')
-              break
-            }
+        this.accountTransfer['all'].push(...result.txs)
+        this.accountTransfer['all'].forEach(item => {
+          for (let val of Object.values(item.action)) {
+            item.to_address = val.recipient
+            item.from_address = val.from
+            item.sender = val.sender
           }
-          this.accountTransfer['all'].push(...records)
+          item.type = item.to_address == wallet.address ? 'recipient' : 'transfer'
+
+          item.amount = item.coins.amount / token.decimals + token.alias_name
+          
+          function format(time) {
+            let date = new Date(time)
+            let y = date.getFullYear()
+            let m = (date.getMonth() + 1 + '').padStart(2, '0')
+            let d = (date.getDate() + '').padStart(2, '0')
+            let hh = (date.getHours() + '').padStart(2, '0')
+            let mm = (date.getMinutes() + '').padStart(2, '0')
+            let ss = (date.getSeconds() + '').padStart(2, '0')
+
+            return `${y}年${m}月${d}日 ${hh}:${mm}:${ss}`
+          }
+          
+          item.timestamp = format(item.block_time * 1000)
+          switch (item.type) {
+          case 'recipient':
+            item.icon = require('@/static/img/account/shoukuan2.png')
+            this.accountTransfer['recipient'].push(item)
+            break
+          case 'transfer':
+            item.icon = require('@/static/img/account/fasong2.png')
+            this.accountTransfer['transfer'].push(item)
+            break
+          }
         })
 
-        this.accountTransfer['sender'] = res[0].data.tx_responses
-        this.accountTransfer['recipient'] = res[1].data.tx_responses
-        this.accountTransfer['delegate'] = res[2].data.tx_responses
-
-        if (this.accountTransfer['sender'].length == Number(this.pagination.sender.total)) {
-          this.pagination.sender.nodata = true
-        }
-
-        if (this.accountTransfer['recipient'].length == Number(this.pagination.recipient.total)) {
-          this.pagination.recipient.nodata = true
-        }
-
-        if (this.accountTransfer['delegate'].length == Number(this.pagination.delegate.total)) {
-          this.pagination.delegate.nodata = true
-        }
-
-
-
-        this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-
-
         this.loading = false
-      })
-      // return
-      // this.accountTransfer['sender'] = (await txsQuery([`events=message.module='${'bank'}'`,`events=transfer.sender='${this.address}'`, 'order_by=ORDER_BY_DESC'])).data.tx_responses
-      // this.accountTransfer['recipient'] = (await txsQuery([`events=message.module='${'bank'}'`,`events=transfer.recipient='${this.address}'`, 'order_by=ORDER_BY_DESC'])).data.tx_responses
-      // this.accountTransfer['delegate'] = (await txsQuery([`events=message.module='${'staking'}'`,`events=message.sender='${this.address}'`, 'order_by=ORDER_BY_DESC'])).data.tx_responses
-      // const list = ['recipient', 'sender', 'delegate']
-      // list.forEach(type => {
-      //   for (let i = 0, len = this.accountTransfer[type].length; i < len; i++) {
-      //     const item = this.accountTransfer[type][i]
-      //     item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.rate + mainCoin.alias_name
-      //     item.amount = 0
-      //     item.memo = item.tx.body.memo
-      //     item.from_address = item.tx.body.messages[0].from_address
-      //     item.to_address = item.tx.body.messages[0].to_address
-      //     item.delegator_address = item.tx.body.messages[0].delegator_address
-      //     item.validator_address = item.tx.body.messages[0].validator_address
-      //     item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
-      //     item.tx.body.messages.forEach(cur => {
-      //       if (cur.amount) {
-      //         if (Array.isArray(cur.amount)) {
-      //           item.amount += Number(cur.amount[0].amount)
-      //         } else {
-      //           item.amount += Number(cur.amount.amount)
-      //         }
-      //       }
-      //     })
-      //     item.amount = item.amount / mainCoin.rate + mainCoin.alias_name
-      //     switch (type) {
-      //     case 'recipient':
-      //       item.icon = require('@/static/img/account/shoukuan2.png')
-      //       break
-      //     case 'sender':
-      //       item.icon = require(
-      //         '@/static/img/account/fasong2.png')
-      //       break
-      //     case 'delegate':
-      //       item.icon = require(
-      //         '@/static/img/account/weituo2.png')
-      //       break
-      //     }
-      //   }
-      // })
-      // // #ifdef H5
-      // console.log(this.accountTransfer)
-      // // #endif
-      // list.forEach(type => {
-      //   this.accountTransfer[type].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      // })
-      // this.accountTransfer['all'] = [...this.accountTransfer['sender'], ...this.accountTransfer['recipient'], ...this.accountTransfer['delegate']]
-      // this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      // this.loading = false
+
+      }
     },
     setLockAmount({
       result
@@ -375,98 +248,86 @@ export default {
       this.lockAmountLoading = false
       this.lockAmount = lock
     },
-    async loadMore(type) {
-      if (type == 'all' || this.pagination[type].loading || this.pagination[type].nodata) return
-      this.pagination[type].loading = true
-      this.pagination[type].page += 1
-      let result
-      try {
-        switch (type) {
-        case 'sender':
-          result = (await txsQuery([`events=message.module='${'bank'}'`,
-            `events=transfer.sender='${this.address}'`,
-            'order_by=ORDER_BY_DESC',
-            `pagination.offset=${this.pagination[type].page * this.pagination[type].size}`,
-            `pagination.limit=${this.pagination[type].size}`
-          ])).data.tx_responses
-          break
-        case 'recipient':
-          result = (await txsQuery([`events=message.module='${'bank'}'`,
-            `events=transfer.recipient='${this.address}'`, 'order_by=ORDER_BY_DESC',
-            `pagination.offset=${this.pagination[type].page * this.pagination[type].size}`,
-            `pagination.limit=${this.pagination[type].size}`
-          ])).data.tx_responses
-          break
-        case 'delegate':
-          result = (await txsQuery([`events=message.module='${'staking'}'`,
-            `events=message.sender='${this.address}'`, 'order_by=ORDER_BY_DESC',
-            `pagination.offset=${this.pagination[type].page * this.pagination[type].size}`,
-            `pagination.limit=${this.pagination[type].size}`
-          ])).data.tx_responses
-          break
-        }
+    nextPage() {
+      this.pagination.page += 1
+      this.pagination.loading = true
+      this.callRenderLoadMore++
+    },
+    async loadMore({
+      res,
+      token
+    }) {
+      if (res.viewing_key_error || res.parse_err) {
+        console.log('出现了预期之外的错误', res.viewing_key_error)
+      } else {
+        let wallet = this.$cache.get('_currentWallet')
+        let result = res.transaction_history.txs.map(item => {
+          for (let val of Object.values(item.action)) {
+            item.to_address = val.recipient
+            item.from_address = val.from
+            item.sender = val.sender
+          }
+          item.type = item.to_address == wallet.address ? 'recipient' : 'transfer'
 
-        for (let i = 0, len = result.length; i < len; i++) {
-          const item = result[i]
-          item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.rate + mainCoin.alias_name
-          item.amount = 0
-          item.memo = item.tx.body.memo
-          item.from_address = item.tx.body.messages[0].from_address
-          item.to_address = item.tx.body.messages[0].to_address
-          item.delegator_address = item.tx.body.messages[0].delegator_address
-          item.validator_address = item.tx.body.messages[0].validator_address
-          item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
-          item.tx.body.messages.forEach(cur => {
-            if (cur.amount) {
-              if (Array.isArray(cur.amount)) {
-                item.amount += Number(cur.amount[0].amount)
-              } else {
-                item.amount += Number(cur.amount.amount)
-              }
-            }
-          })
-          item.amount = item.amount / mainCoin.rate + mainCoin.alias_name
-          switch (type) {
+          item.amount = item.coins.amount / token.decimals + token.alias_name
+          function format(time) {
+            let date = new Date(time)
+            let y = date.getFullYear()
+            let m = (date.getMonth() + 1 + '').padStart(2, '0')
+            let d = (date.getDate() + '').padStart(2, '0')
+            let hh = (date.getHours() + '').padStart(2, '0')
+            let mm = (date.getMinutes() + '').padStart(2, '0')
+            let ss = (date.getSeconds() + '').padStart(2, '0')
+          
+            return `${y}年${m}月${d}日 ${hh}:${mm}:${ss}`
+          }
+          
+          item.timestamp = format(item.block_time * 1000)
+          switch (item.type) {
           case 'recipient':
             item.icon = require('@/static/img/account/shoukuan2.png')
+            this.accountTransfer['recipient'].push(item)
             break
-          case 'sender':
-            item.icon = require(
-              '@/static/img/account/fasong2.png')
-            break
-          case 'delegate':
-            item.icon = require(
-              '@/static/img/account/weituo2.png')
+          case 'transfer':
+            item.icon = require('@/static/img/account/fasong2.png')
+            this.accountTransfer['transfer'].push(item)
             break
           }
-        }
 
-        this.accountTransfer[type].push(...result)
+          return item
+        })
+
         this.accountTransfer['all'].push(...result)
-        if (Number(this.pagination[type].total) == this.accountTransfer[type].length) this.pagination[type].nodata =
-            true
-        this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-
-      } catch {
-        this.pagination[type].nodata = true
+        this.pagination.loading = false
+        if (this.accountTransfer['all'].length >= this.pagination.total) {
+          this.pagination.nodata = true
+        }
       }
-
-
-
-
-      this.$nextTick(() => {
-        this.pagination[type].loading = false
-      })
-
-
     },
     jumpDetails(hash) {
       uni.navigateTo({
         url: `./transactionDetails?transactionHash=${hash}`
       })
     },
-    async queryHash() {
-      const res = await queryAccountHash('034ADCCBB782E26DB4FCAA5715CFF96E1B4576C6646E61019A25D890440B09FC')
+    updateCoinList(coin) {
+      const wallet = this.$cache.get('_currentWallet')
+      let coinList = wallet.coinList
+      let coinIndex = wallet.coinList.findIndex(item => item.ID == coin.ID)
+      coinList.splice(coinIndex, 1, coin)
+      wallet.coinList = coinList
+      this.$cache.set('_currentWallet', wallet, 0)
+      this.updateWalletList(wallet)
+    },
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.unshift(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
     },
     switchTabs(e) {
       const {
@@ -485,45 +346,32 @@ export default {
     },
     toSend(url, params) {
       uni.navigateTo({
-        url: `${url}?token=${JSON.stringify(params)}`,
+        url: `${url}?tokenID=${this.token.ID}`,
         events: {
           addRecordToSendList: (data) => {
-            data.from_address = data.tx.body.messages[0].value.fromAddress
-            data.to_address = data.tx.body.messages[0].value.toAddress
-            data.amount = 0
-            data.tx.body.messages.forEach(cur => {
-              if (cur.value.amount) {
-                if (Array.isArray(cur.value.amount)) {
-                  data.amount += Number(cur.value.amount[0].amount)
-                } else {
-                  data.amount += Number(cur.value.amount.amount)
-                }
-              }
-            })
 
-            mainCoin.rate && (data.amount = data.amount / mainCoin.rate)
-            data.amount += mainCoin.alias_name
-
-            data.icon = require(
-              '@/static/img/account/fasong2.png')
-
-            data.timestamp = data.timestamp.replace(/T|Z/g, ' ')
-
+            switch (data.type) {
+            case 'recipient':
+              data.icon = require('@/static/img/account/shoukuan2.png')
+              this.accountTransfer['recipient'].unshift(data)
+              break
+            case 'transfer':
+              data.icon = require('@/static/img/account/fasong2.png')
+              this.accountTransfer['transfer'].unshift(data)
+              break
+            }
 
             this.accountTransfer['all'].unshift(data)
 
-            this.accountTransfer['sender'].unshift(data)
-
             this.$forceUpdate()
 
-            console.log('添加记录数据', data)
           }
         }
       })
     },
     toTokenDetail() {
       uni.navigateTo({
-        url: `/pages/account/send/tokenInformation?token=${JSON.stringify(this.token)}`
+        url: `/pages/account/send/tokenInformation?tokenID=${this.token.ID}`
       })
     },
     toRecordDetail(record) {
@@ -534,11 +382,11 @@ export default {
     toViewKey() {
       if (this.token.view_key == '') {
         uni.navigateTo({
-          url: './settingViewKey'
+          url: `./settingViewKey?tokenID=${this.token.ID}`
         })
       } else {
         uni.navigateTo({
-          url: './checkViewKey'
+          url: `./checkViewKey?tokenID=${this.token.ID}`
         })
       }
     }
@@ -551,34 +399,135 @@ export default {
       if (float) {
         float = float.substr(0, 2)
       }
-      return int + '.' + float
+      return int + '.' + (float || '00')
     }
   }
 }
 </script>
 <script lang="renderjs" module="render">
   import {
-    getDelegationRecord,
-    getUnbondingDelegationRecord
+    getOtherTransationHistory,
+    getTokenDecimals,
+    getCodeHash,
+    getOtherBalance,
   } from '@/utils/secretjs/SDK.js'
   import renderUtils from '@/utils/render.base.js'
   export default {
+    data() {
+      return {
+        pagination: {
+          page: 1,
+          page_size: 10
+        },
+        balanceLoading: true,
+        token: {},
+        wallet: {},
+      }
+    },
     methods: {
-      getAddress(address) {
-        if (address === '') return
-        this.getDelegationRecord(address)
-        this.getUnbondingDelegationRecord(address)
+      async getAddress(token) {
+        if (!token || !token.view_key) {
+        } else {
+          token = JSON.parse(JSON.stringify(token))
+          let wallet;
+          let tokenInfo
+          //#ifdef APP-PLUS
+          wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+          //#endif
+
+          //#ifndef APP-PLUS 
+          wallet = uni.getStorageSync('_currentWallet').data
+          //#endif
+          this.token = token
+          this.wallet = wallet
+          if (!token.decimals) {
+            tokenInfo = await getTokenDecimals({
+              contract: {
+                address: token.contract_address,
+                codeHash: token.codeHash
+              }
+            })
+            token.decimals = Math.pow(10, tokenInfo.token_info.decimals) || 1
+          }
+          this.getTransationHistory(token, wallet)
+          if (token.loadingBalance) {
+            this.getTokenBalance(token, wallet)
+          }
+        }
       },
-      async getDelegationRecord(address) {
-        const result = await getDelegationRecord(address)
-        renderUtils.runMethod(this._$id, 'setLockAmount', {
-          result
-        }, this)
+      async getTokenBalance(token, wallet) {
+        let balance = 0
+        if (!token.codeHash) {
+          try {
+            let codeHash = await getCodeHash(token.contract_address)
+            token.codeHash = codeHash
+            balance = await this.getOtherTokenBalance(token, wallet)
+          } catch (e) {
+            let msg = '获取codeHash失败，请检查合约地址是否正确'
+            console.log('获取codeHash失败，请检查合约地址是否正确');
+            // renderUtils.runMethod(this._$id, 'showError', msg, this)
+          }
+        } else {
+          balance = await this.getOtherTokenBalance(token, wallet)
+        }
+
+        if (token.decimals) balance = balance / token.decimals
+        token.balance = balance
+        token.loadingBalance = false
+        this.balanceLoading && renderUtils.runMethod(this._$id, 'updateCoinList', token, this)
       },
-      async getUnbondingDelegationRecord(address) {
-        // const result = await getUnbondingDelegationRecord(address)
-        // console.log('getUnbondingDelegationRecord', result.unbondingResponses);
+      setBalanceLoading(newVal) {
+        if (newVal == 0) return
+        this.balanceLoading = false
       },
+      async getOtherTokenBalance(token, wallet) {
+        let balance = 0
+        let res = await getOtherBalance({
+          address: wallet.address,
+          contract: {
+            address: token.contract_address,
+            codeHash: token.codeHash
+          },
+          auth: {
+            key: token.view_key
+          }
+        })
+        if (res.viewing_key_error) {
+          token.showWarn = true
+        } else {
+          balance = res.balance.amount
+          token.showWarn = false
+        }
+        return balance
+      },
+      async getTransationHistory(token, wallet, isLoadMore) {
+        const res = await getOtherTransationHistory({
+          contract: {
+            address: token.contract_address,
+            codeHash: token.codeHash
+          },
+          address: wallet.address,
+          auth: {
+            key: token.view_key
+          }
+        }, this.pagination, token)
+        if (isLoadMore) {
+          renderUtils.runMethod(this._$id, 'loadMore', {
+            res,
+            token
+          }, this)
+        } else {
+          renderUtils.runMethod(this._$id, 'init', {
+            res,
+            token
+          }, this)
+        }
+      },
+      more(newVal) {
+        if (newVal == 1) return;
+        this.pagination.page = newVal
+        this.getTransationHistory(this.token, this.wallet, true)
+      }
     }
   }
 </script>
@@ -604,7 +553,7 @@ export default {
   }
 
   .main_token {
-    padding: 32rpx;
+    padding: 32rpx 32rpx 0;
 
     .coinbox-item {
       display: flex;
@@ -842,13 +791,94 @@ export default {
     font-size: 28rpx;
     color: #2C365A;
   }
-  
+
   .view-key {
-      font-size: 11rpx !important;
-      color: #2C365A;
-      padding: 0 !important;
-    }
-    .view-key-text {
+    font-size: 24rpx !important;
+    color: #2C365A;
+    line-height: 32rpx !important;
+    padding: 0 !important;
+  }
+
+  .view-key-text {
+    width: 100%;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .TokenVolumn {
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       width: 100%;
+      position: relative;
+
+      .left {
+        padding-right: 24rpx;
+      }
+
+      .center {
+        flex: 1;
+
+        .title {
+          font-weight: 600;
+          font-size: 28rpx;
+          color: #2C365A;
+          letter-spacing: 0;
+          line-height: 28rpx;
+        }
+
+        .address {
+          height: 24rpx;
+          font-weight: 400;
+          font-size: 24rpx;
+          color: #8397B1;
+          letter-spacing: 0;
+          line-height: 24rpx;
+          margin-top: 16rpx;
+        }
+      }
+
+      .right {
+        height: 72rpx;
+        font-size: 28rpx;
+        font-family: DIN-Medium;
+        font-weight: 500;
+        color: #2C365A;
+        letter-spacing: 0;
+        line-height: 28rpx;
+        text-align: right;
+      }
     }
+  }
+
+  .no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 28rpx;
+    color: #8397B1;
+
+    .no-img {
+      width: 240rpx;
+      height: 240rpx;
+      margin-bottom: 32rpx;
+    }
+
+    .btn {
+      color: rgba(30, 94, 255, 1);
+    }
+
+  }
 </style>

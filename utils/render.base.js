@@ -9,7 +9,6 @@ let runMethod = (vmId, methodName, params, that) => {
   if (that && methodName in that) {
     that[methodName](params)
   }
-  
   UniViewJSBridge.publishHandler('onWxsInvokeCallMethod', {
     cid: vmId,
     method: methodName,

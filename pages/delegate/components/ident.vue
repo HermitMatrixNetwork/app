@@ -9,7 +9,7 @@
 			</view>
 		</view>
 		<view class="my-delegate">
-     <u-tabs
+    <u-tabs
         class="tabs"
         :list="statusList"
         lineColor="#1E5EFF"
@@ -21,16 +21,15 @@
         :itemStyle="itemStyle"
       >
       </u-tabs>
-      
-      <view class="sort-list">
+     <view class="sort-list">
         <view class="item" @click="sort('总委托数')">
             <text>总委托数</text>
-            <view class="icon">
-              <image :class="[sortRule]" v-if="sortTarget == '总委托数'" src="/static/img/delegate/sort.png"></image>
+           <view class="icon">
+              <image :class="sortRule" v-if="sortTarget == '总委托数'" src="/static/img/delegate/sort.png"></image>
               <image v-else src="/static/img/delegate/unsort.png"></image>
             </view>
         </view>
-        <view class="item" @click="sort('活跃度')">
+       <view class="item" @click="sort('活跃度')">
           <text>活跃度</text>
           <view class="icon">
             <image :class="[sortRule]" v-if="sortTarget == '活跃度'" src="/static/img/delegate/sort.png"></image>
@@ -218,7 +217,7 @@ export default {
   }
 	.ident {
 		// width: 686rpx;
-		height: 280rpx;
+		// height: 280rpx;
 	}
 
 	.header-box,

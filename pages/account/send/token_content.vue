@@ -1,6 +1,6 @@
 <template>
   <view class="token_content">
-    <custom-header :title="token.alias_name">
+    <custom-header tabUrl="/pages/account/index" :title="token.alias_name">
       <template #right>
         <text class="customIcon" @click="toTokenDetail()">详情</text>
       </template>
@@ -11,7 +11,9 @@
         :tokenAddress="address | sliceAddress(6, -16) ">
         <template #right>
           <view style="padding-right: 16rpx;" class="token_price">
-            <view class="balance" v-if="token.balance">{{ token.balance | formatBalance }}</view>
+            <!-- <view class="balance" v-if="token.balance === undefined">0.00</view> -->
+            <custom-loading v-if="loadingBalace"></custom-loading>
+            <view class="balance" v-else>{{ token.balance | formatBalance }}</view>
             <view>
               <text class="symbol">$</text>
               <text>0.00000</text>
@@ -24,7 +26,8 @@
         <view class="available">
           <text>可用</text>
           <view class="quantity">
-            <view class="top" v-if="token.balance">{{ token.balance | formatBalance }}</view>
+            <custom-loading v-if="loadingBalace"></custom-loading>
+            <view class="top" v-else>{{ token.balance | formatBalance }}</view>
             <view class="bottom">
               <text class="symbol">$</text>
               <text>0.00000</text>
@@ -59,7 +62,7 @@
           <scroll-view scroll-y class="scroll-container" style="height: 670rpx">
             <template v-if="accountTransfer[item.type].length">
               <view class="list-item" v-for="(record, index) in accountTransfer[item.type]" :key="index"
-                @click.native="toRecordDetail(record)">
+                @click="toRecordDetail(record)">
                 <view class="container">
                   <view class="logo">
                     <image :src="record.icon"></image>
@@ -202,24 +205,38 @@ export default {
         }
       },
       loading: true,
+      loadingBalace: true,
       lockAmountLoading: true,
       callRenderDelegateRecord: '',
       lockAmount: 0
     }
   },
   async onLoad(options) {
-    this.token = JSON.parse(options.token)
+    this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
     this.callRenderDelegateRecord = this.address
+    const wallet = this.$cache.get('_currentWallet')
+    if (this.token.balance === undefined) {
+      this.timer = setInterval(() => {
+        if (wallet.coinList[0].balance === undefined) return
+        this.token.balance = wallet.coinList[0].balance
+        this.loadingBalace = false
+        clearInterval(this.timer)
+      }, 1000)
+    } else {
+      this.loadingBalace = false
+    }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   },
   onShow() {
-    this.token = this.$cache.get('_currentWallet').coinList.find(item => item.alias_name == this.token.alias_name)
+    this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == this.token.ID)
   },
   created() {
     this.init()
   },
   methods: {
     async init() {
-      // to del
       await Promise.all([
         txsQuery([`events=message.module='${'bank'}'`, `events=transfer.sender='${this.address}'`,
           'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.sender.page}`,
@@ -245,7 +262,7 @@ export default {
           const records = result.data.tx_responses
           for (let i = 0, len = records.length; i < len; i++) {
             const item = records[i]
-            item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.rate + mainCoin.alias_name
+            item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.decimals + mainCoin.alias_name
             item.amount = 0
             item.memo = item.tx.body.memo
             item.from_address = item.tx.body.messages[0].from_address
@@ -262,7 +279,7 @@ export default {
                 }
               }
             })
-            item.amount = item.amount / mainCoin.rate + mainCoin.alias_name
+            item.amount = item.amount / mainCoin.decimals + mainCoin.alias_name
             switch (type) {
             case 1:
               item.icon = require('@/static/img/account/shoukuan2.png')
@@ -303,56 +320,6 @@ export default {
 
         this.loading = false
       })
-      // return
-      // this.accountTransfer['sender'] = (await txsQuery([`events=message.module='${'bank'}'`,`events=transfer.sender='${this.address}'`, 'order_by=ORDER_BY_DESC'])).data.tx_responses
-      // this.accountTransfer['recipient'] = (await txsQuery([`events=message.module='${'bank'}'`,`events=transfer.recipient='${this.address}'`, 'order_by=ORDER_BY_DESC'])).data.tx_responses
-      // this.accountTransfer['delegate'] = (await txsQuery([`events=message.module='${'staking'}'`,`events=message.sender='${this.address}'`, 'order_by=ORDER_BY_DESC'])).data.tx_responses
-      // const list = ['recipient', 'sender', 'delegate']
-      // list.forEach(type => {
-      //   for (let i = 0, len = this.accountTransfer[type].length; i < len; i++) {
-      //     const item = this.accountTransfer[type][i]
-      //     item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.rate + mainCoin.alias_name
-      //     item.amount = 0
-      //     item.memo = item.tx.body.memo
-      //     item.from_address = item.tx.body.messages[0].from_address
-      //     item.to_address = item.tx.body.messages[0].to_address
-      //     item.delegator_address = item.tx.body.messages[0].delegator_address
-      //     item.validator_address = item.tx.body.messages[0].validator_address
-      //     item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
-      //     item.tx.body.messages.forEach(cur => {
-      //       if (cur.amount) {
-      //         if (Array.isArray(cur.amount)) {
-      //           item.amount += Number(cur.amount[0].amount)
-      //         } else {
-      //           item.amount += Number(cur.amount.amount)
-      //         }
-      //       }
-      //     })
-      //     item.amount = item.amount / mainCoin.rate + mainCoin.alias_name
-      //     switch (type) {
-      //     case 'recipient':
-      //       item.icon = require('@/static/img/account/shoukuan2.png')
-      //       break
-      //     case 'sender':
-      //       item.icon = require(
-      //         '@/static/img/account/fasong2.png')
-      //       break
-      //     case 'delegate':
-      //       item.icon = require(
-      //         '@/static/img/account/weituo2.png')
-      //       break
-      //     }
-      //   }
-      // })
-      // // #ifdef H5
-      // console.log(this.accountTransfer)
-      // // #endif
-      // list.forEach(type => {
-      //   this.accountTransfer[type].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      // })
-      // this.accountTransfer['all'] = [...this.accountTransfer['sender'], ...this.accountTransfer['recipient'], ...this.accountTransfer['delegate']]
-      // this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      // this.loading = false
     },
     setLockAmount({
       result
@@ -362,7 +329,7 @@ export default {
         lock += Number(item.balance.amount)
       })
       this.lockAmountLoading = false
-      this.lockAmount = lock
+      this.lockAmount = lock / mainCoin.decimals
     },
     async loadMore(type) {
       if (type == 'all' || this.pagination[type].loading || this.pagination[type].nodata) return
@@ -397,7 +364,7 @@ export default {
 
         for (let i = 0, len = result.length; i < len; i++) {
           const item = result[i]
-          item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.rate + mainCoin.alias_name
+          item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.decimals + mainCoin.alias_name
           item.amount = 0
           item.memo = item.tx.body.memo
           item.from_address = item.tx.body.messages[0].from_address
@@ -414,7 +381,7 @@ export default {
               }
             }
           })
-          item.amount = item.amount / mainCoin.rate + mainCoin.alias_name
+          item.amount = item.amount / mainCoin.decimals + mainCoin.alias_name
           switch (type) {
           case 'recipient':
             item.icon = require('@/static/img/account/shoukuan2.png')
@@ -473,7 +440,7 @@ export default {
     },
     toSend(url, params) {
       uni.navigateTo({
-        url: `${url}?token=${JSON.stringify(params)}`,
+        url: `${url}?tokenID=${this.token.ID}`,
         events: {
           addRecordToSendList: (data) => {
             data.from_address = data.tx.body.messages[0].value.fromAddress
@@ -489,7 +456,7 @@ export default {
               }
             })
 
-            mainCoin.rate && (data.amount = data.amount / mainCoin.rate)
+            mainCoin.decimals && (data.amount = data.amount / mainCoin.decimals)
             data.amount += mainCoin.alias_name
 
             data.icon = require(
@@ -503,15 +470,13 @@ export default {
             this.accountTransfer['sender'].unshift(data)
 
             this.$forceUpdate()
-
-            console.log('添加记录数据', data)
           }
         }
       })
     },
     toTokenDetail() {
       uni.navigateTo({
-        url: `/pages/account/send/tokenInformation?token=${JSON.stringify(this.token)}`
+        url: `/pages/account/send/tokenInformation?tokenID=${this.token.ID}`
       })
     },
     toRecordDetail(record) {

@@ -74,11 +74,10 @@ export default {
     }
   },
   created() {
-    console.log(this.tokenAddressList)
     this.currentWallet = this.$cache.get('_currentWallet')
     this.tokenList = this.currentWallet.coinList
     if (this.tokenList.length) {
-      this.tokenList.forEach(item => this.tokenAddressList.push(item.contract_address))
+      this.tokenList.forEach(item => item.alias_name !== mainCoin.alias_name && this.tokenAddressList.push(item.contract_address))
     }
   },
   methods: {
@@ -106,6 +105,7 @@ export default {
     },
     addToken(token) {
       token.view_key = ''
+      token.loadingBalance = true
       this.tokenList.push(token)
       
       this.tokenAddressList.push(token.contract_address)
@@ -114,13 +114,11 @@ export default {
       this.updateWalletList(this.currentWallet)
     },
     deleteToken(token) {
-      console.log(token)
-      console.log(this.tokenAddressList)
-      // this.tokenAddressList = this.tokenAddressList.filter(item => item.contract_address !== token.contract_address)
-      // this.tokenList = this.tokenList.filter(item => item.contract_address !== token.contract_address)
-      // this.currentWallet.coinList = this.tokenList
-      // this.$cache.set('_currentWallet', this.currentWallet, 0)
-      // this.updateWalletList(this.currentWallet)
+      this.tokenAddressList = this.tokenAddressList.filter(item => item !== token.contract_address)
+      this.tokenList = this.tokenList.filter(item => item.contract_address !== token.contract_address)
+      this.currentWallet.coinList = this.tokenList
+      this.$cache.set('_currentWallet', this.currentWallet, 0)
+      this.updateWalletList(this.currentWallet)
     },
     updateWalletList(wallet) {
       const walletList = this.$cache.get('_walletList') || []

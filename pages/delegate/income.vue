@@ -131,6 +131,8 @@
 </template>
 
 <script>
+  
+  // https://secretjs.scrt.network/interfaces/MsgWithdrawDelegatorRewardParams
 import InputTitle from '@/pages/account/send/components/Input-title.vue'
 export default {
   components: {

@@ -2,7 +2,7 @@
 	<view class="TokenVolumn" :style="tokenColumnStyle">
 		<view class="item">
 			<view class="left">
-        <image :src="tokenIcon" style="width: 72rpx; height: 72rpx"></image>
+        <image :src="tokenIcon.replace(/\s|\n|\r/g, '')" style="width: 72rpx; height: 72rpx" />
 			</view>
 			<view class="center">
 				<view class="title">{{tokenName}}</view>
@@ -10,6 +10,9 @@
 					{{ tokenAddress | sliceAddress }}
 				</view>
 			</view>
+      <view class="tishi" v-if="showWarn">
+        <image src="/static/img/tishi-red.png" style="width: 40rpx; height: 40rpx;"></image>
+      </view>
 			<view class="right">
 				<slot name="right"></slot>
 			</view>
@@ -34,6 +37,10 @@ export default {
       // default: require('@/static/img/account/uGHM.png')
       default: ''
     },
+    showWarn: {
+      type: Boolean,
+      default: false,
+    },
     tokenColumnStyle: Object
   },
   filters: {
@@ -45,6 +52,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .tishi {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 	.TokenVolumn {
 		.item {
 			display: flex;

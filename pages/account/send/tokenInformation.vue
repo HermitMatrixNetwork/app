@@ -1,6 +1,6 @@
 <template>
   <view class="token-information">
-    <custom-header class="header" :title="'GHM'"></custom-header>
+    <custom-header class="header" :title="describe.alias_name"></custom-header>
 
     <view class="basic">
       <view class="title">基本信息</view>
@@ -9,7 +9,7 @@
           <text class="label">{{language[item]}} :</text>
           <view class="value">
             <text>{{ describe[item] || '暂无'}}</text>
-            <image v-if="['official_website', 'full_name'].includes(item)" src="/static/img/account/copy2.png"></image>
+            <image v-if="['official', 'full_name'].includes(item) &&  describe[item]" src="/static/img/account/copy2.png" @click="copy(describe[item])"></image>
           </view>
         </view>
       </view>
@@ -21,7 +21,8 @@
         发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行......
       </text>
     </view>
-
+    
+    <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
@@ -33,12 +34,26 @@ export default {
     return {
       describe: mainCoin.describe,
       language: language[this.$cache.get('_language')],
-      showLabelList: ['alias_name', 'full_name', 'official_website', 'contract_address']
+      showLabelList: ['alias_name', 'full_name', 'official', 'contract_address']
     }
   },
   onLoad(options) {
-    if (options.token)
-      this.describe = JSON.parse(options.token)
+    if (options.tokenID)
+      this.describe = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
+  },
+  methods: {
+    copy(val) {
+      uni.setClipboardData({
+        data: val,
+        showToast: false,
+        success: () => {
+          this.$refs.notify.show('error', '复制成功')
+        },
+        fail: () => {
+          this.$refs.notify.show('error', '复制失败')
+        }
+      })
+    }
   }
 }
 </script>
@@ -103,6 +118,8 @@ export default {
     
     .label {
       color: #8397B1;
+      flex: 1 0 auto;
+      margin-right: 20rpx;
     }
   }
 
@@ -111,6 +128,7 @@ export default {
     align-items: center;
     font-size: 24rpx;
     color: #2C365A;
+    word-break: break-word;
 
     text {
       margin-right: 12rpx;

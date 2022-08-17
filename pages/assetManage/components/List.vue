@@ -43,7 +43,7 @@ export default {
     let currentWallte = this.$cache.get('_currentWallet')
     let coinList = currentWallte.coinList
     coinList.forEach(item => {
-      this.searchList.push(item.contract_address)
+      if (item.contract_address) this.searchList.push(item.contract_address)
     })
   },
   methods: {
@@ -53,6 +53,7 @@ export default {
       let coinList = currentWallte.coinList || []
       if (type == 'add') {
         item.view_key = ''
+        item.loadingBalance = true
         coinList.push(item)
         this.searchList.push(item.contract_address)
       } else {
@@ -61,26 +62,15 @@ export default {
         coinList.splice(index, 1)
         this.searchList.splice(searchListIndex, 1)
       }
+      
+      this.$emit('change', coinList)
+      
 
-      currentWallte.coinList = coinList
-      this.$cache.set('_currentWallet', currentWallte, 0)
-      this.updateWalletList(currentWallte)
       // uni.showToast({
       // 	icon: 'none',
       // 	title: '添加成功'
       // })
-    },
-    updateWalletList(wallet) {
-      const walletList = this.$cache.get('_walletList') || []
-      if (!wallet) return false
-      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
-      if (walletIndex > -1) {
-        walletList.splice(walletIndex, 1)
-      }
-      walletList.unshift(wallet)
-      this.$cache.set('_walletList', walletList, 0)
-      return true
-    },
+    }
   },
   filters: {
     sliceAddress

@@ -441,7 +441,16 @@
       }
 
     }
-  ],
+      ,{
+            "path" : "components/custom-notify/custom-notify",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
   "globalStyle": {
     "navigationStyle": "custom"
   },

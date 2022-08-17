@@ -5,7 +5,7 @@
       <view class="header">
         <headerItem :title="language.totalDelegate" :value="allData.total" />
         <headerItem :title="language.receiveRewards" />
-        <headerItem :title="language.rewardsReceived" />
+        <headerItem :title="language.rewardsReceived" :value="allData.totalReward" />
         <headerItem :title="language.unlocking" />
       </view>
     </view>
@@ -43,11 +43,11 @@
               <view class="other">{{item.validator.operatorAddress|sliceAddress(7, -8)}}</view>
             </view>
             <view class="center">
-              0.00023 GHM
+              {{ item.rewards.amount / mainCoin.decimals }} {{ mainCoin.alias_name }}
             </view>
             <view class="right">
-              <view class="name">{{item.balance.amount}}</view>
-              <view class="other">2022.06.28 11:30:30</view>
+              <view class="name">{{item.balance.amount / mainCoin.decimals }}</view>
+              <view class="other">{{ item.timestamp }}</view>
             </view>
           </view>
         </view>
@@ -58,48 +58,58 @@
 </template>
 
 <script>
-  import language from '../language'
-  import headerItem from './header-item'
-  import {
+import language from '../language'
+import headerItem from './header-item'
+import mainCoin from '@/config/index.js'
+import { txsQuery } from '@/api/cosmos.js'
+import {
+  sliceAddress
+} from '@/utils/filters.js'
+export default {
+  components: {
+    headerItem
+  },
+  filters: {
     sliceAddress
-  } from '@/utils/filters.js'
-  export default {
-    components: {
-      headerItem
+  },
+  data() {
+    return {
+      language: language[this.$cache.get('_language')],
+      address: '',
+      list: [],
+      allData: {},
+      currentWallet: this.$cache.get('_currentWallet'),
+      loading: true,
+      mainCoin
+    }
+  },
+  mounted() {
+    this.address = this.currentWallet.address
+  },
+  methods: {
+    goTo(url) {
+      uni.navigateTo({
+        url
+      })
     },
-    filters: {
-      sliceAddress
-    },
-    data() {
-      return {
-        language: language[this.$cache.get('_language')],
-        address: '',
-        list: [],
-        allData: {},
-        currentWallet: this.$cache.get('_currentWallet'),
-        loading: true
+    async initData(data) {
+      this.allData = data
+      let {
+        list
+      } = data
+      for (let i = 0, len = list.length; i < len; i++) {
+        const item = list[i]
+        const { delegatorAddress, validatorAddress } = item.delegation
+        const res = (await txsQuery([`events=message.sender='${this.address}'`, `events=delegate.validator='${validatorAddress}'`])).data.tx_responses
+        item.timestamp = res.pop().timestamp.replace(/T|Z/g, ' ')
       }
-    },
-    mounted() {
-      this.address = this.currentWallet.address
-    },
-    methods: {
-      goTo(url) {
-        uni.navigateTo({
-          url
-        })
-      },
-      initData(data) {
-        this.allData = data
-        let {
-          list
-        } = data
-        this.list = list
-        this.loading = false
-        console.log('allData', this.allData)
-      }
+      console.log(1)
+      this.list = list
+      this.loading = false
+      console.log('allData', this.allData)
     }
   }
+}
 </script>
 <script lang="renderjs" module="render">
   import {
@@ -109,6 +119,7 @@
   } from '@/utils/secretjs/SDK'
   import renderUtils from '@/utils/render.base.js'
   import mixin from '../mixins/render.js'
+  import mainCoin from '@/config/index.js'
   export default {
     mixins: [mixin],
     methods: {
@@ -117,12 +128,14 @@
         // let totalRewards = await getDelegationTotalRewards(address)
         // console.log('totalRewards',totalRewards)
         let list = await this.getLists(address)
-        let total = 0
+        let total = 0, totalReward = 0
         list.forEach(item => {
           total += Number(item.balance.amount)
+          totalReward += Number(item.rewards.amount)
         })
         let data = {}
-        data.total = total
+        data.total = total / mainCoin.decimals
+        data.totalReward = totalReward / mainCoin.decimals
         data.list = list
         renderUtils.runMethod(this._$id, 'initData', data, this)
 

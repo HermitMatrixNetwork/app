@@ -105,6 +105,18 @@
         </view>
       </template>
     </u-modal>
+    
+    <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
+      <view class="modalContent">
+        <u-icon name="info-circle" size="64rpx" color="#FFA033" />
+        <view class="modal-title">移除提示</view>
+        <text class="modal-content">钱包移除后将无法恢复，请务必先完成备份再操作，否则资产丢失无法找回！</text>
+        <view class="con_btn">
+          <button @click="aa = false" class="con_btn_cancel">取消</button>
+          <button @click="conConfim" class="con_btn_confirm" style="background-color: #002FA7;">确认</button>
+        </view>
+      </view>
+    </u-modal>
   </view>
 </template>
 
@@ -123,9 +135,14 @@ export default {
       confirmPasswordError: false, // 校验资金密码是否失败
       password: '', // 资金密码
       showPassword: false, // 是否明文显示密码
+      aa: false
     }
   },
   methods: {
+    conConfim() {
+      this.aa = false
+      this.showConfirmPasswordModal = true
+    },
     toResetPassword() {
       uni.redirectTo({
         url: './resetPassword'
@@ -136,7 +153,7 @@ export default {
       if (target === 'editName') {
         this.showEditWalletNameModal = true
       } else {
-        this.showConfirmPasswordModal = true
+        this.aa = true
       }
     },
     cancel(target) {
@@ -426,5 +443,64 @@ export default {
     height: 2rpx;
     background-color: #F4F6F9;
     margin-left: 32rpx;
+  }
+  
+  /deep/ .hintModal {
+    .u-modal {
+    }
+  
+    .u-modal__content {
+      padding: 32rpx;
+      padding-top: 48rpx !important;
+    }
+  
+    .modalContent {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+  
+      .modal-title {
+        font-weight: 600;
+        font-size: 32rpx;
+        color: #2C365A;
+        margin-top: 32rpx;
+      }
+  
+      .modal-content {
+        width: 564rpx;
+        font-size: 28rpx;
+        color: #8397b1;
+        line-height: 42rpx;
+        margin-top: 32rpx;
+        margin-bottom: 48rpx;
+        text-align: center;
+      }
+      
+      .con_btn {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        
+        &_cancel {
+          font-size: 32rpx;
+          color: #8397B1;
+        }
+        
+        &_confirm {
+          font-size: 32rpx;
+          color: #FCFCFD;
+        }
+      }
+      
+      uni-button {
+        margin: 0 !important;
+        width: 272rpx;
+        height: 96rpx;
+        font-size: 32rpx;
+        line-height: 96rpx;
+        border-radius: 16rpx;
+      }
+    }
   }
 </style>

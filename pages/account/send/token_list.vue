@@ -7,7 +7,7 @@
         @click.native="tokenChoose(item)" :tokenColumnStyle="tokenColumnStyle">
         <template #right>
           <view class="right">
-            <view>{{ item.balance }}</view>
+            <view>{{ item.balance || '0.00' }}</view>
             <view>$ 0.00</view>
           </view>
         </template>
