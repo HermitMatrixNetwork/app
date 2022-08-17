@@ -144,7 +144,7 @@ export default {
     margin-bottom: 64rpx;
     margin-top: 64rpx;
     margin-left: 32rpx;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 48rpx;
     color: #2C365A;
     letter-spacing: 0;
@@ -159,7 +159,7 @@ export default {
     &-label {
       height: 28rpx;
       margin-bottom: 24rpx;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 28rpx;
       color: #2C365A;
       letter-spacing: 0;

@@ -1,16 +1,17 @@
 <template>
   <view class="sendPage">
-    <view :updataDelegate="updataDelegate" :change:updataDelegate="render.unDelegate"></view>
+    <view class="mask" v-show="loading"></view>
+    <view :updataDelegate="updataDelegate" :change:updataDelegate="render.delegate"></view>
     <custom-header :title="'确认委托'" :style="titleStyle">
     </custom-header>
-    <view class="border"></view>
+   <view class="top-border"></view>
     <view class="main-top">
       <view class="validator">
         <view class="label">
           <text>验证人名称</text>
         </view>
         <view class="value">
-          <text>ghm63212ABCBA108DDB2Ea21545Ff1515DdC22318</text>
+          <text>{{ delegatorInfo.operatorAddress }}</text>
         </view>
       </view>
       <view class="border"></view>
@@ -22,13 +23,12 @@
               <text>委托数量</text>
             </view>
             <view class="value">
-              <u--input placeholder="请输入委托数量" v-model="sendAmount"></u--input>
+              <u--input type="number" placeholder="请输入委托数量" v-model="formData.amount.amount"></u--input>
             </view>
           </view>
           <view class="other">
             <div class="title">可用余额：</div>
-            <div class="num" v-if="selData">{{selData.balance.amount}} GHM</div>
-            <div class="num" v-else>0 GHM</div>
+            <div class="num">{{ balance }} GHM</div>
           </view>
 <!--          <text v-if="sendAmount>balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text> -->
         </view>
@@ -38,7 +38,7 @@
             <text>Memo</text>
           </view>
           <view class="value">
-            <u--input placeholder="请输入Memo（选填）" v-model="memoValue"></u--input>
+            <u--input placeholder="请输入Memo（选填）" v-model="formData.memo"></u--input>
           </view>
         </view>
       </view>
@@ -75,21 +75,21 @@
           <!-- 取消委托数量 -->
           <view class="transfer_amount">
             <text>取消委托数量</text>
-            <text>{{sendAmount?sendAmount:'0'}}{{tokenName}}</text>
+            <text>{{ formData.amount.amount ? formData.amount.amount:'0' }}{{ mainCoin.alias_name }}</text>
           </view>
 
           <!--Memo-->
           <view class="memo_type">
             <text>Meno</text>
-            <text>transfer</text>
+            <text>{{ formData.memo }}</text>
           </view>
 
           <!--矿工费-->
           <view class="miners_fee">
             <text>矿工费</text>
             <view>
-              <veiw>21000 GWEI*2100 GasPrice</veiw>
-              <veiw class="price">0.000287 GHM</veiw>
+              <view>21000 GWEI*2100 GasPrice</view>
+              <view class="price">0.000287 GHM</view>
             </view>
           </view>
         </view>
@@ -103,30 +103,37 @@
       <view class="modal_main">
         <view class="modal_title">
           密码确认
-          <u-icon :name="require('@/static/img/account/close.png')" size="32rpx" @click="modalPasswordIsShow=false">
-          </u-icon>
+          <u-icon :name="require('static/img/account/close.png')" size="32rpx"
+            @click="modalPasswordIsShow=false"></u-icon>
         </view>
-        <InputTitle :type="'password'" :placeholder="'请输入资金密码'" :inputVal.sync="payPassword"
-          :warningStyleisShow="passwordCheck">
-        </InputTitle>
-        <text v-if="passwordCheck" class="waringPrompt">资金密码错误，请确认后重新输入!</text>
-        <button class="modal_submit" @click="passwordButton">确认</button>
+        <view class="item">
+          <view class="item-input item-input-password">
+            <u-input :password="!passwordEye" v-model="payPassword" placeholder="输入资金密码">
+            </u-input>
+            <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
+              @click="passwordEye = !passwordEye">
+            </u-icon>
+          </view>
+        </view>
+        <text :style="{opacity: passwordCheck ? 1 : 0 }" class="waringPrompt">资金密码错误，请确认后重新输入!</text>
+        <u-button @click="passwordButton" class="pass_confirm">确认</u-button>
       </view>
     </u-modal>
+    
+    <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
 <script>
 import InputTitle from '@/pages/account/send/components/Input-title.vue'
-import mixin from './mixins/index.js'
+import mainCoin from '@/config/index.js'
+import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
-  mixins: [mixin],
   components: {
     InputTitle
   },
   data() {
     return {
-      selData: '', //选择的委托
       confirmData: {},
       updataDelegate: 0, //更新委托
       tokenUrl: '@/static/img/placeholder.jpeg',
@@ -134,9 +141,9 @@ export default {
       inputVal: '',
       balance: 0,
       receiveAddress: this.$cache.get('_currentWallet').address, //接收地址
-      sendAmount: '', //发送金额
-      memoValue: '', //Memo
-      payPassword: '123', //资金密码
+      wallet: this.$cache.get('_currentWallet'),
+      payPassword: '', //资金密码
+      passwordEye: false,
       passwordCheck: false, //密码校验
       submitPopupIsShow: false,
       modalPasswordIsShow: false,
@@ -144,25 +151,50 @@ export default {
       titleStyle: {
         background: '#FFFFFF'
       },
+      delegatorInfo: {},
       //发送金额样式
       sendAmountStyle: {
         fontSize: '28rpx',
         color: '#8397B1',
         marginTop: '0'
       },
+      formData: {
+        amount: {
+          amount: '',
+          denom: 'uGHM'
+        }, //发送金额
+        memo: '',
+        delegatorAddress: '',
+        validatorAddress: ''
+      },
+      mainCoin,
+      loading: false,
     }
   },
   onLoad(value) {
-
-  },
-  onShow() {
-    uni.$on('selList', data => {
-      this.selData = data
-      console.log(data)
-      this.balance = Number(data.balance.amount)
-    })
+    this.balance = this.wallet.coinList[0].balance
+    this.delegatorInfo = JSON.parse(value.data)
+    this.formData.validatorAddress = this.delegatorInfo.operatorAddress
+    this.formData.delegatorAddress = this.userAddress
   },
   methods: {
+    passwordButton() {
+      const decode = WalletCrypto.decode(this.$cache.get('_currentWallet').password)
+      if (this.payPassword != decode) {
+        this.passwordCheck = true
+      } else {
+        this.loading = true
+        this.passwordCheck = false
+        this.updataDelegate = this.formData // 调用render.sendToken
+        uni.showToast({
+          title: '执行中...',
+          icon: 'loading',
+          mask: true,
+          duration: 999999999
+        })
+        this.modalPasswordIsShow = false
+      }
+    },
     chooseAddress() {
       uni.navigateTo({
         url: './adres_book'
@@ -178,44 +210,54 @@ export default {
       this.submitPopupIsShow = false
     },
     transferConfirm() { //转账确认
-      const {
-        receiveAddress,
-        sendAmount,
-        memoValue,
-        balance
-      } = this.$data
-      if (!(receiveAddress && sendAmount && memoValue)) {
-        return console.log('输入不能为空')
-      }
-      if (sendAmount > balance || balance == 0) {
-        return console.log('余额不足')
-      }
-      this.submitPopupIsShow = true
-    },
-    passwordButton() {
-      const {
-        memoValue,
-        balance
-      } = this.$data
-      if (this.payPassword != 123) {
-        this.passwordCheck = true
+      let verify = true
+      let amount = this.formData.amount.amount
+      if (amount == '' || amount <= 0) {
+        verify = false
+        this.$refs.notify.show('error', '委托数量不能为空')
+      } else if (amount > this.balance){
+        verify = false
+        this.$refs.notify.show('error', '委托数量大于可用额度')
       } else {
-        this.passwordCheck = false
-        this.updataDelegate++
-
-        // uni.navigateTo({
-        //   url: `./transactionDetails?transactionObject=${JSON.stringify(obj)}`
-        // })
-        // this.modalPasswordIsShow = false
+        this.$refs.notify.close()
       }
-      this.payPassword = ''
+      
+      if (verify) this.submitPopupIsShow = true
     },
     testAmount() {
-      this.sendAmount = this.balance
+      this.formData.amount.amount = this.balance
     },
     getMinersCost(val) {
       console.log('接收到值', val)
       this.minersMsg = val
+    },
+    handlerResult(res) {
+      this.loading = false
+      this.updataDelegate = 0
+      if (res.code == 0) {
+        uni.showToast({
+          title: '执行成功',
+          image: '/static/img/chenggong.png',
+          mask: true,
+          duration: 3000,
+          complete: () => {
+            this.$cache.set('_updateDelegateInfo', true, 0)
+            setTimeout(() => {
+              uni.redirectTo({
+                url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
+              })
+            }, 1500)
+          }
+        })
+      } else {
+        uni.showToast({
+          title: '执行失败',
+          image: '/static/img/shibai1.png',
+          mask: true,
+          duration: 3000,
+        })
+        console.log(res)
+      }
     }
   },
 }
@@ -223,38 +265,39 @@ export default {
 
 <script lang="renderjs" module="render">
   import {
-    unDelegate
+    toDelegate
   } from '@/utils/secretjs/SDK'
+  import mainCoin from '@/config/index.js'
+  import renderUtils from '@/utils/render.base.js'
   export default {
     methods: {
-      async unDelegate(newValue, oldValue, ownerInstance, instance) {
-        if (newValue == 0) return
-
-        // console.log('newVal',newValue)
-        // console.log('oldValue',oldValue)
-        // console.log('ownerInstance',ownerInstance.$vm)
-        // console.log('instance',instance)
-        // console.log('datarend',data);
-        // unDelegate(data)
-        let data = ownerInstance.$vm
-        let data1 = {
-          amount: data.selData.balance,
-          ...data.selData.delegation
+      async delegate(val) {
+        if (val == 0) return
+        let { memo, ...data } = JSON.parse(JSON.stringify(val))
+        let res = {}
+        data.amount.amount = data.amount.amount * mainCoin.decimals + ''
+        try {
+          res = await toDelegate(data, memo)
+        } catch (e) {
+          console.log(e)
+          res.code = 7
         }
-        delete data1.shares
-        data1.amount.amount = String(data.balance)
-        let data2 = {
-          gasPriceInFeeDenom: 0.25,
-          feeDenom: 'uGHM',
-          gasLimit: 50000
-        }
-        let result = await unDelegate(data1, data2)
+        renderUtils.runMethod(this._$id, 'handlerResult', res, this)
       }
     },
   }
 </script>
 
 <style lang="scss" scoped>
+  .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,.5) !important;
+    z-index: 9999;
+  }
   .sendPage {
     height: 100vh;
     overflow: hidden;
@@ -411,7 +454,9 @@ export default {
       margin: 0 32rpx;
 
       .popup-title {
-        font-weight: 500;
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
         font-size: 32rpx;
         color: #2C365A;
         letter-spacing: 0;
@@ -419,7 +464,7 @@ export default {
         line-height: 32rpx;
       }
 
-      view {
+      > view:not(:first-child) {
         font-size: 28rpx;
         display: flex;
         justify-content: space-between;
@@ -495,7 +540,7 @@ export default {
 
     .modal_title {
       font-family: PingFangSC-Medium;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 32rpx;
       color: #2C365A;
       letter-spacing: 0;
@@ -526,11 +571,11 @@ export default {
     letter-spacing: 0;
     line-height: 24rpx;
     height: 24rpx;
-    position: absolute;
   }
 
   /deep/ .u-popup__content {
-    border-radius: 16rpx !important;
+    border-top-left-radius: 16rpx !important;
+    border-top-right-radius: 16rpx !important;
 
     .u-modal__content {
       padding: 48rpx 32rpx !important;
@@ -565,8 +610,8 @@ export default {
           font-weight: 600;
         }
         .input-placeholder {
-          font-size: 28rpx;
-          color: #8397B1;
+          font-size: 28rpx !important;
+          color: #8397B1 !important;
           font-weight: 400;
         }
       }
@@ -626,5 +671,61 @@ export default {
     height: 2rpx;
     background-color: rgba(131,151,177,0.20);
     margin: 0 32rpx;
+  }
+  
+  .top-border {
+    height: 2rpx;
+    background-color: rgba(131,151,177,0.20);
+  }
+  
+  .pass_confirm {
+    height: 96rpx;
+    background: #002FA7;
+    border-radius: 16rpx;
+    font-size: 32rpx;
+    color: #FCFCFD;
+    text-align: center;
+    margin-top: 56rpx;
+  }
+  
+  .item {
+    margin-top: 64rpx;
+  
+    &-input {
+  
+      .u-input {
+        height: 96rpx;
+        background-color: #F2F4F8;
+        border-radius: 16rpx 0 0 16rpx;
+        padding-left: 0 !important;
+  
+        /deep/ input {
+          color: #2C365A !important;
+          font-size: 28rpx !important;
+          padding-left: 32rpx;
+          line-height: 48rpx !important;
+        }
+      }
+  
+      /deep/ .input-placeholder {
+        // height: 48rpx !important;
+        font-weight: 400 !important;
+        font-size: 28rpx !important;
+        // color: #8397B1 !important;
+        color: #8397B1 !important;
+        // line-height: 48rpx !important;
+      }
+  
+      &-password {
+        display: flex;
+  
+        .u-icon {
+          height: 96rpx;
+          padding-right: 36rpx;
+          background-color: #F2F4F8;
+          border-radius: 0 16rpx 16rpx 0 !important;
+        }
+      }
+    }
   }
 </style>

@@ -122,10 +122,13 @@ export async function getSigningInfo(consAddress) {
   return result
 }
 //去委托
-export async function toDelegate(data1, data2) {
+export async function toDelegate(data, memo = '') {
   let Secret = await getSecret()
-  const result = await Secret.tx.staking.delegate(data1, data2)
-  // console.log('result', result)
+  const result = await Secret.tx.staking.delegate(data, {
+    feeDenom: 'uGHM',
+    gasLimit: 50000,
+    memo
+  })
   return result
 }
 //通过获取验证信息
@@ -148,10 +151,13 @@ export async function getDelegationRewards(delegatorAddr, validatorAddr) {
   return result
 }
 
-export async function unDelegate(data1, data2) {
+export async function unDelegate(data, memo = '') {
   let Secret = await getSecret()
-  const result = await Secret.tx.staking.undelegate(data1, data2)
-  console.log(result)
+  const result = await Secret.tx.staking.undelegate(data, {
+    feeDenom: 'uGHM',
+    gasLimit: 50000,
+    memo
+  })
   return result
 }
 
@@ -283,4 +289,13 @@ export const getRewards = async (delegatorAddress, validatorAddress) => {
     validatorAddress
   })
   return result
-} 
+}
+
+export const withdrawDelegatorReward = async (data) => {
+  let Secret = await getSecret()
+  const result = await Secret.tx.distribution.withdrawDelegatorReward(data, {
+    feeDenom: 'uGHM',
+    gasLimit: 20000
+  })
+  return result
+}

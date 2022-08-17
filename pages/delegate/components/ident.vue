@@ -4,7 +4,7 @@
 		<!-- <view :state="state" :change:state="changeData"></view> -->
 		<view class="header-box">
 			<view class="header">
-				<headerItem title="当前可用余额" />
+				<headerItem title="当前可用余额" :value="currentWallet.coinList[0].balance" />
 				<headerItem title="当前锁定余额" />
 			</view>
 		</view>
@@ -61,8 +61,8 @@
 							99
 						</view>
 						<view class="right">
-							<view class="name">{{item.tokens}}</view>
-							<view class="other">佣金率:10%</view>
+							<view class="name">{{ item.tokens }}</view>
+							<view class="other">佣金率: {{ item.rate }}</view>
 						</view>
 					</view>
 				</view>
@@ -74,6 +74,7 @@
 
 <script>
 import headerItem from './header-item'
+import mainCoin from '@/config/index.js'
 import {
   sliceAddress
 } from '@/utils/filters.js'
@@ -118,12 +119,17 @@ export default {
       },
       sortTarget: '总委托数',
       sortRule: 'des', // asc:升序; des:降序
+      mainCoin
     }
   },
   created() {
     this.address = this.currentWallet.address
   },
   methods: {
+    updateData() {
+      console.log('indent update data')
+      this.address = this.currentWallet.address
+    },
     click() {
     },
     toValidatorDetail(item) {
@@ -140,6 +146,7 @@ export default {
       }
     },
     ValidatorsData(data) {
+      this.address = ''
       this.validators = data
       this.loading = false
       console.log('validators', this.validators)
@@ -173,6 +180,7 @@ export default {
 		getSigningInfo
 	} from '@/utils/secretjs/SDK'
 	import renderUtils from '@/utils/render.base.js'
+  import mainCoin from '@/config/index.js'
 	export default {
 		data() {
 			return {
@@ -189,18 +197,17 @@ export default {
 			async getValidators(status) {
 				let data = await getValidators(status || '')
 				let validators = data.validators
-				console.log('validators1011',validators)
 				validators.forEach(item => {
-					item.select = []
-					item.amount = 0
-					// this.getSigningInfo(item.operatorAddress)
+          item._tokens = item.tokens
+          item.tokens = item.tokens / mainCoin.decimals
+          item._rate = item.commission.commissionRates.rate
+          item.rate = item._rate / 10 ** 18 * 100 + '%'
 				})
 
 				renderUtils.runMethod(this._$id, 'ValidatorsData', validators, this)
 			},
 			async getSigningInfo(address) {
 				let signInfo = await getSigningInfo(address)
-				console.log('signInfo', signInfo)
 				return signInfo
 			}
 		}
@@ -274,14 +281,14 @@ export default {
 			}
 
 			.center {
-				flex: 1;
 				text-align: center;
+        width: 260rpx;
 			}
 
 			.right {
-				width: 132rpx;
 				text-align: right;
-				margin-right: 16px
+				margin-right: 16px;
+        flex: 1;
 			}
 
 			.list-title {
@@ -314,7 +321,9 @@ export default {
           .center {
             font-weight: 600;
             font-size: 24rpx;
+            width: 260rpx;
             color: #2C365A;
+            text-align: center;
           }
 				}
 			}

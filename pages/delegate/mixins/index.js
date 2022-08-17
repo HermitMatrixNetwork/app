@@ -10,8 +10,5 @@ export default {
       address:'',
       currentWallet: this.$cache.get('_currentWallet'),
     }
-  },
-  mounted(){
-	  this.address = this.currentWallet.address
-  },
+  }
 }

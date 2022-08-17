@@ -82,7 +82,7 @@ export default {
 
     .title {
       height: 32rpx;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 32rpx;
       color: #2C365A;
       line-height: 32rpx;
@@ -95,7 +95,7 @@ export default {
 
       .uni-input-input {
         height: 48rpx;
-        font-weight: 500;
+        font-weight: 600;
         font-size: 28rpx;
         color: #2C365A;
         line-height: 48rpx;

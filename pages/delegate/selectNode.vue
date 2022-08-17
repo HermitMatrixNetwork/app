@@ -1,65 +1,67 @@
 <template>
 	<view class="select-node">
-		<view :address="address" :change:address="init"></view>
-		<custom-header :title="'节点选择'" >
+		<custom-header :redirUrl='`${redirectURL}?selectIndex=${selectIndex}`' :title="'节点选择'" >
 			<template #right>
 				<u-icon name="search" size="44rpx" @click="toSearch" />
 			</template>
 		</custom-header>
 		<view class="lists">
       <custom-loading class="loading" v-if="loading"></custom-loading>
-			<List v-else-if="list.length" :list="list"/>
+			<List v-else-if="list.length" :list="list" :selectIndex="selectIndex" :redirectURL="redirectURL"/>
 			<no-data v-else></no-data>
 		</view>
 	</view>
 </template>
 
 <script>
-import mixin from './mixins/index.js'
 import List from './components/List.vue'
+import {
+  sliceAddress
+} from '@/utils/filters.js'
 export default {
   components: {
     List
   },
-  mixins: [mixin],
+  filters: {
+    sliceAddress
+  },
   data(){
     return {
       list: [],
-      loading: true
+      loading: true,
+      currentWallet: this.$cache.get('_currentWallet'),
+      selectIndex: -1,
+      redirectURL: ''
     }
   },
-  mounted(){
-    console.log('xxxx')
-	  // this.address = this.currentWallet.address
+  onLoad(options) {
+    options.selectIndex && (this.selectIndex = Number(options.selectIndex))
+    options.redirectURL && (this.redirectURL = options.redirectURL)
+  },
+  created() {
+    if (!this.$cache.get('_delegateInfo')) {
+      this.timer = setInterval(() => {
+        if (this.$cache.get('_delegateInfo')) {
+          this.list = this.$cache.get('_delegateInfo').list
+          this.loading = false
+          clearInterval(this.timer)
+        }
+      }, 2000)
+    } else {
+      this.list = this.$cache.get('_delegateInfo').list
+      this.loading = false
+    }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   },
   methods: {
-    initData(data){
-      this.list = data.list
-      this.loading = false
-      console.log(data)
-    },
     toSearch() {
       uni.navigateTo({
         url: './search'
       })
     }
   }
-}
-</script>
-<script lang="renderjs" module="render">
-import renderUtils from '@/utils/render.base.js'
-import mixin from './mixins/render.js'
-export default {
-	mixins: [mixin],
-	methods:{
-		async init(address){
-			if(address=='') return
-			let list = await this.getLists(address)
-			let data ={}
-			data.list = list
-			renderUtils.runMethod(this._$id, 'initData', data, this)
-		},
-	}
 }
 </script>
 

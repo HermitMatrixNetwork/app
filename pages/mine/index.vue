@@ -188,7 +188,7 @@ export default {
         margin-left: 32rpx;
 
         &-name {
-          font-weight: 500;
+          // font-weight: 600;
           font-size: 32rpx;
           color: #0F172A;
           line-height: 32rpx;

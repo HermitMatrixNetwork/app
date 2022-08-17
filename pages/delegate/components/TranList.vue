@@ -1,7 +1,7 @@
 <template>
   <view class="list">
     <custom-loading style="margin-top: 30rpx;" v-if="loading"></custom-loading>
-    <view class="item" v-for="(item, index) in list[types[currentTab]]" :key="index">
+    <view class="item" v-for="(item, index) in list[types[currentTab]]" :key="index" @click="toDetail(item)">
       <view class="left">
         <image :src="item.icon" style="width: 72rpx; height: 72rpx;" />
       </view>
@@ -48,6 +48,11 @@ export default {
     goTo(url) {
       uni.navigateTo({
         url
+      })
+    },
+    toDetail(info) {
+      uni.navigateTo({
+        url: `/pages/account/send/transactionDetails?data=${JSON.stringify(info)}`
       })
     }
   },
@@ -98,7 +103,6 @@ export default {
       this.list['all'].push(...result, ...withdraw)
       this.loading = false
       this.list['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      console.log(this.list['all'])
     })
   },
   filters: {

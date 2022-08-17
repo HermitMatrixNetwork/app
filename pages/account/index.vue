@@ -428,7 +428,7 @@ export default {
       font-size: 34rpx;
       padding-top: 20rpx;
       padding-bottom: 32rpx;
-      font-weight: 500;
+      font-weight: 600;
       color: #2c3457;
       letter-spacing: 0;
       display: flex;
@@ -466,7 +466,7 @@ export default {
 
         .user-balance {
           font-family: DIN-Medium;
-          font-weight: 500;
+          font-weight: 600;
           font-size: 64rpx;
           color: #ffffff;
           letter-spacing: 0;

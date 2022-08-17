@@ -24,7 +24,7 @@
             :inputVal.sync="sendFormData.receiveAddress">
             <template #title-icon>
               <u-icon :name="require('../../../static/img/account/addressbook.png')" size="44rpx"
-                @click="toGo('/pages/account/send/adres_book')"></u-icon>
+                @click="toAddressBook"></u-icon>
             </template>
           </InputTitle>
           <text v-if="showAddressErrorTip" class="waringPrompt">{{ language['addressErrorTip'] }}</text>
@@ -43,7 +43,7 @@
                 </view>
               </view>
               <view class="value">
-                <u--input placeholder="请输入金额" v-model.number="sendFormData.sendAmount"></u--input>
+                <u--input placeholder="请输入金额" type="number" v-model="sendFormData.sendAmount"></u--input>
                 <view class="value-info">
                   <text class="denom">{{ token.alias_name }}</text>
                   <view class="border"></view>
@@ -120,7 +120,7 @@
       </view>
     </u-popup>
 
-    <u-modal :show="modalPasswordIsShow" :showConfirmButton="false" @close="close">
+    <u-modal :show="modalPasswordIsShow" :showConfirmButton="false">
       <view class="modal_main">
         <view class="modal_title">
           密码确认
@@ -139,10 +139,10 @@
         <!-- <input type="text"> -->
         <text v-if="passwordCheck" class="waringPrompt">资金密码错误，请确认后重新输入!</text>
         <!-- <Submitbtn class="modal_submit" @click.native="passwordButton" >确认</Submitbtn> -->
-        <u-button @click="passwordButton" :sendFormData="sendFormData" :change:sendFormData="render.receiveMsg"
-          :check="chechSuccess" :change:check="render.sendToken" class="btn">确认</u-button>
+        <u-button @click="passwordButton" class="btn">确认</u-button>
       </view>
     </u-modal>
+    <view :check="checkSuccess" :change:check="render.sendToken"></view>
   </view>
 </template>
 
@@ -172,7 +172,7 @@ export default {
       passwordCheck: false, //密码校验
       submitPopupIsShow: false,
       modalPasswordIsShow: false,
-      chechSuccess: 0,
+      checkSuccess: 0,
       sendFormData: {
         userAddress: this.$cache.get('_currentWallet').address,
         receiveAddress: '', //接收地址
@@ -180,6 +180,7 @@ export default {
         memo: '',
         token: {},
         gas: '',
+        decimals: null
       },
       titleStyle: {
         background: '#FFFFFF'
@@ -195,7 +196,7 @@ export default {
       showAddressErrorTip: false,
       showAmountErrorTip: false,
       passwordEye: false,
-      loading: false
+      loading: false,
     }
   },
   onLoad(options) {
@@ -222,6 +223,16 @@ export default {
     }
   },
   methods: {
+    toAddressBook() {
+      uni.navigateTo({
+        url: '/pages/account/send/adres_book',
+        events: {
+          reciveAddress: (address) => {
+            this.$refs.addressInptval.childValue = address
+          }
+        }
+      })
+    },
     submitAgain() {
       this.modalPasswordIsShow = true
       this.submitPopupIsShow = false
@@ -239,14 +250,14 @@ export default {
         this.showAddressErrorTip = false
       }
 
-      if (sendAmount == '' || sendAmount <= 0 || !(/^[0-9]+$/.test(sendAmount))) {
+      if (sendAmount == '' || sendAmount <= 0) {
         this.showAmountErrorTip = true
       } else {
         this.showAmountErrorTip = false
       }
 
       // && this.sendFormData.sendAmount < this.token.balance
-      if (!this.showAddressErrorTip && !this.showAmountErrorTip && this.sendFormData.sendAmount < this.token.balance) {
+      if (!this.showAddressErrorTip && !this.showAmountErrorTip && this.sendFormData.sendAmount <= this.token.balance) {
         this.submitPopupIsShow = true
       }
     },
@@ -256,7 +267,7 @@ export default {
         this.passwordCheck = true
       } else {
         this.passwordCheck = false
-        this.chechSuccess = 1 // 调用render.sendToken
+        this.checkSuccess = this.sendFormData // 调用render.sendToken
         uni.showToast({
           title: '交易中',
           icon: 'loading',
@@ -305,7 +316,7 @@ export default {
     },
     dealSuccessJump({ res: result, otherToken }) {
       let fee, usedAmount
-      if (!otherToken) {
+      if (!otherToken && result.tx) {
         fee = result.tx.authInfo.fee.amount[0].amount / (this.token.decimals || 1)
         usedAmount = this.sendFormData.sendAmount
       }
@@ -318,7 +329,7 @@ export default {
           mask: true,
           duration: 3000,
           complete: () => {
-            this.chechSuccess = 0
+            this.checkSuccess = 0
             this.modalPasswordIsShow = false
             setTimeout(() => {
               uni.redirectTo({
@@ -331,6 +342,14 @@ export default {
 
         !otherToken && (this.token.balance = this.token.balance - fee - usedAmount)
       } else {
+        uni.showToast({
+          title: '交易失败',
+          image: '/static/img/shibai1.png',
+          mask: true,
+          duration: 3000
+        })
+        this.modalPasswordIsShow = false
+        console.log(result.rawLog)
         !otherToken && (this.token.balance = this.token.balance - fee)
       }
 
@@ -347,6 +366,8 @@ export default {
       this.$cache.set('_currentWallet', wallet, 0)
 
       this.updateWalletList(wallet)
+      
+      this.checkSuccess = 0
     },
     updateWalletList(wallet) {
       const walletList = this.$cache.get('_walletList') || []
@@ -359,9 +380,15 @@ export default {
       this.$cache.set('_walletList', walletList, 0)
       return true
     },
-    close() {
-      this.passwordCheck = false
-      this.payPassword = ''
+  },
+  watch: {
+    modalPasswordIsShow: {
+      handler(val) {
+        if (!val) {
+          this.passwordCheck = false
+          this.payPassword = ''
+        }
+      }
     }
   }
 }
@@ -377,15 +404,10 @@ export default {
   import renderUtils from '@/utils/render.base.js'
   import mainCoin from '@/config/index.js'
   export default {
-    data() {
-      return {
-        message: {},
-      }
-    },
     methods: {
-      async sendToken(newValue, oldValue, ownerVm, vm) {
+      async sendToken(newValue) {
         if (newValue == 0) return
-        let res;
+        let res = {}
         let otherToken = false
         let {
           receiveAddress,
@@ -394,33 +416,37 @@ export default {
           memo,
           gas,
           decimals
-        } = this.message
-        if (this.message.token.alias_name == mainCoin.alias_name) {
+        } = newValue
+        if (newValue.token.alias_name == mainCoin.alias_name) {
           sendAmount = sendAmount * mainCoin.decimals
-          res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas)
+          try {
+            res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas)
+          } catch (e) {
+            console.log(e);
+            res.code = 7
+          }
         } else {
           try {
             otherToken = true
             await transferOtherToken({
               sender: userAddress,
-              contractAddress: this.message.token.contract_address,
-              codeHash: this.message.token.codeHash,
+              contractAddress: newValue.token.contract_address,
+              codeHash: newValue.token.codeHash,
               msg: {
                 transfer: {
                   recipient: receiveAddress,
-                  amount: sendAmount * this.message.token.decimals + ''
+                  amount: sendAmount * newValue.token.decimals + ''
                 }
               }
-            }, this.message.memo)
-            // res = 
+            }, newValue.memo)
             res = (await getOtherTransationHistory({
-              contract: { address: this.message.token.contract_address, codeHash: this.message.token.codeHash },
+              contract: { address: newValue.token.contract_address, codeHash: newValue.token.codeHash },
               address: userAddress,
-              auth: { key: this.message.token.view_key }
+              auth: { key: newValue.token.view_key }
             }, {
               page_size: 1,
               page: 1
-            }, this.message.token)).transaction_history.txs[0]
+            }, newValue.token)).transaction_history.txs[0]
             for(let val of Object.values(res.action)) {
               res.to_address = val.recipient
               res.from_address = val.from
@@ -428,7 +454,7 @@ export default {
             }
             res.type = res.to_address == userAddress ? 'recipient' : 'transfer'
             
-            res.amount = res.coins.amount / this.message.token.decimals + this.message.token.alias_name
+            res.amount = res.coins.amount / newValue.token.decimals + newValue.token.alias_name
             res.timestamp = new Date(res.block_time * 1000).toLocaleString()
             res.code = 0
           } catch(e) {
@@ -438,9 +464,6 @@ export default {
         }
         renderUtils.runMethod(this._$id, 'dealSuccessJump', { res, otherToken }, this)
 
-      },
-      receiveMsg(value) {
-        this.message = value
       }
     }
   }
@@ -518,7 +541,7 @@ export default {
         top: 50%;
         right: 32rpx;
         transform: translateY(20%);
-        font-weight: 500;
+        font-weight: 600;
         font-size: 28rpx;
         color: #2C365A;
         width: 172rpx;

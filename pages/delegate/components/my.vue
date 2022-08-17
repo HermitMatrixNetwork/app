@@ -5,7 +5,8 @@
       <view class="header">
         <headerItem :title="language.totalDelegate" :value="allData.total" />
         <headerItem :title="language.receiveRewards" />
-        <headerItem :title="language.rewardsReceived" :value="allData.totalReward" />
+        <!-- totalReward -->
+        <headerItem :title="language.rewardsReceived" :value="totalReward" :needFormat="false" />
         <headerItem :title="language.unlocking" />
       </view>
     </view>
@@ -83,10 +84,18 @@ export default {
       mainCoin
     }
   },
-  mounted() {
-    this.address = this.currentWallet.address
-  },
   methods: {
+    updateData() {
+      console.log('delegate update data')
+      if (this.$cache.get('_updateDelegateInfo') === null || this.$cache.get('_updateDelegateInfo')) {
+        this.loading = true
+        this.address = this.currentWallet.address
+      } else {
+        this.allData = this.$cache.get('_delegateInfo')
+        this.list = this.allData.list
+        this.loading = false
+      }
+    },
     goTo(url) {
       uni.navigateTo({
         url
@@ -94,19 +103,29 @@ export default {
     },
     async initData(data) {
       this.allData = data
-      let {
-        list
-      } = data
+      let { list } = data
       for (let i = 0, len = list.length; i < len; i++) {
         const item = list[i]
         const { delegatorAddress, validatorAddress } = item.delegation
         const res = (await txsQuery([`events=message.sender='${this.address}'`, `events=delegate.validator='${validatorAddress}'`])).data.tx_responses
         item.timestamp = res.pop().timestamp.replace(/T|Z/g, ' ')
       }
-      console.log(1)
       this.list = list
       this.loading = false
+      this.address = ''
+      this.$cache.set('_updateDelegateInfo', false, 36000)
+      this.$cache.set('_delegateInfo', this.allData, 0)
+      
       console.log('allData', this.allData)
+    }
+  },
+  computed: {
+    totalReward() {
+      let reward = this.allData.totalReward ? this.allData.totalReward + '' : '0.00'
+      if (reward.length > 13) {
+        reward = reward.substr(0, 4) + '...' + reward.substr(-4)
+      }
+      return reward
     }
   }
 }
@@ -125,6 +144,18 @@ export default {
     methods: {
       async init(address) {
         if (address == '') return
+        let updateDelegateInfo = true
+        // #ifdef APP-PLUS
+        updateDelegateInfo = plus.storage.getItem('_updateDelegateInfo') === null ? true : plus.storage.getItem('_updateDelegateInfo')
+        // #endif
+        // #ifndef APP-PLUS
+        updateDelegateInfo = localStorage.getItem('_updateDelegateInfo') === null ? true : localStorage.getItem('_updateDelegateInfo')
+        // #endif
+        
+        if (typeof updateDelegateInfo !== 'boolean') {
+          updateDelegateInfo = JSON.parse(updateDelegateInfo).data.data          
+        }
+        if (!updateDelegateInfo) return; 
         // let totalRewards = await getDelegationTotalRewards(address)
         // console.log('totalRewards',totalRewards)
         let list = await this.getLists(address)

@@ -10,13 +10,13 @@ export default {
        * @param { string } type 类型 
        * @param { string } message 提示信息
        */
-    show(type, message) {
+    show(type, message, options = {}) {
       if (!this.$refs.uNotify) return console.warn('没有注册uNotify组件')
       return this.$refs.uNotify.show({
         top: .1, // 0在H5下无效
         type: type || 'error',
         color: '#FFFFFF',
-        bgColor: '#EC6665',
+        bgColor: options.bgColor || '#EC6665',
         message: message || '信息',
         duration: 1000 * 3,
         fontSize: '28rpx', // 单位rpx

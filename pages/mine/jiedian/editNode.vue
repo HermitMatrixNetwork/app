@@ -89,7 +89,7 @@ export default {
     &-label {
       height: 28rpx;
       margin-bottom: 24rpx;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 28rpx;
       color: #2C365A;
       letter-spacing: 0;

@@ -1,6 +1,6 @@
 <template>
 	<view class="list">
-		<view class="item" v-for="(item,index) in list" :key="index">
+		<view class="item" v-for="(item,index) in list" :key="index" @click="clickItem(index)">
 			<view class="left">
 				<view class="name">
 					{{item.validator.description.moniker}}
@@ -10,8 +10,8 @@
 				</view>
 			</view>
 			<div class="right">
-				<text class="num">{{item.balance.amount}}</text>
-				<u-radio-group class="radioBox" @change="selRadio(index)"><u-radio shape="circle"></u-radio></u-radio-group>
+				<text class="num">{{item.balance.amount / mainCoin.decimals }}</text>
+        <radio class="radio" shape="circle" :checked="index == selectIndex"></radio>
 			</div>
 		</view>
 	</view>
@@ -21,6 +21,7 @@
 import {
 	  sliceAddress
 } from '@/utils/filters.js'
+import mainCoin from '@/config/index.js'
 export default {
   filters: {
 	  sliceAddress
@@ -31,15 +32,27 @@ export default {
       default(){
         return []
       }
+    },
+    redirectURL: {
+      type: String,
+      required: true
+    },
+    selectIndex: Number
+  },
+  data() {
+    return {
+      mainCoin
     }
   },
   methods: {
 	 selRadio(index){
-		 uni.$emit('selList',this.list[index])
-		 uni.navigateBack({
-		 	delta:1
-		 })
-	 }
+      console.log(index)
+	 },
+    clickItem(i) {
+      uni.redirectTo({
+        url: `${this.redirectURL}?selectIndex=${i}`
+      })
+    },
   }
 	
 }
@@ -64,18 +77,27 @@ export default {
 				}
 			}
 			.right {
-				flex:1;
-				line-height: 72rpx;
 				display: flex;
 				justify-content: right;
 				align-items: center;
 				.num {
 					margin-right: 24rpx;
 				}
-				.radioBox {
-					flex:none
+				.radio {
+					width: 32rpx;
+          height: 32rpx;
 				}
 			}
 		}
 	}
+  
+  /deep/ .uni-radio-input {
+    width: 32rpx !important;
+    height: 32rpx !important;
+    vertical-align: inherit !important;
+  }
+  
+  /deep/ uni-radio .uni-radio-wrapper {
+    vertical-align: inherit !important;
+  }
 </style>

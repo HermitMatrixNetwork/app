@@ -6,21 +6,16 @@
     </view>
     <view class="container">
       <div class="top">
-        <view class="left" @click="selindex = 1" :class="{ actived: selindex == 1 }">
+        <view class="left" @click="selindex = 0" :class="{ actived: selindex == 0 }">
           {{language.myDelegate}}
+          <view v-if="selindex == 0" class="line" />
+        </view>
+        <view class="right" @click="selindex = 1" :class="{ actived: selindex == 1 }">
+          {{language.verifiedBy}}
           <view v-if="selindex == 1" class="line" />
         </view>
-        <view class="right" @click="selindex = 2" :class="{ actived: selindex == 2 }">
-          {{language.verifiedBy}}
-          <view v-if="selindex == 2" class="line" />
-        </view>
       </div>
-      
-      <!-- 我的委托 -->
-      <My v-if="selindex == 1" />
-      
-      <!-- 验证人 -->
-      <Ident v-else />
+      <component :is="['My', 'Ident'][selindex]" ref="customChildNode"></component>
     </view>
     <tab-bar :current-page="2" />
   </view>
@@ -37,14 +32,22 @@ export default {
   },
   data() {
     return {
-      selindex: 1,
-      language: language[this.$cache.get('_language')],
-      list: [{
-        // name: language.myDelegate,
-        name: '我的委托',
-      }, {
-        name: '验证人',
-      }, ]
+      selindex: 0,
+      language: language[this.$cache.get('_language')]
+    }
+  },
+  onShow() {
+    this.$nextTick(() => {
+      this.$refs.customChildNode.updateData()
+    })
+  },
+  watch: {
+    selindex: {
+      handler(newVal) {
+        this.$nextTick(() => {
+          this.$refs.customChildNode.updateData()
+        })
+      }
     }
   }
 }

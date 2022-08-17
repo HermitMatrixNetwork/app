@@ -70,7 +70,7 @@ export default {
 	height: 28rpx;
 	margin-top: 48rpx;
 	font-family: PingFangSC-Medium;
-	font-weight: 500;
+	font-weight: 600;
 	font-size: 28rpx;
 	color: #2C365A;
 	letter-spacing: 0;

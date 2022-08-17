@@ -117,6 +117,8 @@
         </view>
       </view>
     </u-modal>
+    
+    <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
@@ -152,8 +154,10 @@ export default {
       this.target = target
       if (target === 'editName') {
         this.showEditWalletNameModal = true
-      } else {
+      } else if(target === 'removeWallet'){
         this.aa = true
+      } else {
+        this.showConfirmPasswordModal = true
       }
     },
     cancel(target) {
@@ -181,21 +185,21 @@ export default {
     },
     removeWallet() {
       const walletList = this.$cache.get('_walletList')
-      
+      this.$refs.notify.show('error', '移除钱包成功', { bgColor: '#275EF1' })
+      let url = ''
       if (walletList.length > 1) {
         walletList.shift()
         this.$cache.set('_currentWallet', walletList[0], 0)
         this.$cache.set('_walletList', walletList, 0)
-        uni.reLaunch({
-          url: '/pages/account/index'
-        })
+        url = '/pages/account/index'
       } else {
         this.$cache.delete('_walletList')
         this.$cache.delete('_currentWallet')
-        uni.reLaunch({
-          url: '/pages/index/index'
-        })
+        url = '/pages/index/index'
       }
+      setTimeout(() => {
+        uni.reLaunch({ url })
+      }, 1500)
     },
     confirm() {
       if (this.target === 'editName') {
@@ -318,7 +322,7 @@ export default {
 
     .title {
       height: 32rpx;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 32rpx;
       color: #2C365A;
       line-height: 32rpx;
@@ -331,7 +335,7 @@ export default {
 
       .uni-input-input {
         height: 48rpx;
-        font-weight: 500;
+        font-weight: 600;
         font-size: 28rpx;
         color: #2C365A;
         line-height: 48rpx;

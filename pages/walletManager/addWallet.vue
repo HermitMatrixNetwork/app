@@ -65,7 +65,7 @@ export default {
     border-radius: 16rpx 16rpx 0 0;
 
     text {
-      font-weight: 500;
+      font-weight: 600;
       font-size: 32rpx;
       color: #2C365A;
       line-height: 32rpx;

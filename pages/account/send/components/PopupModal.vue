@@ -64,7 +64,7 @@ export default {
 					display: flex;
 					align-items: center;
 					justify-content: space-between;
-					font-weight: 500;
+					font-weight: 600;
 					font-size: 32rpx;
 					color: #2C365A;
 					letter-spacing: 0;

@@ -9,7 +9,9 @@
     <view :class="inputContainerStyle">
       <input v-if="!isTextarea" :type="type" :placeholder="placeholder" class="common-input input-content" v-model="childValue"
         :maxlength="maxlength" :style="inputOtherStyle"
-        :class="[warningStyleisShow?'beyondWarning':'']"/>
+        :class="[warningStyleisShow?'beyondWarning':'']"
+        :readonly="readonly"
+      />
 
       <u--textarea v-model="childValue" :placeholder="placeholder" autoHeight v-else class="textarea" maxlength="60" :disabled="disabled">
       </u--textarea>
@@ -61,6 +63,10 @@ export default {
     inputContainerStyle: {
       type: Object | String,
       default: ''
+    },
+    readonly: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

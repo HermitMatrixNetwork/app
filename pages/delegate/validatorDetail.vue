@@ -9,8 +9,8 @@
           验证人名称
         </view>
         <view class="address">
-          <text>ghm63212ABCBA108DDB2Ea21545Ff1515DdC22318</text>
-          <image src="/static/img/account/copy.png"></image>
+          <text>{{ validatorInfo.operatorAddress }}</text>
+          <image src="/static/img/account/copy.png" @click="copy"></image>
         </view>
       </view>
     </view>
@@ -22,7 +22,7 @@
           <text>受托总数</text>
         </view>
         <view class="value">
-          <text>10000.00</text>
+          <text>{{ validatorInfo.tokens }}</text>
         </view>
       </view>
       <view class="item">
@@ -38,7 +38,7 @@
           <text>佣金率</text>
         </view>
         <view class="value">
-          <text>20%</text>
+          <text>{{ validatorInfo.rate }}</text>
         </view>
       </view>
       <view class="item">
@@ -76,6 +76,7 @@
     </view>
     
     <u-button class="btn" @click="toDelegate">去委托</u-button>
+    <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
@@ -92,8 +93,20 @@ export default {
   },
   methods: {
     toDelegate() {
-      uni.navigateTo({
-        url: './delegate'
+      uni.redirectTo({
+        url: `./delegate?data=${JSON.stringify(this.validatorInfo)}`
+      })
+    },
+    copy() {
+      uni.setClipboardData({
+        data: this.validatorInfo.operatorAddress,
+        showToast: false,
+        success: () => {
+          this.$refs.notify.show('error', '复制成功', { bgColor: '#275EF1' })
+        },
+        fail: () => {
+          this.$refs.notify.show('error', '复制失败')
+        }
       })
     }
   }

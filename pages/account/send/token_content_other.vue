@@ -570,7 +570,7 @@ export default {
       text {
         padding: 24rpx 0 0 24rpx;
         font-family: PingFangSC-Medium;
-        font-weight: 500;
+        font-weight: 600;
         font-size: 32rpx;
         color: #2C365A;
         line-height: 32rpx;
@@ -854,7 +854,7 @@ export default {
         height: 72rpx;
         font-size: 28rpx;
         font-family: DIN-Medium;
-        font-weight: 500;
+        font-weight: 600;
         color: #2C365A;
         letter-spacing: 0;
         line-height: 28rpx;

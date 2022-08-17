@@ -100,6 +100,7 @@ export default {
       font-size: 28rpx;
       color: #2C365A;
       line-height: 28rpx;
+      font-weight: 600;
     }
 
     &-item {
@@ -109,7 +110,7 @@ export default {
       border-radius: 16rpx;
 
       .right {
-        font-weight: 500;
+        font-weight: 600;
         font-size: 28rpx;
         color: #2C365A;
         padding-right: 32rpx;

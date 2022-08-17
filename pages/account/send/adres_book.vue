@@ -48,8 +48,11 @@ export default {
         uni.navigateTo({
           url: `/pages/account/editAddress?book=${JSON.stringify(item)}`
         })
+      } else {
+        const eventChannel = this.getOpenerEventChannel()
+        eventChannel.emit('reciveAddress', item.walletAddress)
+        uni.navigateBack()
       }
-      this.$emit('clickAddress', item)
     }
   },
   mixins:[mixin]

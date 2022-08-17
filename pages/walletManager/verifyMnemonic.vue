@@ -131,7 +131,7 @@ export default {
         background: #FFFFFF;
         border: 1px solid rgba(176, 193, 208, 0.60);
         border-radius: 16rpx;
-        font-weight: 500;
+        font-weight: 600;
         font-size: 32rpx;
         line-height: 32rpx;
         color: #2C365A;
@@ -155,7 +155,7 @@ export default {
       flex-wrap: wrap;
       justify-content: space-between;
       width: 670rpx;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 32rpx;
       color: #2C365A;
 

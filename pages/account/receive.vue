@@ -175,7 +175,7 @@ export default {
 			width: 532rpx;
 			height: 80rpx;
 			font-family: PingFangSC-Medium;
-			font-weight: 500;
+			font-weight: 600;
 			font-size: 28rpx;
 			color: #2C365A;
 			text-align: center;
@@ -203,7 +203,6 @@ export default {
 
 
 	.bottom_title {
-		width: 288rpx;
 		height: 44rpx;
 		font-family: AlibabaPuHuiTi-Bold;
 		font-weight: Bold;

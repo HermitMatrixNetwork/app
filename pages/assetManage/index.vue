@@ -120,7 +120,7 @@ export default {
       }
 
       /deep/ input {
-        font-weight: 500 !important;
+        font-weight: 600 !important;
         color: #8397B1 !important;
       }
     }
