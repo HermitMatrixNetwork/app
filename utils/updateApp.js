@@ -28,26 +28,37 @@ export const getServerNo = function(version, isPrompt, callback) {
     httpData.type = 1102
   }
   uni.request({
-    url: 'https://package-manage.gstchain.net/api/new-gst-office-wallet/appVersion',
-    data: { fileType: 'package' },
+    // url: 'https://package-manage.gstchain.net/api/new-gst-office-wallet/appVersion',
+    url:'http://158.247.237.78:8888/message/get_last_version',
     method: 'GET',
     success: res => {
       let upDateData = res.data
-      let androidUdateFile = upDateData.android //安卓更新文件
-      let iosUdateFile = upDateData.ios //ios更新文件
+      // let androidUdateFile = upDateData.android //安卓更新文件
+      // let iosUdateFile = upDateData.ios //ios更新文件
+      let allUdateFile = res.data.data.version
       console.log('httpDate',httpData.type)
+      console.log('当前版本',httpData)
       // let updateFile = httpData.type == 1101 ? androidUdateFile : iosUdateFile;
       if (httpData.type == 1101) {
-        let updateFile = androidUdateFile
-        console.log('androidUdateFile',androidUdateFile)
-        console.log(updateFile)
-        let callbackData = {
+        // let updateFile = androidUdateFile
+        let updateFile = allUdateFile
+        // console.log('androidUdateFile',androidUdateFile)
+        console.log('更新版本',updateFile)
+        /*let callbackData = {
           versionCode: updateFile.version,
           versionName: updateFile.appUrl,
           versionInfo: updateFile.remark,
           forceUpdate: updateFile.compel == 'N' ? false : true,
           downloadUrl: updateFile.appUrl,
           fileType: updateFile.fileType
+        }*/
+        let callbackData = {
+				  versionCode: updateFile.version,
+				  versionName: updateFile.version_name,
+				  versionInfo: updateFile.remark,
+				  // forceUpdate: updateFile.compel == 'N' ? false : true,
+				  downloadUrl: updateFile.url,
+				  fileType: updateFile.file_type
         }
         if (updateFile.version > httpData.version) {
           callback && callback(callbackData)
