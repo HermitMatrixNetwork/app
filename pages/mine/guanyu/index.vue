@@ -33,7 +33,7 @@
 				</view>
 				
 			</view>
-			<button @click="test" v-if="updateIsShow">test</button>
+			<!-- <button @click="test" v-if="updateIsShow">test</button> -->
 		</view>
 	</view>
 </template>
@@ -64,18 +64,19 @@ export default {
   },
   methods: {
     async getData() {
-      const res = await getVersion()
-      console.log('版本信息', res)
-      const {
-        version
-      } = res.data.data.version
-      if (this.appId < version) {
-        console.log('发现新版本')
-        this.updateIsShow = true
-        return
-      } else if (this.appId === version) {
-        return this.initIsShow = true
-      }
+      updateApp()
+      // const res = await getVersion()
+      // console.log('版本信息', res)
+      // const {
+      //   version
+      // } = res.data.data.version
+      // if (this.appId < version) {
+      //   console.log('发现新版本')
+      //   this.updateIsShow = true
+      //   return
+      // } else if (this.appId === version) {
+      //   return this.initIsShow = true
+      // }
       // this.version = res.data.data.version
     },
     getAppVersion() {

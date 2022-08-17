@@ -51,5 +51,7 @@ export const getVersion = async () => {
   return http.get('/message/get_last_version')
 }
 
-
-
+//通过email查询历史反馈
+export const queryFeedbackHistory = async (email) => {
+  return http.post('/message/feedback_problem_history',{email})
+}

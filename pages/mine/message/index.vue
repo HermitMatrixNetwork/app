@@ -96,7 +96,13 @@ export default {
 	}
 
 	.message {
-
+		// #ifdef H5
+		height: calc(100vh - 112rpx - 1px);
+		// #endif
+		// #ifdef APP-PLUS
+		height: calc(100vh - 112rpx - 1px - var(--status-bar-height));
+		// #endif
+		overflow: auto;
 
 		&-item {
 			padding: 32rpx 30rpx 34rpx 42rpx;

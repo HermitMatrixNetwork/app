@@ -1,18 +1,21 @@
 <template>
 	<view class="container">
-		<custom-header class="header" title="消息详情"></custom-header>
+		<custom-header class="header" title="反馈详情"></custom-header>
 
 		<view class="message">
-			<view class="title">{{msg.cn_title}}</view>
+			<view class="title">{{msg.title}}</view>
 			<view class="meta">
 				<view class="create-time">{{timestamp(msg.timestamp)}}</view>
 				<view class="create-author">
-					<text>发布者：{{msg.author}}</text>
+					<text>发布者：{{msg.email}}</text>
 				</view>
 			</view>
-			<view class="content" v-html="contentMsg">
+			<view class="content">
+				{{msg.desc}}
 			</view>
-			
+			<view class="photos">
+				<image :src="item" v-for="(item,index) in photos" :key="index"></image>
+			</view>
 		</view>
 	</view>
 </template>
@@ -22,11 +25,10 @@ export default {
   data() {
     return {
       msg: {
-        author:'',
+        email:'',
         timestamp:'',
         title:''
       },
-      content:''
     }
   },
   created() {
@@ -36,7 +38,7 @@ export default {
     eventChannel.on('acceptDataFromOpenerPage', function(data) {
 		    console.log('接收到的数据',data.data)			
       _this.msg = data.data
-      _this.content = data.data.cn_content
+      _this.photos = JSON.parse(data.data.photos)
       // this.msg = data.data
       // console.log(this.msg)
     })
@@ -53,9 +55,6 @@ export default {
         let seconds = date.getSeconds()
         return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds
       }
-    },
-    contentMsg(){
-      return this.content.replace(/<a/g,'<h3').replace(/<\/a/g,'<h3')
     }
   }
 }
@@ -97,6 +96,9 @@ export default {
 		.content {
 			font-size: 28rpx;
 			color: #8397B1;
+		}
+		.photos{
+			margin-top: 32rpx;
 		}
 	}
 </style>

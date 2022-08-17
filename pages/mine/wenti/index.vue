@@ -94,7 +94,8 @@ import language from './language/index.js'
 import SubmitBtn from '../../account/send/components/submit-btn.vue'
 import Notify from '@/pages/index/components/notify.vue'
 import {
-  problemFeedback
+  problemFeedback,
+  queryFeedbackHistory
 } from '@/api/token.js'
 import { pathToBase64, base64ToPath } from 'image-tools'
 export default {
@@ -124,8 +125,32 @@ export default {
     cancel() {
       this.showEditWalletNameModal = false
     },
-    confirm() {
-
+    async confirm() {
+    //   if(/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(this.email)){
+      // console.log('正确')
+      const res = await queryFeedbackHistory(this.email)
+      console.log('历史记录',res)
+      if(res.data.code == 0 && res.data.data.notices.length !==0 ){
+        uni.navigateTo({
+          url:'./record',
+          events: {
+					  sendMessage(res) {
+					    console.log(res)
+					  }
+          },
+          success(data) {
+					  data.eventChannel.emit('acceptDataFromOpenerPage', res)
+          }
+        })
+        this.email = ''
+      }else{
+        this.showEditWalletNameModal = false
+        this.$refs.notify.show('success', '暂无反馈历史')
+      }
+			
+      // }else{
+      //   this.editNameError = true
+      // }  
     },
     async submitBtn() {
       const {
