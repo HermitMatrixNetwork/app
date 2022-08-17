@@ -1,81 +1,143 @@
 <template>
-  <view class="container">
-    <custom-header class="header" title="消息中心" :customStyle="{ 'background-color': '#fff' }"></custom-header>
+	<view class="container">
+		<custom-header class="header" title="消息中心" :customStyle="{ 'background-color': '#fff' }"></custom-header>
 
-    <view class="message">
-      <view class="message-item" v-for="(item, index) in 5" :key="index" @click="toDetail">
-        <view class="title">这是标题内容</view>
-        <view class="content">这是正文内容这是正文内容这是正文内容这是正文内容这是正文内容这是正文内容这是正文内容…...</view>
-        <view class="time">07-11 17:45</view>
-      </view>
-    </view>
-  </view>
+		<view class="message">
+			<view class="message-item" v-for="(item, index) in [...noticeList,...readList]" :key="index" @click="toDetail(item)"
+				:class="alreadyRead.includes(item.ID)?'':'unread'">
+				<view class="title">{{item.cn_title}}</view>
+				<view class="content" v-html="content(item.cn_content)"></view>
+				<view class="time">{{timestamp(item.timestamp)}}</view>
+			</view>
+		</view>
+	</view>
 </template>
 
 <script>
+import {
+  getNotice
+} from '@/api/token.js'
+
 export default {
   data() {
     return {
-
+      noticeList: [],
+      alreadyRead: this.$cache.get('_alreadyRead') || [],
+      readList:[]
     }
   },
+  onLoad() {
+    this.getData()
+  },
   methods: {
-    toDetail() {
+    toDetail(data) {
+      this.alreadyRead.push(data.ID)
+      this.$cache.set('_alreadyRead', Array.from(new Set(this.alreadyRead)), 0)
       uni.navigateTo({
-        url: './detail'
+        url: './detail',
+        events: {
+          sendMessage(data) {
+            console.log(data)
+          }
+        },
+        success(res) {
+          res.eventChannel.emit('acceptDataFromOpenerPage', {
+            data
+          })
+        }
       })
+    },
+    async getData() {
+      const res = await getNotice()
+      console.log('通知信息', res)
+      let arr = res.data.data.notices.sort((a, b) => b.timestamp - a.timestamp)
+      if(this.alreadyRead.length == 0){
+        return this.noticeList = arr
+      }else{
+        arr.forEach(item=>{
+          if(this.alreadyRead.includes(item.ID)){
+            this.readList.push(item)
+          }else{
+            this.noticeList.push(item)
+          }
+        })
+      }
+    },
+  },
+  computed: {
+    timestamp() {
+      return function(time) {
+        let date = new Date(time * 1000)
+        let month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+        let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+        let hours = date.getHours()
+        let minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+        return month + '-' + day + ' ' + hours + ':' + minutes
+      }
+    },
+    //替换a标签
+    content(){
+      return function(value){
+        return value.replace(/<a/g,'<h3').replace(/<\/a/g,'<h3')
+      }
     }
-  }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-  .container {
-    height: 100vh;
-    background-color: #F4F6F9;
-  }
+	.container {
+		height: 100vh;
+		background-color: #F4F6F9;
+	}
 
-  .header {
-    margin-bottom: 2rpx;
-  }
+	.header {
+		margin-bottom: 2rpx;
+	}
 
-  .message {
-    
-    
-    &-item {
-      padding: 32rpx 30rpx 34rpx 42rpx;
-      background-color: #fff;
-      &:not(:last-child) {
-        margin-bottom: 16rpx;
-      }
-    }
-    
+	.message {
 
 
-    .title {
-      font-weight: 400;
-      font-size: 28rpx;
-      color: #2C365A;
-      letter-spacing: 0;
-    }
+		&-item {
+			padding: 32rpx 30rpx 34rpx 42rpx;
+			background-color: #fff;
 
-    .content {
-      font-weight: 400;
-      font-size: 24rpx;
-      color: #8397B1;
-      word-break: break-all;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      margin: 16rpx 0 24rpx;
-    }
+			&:not(:last-child) {
+				margin-bottom: 16rpx;
+			}
+		}
 
-    .time {
-      font-weight: 400;
-      font-size: 24rpx;
-      color: #8397B1;
-    }
-  }
+
+
+		.title {
+			font-weight: 400;
+			font-size: 28rpx;
+			color: #2C365A;
+			letter-spacing: 0;
+		}
+
+		.content {
+			font-weight: 400;
+			font-size: 24rpx;
+			color: #8397B1;
+			word-break: break-all;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			margin: 16rpx 0 24rpx;
+		}
+
+		.time {
+			font-weight: 400;
+			font-size: 24rpx;
+			color: #8397B1;
+		}
+	}
+	
+	
+	.unread{
+		background:#dafefe40;
+	}
 </style>

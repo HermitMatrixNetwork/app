@@ -1,61 +1,101 @@
 <template>
-  <view class="container">
-    <custom-header class="header" title="消息详情"></custom-header>
-    
-    <view class="message">
-      <view class="title">这是标题内容</view>
-      <view class="meta">
-        <view class="create-time">2022-04-27  22:55:56</view>
-        <view class="create-author">
-          <text>发布者：</text>
-          <text>Hermit Wallet 官方</text>
-        </view>
-      </view>
-      <view class="content">
-        内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容。
-      </view>
-    </view>
-  </view>
+	<view class="container">
+		<custom-header class="header" title="消息详情"></custom-header>
+
+		<view class="message">
+			<view class="title">{{msg.cn_title}}</view>
+			<view class="meta">
+				<view class="create-time">{{timestamp(msg.timestamp)}}</view>
+				<view class="create-author">
+					<text>发布者：{{msg.author}}</text>
+				</view>
+			</view>
+			<view class="content" v-html="contentMsg">
+			</view>
+			
+		</view>
+	</view>
 </template>
 
 <script>
 export default {
   data() {
     return {
-        
+      msg: {
+        author:'',
+        timestamp:'',
+        title:''
+      },
+      content:''
+    }
+  },
+  created() {
+    // this.msg = JSON.parse(value.data)
+    const eventChannel = this.getOpenerEventChannel()
+    let _this = this
+    eventChannel.on('acceptDataFromOpenerPage', function(data) {
+		    console.log('接收到的数据',data.data)			
+      _this.msg = data.data
+      _this.content = data.data.cn_content
+      // this.msg = data.data
+      // console.log(this.msg)
+    })
+  },
+  computed: {
+    timestamp() {
+      return function(time) {
+        let date = new Date(time * 1000)
+        let year = date.getFullYear()
+        let month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+        let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+        let hours = date.getHours()
+        let minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+        let seconds = date.getSeconds()
+        return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds
+      }
+    },
+    contentMsg(){
+      return this.content.replace(/<a/g,'<h3').replace(/<\/a/g,'<h3')
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.header {
-  border-bottom: 2rpx solid #F4F6F9;
-}
+	.container{
+		height: 100vh;
+	}
+	.header {
+		border-bottom: 2rpx solid #F4F6F9;
+	}
 
-.message {
-  padding: 50rpx 32rpx 0;
-  .title {
-    font-weight: 600;
-    font-size: 36rpx;
-    color: #32475F;
-    margin-bottom: 24rpx;
-  }
-  .meta {
-    display: flex;
-    height: 24px;
-    font-size: 24rpx;
-    color: #8397B1;
-    line-height: 24rpx;
-    margin-bottom: 32rpx;
-    .create-time {
-      margin-right: 18rpx;
-    }
-  }
-  
-  .content {
-    font-size: 28rpx;
-    color: #8397B1;
-  }
-}
+	.message {
+		height: 100vh;
+		padding: 0 32rpx 0;
+
+		.title {
+			font-weight: 600;
+			font-size: 36rpx;
+			color: #32475F;
+			margin-bottom: 24rpx;
+		}
+
+		.meta {
+			display: flex;
+			height: 24px;
+			font-size: 24rpx;
+			color: #8397B1;
+			line-height: 24rpx;
+			margin-bottom: 32rpx;
+
+			.create-time {
+				margin-right: 18rpx;
+			}
+		}
+
+		.content {
+			font-size: 28rpx;
+			color: #8397B1;
+		}
+	}
 </style>
