@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <custom-header :title="language.resetPassword" :customStyle="{ 'background-color': '#fff' }"></custom-header>
+    <custom-header backUrl="/pages/walletManager/index"  :title="language.text118" :customStyle="{ 'background-color': '#fff' }"></custom-header>
 
     <view class="wallet-password">
       <view class="wallet-password-label">
@@ -19,13 +19,14 @@
       </view>
     </view>
 
-    <u-button class="btn" :class="{disable: disable}" @click="toNextStep">下一步</u-button>
-    <u-toast ref="uToast"></u-toast>
+    <u-button class="btn" :class="{disable: disable}" @click="toNextStep">{{ language.text149 }}</u-button>
+    <!-- <u-toast ref="uToast"></u-toast> -->
+    <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
 <script>
-import language from './language/index.js'
+import language from '@/pages/account/language/index.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
 import mixin from './mixins/mixin.js'
 export default {
@@ -33,9 +34,9 @@ export default {
   data() {
     return {
       language: language[this.$cache.get('_language')],
-      errorTip: ['confirmPasswordErrorTip', 'passwordDuplication', 'verifyPasswordFail'],
-      label: ['VerifyOriginalPassword', 'setNewPassowrd', 'confirmNewPassword'],
-      placeholder: ['resetFundPasswordPlaceholder', 'setNewPassowrd', 'verifyPasswordCheckPlaceholder'],
+      errorTip: ['text150', 'text157', 'text156'],
+      label: ['text147', 'text153', 'text154'],
+      placeholder: ['text148', 'text153', 'text154'],
       passwordEye: false,
       disable: true,
       flag: 0,
@@ -79,16 +80,12 @@ export default {
           wallet.password = WalletCrypto.encode(this.newPassword)
           this.$cache.set('_currentWallet', wallet, 0)
           this.updateWalletList(wallet)
-          this.$refs.uToast.show({
-            type: 'success',
-            title: '修改密码成功',
-            message: '修改密码成功',
-            complete: () => {
-              uni.redirectTo({
-                url: '/pages/walletManager/index'
-              })
-            }
-          })
+          this.$refs.notify.show('', this.language.text158, { bgColor: '#275EF1' })
+          setTimeout(() => {
+            uni.redirectTo({
+              url: '/pages/walletManager/index'
+            })
+          }, 1500)
         }
         break
       }
@@ -201,12 +198,11 @@ export default {
   }
 
   .error-tip {
-    height: 24rpx;
     margin-top: 16rpx;
     font-weight: 400;
     font-size: 24rpx;
     color: #EC2828;
-    line-height: 24rpx;
+    line-height: 36rpx;
   }
 
   .error {

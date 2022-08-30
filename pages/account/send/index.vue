@@ -1,6 +1,7 @@
 <template>
   <view class="sendPage">
-    <custom-header :title="'发送'" :style="titleStyle">
+    <view class="mask" v-show="transferLoading"></view>
+    <custom-header :title="language.text15" :style="titleStyle">
       <template #right>
         <u-icon :name="require('@/static/img/account/saoma.png')" size="44rpx" @click="scanCode" />
       </template>
@@ -20,14 +21,14 @@
 
         <!-- 收款地址 -->
         <view class="collection-adres">
-          <InputTitle :title="'收款地址'" :type="'text'" :placeholder="'输入或粘贴钱包地址'" ref="addressInptval"
+          <InputTitle :title="language.text16" :type="'text'" :placeholder="language.text17" ref="addressInptval"
             :inputVal.sync="sendFormData.receiveAddress">
             <template #title-icon>
               <u-icon :name="require('../../../static/img/account/addressbook.png')" size="44rpx"
                 @click="toAddressBook"></u-icon>
             </template>
           </InputTitle>
-          <text v-if="showAddressErrorTip" class="waringPrompt">{{ language['addressErrorTip'] }}</text>
+          <text :style="{ opacity: showAddressErrorTip ? 1 : 0 }" class="waringPrompt">收款地址不能为空</text>
         </view>
 
         <!-- 发送金额 -->
@@ -35,7 +36,7 @@
           <view class="send-amount">
             <view class="amount">
               <view class="label">
-                <text>发送金额</text>
+                <text>{{ language.text18 }}</text>
                 <view class="can-be-use">
                   可用： 
                   <custom-loading v-if="loading"></custom-loading>
@@ -47,17 +48,17 @@
                 <view class="value-info">
                   <text class="denom">{{ token.alias_name }}</text>
                   <view class="border"></view>
-                  <text class="all" @click="testAmount">全部</text>
+                  <text class="all" @click="testAmount">{{ language.text21 }}</text>
                 </view>
               </view>
             </view>
           </view>
           <text v-if="sendFormData.sendAmount > token.balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text>
-          <text v-else-if="showAmountErrorTip" class="waringPrompt">{{ language.amountErrorTip }}</text>
+          <text v-else-if="showAmountErrorTip" class="waringPrompt">转账金额不能为0</text>
         </view>
 
         <view class="send-memo">
-          <InputTitle :title="'Memo'" :type="'text'" :placeholder="'请输入Memo（选填）'" :inputVal.sync="sendFormData.memo">
+          <InputTitle :title="'Memo'" :type="'text'" :placeholder="language.text106" :inputVal.sync="sendFormData.memo">
           </InputTitle>
         </view>
       </view>
@@ -67,7 +68,7 @@
       <miners-column @getMinersCost="getMinersCost"></miners-column>
 
       <view class="submit-btn" @click="transferConfirm">
-        <Submitbtn>确认</Submitbtn>
+        <Submitbtn>{{ language.text144 }}</Submitbtn>
       </view>
     </view>
 
@@ -76,26 +77,26 @@
       <view class="submitPopup">
         <view class="main">
           <view class="popup-title">
-            转账确认
+            {{ language.text42 }}
             <u-icon :name="require('../../../static/img/account/close.png')" size="32rpx"
               @click="submitPopupIsShow=false"></u-icon>
           </view>
 
           <!-- 发送账户 -->
           <view class="send-address">
-            <text>发送账户</text>
+            <text>{{language.text43}}</text>
             <text>{{sendFormData.userAddress}}</text>
           </view>
 
           <!-- 接收账户 -->
           <view class="receive_address">
-            <text>接收账户</text>
+            <text>{{ language.text174 }}</text>
             <text>{{sendFormData.receiveAddress}}</text>
           </view>
 
           <!-- 转账金额 -->
           <view class="transfer_amount">
-            <text>转账金额</text>
+            <text>{{ language.text45 }}</text>
             <text>{{sendFormData.sendAmount?sendFormData.sendAmount:'0'}} {{ token.alias_name }}</text>
           </view>
 
@@ -107,15 +108,15 @@
 
           <!--矿工费-->
           <view class="miners_fee">
-            <text>矿工费</text>
+            <text>{{language.text46}}</text>
             <view>
-              <view>21000 GWEI*2100 GasPrice</view>
-              <view class="price">0.000287 GHM</view>
+              <view>{{ token.alias_name == mainCoin.alias_name ? 25000 : 40000 }} GWEI * {{ sendFormData.gas }} GasPrice</view>
+              <view class="price">{{ token.alias_name == mainCoin.alias_name ? 25000 * sendFormData.gas : 40000 * sendFormData.gas }} GHM</view>
             </view>
           </view>
         </view>
         <view class="submit-btn" @click="submitAgain">
-          <Submitbtn>确认</Submitbtn>
+          <Submitbtn>{{ language.text47 }}</Submitbtn>
         </view>
       </view>
     </u-popup>
@@ -123,41 +124,63 @@
     <u-modal :show="modalPasswordIsShow" :showConfirmButton="false">
       <view class="modal_main">
         <view class="modal_title">
-          密码确认
+          <view>
+            {{ verifyMethod == 'touchID' ? `指纹验证` : language.text48 }}
+            <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''" class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
+          </view>
           <u-icon :name="require('../../../static/img/account/close.png')" size="32rpx"
-            @click="modalPasswordIsShow=false"></u-icon>
+            @click="closeModalPasswordIsShow"></u-icon>
         </view>
-        <view class="item">
-          <view class="item-input item-input-password">
-            <u-input :password="!passwordEye" v-model="payPassword" placeholder="输入资金密码">
-            </u-input>
-            <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
-              @click="passwordEye = !passwordEye">
-            </u-icon>
+        <!--  -->
+        <view v-if="verifyMethod == 'password'">
+          <view class="item">
+            <view class="item-input item-input-password">
+              <u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text49">
+              </u-input>
+              <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
+                @click="passwordEye = !passwordEye">
+              </u-icon>
+            </view>
+          </view>
+          <text v-if="passwordCheck" class="waringPrompt">{{ language.text51 }}</text>
+          <u-button @click="passwordButton" class="btn">{{ language.text107 }}</u-button>
+        </view>
+        <view v-else class="touch-verify">
+          <view class="logo">
+            <image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
           </view>
         </view>
-        <!-- <input type="text"> -->
-        <text v-if="passwordCheck" class="waringPrompt">资金密码错误，请确认后重新输入!</text>
-        <!-- <Submitbtn class="modal_submit" @click.native="passwordButton" >确认</Submitbtn> -->
-        <u-button @click="passwordButton" class="btn">确认</u-button>
+        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">切换验证方式</view>
       </view>
     </u-modal>
     <view :check="checkSuccess" :change:check="render.sendToken"></view>
+    
+    <!-- 指纹验证 -->
+    <view class="toast" v-show="showToast">
+      <view class="toast-icon">
+        <image :src="toast.icon"></image>
+      </view>
+      <view class="toast-content">
+        <text>{{ toast.msg }}</text>
+      </view>
+    </view>
   </view>
 </template>
 
 <script>
 import InputTitle from './components/Input-title.vue'
-import languages from './language/index.js'
+import languages from '../language/index.js'
 import Submitbtn from './components/submit-btn.vue'
 import {
   SendTokentoOtherAddress,
   getBalance
 } from '@/utils/secretjs/SDK.js'
 import mixin from '../mixins/index.js'
+import verifyTouchID from '../mixins/verifyTouchID.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
+import mainCoin from '@/config/index.js'
 export default {
-  mixins: [mixin],
+  mixins: [mixin, verifyTouchID],
   components: {
     InputTitle,
     Submitbtn
@@ -165,11 +188,13 @@ export default {
   data() {
     return {
       language: languages[this.$cache.get('_language')],
+      verifyMethod: 'password',
       tokenUrl: '/static/img/account/uGHM.png',
       tokenName: 'GHM',
       inputVal: '',
       payPassword: '', //资金密码
       passwordCheck: false, //密码校验
+      verifyTouchErrorTip: '',
       submitPopupIsShow: false,
       modalPasswordIsShow: false,
       checkSuccess: 0,
@@ -197,9 +222,20 @@ export default {
       showAmountErrorTip: false,
       passwordEye: false,
       loading: false,
+      transferLoading: false,
+      // 指纹验证
+      touchId: this.$cache.get('_touchId'),
+      showToast: false,
+      toast: {
+        icon: '/static/img/mine/loading.gif',
+        // msg: '失败次数超出限制，请稍后再设置',
+        msg: '失败次数超出限制，请切换其它方式验证'
+      },
+      mainCoin
     }
   },
   onLoad(options) {
+    if (this.touchId) this.verifyMethod = 'touchID'
     if (options.tokenID) {
       this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
     } else {
@@ -223,6 +259,20 @@ export default {
     }
   },
   methods: {
+    closeModalPasswordIsShow() {
+      this.modalPasswordIsShow = false
+      if (this.touchId) {
+        plus.fingerprint.cancel()
+      }
+    },
+    changeVerifyMethod() {
+      this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password' 
+      if (this.verifyMethod == 'touchID') {
+        this.verify()
+      } else {
+        plus.fingerprint.cancel()
+      }
+    },
     toAddressBook() {
       uni.navigateTo({
         url: '/pages/account/send/adres_book',
@@ -233,8 +283,34 @@ export default {
         }
       })
     },
-    submitAgain() {
+    hideModel() {
+      this.modalPasswordIsShow = false
+    },
+    verifyTouchIDSuccess() {
+      this.$nextTick(() => {
+        this.checkSuccess = this.sendFormData
+        this.transferLoading = true
+        this.$nextTick(() => {
+          uni.showToast({
+            title: '交易中',
+            icon: 'loading',
+            duration: 999999999
+          })          
+        })
+      })
+    },
+    async submitAgain() {
       this.modalPasswordIsShow = true
+      // #ifdef APP-PLUS
+      if (this.touchId ) {
+        this.verify()
+      }
+      // #endif
+      
+      // #ifndef APP-PLUS
+      this.touchId = 0
+      // #endif
+      
       this.submitPopupIsShow = false
     },
     async transferConfirm() { //转账确认
@@ -243,7 +319,7 @@ export default {
         sendAmount,
         memo
       } = this.sendFormData
-
+      
       if (receiveAddress.trim() === '') {
         this.showAddressErrorTip = true
       } else {
@@ -256,7 +332,8 @@ export default {
         this.showAmountErrorTip = false
       }
 
-      // && this.sendFormData.sendAmount < this.token.balance
+      // && this.sendFormData.sendAmount < this.token.balance   
+      console.log(this.showAddressErrorTip, this.showAmountErrorTip, this.sendFormData.sendAmount <= this.token.balance)
       if (!this.showAddressErrorTip && !this.showAmountErrorTip && this.sendFormData.sendAmount <= this.token.balance) {
         this.submitPopupIsShow = true
       }
@@ -268,6 +345,8 @@ export default {
       } else {
         this.passwordCheck = false
         this.checkSuccess = this.sendFormData // 调用render.sendToken
+        this.modalPasswordIsShow = false
+        this.transferLoading = true
         uni.showToast({
           title: '交易中',
           icon: 'loading',
@@ -280,7 +359,7 @@ export default {
       this.sendFormData.sendAmount = this.token.balance
     },
     getMinersCost(val) {
-      this.minersMsg = val
+      this.sendFormData.gas = val.amount
     },
     scanCode() { //扫码
       uni.scanCode({
@@ -315,6 +394,8 @@ export default {
       })
     },
     dealSuccessJump({ res: result, otherToken }) {
+      this.transferLoading = false
+      this.checkSuccess = 0
       let fee, usedAmount
       if (!otherToken && result.tx) {
         fee = result.tx.authInfo.fee.amount[0].amount / (this.token.decimals || 1)
@@ -325,12 +406,10 @@ export default {
       if (result.code == 0) {
         uni.showToast({
           title: '交易成功',
-          image: '/static/img/chenggong.png',
+          image: '/static/img/mine/success.png',
           mask: true,
           duration: 3000,
           complete: () => {
-            this.checkSuccess = 0
-            this.modalPasswordIsShow = false
             setTimeout(() => {
               uni.redirectTo({
                 url: `./transactionDetails?data=${JSON.stringify(result)}`
@@ -340,17 +419,15 @@ export default {
           }
         })
 
-        !otherToken && (this.token.balance = this.token.balance - fee - usedAmount)
+        !otherToken && fee && (this.token.balance = this.token.balance - fee - usedAmount)
       } else {
         uni.showToast({
           title: '交易失败',
-          image: '/static/img/shibai1.png',
+          image: '/static/img/mine/fail.png',
           mask: true,
           duration: 3000
         })
-        this.modalPasswordIsShow = false
-        console.log(result.rawLog)
-        !otherToken && (this.token.balance = this.token.balance - fee)
+        !otherToken && fee && (this.token.balance = this.token.balance - fee)
       }
 
       const wallet = this.$cache.get('_currentWallet')
@@ -417,6 +494,7 @@ export default {
           gas,
           decimals
         } = newValue
+        gas = gas * mainCoin.decimals
         if (newValue.token.alias_name == mainCoin.alias_name) {
           sendAmount = sendAmount * mainCoin.decimals
           try {
@@ -428,7 +506,7 @@ export default {
         } else {
           try {
             otherToken = true
-            await transferOtherToken({
+            const result = await transferOtherToken({
               sender: userAddress,
               contractAddress: newValue.token.contract_address,
               codeHash: newValue.token.codeHash,
@@ -438,7 +516,8 @@ export default {
                   amount: sendAmount * newValue.token.decimals + ''
                 }
               }
-            }, newValue.memo)
+            }, newValue.memo, gas)
+            if (result.code !== 0) throw result
             res = (await getOtherTransationHistory({
               contract: { address: newValue.token.contract_address, codeHash: newValue.token.codeHash },
               address: userAddress,
@@ -447,6 +526,7 @@ export default {
               page_size: 1,
               page: 1
             }, newValue.token)).transaction_history.txs[0]
+            console.log('record', res)
             for(let val of Object.values(res.action)) {
               res.to_address = val.recipient
               res.from_address = val.from
@@ -469,6 +549,15 @@ export default {
   }
 </script>
 <style lang="scss" scoped>
+  .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,.5) !important;
+    z-index: 9999;
+  }
   .sendPage {
     width: 100%;
     height: 100%;
@@ -518,12 +607,12 @@ export default {
     //收款地址
     .collection-adres {
       width: 100%;
-      height: 156rpx;
+      // height: 156rpx;
     }
 
     //发送金额
     .send-amount {
-      margin-top: 32rpx;
+      margin-top: 56rpx;
       position: relative;
 
       .balance {
@@ -560,7 +649,7 @@ export default {
     }
 
     .send-memo {
-      margin-top: 32rpx;
+      margin-top: 56rpx;
     }
   }
 
@@ -860,5 +949,58 @@ export default {
         }
       }
     }
+  }
+  
+  
+  // 指纹验证
+  .touch-verify {
+    margin-top: 80rpx;
+    .logo {
+      text-align: center;
+    }
+  }
+  
+  .changeVerifyMethod {
+    text-align: right;
+    font-family: PingFangSC-Regular;
+    font-size: 28rpx;
+    color: #1E5EFF;
+    margin-top: 20rpx;
+  }
+  
+  .toast {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) !important;
+    width: 240rpx;
+    background: rgba(0, 0, 0, .6);
+    padding: 0 20rpx 32rpx;
+    justify-content: center;
+    border-radius: 6rpx;
+    z-index: 999999999;
+  
+    &-icon {
+      text-align: center;
+      margin-top: 65rpx;
+  
+      image {
+        width: 65rpx;
+        height: 65rpx;
+      }
+    }
+  
+    &-content {
+      margin-top: 20rpx;
+      font-weight: 400;
+      font-size: 28rpx;
+      color: #FFFFFF;
+      text-align: center;
+    }
+  }
+  
+  .verifyTouchErrorTip {
+    color: red;
+    font-size: 24rpx;
   }
 </style>

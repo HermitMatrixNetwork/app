@@ -28,8 +28,9 @@ export default {
     copy(data) {
 		  uni.setClipboardData({
 		    data,
-		    success: function () {
-		      console.log('success')
+		    showToast: false,
+		    success: () => {
+		      this.$refs.notify.show('error', this.language.text56, { bgColor: '#275EF1'})
 		    },
 		  })
     },

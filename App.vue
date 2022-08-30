@@ -1,27 +1,85 @@
 <script>
-import isTor from 'is-tor'
+import {
+  isTor
+} from '@/utils/index.js'
+import {
+  MINERS_GAS,
+  DEFAULT_RPC
+} from '@/config/index.js'
 export default {
-  onLaunch() {
-    this.$cache.get('_language') !== null || this.$cache.set('_language', 'CN', 0)
-    this.$cache.get('_addressBook') !== null || this.$cache.set('_addressBook', [], 0)
-    this.$cache.get('_touchId') !== null || this.$cache.set('_touchId', 0, 0)
-    
-    // uni.request({
-    //   url:'http://pv.sohu.com/cityjson?ie=utf-8',
-    //   method:'POST',
-    //   success: (res) => {
-    //     console.log('res',res)
-    //     const reg = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/
-    //     let ip = reg.exec(res.data)
-    //    console.log('ip',ip[0])
-    //     // let tor = isTor(ip[0])
-    //     let tor = isTor('66.249.75.86')
-    //     console.log('ip',tor)
-    //     console.log('ip',isTor('176.10.99.200'))
-     
-    //   }
-    // })
+  data() {
+    return {
+      isTor: false
+    }
+  },
+  async onLaunch() {
+    this.$cache.get('_language') || this.$cache.set('_language', 'CN', 0)
+    this.$cache.get('_addressBook') || this.$cache.set('_addressBook', [], 0)
+    this.$cache.get('_touchId') || this.$cache.set('_touchId', 0, 0)
+    this.$cache.get('_MINERS_GAS') || this.$cache.set('_MINERS_GAS', MINERS_GAS, 0)
+    this.$cache.get('_currentRpc') || this.$cache.set('_currentRpc', DEFAULT_RPC.link, 0)
+      
+    // #ifdef APP-PLUS
+    // 判断是否是被洋葱代理服务代理
+    this.isTor = await isTor()
 
+    if (!this.isTor) {
+      uni.reLaunch({
+        url: '/pages/index/index',
+        success: () => {
+            
+          plus.navigator.closeSplashscreen()
+            
+        }
+      })
+    } 
+    // #endif
+      
+    // if (!this.isTor && this.$cache.get('_currentWallet') == null) {
+    //   uni.clearStorageSync()
+    //   this.$cache.set('_agree_protocol', false, 0)
+    //   uni.reLaunch({
+    //     url: '/pages/index/index',
+    //     success: () => {
+    //       // #ifdef APP-PLUS
+    //       plus.navigator.closeSplashscreen()
+    //       // #endif
+    //     }
+    //   })
+    // } else {
+    //   uni.reLaunch({
+    //     url: '/pages/account/index',
+    //     success: () => {
+    //       // #ifdef APP-PLUS
+    //       plus.navigator.closeSplashscreen()
+    //       // #endif
+    //     }
+    //   })
+    // }
+  },
+  async onShow() {
+    uni.hideTabBar()
+    // #ifdef APP-PLUS
+    this.isTor = await isTor()
+    if (!this.isTor) {
+      uni.showToast({
+        title: '请开启洋葱代理服务器',
+        icon: 'none'
+      })
+      // uni.reLaunch({
+      //   url: '/pages/index/index',
+      //   success: () => {
+
+      //     plus.navigator.closeSplashscreen()
+
+      //   }
+      // })
+
+      setTimeout(() => {
+        // plus.runtime.quit()
+      }, 1500)
+    }
+    // #endif
   }
 }
 </script>

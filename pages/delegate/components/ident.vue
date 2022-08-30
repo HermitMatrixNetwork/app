@@ -4,8 +4,8 @@
 		<!-- <view :state="state" :change:state="changeData"></view> -->
 		<view class="header-box">
 			<view class="header">
-				<headerItem title="当前可用余额" :value="currentWallet.coinList[0].balance" />
-				<headerItem title="当前锁定余额" />
+				<headerItem :title="language.text45" :value="currentWallet.coinList[0].balance" />
+				<headerItem :title="language.text46" />
 			</view>
 		</view>
 		<view class="my-delegate">
@@ -22,33 +22,33 @@
       >
       </u-tabs>
      <view class="sort-list">
-        <view class="item" @click="sort('总委托数')">
-            <text>总委托数</text>
+        <view class="item" @click="sort(language.text48)">
+            <text>{{ language.text48 }}</text>
            <view class="icon">
-              <image :class="sortRule" v-if="sortTarget == '总委托数'" src="/static/img/delegate/sort.png"></image>
+              <image :class="sortRule" v-if="sortTarget == language.text48" src="/static/img/delegate/sort.png"></image>
               <image v-else src="/static/img/delegate/unsort.png"></image>
             </view>
         </view>
-       <view class="item" @click="sort('活跃度')">
-          <text>活跃度</text>
+       <view class="item" @click="sort(language.text49)">
+          <text>{{ language.text49 }}</text>
           <view class="icon">
-            <image :class="[sortRule]" v-if="sortTarget == '活跃度'" src="/static/img/delegate/sort.png"></image>
+            <image :class="[sortRule]" v-if="sortTarget == language.text49" src="/static/img/delegate/sort.png"></image>
             <image v-else src="/static/img/delegate/unsort.png"></image>
           </view>
         </view>
-        <view class="item" @click="sort('佣金率')">
-          <text>佣金率</text>
+        <view class="item" @click="sort(language.text50)">
+          <text>{{ language.text50 }}</text>
           <view class="icon">
-            <image :class="[sortRule]" v-if="sortTarget == '佣金率'" src="/static/img/delegate/sort.png"></image>
+            <image :class="[sortRule]" v-if="sortTarget == language.text50" src="/static/img/delegate/sort.png"></image>
             <image v-else src="/static/img/delegate/unsort.png"></image>
           </view>
         </view>
       </view>
 			<view class="list">
 				<view class="list-title">
-					<view class="left">节点</view>
-					<view class="center">活跃度</view>
-					<view class="right">当前得票</view>
+					<view class="left">{{ language.text51 }}</view>
+					<view class="center">{{ language.text49 }}</view>
+					<view class="right">{{ language.text52 }}</view>
 				</view>
 				<custom-loading v-if="loading" class="loading"></custom-loading>
         <view class="list-data" v-else-if="validators.length">
@@ -62,11 +62,11 @@
 						</view>
 						<view class="right">
 							<view class="name">{{ item.tokens }}</view>
-							<view class="other">佣金率: {{ item.rate }}</view>
+							<view class="other">{{ language.text50 }}: {{ item.rate }}</view>
 						</view>
 					</view>
 				</view>
-				<no-data v-else tip="暂无委托，点击" btnTx="参与委托" />
+				<!-- <no-data v-else tip="暂无委托，点击" btnTx="参与委托" /> -->
 			</view>
 		</view>
 	</view>
@@ -75,6 +75,7 @@
 <script>
 import headerItem from './header-item'
 import mainCoin from '@/config/index.js'
+import language from '../language/index.js'
 import {
   sliceAddress
 } from '@/utils/filters.js'
@@ -87,20 +88,20 @@ export default {
   },
   data() {
     return {
-      // language: language[this.$cache.get('_language')],
+      language: language[this.$cache.get('_language')],
       address: '',
       currentWallet: this.$cache.get('_currentWallet'),
       validators: [],
       loading: true,
       isDel: true,
       statusList: [{
-        name: '全部'
+        name: language[this.$cache.get('_language')].text70
       },{
-        name: '共识中'
+        name: language[this.$cache.get('_language')].text74
       },{
-        name: '候选中'
+        name: language[this.$cache.get('_language')].text75
       },{
-        name: '待解禁'
+        name: language[this.$cache.get('_language')].text76
       }],
       inactiveStyle: {
         fontSize: '32rpx',
@@ -117,7 +118,7 @@ export default {
         alignItems: 'flex-start',
         padding: '0',
       },
-      sortTarget: '总委托数',
+      sortTarget: language[this.$cache.get('_language')].text48,
       sortRule: 'des', // asc:升序; des:降序
       mainCoin
     }

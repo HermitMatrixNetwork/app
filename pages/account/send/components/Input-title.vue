@@ -10,7 +10,7 @@
       <input v-if="!isTextarea" :type="type" :placeholder="placeholder" class="common-input input-content" v-model="childValue"
         :maxlength="maxlength" :style="inputOtherStyle"
         :class="[warningStyleisShow?'beyondWarning':'']"
-        :readonly="readonly"
+        :disabled="disabled"
       />
 
       <u--textarea v-model="childValue" :placeholder="placeholder" autoHeight v-else class="textarea" maxlength="60" :disabled="disabled">
@@ -91,6 +91,7 @@ export default {
     align-items: center;
     height: 44rpx;
     font-family: PingFangSC-Medium;
+    margin-bottom: 16rpx;
 
     text {
       font-weight: 600;
@@ -105,7 +106,6 @@ export default {
     width: 100%;
     border: none;
     outline: none;
-    margin-top: 16rpx;
     height: 96rpx;
     background: #F2F4F8;
     border-radius: 16rpx;

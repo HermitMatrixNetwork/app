@@ -1,25 +1,25 @@
 <template>
   <view>
-    <custom-header class="header" title="助记词导入"></custom-header>
+    <custom-header class="header" :title="language.test31"></custom-header>
     <view class="container">
       <view class="item">
-        <view class="item-label">助记词</view>
+        <view class="item-label">{{ language.text25 }}</view>
         <view class="item-input">
-          <u--textarea v-model="mnemonic" height="180rpx" @input="mnemonicChange" placeholder="输入助记词单词，使用空格隔开"
+          <u--textarea v-model="mnemonic" height="180rpx" @input="mnemonicChange" :placeholder="language.text33"
             maxlength="120">
           </u--textarea>
         </view>
       </view>
       <view class="item">
-        <view class="item-label">资金密码</view>
+        <view class="item-label">{{ language.text34 }}</view>
         <view class="item-input item-input-password">
-          <u-input :password="!passwordEye" v-model="password" placeholder="设置钱包密码（不少于8位）">
+          <u-input :password="!passwordEye" v-model="password" :placeholder="language.text35">
           </u-input>
           <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'" @click="passwordEye = !passwordEye">
           </u-icon>
         </view>
         <view class="item-input item-input-password password-check">
-          <u-input :password="!checkPasswordEye" v-model="checkPassword" placeholder="重复输入确认钱包密码">
+          <u-input :password="!checkPasswordEye" v-model="checkPassword" :placeholder="language.text36">
           </u-input>
           <u-icon color="#8F9BB3" size="20" :name="checkPasswordEye ? 'eye' : 'eye-off'"
             @click="checkPasswordEye = !checkPasswordEye">
@@ -28,14 +28,14 @@
       </view>
       <view class="item">
         <view class="item-label">
-          钱包名称
+          {{ language.text37 }}
         </view>
         <view class="item-input item-input-name">
-          <u-input v-model="name" placeholder="设置钱包名称" :adjust-position="false"></u-input>
+          <u-input v-model="name" :placeholder="language.text38" :adjust-position="false"></u-input>
         </view>
       </view>
     </view>
-    <u-button class="btn" @click="importWallet">导入</u-button>
+    <u-button class="btn" @click="importWallet">{{ language.text39 }}</u-button>
 
     <view :callRenderMnemonic="callRenderMnemonic" :change:callRenderMnemonic="render.getMnemonic"></view>
     <!-- 错误提示 -->
@@ -52,6 +52,7 @@ import Notify from './components/notify.vue'
 import {
   validateAll
 } from '@/utils/validator.js'
+import language from './language/index.js'
 export default {
   mixins: [mixin],
   components: {
@@ -59,6 +60,7 @@ export default {
   },
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       mnemonic: '', // 助记词
       password: '', // 资金密码
       checkPassword: '',
@@ -84,7 +86,7 @@ export default {
             if (value !== this.password) return false
             return true
           },
-          errMessage: '密码输入不一致，请重新输入。'
+          errMessage: language[this.$cache.get('_language')].text42
         }, {
           rule: 'required',
           errMessage: '钱包密码不能为空'
@@ -130,9 +132,10 @@ export default {
         if (errorMnemonic) break
       }
       // #endif
-
+      
+      // `${errorMnemonic} 为无效助记词，请检查。`
       if (errorMnemonic) {
-        this.$refs.notify.show('error', `${errorMnemonic} 为无效助记词，请检查。`)
+        this.$refs.notify.show('error', this.language.text40)
       } else {
         this.$refs.notify.close() // 关闭错误警告
       }
@@ -146,9 +149,9 @@ export default {
       const isEffectiveMnemonic = this.verifyTotalMnemonic()
       const result = validateAll.call(this, this.rules)
       const invalidateField = result.find(item => !item.result)
-
+      // '助记词校验位不正确'
       if (!isEffectiveMnemonic) {
-        this.$refs.notify.show('error', '助记词校验位不正确')
+        this.$refs.notify.show('error', this.language.text41)
       } else if (invalidateField) {
         this.$refs.notify.show('error', invalidateField.errMessage)
       } else if (!this.name) {

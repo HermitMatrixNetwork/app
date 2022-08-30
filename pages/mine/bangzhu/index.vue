@@ -1,11 +1,11 @@
 <template>
   <view class="container">
-    <custom-header class="header" title="帮助中心" :customStyle="{ 'background-color': '#fff' }"></custom-header>
-
-    <view class="list">
-      <view class="item" v-for="(item, index) in list" :key="index">
+    <custom-header class="header" :title="language.text61" :customStyle="{ 'background-color': '#fff' }"></custom-header>
+    <custom-loading v-if="loading" style="margin-top: 20rpx"></custom-loading>
+    <view v-else class="list">
+      <view class="item" v-for="(item, index) in list" :key="index" @click="toDetail(item)">
         <view class="label">
-          <text>{{ item.label }}</text>
+          <text>{{ item[`${currentLanguage.toLowerCase()}_title`]}}</text>
         </view>
         <view class="arrow">
           <image src="/static/img/ic-arrow1.png"></image>
@@ -16,22 +16,33 @@
 </template>
 
 <script>
+import { getHelp } from '@/api/token.js'
+import language from '../language/index.js'
 export default {
   data() {
     return {
-      list: [{
-        label: '如何进行转账?',
-        page: ''
-      }, {
-        label: '如何添加代币?',
-        page: ''
-      }, {
-        label: '忘记钱包密码怎么办?',
-        page: ''
-      }, {
-        label: '钱包常见问题?',
-        page: ''
-      }]
+      list: [],
+      currentLanguage: this.$cache.get('_language'),
+      language: language[this.$cache.get('_language')],
+      loading: true
+    }
+  },
+  async created() {
+    this.loading = true
+    let res = (await getHelp()).data.data.help_info
+    this.list = res
+    this.$nextTick(() => {
+      this.loading = false
+    })
+  },
+  methods: {
+    toDetail(item) {
+      uni.navigateTo({
+        url: './detail',
+        success(res) {
+          res.eventChannel.emit('acceptDataFromOpenerPage', item)
+        } 
+      })
     }
   }
 }

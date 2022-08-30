@@ -4,12 +4,12 @@
     <custom-header></custom-header>
 
     <view class="title">
-      创建钱包
+      {{ language.text06 }}
     </view>
 
     <view class="wallet-name">
       <view class="wallet-name-label">
-        钱包名称
+        {{ language.text07 }}
       </view>
       <u-input class="wallet-name-input" :class="{error: invalidFields.fieldName == 'name'}" v-model="name"
         placeholder="设置钱包名称"></u-input>
@@ -17,11 +17,11 @@
 
     <view class="wallet-password">
       <view class="wallet-password-label">
-        钱包密码
+        {{ language.text09 }}
       </view>
       <view class="wallet-password-item">
         <u-input :password="!passwordEye" class="wallet-password-input"
-          :class="{error: invalidFields.fieldName == 'password'}" v-model="password" placeholder="设置钱包密码（不少于8位）">
+          :class="{error: invalidFields.fieldName == 'password'}" v-model="password" :placeholder="language.text10">
         </u-input>
         <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
           :class="{error: invalidFields.fieldName == 'password'}" @click="passwordEye = !passwordEye">
@@ -29,7 +29,7 @@
       </view>
       <view class="wallet-password-item" :class="{error: invalidFields.fieldName == 'checkPassword'}">
         <u-input :password="!checkPasswordEye" :class="{error: invalidFields.fieldName == 'checkPassword'}"
-          class="wallet-password-input" v-model="checkPassword" placeholder="重复输入确认钱包密码">
+          class="wallet-password-input" v-model="checkPassword" :placeholder="language.text11">
         </u-input>
         <u-icon color="#8F9BB3" size="20" :name="checkPasswordEye ? 'eye' : 'eye-off'"
           :class="{error: invalidFields.fieldName == 'checkPassword'}" @click="checkPasswordEye = !checkPasswordEye">
@@ -39,7 +39,7 @@
 
     <view :callRenderCreate="callRenderCreate" :change:callRenderCreate="render.createWallet"></view>
 
-    <u-button type="primary" class="create-btn" @click="confrim">确认</u-button>
+    <u-button type="primary" class="create-btn" @click="confrim">{{ language.text22 }}</u-button>
 
     <!-- 错误提示 -->
     <Notify ref="notify"></Notify>
@@ -49,12 +49,14 @@
 <script>
 import mixin from './mixins/index.js'
 import { validateAll } from '@/utils/validator.js'
-import Notify from './components/notify.vue' 
+import Notify from './components/notify.vue'
+import language from './language/index.js'
 export default {
   mixins: [mixin],
   components: { Notify },
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       name: '',
       password: '', // 不能大于48位
       checkPassword: '',
@@ -85,7 +87,7 @@ export default {
             if (value !== this.password) return false
             return true
           },
-          errMessage: '密码输入不一致，请重新输入。'
+          errMessage: language[this.$cache.get('_language')].text13
         }, {
           rule: 'required',
           errMessage: '钱包密码不能为空'

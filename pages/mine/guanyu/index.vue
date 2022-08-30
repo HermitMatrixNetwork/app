@@ -1,6 +1,7 @@
 <template>
 	<view class="container">
-		<custom-header title="关于我们"></custom-header>
+    <view class="mask" v-show="updating"></view>
+		<custom-header :title="language.text78"></custom-header>
 		<view class="border"> </view>
 
 		<view class="logo">
@@ -16,25 +17,24 @@
 		<view class="list">
 			<view class="item">
 				<view class="label">
-					<view>版本信息</view>
+					<view>{{ language.text79 }}</view>
 				</view>
 				<view class="arrow tag">
 					<text>{{version}}</text>
 				</view>
 			</view>
 			<view class="border"> </view>
-			<view class="item">
+			<view class="item" @click="checkVersion">
 				<view class="label">
-					<view>检查版本</view>
+					<view>{{ language.text80 }}</view>
 				</view>
-				<view class="arrow tag-info" @click="getData">
-					<text v-if="initIsShow">当前已是最新版</text>
+				<view class="arrow tag-info">
+					<text v-if="latestVersion == version">{{ language.text81 }}</text>
 					<image src="/static/img/ic-arrow1.png"></image>
 				</view>
-				
 			</view>
-			<!-- <button @click="test" v-if="updateIsShow">test</button> -->
 		</view>
+    <custom-updateApp tip :updating.sync="updating" :latestVersion.sync="latestVersion" ref="updateApp" />
 	</view>
 </template>
 
@@ -42,68 +42,46 @@
 import {
   getVersion
 } from '@/api/token.js'
-import updateApp from '@/utils/updateApp.js'
+import language from '../language/index.js'
 export default {
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       version: '',
-      initIsShow: false,
-      appId: '',
       updateIsShow:false,
+      latestVersion: '-1',
+      updating: false
     }
   },
   onLoad() {
-    // if(this.$cache.get('_version')){
-    //   this.version = this.$cache.get('_version')
-    // }else{
-    //   this.getData()
-    // }
     //#ifdef APP-PLUS
     this.getAppVersion()
     //#endif
   },
   methods: {
-    async getData() {
-      updateApp()
-      // const res = await getVersion()
-      // console.log('版本信息', res)
-      // const {
-      //   version
-      // } = res.data.data.version
-      // if (this.appId < version) {
-      //   console.log('发现新版本')
-      //   this.updateIsShow = true
-      //   return
-      // } else if (this.appId === version) {
-      //   return this.initIsShow = true
-      // }
-      // this.version = res.data.data.version
+    checkVersion() {
+      this.$refs.updateApp.checkUpdate()
     },
     getAppVersion() {
       plus.runtime.getProperty(plus.runtime.appid, res => {
-        console.log('获取当前版本信息', res)
-        this.appId = res.versionCode * 1
         this.version = res.version
       })
-    },
-    test() {
-      plus.runtime.openURL('https://package-manage.gstchain.net/app/new-gst-office-wallet/apk/GST_Wallet_219.apk')
-      // var dtask = plus.downloader.createDownload(
-      //   'https://package-manage.gstchain.net/app/new-gst-office-wallet/apk/GST_Wallet_219.apk',{},function (d,status){
-      //     if(status==200){
-      //       console.log('下载完成')
-      //  plus.runtime.install('/storage/emulated/0/安装包',{},function(){
-      // 	 console.log('完成')
-      //  })
-      //     } 
-      //   })
-      // dtask.start()
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,.5) !important;
+    z-index: 9999;
+  }
+  
 	.container {
 		height: 100vh;
 		background-color: #F4F6F9;

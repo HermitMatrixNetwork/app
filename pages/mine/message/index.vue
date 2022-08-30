@@ -1,12 +1,12 @@
 <template>
 	<view class="container">
-		<custom-header class="header" title="消息中心" :customStyle="{ 'background-color': '#fff' }"></custom-header>
+		<custom-header class="header" :title="language.text19" :customStyle="{ 'background-color': '#fff' }"></custom-header>
 
 		<view class="message">
 			<view class="message-item" v-for="(item, index) in [...noticeList,...readList]" :key="index" @click="toDetail(item)"
 				:class="alreadyRead.includes(item.ID)?'':'unread'">
-				<view class="title">{{item.cn_title}}</view>
-				<view class="content" v-html="content(item.cn_content)"></view>
+				<view class="title">{{ item[`${currentLanguage.toLowerCase()}_title`] }}</view>
+				<view class="content" v-html="content(item[`${currentLanguage.toLowerCase()}_content`])"></view>
 				<view class="time">{{timestamp(item.timestamp)}}</view>
 			</view>
 		</view>
@@ -17,10 +17,13 @@
 import {
   getNotice
 } from '@/api/token.js'
+import language from '../language/index.js'
 
 export default {
   data() {
     return {
+      language: language[this.$cache.get('_language')],
+      currentLanguage: this.$cache.get('_language'),
       noticeList: [],
       alreadyRead: this.$cache.get('_alreadyRead') || [],
       readList:[]
@@ -144,6 +147,6 @@ export default {
 	
 	
 	.unread{
-		background:#dafefe40;
+		background: #F5F8FF;
 	}
 </style>

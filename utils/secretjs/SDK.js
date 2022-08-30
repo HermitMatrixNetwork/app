@@ -6,9 +6,10 @@ import {
 } from 'secretjs-hmt/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
 import secretjs from './index.js'
 
+import { getCurrentRpc } from '@/config/index.js'
 
 //获取secret
-async function getSecret() {
+export async function getSecret() {
   let wallet = {}
   //#ifdef APP-PLUS
   wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
@@ -17,7 +18,7 @@ async function getSecret() {
   //#ifndef APP-PLUS
   wallet = uni.getStorageSync('_currentWallet').data
   //#endif
-  
+  let rpc = getCurrentRpc()
   let walletAddress = wallet.address
   let privateKey64 = WalletCrpto.decode(wallet.privateKey64)
   let privateKey = WalletCrpto.StringToUint(privateKey64)
@@ -27,7 +28,7 @@ async function getSecret() {
   wallet.getAccounts = new secretjs.Wallet().getAccounts.bind(wallet)
   wallet.signAmino = new secretjs.Wallet().signAmino.bind(wallet)
   wallet.signDirect = new secretjs.Wallet().signDirect.bind(wallet)
-  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress)
+  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress, rpc)
   return Secret
 }
 //查询余额
@@ -47,7 +48,6 @@ export async function getContractInfo(address) {
   let Secret = await getSecret()
   // try {
   const result = await Secret.query.compute.contractInfo(address)
-  console.log(222)
   // return result
   // } catch (e) {
   // return false
@@ -64,7 +64,7 @@ export async function QueryStakingValidators(status) {
 }
 
 //发送其他地址
-export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo = '') {
+export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo = '', gas) {
   let Secret = await getSecret()
   const result = await Secret.tx.bank.send({
     fromAddress: myaddress,
@@ -74,9 +74,8 @@ export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo
       amount: amount + ''
     }]
   }, {
-    gasPriceInFeeDenom: 0.0215,
+    gasPriceInFeeDenom: gas,
     feeDenom: 'uGHM',
-    gasLimit: 20000,
     memo
   })
   return result
@@ -122,11 +121,12 @@ export async function getSigningInfo(consAddress) {
   return result
 }
 //去委托
-export async function toDelegate(data, memo = '') {
+export async function toDelegate(data, memo = '', gas) {
   let Secret = await getSecret()
   const result = await Secret.tx.staking.delegate(data, {
+    gasPriceInFeeDenom: gas,
     feeDenom: 'uGHM',
-    gasLimit: 50000,
+    // gasLimit: 30000,
     memo
   })
   return result
@@ -151,11 +151,12 @@ export async function getDelegationRewards(delegatorAddr, validatorAddr) {
   return result
 }
 
-export async function unDelegate(data, memo = '') {
+export async function unDelegate(data, memo = '', gas) {
   let Secret = await getSecret()
   const result = await Secret.tx.staking.undelegate(data, {
+    gasPriceInFeeDenom: gas,
     feeDenom: 'uGHM',
-    gasLimit: 50000,
+    gasLimit: 30000,
     memo
   })
   return result
@@ -195,7 +196,7 @@ export async function getUnbondingDelegationRecord(address) {
   return result
 }
 
-export async function setViewKey(data) {
+export async function setViewKey(data, gas) {
   let Secret = await getSecret()
   let codeHash = data.codeHash
   if (!data.codeHash) {
@@ -209,9 +210,8 @@ export async function setViewKey(data) {
       msg: { set_viewing_key: { key: data.view_key } }
     }
     , {
-      gasPriceInFeeDenom: 0.02,
-      feeDenom: 'uGHM',
-      gasLimit: 30000
+      gasPriceInFeeDenom: gas,
+      feeDenom: 'uGHM'
     })
   return result
 }
@@ -258,13 +258,13 @@ export const getTokenDecimals = async (data) => {
   return result
 }
 
-export const transferOtherToken = async (data, memo = '') => {
+export const transferOtherToken = async (data, memo = '', gas) => {
   let Secret = await getSecret()
-  console.log(memo)
   const result = await Secret.tx.snip20.transfer(data, {
+    gasPriceInFeeDenom: gas,
     feeDenom: 'uGHM',
-    gasLimit: 5000000,
-    memo
+    memo,
+    gasLimit: 40000
   })
   return result
 }
@@ -291,11 +291,31 @@ export const getRewards = async (delegatorAddress, validatorAddress) => {
   return result
 }
 
-export const withdrawDelegatorReward = async (data) => {
+export const withdrawDelegatorReward = async (data, gas) => {
   let Secret = await getSecret()
   const result = await Secret.tx.distribution.withdrawDelegatorReward(data, {
+    gasPriceInFeeDenom: gas,
     feeDenom: 'uGHM',
-    gasLimit: 20000
+    // gasLimit: 20000
   })
+  return result
+}
+
+export const setWithdrawAddress = async (data, gas) => {
+  let Secret = await getSecret()
+  const result = await Secret.tx.distribution.setWithdrawAddress(data, {
+    gasPriceInFeeDenom: gas,
+    feeDenom: 'uGHM',
+    // gasLimit: 20000
+  })
+  return result
+}
+
+export const getWithdrawAddress = async (address) => {
+  let Secret = await getSecret()
+  const result = await Secret.query.distribution.delegatorWithdrawAddress({
+    delegatorAddress: address
+  })
+  
   return result
 }

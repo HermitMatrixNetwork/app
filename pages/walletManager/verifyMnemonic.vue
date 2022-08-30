@@ -3,9 +3,9 @@
     <custom-header></custom-header>
 
     <view class="mnemonic">
-      <view class="mnemonic-title">验证助记词</view>
+      <view class="mnemonic-title">{{ language.text142 }}</view>
       <view class="mnemonic-hint">
-        请根据已备份好的助记词按顺序选择
+        {{ language.text143 }}
       </view>
       <view class="mnemonic-input">
         <view class="mnemonic-input-item" v-for="(item, index) in pickedMnemonicList" :key="index"
@@ -24,7 +24,7 @@
       </view>
       <!-- @test -->
       <!-- {{mnemonicList.join('\n')}} -->
-      <u-button class="mnemonic-confirm" :class="{complete: checkComplete()}" @click="confirm">确认</u-button>
+      <u-button class="mnemonic-confirm" :class="{complete: checkComplete()}" @click="confirm">{{ language.text50 }}</u-button>
     </view>
 
     <!-- 错误提示 -->
@@ -35,10 +35,12 @@
 <script>
 import Notify from './components/notify.vue'
 import WalletCrypto from '@/utils/walletCrypto.js'
+import language from '@/pages/account/language/index.js'
 export default {
   components: { Notify },
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       mnemonicList: [], // 正确顺序的助记词
       randomMnemonicList: [], // 随机排序助记词 
       pickedMnemonicList: [], // 用户选择的助记词
@@ -72,7 +74,7 @@ export default {
       })
       if (this.errorIndex > -1) {
         // 助记词填写顺序错误
-        this.$refs.notify.show('error', '助记词错误，请重新选择！', { bgColor: '#EC6665' })
+        this.$refs.notify.show('error', this.language.text179, { bgColor: '#EC6665' })
       } else {
         this.$refs.notify.close()
       }

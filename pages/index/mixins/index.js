@@ -143,7 +143,7 @@ export default {
 
         return address
       } catch (e) {
-        this.$refs.notify.show('error', '解密失败, keystore和密码不必配')
+        this.$refs.notify.show('error', this.language.text60)
         return false
       }
     }

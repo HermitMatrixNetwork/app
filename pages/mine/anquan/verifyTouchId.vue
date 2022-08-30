@@ -1,14 +1,14 @@
 <template>
   <view class="touchId">
-    <custom-header title="指纹识别"></custom-header>
+    <custom-header :title="language.text32"></custom-header>
     <view class="content">
       <view class="title">
-        <text>请输入指纹完成验证</text>
+        <text>{{ language.text34 }}</text>
       </view>
       <view class="middle">
         <view class="line"></view>
         <view class="figure-pic">
-          <image src="/static/img/placeholder.jpeg"></image>
+          <image src="/static/img/mine/zhiwen2.png"></image>
         </view>
         <view class="around middle-top-left"></view>
         <view class="around middle-top-right"></view>
@@ -26,13 +26,17 @@
     </view>
     
         <view class="logo">Hermit Wallet</view>
+        
+        <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
 <script>
+import language from '../language/index.js'
 export default {
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       showToast: false,
       toast: {
         icon: '/static/img/mine/loading.gif',
@@ -46,11 +50,10 @@ export default {
     this.verify()
     // #endif
   },
+  onUnload() {
+    plus.fingerprint.cancel()
+  },
   methods: {
-    show(options) {
-
-    },
-    hide() {},
     verify() {
       const eventChannel = this.getOpenerEventChannel()
 
@@ -60,26 +63,38 @@ export default {
         this.showToast = true
         setTimeout(() => {
           this.toast.msg = '验证成功'
-          this.toast.icon = '/static/img/chenggong.png'
+          // this.toast.icon = '/static/img/mine/success.png'
+          this.showToast = false
+          this.$refs.notify.show('', this.language.text36, { bgColor: ' #275EF1' })
           eventChannel.emit('success')
         }, 1000)
 
       }, e => {
         console.log(e)
-        this.toast.msg = '验证指纹中'
-        this.toast.icon = '/static/img/mine/loading.gif'
-        this.showToast = true
+        if (e.code == 6) {
+          plus.fingerprint.cancel()
+          uni.navigateBack()
+        } else {
+          this.toast.msg = '验证指纹中'
+          this.toast.icon = '/static/img/mine/loading.gif'
+          this.showToast = true
+        }
         setTimeout(() => {
-          this.toast.icon = '/static/img/shibai1.png'
+          this.showToast = false
+          this.toast.icon = '/static/img/mine/fail.png'
           switch (e.code) {
           case e.UNKNOWN_ERROR:
           case e.AUTHENTICATE_OVERLIMIT:
             plus.nativeUI.closeWaiting() //兼容Android平台关闭等待框
+            this.$refs.notify.show('', '失败次数超出限制，请稍后再设置')
             this.toast.msg = '失败次数超出限制，请稍后再设置'
             this.$cache.set('_AUTHENTICATE_OVERLIMIT', true, 300)
             break
-
+          case e.CANCEL:
+            // uni.navigateBack()
+            break
           default:
+            this.$refs.notify.show('', this.language.text35)
             plus.nativeUI.closeWaiting() //兼容Android平台关闭等待框
             this.toast.msg = '指纹匹配失败，请重新验证'
           }
@@ -115,9 +130,8 @@ export default {
     top: 50%;
     transform: translate(-50%, -50%) !important;
     width: 240rpx;
-    height: 240rpx;
+    padding: 0 20rpx 32rpx;
     background: rgba(0, 0, 0, .6);
-    padding: 0 !important;
     justify-content: center;
     border-radius: 6rpx;
     z-index: 999999999;
@@ -142,6 +156,7 @@ export default {
   }
 
   .content {
+    position: relative;
     width: 632rpx;
     height: 760rpx;
     margin: 64rpx auto 0;
@@ -150,18 +165,19 @@ export default {
     border-radius: 32rpx;
 
     .title {
-      height: 32rpx;
-      padding-top: 80rpx;
+      padding: 80rpx 32rpx 0;
       font-weight: 400;
       font-size: 32rpx;
       color: #8397B1;
       text-align: center;
-      line-height: 32rpx;
+      line-height: 56rpx;
     }
 
     .middle {
-      position: relative;
-      margin: 122rpx auto 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       width: 332rpx;
       height: 318rpx;
       border-radius: 16rpx;

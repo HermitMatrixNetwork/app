@@ -1,6 +1,6 @@
 <template>
 	<view class="transtion">
-		<custom-header :title="'交易记录'" >
+		<custom-header :title="language.text38" >
 		</custom-header>
 		<u-tabs class="tabs" :inactiveStyle="inactiveStyle" :activeStyle="activeStyle" :itemStyle="itemStyle" :list="list1" lineColor="#1E5EFF" lineHeight="4" @change	="changeTab"></u-tabs>
 		<view class="lists">
@@ -11,20 +11,22 @@
 
 <script>
 import TranList from './components/TranList'
+import language from './language/index.js'
 export default {
   components: {
     TranList
   },
   data(){
     return {
+      language: language[this.$cache.get('_language')],
       list1: [{
-        name: '全部',
+        name: language[this.$cache.get('_language')].text70,
       }, {
-        name: '委托',
+        name: language[this.$cache.get('_language')].text71,
       }, {
-        name: '取消委托'
+        name: language[this.$cache.get('_language')].text72
       }, {
-        name: '奖励领取'
+        name: language[this.$cache.get('_language')].text73
       }],
       inactiveStyle: {
         fontSize: '28rpx',

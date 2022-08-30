@@ -8,7 +8,7 @@
 
     <view class="content">
       <view class="title">
-        备份提示
+        {{ language.text15 }}
       </view>
       <view class="hint">
         获得助记词等于拥有钱包资产所有权
@@ -34,7 +34,13 @@
 </template>
 
 <script>
+import language from './language/index.js'
 export default {
+  data() {
+    return {
+      language: language[this.$cache.get('_language')],
+    }
+  },
   methods: {
     toNextStep() {
       uni.navigateTo({

@@ -23,6 +23,7 @@
 
 <script>
 import mainCoin from '@/config/index.js'
+import language from '../language/index.js'
 export default {
   data() {
     return {
@@ -35,6 +36,7 @@ export default {
         timestamp: ''
       },
       loading: true,
+      language: language[this.$cache.get('_language')]
     }
   },
   onLoad(options) {
@@ -49,6 +51,7 @@ export default {
   },
   methods: {
     init(res) {
+      console.log(res)
       this.result = res
       const typeUrl = res.tx.body.messages[0].typeUrl
       res.amount = 0
@@ -137,11 +140,15 @@ export default {
         res.rawLog.replace(/\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match, p1) => {
           res.amount = p1 / mainCoin.decimals + mainCoin.alias_name
         })
+        
+        res.rawLog.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
+          res.withdrawAddress = p1
+        })
         this.transactionMessage = {
           '领取金额': res.amount,
           '矿工费': res.fee,
           '操作账户': res.tx.body.messages[0].value.delegatorAddress,
-          '领取接收地址': res.tx.body.messages[0].value.delegatorAddress,
+          '领取接收地址': res.withdrawAddress,
           'Memo': res.tx.body.memo,
           '交易号': res.transactionHash
         }

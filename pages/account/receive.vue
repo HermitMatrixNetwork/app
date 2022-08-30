@@ -1,19 +1,18 @@
 <template>
 	<view class="receive">
-		<custom-header :title="'接收'" class="headerStyle"></custom-header>
+		<custom-header :title="language.text60" class="headerStyle"></custom-header>
 
 		<view class="topPrompt">
 			<view class="promptBg" />
 			<view class="promptText">
 				<u-icon :name="require('@/static/img/account/prompt.png')" size="32rpx"></u-icon>
-				该地址仅支持 Hermit Matrix Network 资产，
-				请勿转入其他公链资产
+				{{ language.text52 }}
 			</view>
 		</view>
 
 		<view class="receive_main">
 			<view class="hint">
-				扫二维码，转入 Hermit Matrix Network 资产
+				{{ language.text53 }}
 			</view>
 
 			<view class="qrcode">
@@ -21,14 +20,14 @@
 					:loadMake="code.loadMake" @result="qrR" />
 			</view>
 
-			<text>钱包地址</text>
+			<text>{{ language.text54 }}</text>
 			<view class="wallet_address">
 				{{currentWallet.address}}
 			</view>
 
 
 			<button class="copy_btn" @click="copy(code['val'])">
-				<u-icon :name="require('@/static/img/account/copy2.png')" label="复制地址" label-size="28rpx" size="40rpx">
+				<u-icon :name="require('@/static/img/account/copy2.png')" :label="language.text55" label-size="28rpx" size="40rpx">
 				</u-icon>
 			</button>
 
@@ -36,12 +35,14 @@
 		<view class="bottom_title">
 			Hermit Wallet
 		</view>
+    <custom-notify ref="notify"></custom-notify>
 	</view>
 </template>
 
 <script>
 import tkiQrcode from 'tki-qrcode'
 import mixin from './mixins/index.js'
+import language from './language/index.js'
 export default {
   mixins:[mixin],
   components: {
@@ -60,7 +61,8 @@ export default {
         onval: true, //val值变化时自动重新生成二维码
         loadMake: true //组件加载完成后自动生成二维码
       },
-      qrUrl: ''
+      qrUrl: '',
+      language: language[this.$cache.get('_language')]
     }
   },
   onLoad() {
@@ -99,7 +101,7 @@ export default {
 
 			.promptBg {
 				margin: 0 32rpx;
-				height: 144rpx;
+				height: 180rpx;
 				opacity: 0.2;
 				background: #FFFFFF;
 				border: 2rpx solid #E5E6EB;
@@ -116,7 +118,7 @@ export default {
 			display: flex;
 			align-items: flex-start;
 			width: 568rpx;
-			height: 80rpx;
+			height: 120rpx;
 			font-family: PingFangSC-Regular;
 			font-weight: 400;
 			font-size: 28rpx;
@@ -143,12 +145,12 @@ export default {
 		overflow: hidden;
 
 		.hint {
-			height: 40rpx;
 			font-family: PingFangSC-Regular;
 			font-weight: 400;
 			font-size: 28rpx;
 			color: #8397B1;
 			margin-top: 60rpx;
+      text-align: center;
 		}
 
 		.qrcode {

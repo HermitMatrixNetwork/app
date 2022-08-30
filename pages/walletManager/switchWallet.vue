@@ -21,7 +21,7 @@
       <uni-button class="add-wallet" @click="showAddWallet = true">
         <view class="add-wallet-content">
           <image src="@/static/img/walletManager/add2.png"></image>
-          <text>{{ language.addWallet }}</text>
+          <text>{{ language.text11 }}</text>
         </view>
       </uni-button>
     </u-popup>

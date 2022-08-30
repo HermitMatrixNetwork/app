@@ -1,13 +1,13 @@
 <template>
   <view>
-    <custom-header :title="language.exportMnemonic"></custom-header>
+    <custom-header :title="language.text119"></custom-header>
 
 
     <view class="border"></view>
     <view class="container">
       <view class="label">
-        <text>{{ language.mnemonic }}</text>
-        <text class="label-tip">({{ language.clickToCopy }})</text>
+        <text>{{ language.text140 }}</text>
+        <text class="label-tip">({{ language.text176 }})</text>
       </view>
       <view class="mnemonic-content" @click="copy">
         <view v-for="(item, index) in mnemonicList" :key="index" class="mnemonic-content-item">
@@ -28,7 +28,7 @@
 <script>
 import Tooltip from './components/tooltip.vue'
 import Notify from './components/notify.vue'
-import language from './language'
+import language from '@/pages/account/language/index.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   components: {

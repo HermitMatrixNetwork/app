@@ -19,7 +19,7 @@
     <view class="detail">
       <view class="item">
         <view class="label">
-          <text>受托总数</text>
+          <text>{{ language.text52 }}</text>
         </view>
         <view class="value">
           <text>{{ validatorInfo.tokens }}</text>
@@ -27,7 +27,7 @@
       </view>
       <view class="item">
         <view class="label">
-          <text>自委托数</text>
+          <text>{{ language.text53 }}</text>
         </view>
         <view class="value">
           <text>1000.00</text>
@@ -35,7 +35,7 @@
       </view>
       <view class="item">
         <view class="label">
-          <text>佣金率</text>
+          <text>{{ language.text50 }}</text>
         </view>
         <view class="value">
           <text>{{ validatorInfo.rate }}</text>
@@ -43,7 +43,7 @@
       </view>
       <view class="item">
         <view class="label">
-          <text>活跃度</text>
+          <text>{{ language.text49 }}</text>
         </view>
         <view class="value">
           <text>100%</text>
@@ -56,34 +56,36 @@
       <view class="item">
         <view class="label">
           <view class="dot"></view>
-          <text>委托说明</text>
+          <text>{{ language.text54 }}</text>
         </view>
         <view class="info">
-          <text>委托的GHM需要XXX区块高度（约xx天）赎回。</text>
+          <text>{{ language.text55 }}</text>
         </view>
       </view>
       <view class="item">
         <view class="label">
           <view class="dot"></view>
-          <text>收益说明</text>
+          <text>{{ language.text56 }}</text>
         </view>
         <view class="info">
           <text>
-            当您委托交易成功后，被委托的验证人参与了出块或者确认区块可获得收益，这意味着您需要斟酌对于验证节点的投票委托，委托收益根据个人委托量占节点总委托数的比例进行计算，委托收益领取后立即到账。
+            {{ language.text57 }}
           </text>
         </view>
       </view>
     </view>
     
-    <u-button class="btn" @click="toDelegate">去委托</u-button>
+    <u-button class="btn" @click="toDelegate">{{ language.text58 }}</u-button>
     <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
 <script>
+import language from './language/index.js'
 export default {
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       validatorInfo: {}
     }
   },
@@ -200,7 +202,7 @@ export default {
     margin: 0 32rpx;
     background-color: #fff;
     border-radius: 16rpx;
-    padding: 0 40rpx 58rpx 32rpx;
+    padding: 0 40rpx 0 32rpx;
 
     .item {
       .label {
@@ -234,7 +236,7 @@ export default {
 
   .btn {
     position: absolute;
-    bottom: 64rpx;
+    bottom: 10rpx;
     left: 50%;
     transform: translateX(-50%);
     width: 622rpx;

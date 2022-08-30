@@ -3,9 +3,9 @@
     <custom-header></custom-header>
 
     <view class="mnemonic">
-      <view class="mnemonic-title">验证助记词</view>
+      <view class="mnemonic-title">{{ language.text20 }}</view>
       <view class="mnemonic-hint">
-        请根据已备份好的助记词按顺序选择
+        {{ language.text21 }}
       </view>
       <view class="mnemonic-input">
         <view class="mnemonic-input-item" v-for="(item, index) in pickedMnemonicList" :key="index"
@@ -22,7 +22,7 @@
           {{ item }}
         </view>
       </view>
-      <u-button class="mnemonic-confirm" :class="{complete: checkComplete()}" @click="confirm">确认</u-button>
+      <u-button class="mnemonic-confirm" :class="{complete: checkComplete()}" @click="confirm">{{ language.text22 }}</u-button>
     </view>
 
     <!-- 错误提示 -->
@@ -34,6 +34,7 @@
 import Notify from './components/notify.vue'
 import WalletCrypto from '@/utils/walletCrypto.js'
 import mixin from './mixins/index.js'
+import language from './language/index.js'
 export default {
   components: { Notify },
   mixins: [mixin],
@@ -44,6 +45,7 @@ export default {
       pickedMnemonicList: [], // 用户选择的助记词
       pickedMnemonicIndex: [], // 用户选择助记词的索引 (基于随机助记词数组)
       errorIndex: -1, // 选择错误助记词的索引
+      language: language[this.$cache.get('_language')]
     }
   },
   created() {

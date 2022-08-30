@@ -1,9 +1,9 @@
 <template>
   <view class="dae">
-    <custom-header title="添加地址" :customStyle="{ 'background-color': '#fff' }">
+    <custom-header :title="language.text22" :customStyle="{ 'background-color': '#fff' }">
       <template slot="right">
         <view class="header-right">
-          <text @click="showModal = true">修改</text>
+          <text @click="showModal = true">{{ language.text25 }}</text>
         </view>
       </template>
     </custom-header>
@@ -11,10 +11,10 @@
     <view class="content">
       <view class="input">
         <view class="input-label">
-          <text>{{ wallet.quota[0].denom }}交易提醒额度设置</text>
+          <text>{{ language.text23 }}</text>
         </view>
         <view class="input-item">
-          <u--input class="left" placeholder="当前设置额度" disabled></u--input>
+          <u--input class="left" :placeholder="language.text24" disabled></u--input>
           <view class="right">
             <text class="quota-amount">{{ wallet.quota[0].amount | amountFormat }}</text>
             <text class="quota-denom">{{ wallet.quota[0].denom }}</text>
@@ -22,14 +22,17 @@
         </view>
       </view>
     </view>
-    <EditModal title="设置交易提醒额度" :showModal="showModal" placeholder="请设置额度" :value="wallet.quota[0].amount" @cancel="cancel"
-      @confirm="confirm" />
+    <EditModal :title="language.text26" :showModal="showModal" :placeholder="language.text27" :value="wallet.quota[0].amount" @cancel="cancel"
+      @confirm="confirm" :errorTip="'额度不能为负数'" />
+      
+      <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
 <script>
 import mixin from '../mixins/index.js'
 import EditModal from '../components/edit-modal.vue'
+import language from '../language/index.js'
 export default {
   mixins: [mixin],
   components: {
@@ -37,6 +40,7 @@ export default {
   },
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       wallet: this.$cache.get('_currentWallet'),
       showModal: false
     }
@@ -61,10 +65,12 @@ export default {
       this.showModal = false
     },
     confirm(val) {
+      if (val < 0) return
       this.wallet.quota[0].amount = val * 1
       this.updateCurrentWallet(this.wallet)
       this.updateWalletList(this.wallet)
       this.showModal = false
+      this.$refs.notify.show('', this.language.text30, { bgColor: ' #275EF1' })
     }
   }
 }

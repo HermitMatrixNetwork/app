@@ -6,7 +6,7 @@
         <view class="title">
           <text>{{ title }}</text>
         </view>
-        <u--input :placeholder="placeholder" border="surround" v-model="inputValue" class="edit-name-input"
+        <u--input type="number" :placeholder="placeholder" border="surround" v-model="inputValue" class="edit-name-input"
           :class="{ 'error-edit-name': editError }" @change="change" clearable>
         </u--input>
         <view class="error-tip" :style="{ opacity: editError ? 1 : 0 }">
@@ -16,15 +16,15 @@
     </template>
     <template slot="confirmButton">
       <view class="confirm-button">
-        <uni-button class="cancel" @click="cancel">{{ language.cancel }}</uni-button>
-        <uni-button class="confirm" @click="confirm">{{ language.confirm }}</uni-button>
+        <uni-button class="cancel" @click="cancel">{{ language.text17 }}</uni-button>
+        <uni-button class="confirm" @click="confirm">{{ language.text29 }}</uni-button>
       </view>
     </template>
   </u-modal>
 </template>
 
 <script>
-import language from './language/editModal.js'
+import language from '../language/index.js'
 export default {
   props: {
     showModal: {
@@ -52,7 +52,7 @@ export default {
     return {
       language: language[this.$cache.get('_language')],
       editError: false,
-      inputValue: this.value.toFixed(2)
+      inputValue: this.value.toFixed(2) == 0 ? '' : this.value.toFixed(2)
     }
   },
   methods: {
@@ -63,6 +63,7 @@ export default {
       this.$emit('confirm', this.inputValue)
     },
     change(val) {
+      val < 0 ? this.editError = true : this.editError = false
       this.$emit('change', val)
     }
   }

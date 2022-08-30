@@ -21,23 +21,24 @@
 </template>
 
 <script>
+import language from './language/index.js'
 export default {
   data() {
     return {
       importTypes: [{
-        name: '助记词',
-        icon: '助记词.png',
-        describe: '助记词由单词组成，以空格隔开',
+        name: language[this.$cache.get('_language')].text25,
+        icon: 'mnemonic.png',
+        describe: language[this.$cache.get('_language')].text26,
         page: './importFromMnemonic'
       }, {
-        name: '私钥',
-        icon: '私钥.png',
-        describe: '明文私钥字符',
+        name: language[this.$cache.get('_language')].text27,
+        icon: 'privateKey.png',
+        describe: language[this.$cache.get('_language')].text28,
         page: './importFromPrivatekey'
       }, {
-        name: 'Keystore',
+        name: language[this.$cache.get('_language')].text29,
         icon: 'keystore.png',
-        describe: '加密的私钥JSON 文件',
+        describe: language[this.$cache.get('_language')].text30,
         page: './importFromKeystore'
       }]
     }

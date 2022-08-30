@@ -1,5 +1,7 @@
 <template>
   <view class="account">
+    <view class="mask" v-show="updating"></view>
+    <custom-updateApp :updating.sync="updating" checkImmediate />
     <!-- 钱包主页 -->
     <view class="status_bar">
       <!-- APP下会占用系统原生消息因此需要该占位符 -->
@@ -20,7 +22,7 @@
         <view class="user-msg">
           <view class="allassets">
             <!-- 总资产 -->
-            <u-icon :name="eyeAsset ? 'eye' : 'eye-off'" size="32rpx" color="#FFFFFF" label="总资产" labelPos="left"
+            <u-icon :name="eyeAsset ? 'eye' : 'eye-off'" size="32rpx" color="#FFFFFF" :label="languages.text02" labelPos="left"
               labelSize="28rpx" labelColor="#FFFFFF" space="8rpx" @click="assentIsShow" />
           </view>
           <view class="user-balance">
@@ -39,28 +41,28 @@
       <view class="account-column">
         <view class="column-item" @click="toGo('/pages/account/send/index')">
           <u-icon :name="require('../../static/img/account/send.png')" size="80rpx"></u-icon>
-          <text>发送</text>
+          <text>{{ languages.text03 }}</text>
         </view>
         <view class="column-item" @click="toGo('./receive')">
           <u-icon :name="require('../../static/img/account/receive.png')" size="80rpx"></u-icon>
-          <text>接收</text>
+          <text>{{ languages.text04 }}</text>
         </view>
         <view class="column-item" @click="toDelegate">
           <u-icon :name="require('../../static/img/account/delegate.png')" size="80rpx"></u-icon>
-          <text>委托</text>
+          <text>{{ languages.text05 }}</text>
         </view>
         <view class="column-item" @click="dealBtn">
           <u-icon :name="require('../../static/img/account/transaction.png')" size="80rpx"></u-icon>
-          <text>交易</text>
+          <text>{{ languages.text06 }}</text>
         </view>
       </view>
 
       <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
         <view class="modalContent">
           <u-icon name="info-circle" size="64rpx" color="#FFA033" />
-          <view class="modal-title">提示</view>
-          <text class="modal-content">当前viewkey与链上不一致，代币余额和交易记录将无法获取，请进入代币详情页点击设置viewkey。</text>
-          <button @click="aa = false">确认</button>
+          <view class="modal-title">{{ languages.text172 }}</view>
+          <text class="modal-content">{{ languages.text08 }}</text>
+          <button @click="aa = false">{{ languages.text09 }}</button>
         </view>
       </u-modal>
       <view class="coin-list">
@@ -110,7 +112,6 @@ import SwitchWallet from '@/pages/walletManager/switchWallet.vue'
 import TokenColumn from './send/components/TokenColumn.vue'
 import languages from './language'
 import mixin from './mixins/index.js'
-import {} from '@/utils/secretjs/SDK.js'
 export default {
   mixins: [mixin],
   components: {
@@ -122,24 +123,25 @@ export default {
   },
   data() {
     return {
+      updating: false,
       showSwitchWallet: false,
       address: '',
       currentWallet: this.$cache.get('_currentWallet'),
       languages: languages[this.$cache.get('_language')],
       coinList: [],
       inactiveStyle: {
-        fontSize: '32rpx',
+        fontSize: '34rpx',
         color: '#8397B1',
-        fontWeight: '500'
+        // fontWeight: '500'
       },
       activeStyle: {
         fontSize: '34rpx',
         color: '#2C365A',
-        fontWeight: '600'
+        // fontWeight: '600'
       },
       itemStyle: {
-        height: '60rpx',
-        alignItems: 'flex-start'
+        height: '70rpx',
+        // alignItems: 'flex-start'
       },
       allassets: 0, //总资产
       eyeAsset: true,
@@ -167,7 +169,7 @@ export default {
       let coinList = this.$cache.get('_currentWallet').coinList || []
       let tokenType = new Set()
       this.coinList = [{
-        name: '代币'
+        name: this.languages.text07
       },
       {
         name: 'NFT'
@@ -190,7 +192,7 @@ export default {
       })
     },
     click(item) {
-      this.coinType = item.name == '代币' ? 'All' : item.name
+      this.coinType = item.name == this.languages.text07 ? 'All' : item.name
     },
     //页面跳转
     goTo(e) {
@@ -360,7 +362,7 @@ export default {
               }
             }
           }
-
+          
           if (coin.decimals) balance = balance / coin.decimals
           coin.balance = balance
           coin.loadingBalance = false
@@ -403,6 +405,16 @@ export default {
   }
 </script>
 <style lang="scss" scoped>
+  .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,.5) !important;
+    z-index: 9999;
+  }
+  
   page {
     width: 100%;
     height: 100%;

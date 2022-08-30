@@ -1,22 +1,25 @@
 <template>
   <view class="list">
     <custom-loading style="margin-top: 30rpx;" v-if="loading"></custom-loading>
-    <view class="item" v-for="(item, index) in list[types[currentTab]]" :key="index" @click="toDetail(item)">
-      <view class="left">
-        <image :src="item.icon" style="width: 72rpx; height: 72rpx;" />
-      </view>
-      <view class="center">
-        <view class="address">
-          {{ item.validator_address | sliceAddress(6, -6) }}
+    <template v-else-if="list[types[currentTab]].length">
+      <view class="item" v-for="(item, index) in list[types[currentTab]]" :key="index" @click="toDetail(item)">
+        <view class="left">
+          <image :src="item.icon" style="width: 72rpx; height: 72rpx;" />
         </view>
-        <view class="name">
-          {{ item.timestamp }}
+        <view class="center">
+          <view class="address">
+            {{ item.validator_address | sliceAddress(6, -6) }}
+          </view>
+          <view class="name">
+            {{ item.timestamp }}
+          </view>
         </view>
+        <div class="right">
+          <text class="num">{{ item.amount }} {{ mainCoin.alias_name }}</text>
+        </div>
       </view>
-      <div class="right">
-        <text class="num">{{ item.amount }} {{ mainCoin.alias_name }}</text>
-      </div>
-    </view>
+    </template>
+    <no-data v-else :tip="language.text40" />
   </view>
 </template>
 
@@ -26,12 +29,14 @@ import {
   sliceAddress
 } from '@/utils/filters.js'
 import mainCoin from '@/config/index.js'
+import language from '../language/index.js'
 export default {
   props: {
     currentTab: Number
   },
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       wallet: this.$cache.get('_currentWallet'),
       list: {
         all: [],
@@ -100,9 +105,10 @@ export default {
         
         item.timestamp = item.timestamp.replace(/Z|T/g, ' ')
       })
-      this.list['all'].push(...result, ...withdraw)
+      this.list['all'].push(...this.list['delegate'], ...this.list['undelegate'], ...this.list['withdraw'])
       this.loading = false
       this.list['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      console.log(this.list['all'])
     })
   },
   filters: {

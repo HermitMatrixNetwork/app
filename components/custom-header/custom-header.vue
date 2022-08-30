@@ -11,7 +11,7 @@
         <slot v-else name="left"></slot>
       </view>
       <view class="center">
-        <text v-if="title">{{ title }}</text>
+        <text v-if="title" class="title">{{ title }}</text>
         <slot v-else name="center"></slot>
       </view>
       <view class="right">
@@ -90,6 +90,7 @@ export default {
   }
 
   .container {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -101,6 +102,14 @@ export default {
       font-size: 32rpx;
       color: #0F172A;
       line-height: 32rpx;
+      
+      .title {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+      }
     }
 
     .left {

@@ -1,13 +1,13 @@
 <template>
   <view class="address_pages">
-    <custom-header :title="'编辑地址'" :customStyle="headerStyle">
+    <custom-header :title="language.text12" :customStyle="headerStyle">
       <template #right>
-        <text class="save" @click="saveAddress">保存</text>
+        <text class="save" @click="saveAddress">{{ language.text43 }}</text>
       </template>
     </custom-header>
     <view class="main">
       <view style="position: relative;">
-        <InputTitle :title="'地址信息'" :placeholder="'请输入地址'" :isTextarea="true" ref="textarea" disabled
+        <InputTitle :title="language.text05" :placeholder="language.text06" :isTextarea="true" ref="textarea"
           :inputVal.sync="book.walletAddress">
           <template #inputRight>
             <view class="scan">
@@ -17,20 +17,32 @@
           </template>
         </InputTitle>
       </view>
-      <text class="errorTip" v-if="showAddressErrorTipEmpty">{{ language['addressErrorTipEmpty'] }}</text>
-      <text class="errorTip" v-if="showAddressErrorTipDuplicate">{{ language['addressErrorTipDuplicate'] }}</text>
-      <InputTitle :title="'钱包名称'" :placeholder="'设置钱包名称（不超过10个字符）'" :inputVal.sync="book.walletName"></InputTitle>
-      <text class="errorTip" v-if="showWalletNameErrorTip">{{ language['walletNameErrorTipEmpty'] }}</text>
-      <InputTitle :title="'描述'" :placeholder="'描述（选填，不超过20个字符）'" :inputVal.sync="book.walletDescribe"></InputTitle>
+      <text class="errorTip" :style="{ opacity: (showAddressErrorTipEmpty || showAddressErrorTipDuplicate) ? 1 : 0 }" v-text="showAddressErrorTipEmpty ? language['addressErrorTipEmpty'] : showAddressErrorTipDuplicate ? language['addressErrorTipDuplicate'] : '1' "> </text>
+
+      <InputTitle :title="language.text88" :placeholder="language.text07" :inputVal.sync="book.walletName"></InputTitle>
+      <text class="errorTip" :style="{ opacity: showWalletNameErrorTip ? 1 : 0 }">{{ language['walletNameErrorTipEmpty'] }}</text>
+      <InputTitle :title="language.text87" :placeholder="language.text08" :inputVal.sync="book.walletDescribe"></InputTitle>
     </view>
-    <u-button class="btn" @click="deleteBook">移除地址</u-button>
-    <u-toast ref="uToast"></u-toast>
+    <u-button class="btn" @click="deleteBook">{{ language.text15 }}</u-button>
+    
+    <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
+      <view class="modalContent">
+        <u-icon name="info-circle" size="64rpx" color="#FFA033" />
+        <view class="modal-title">{{ language.text89 }}</view>
+        <text class="modal-content">{{ language.text16 }}</text>
+        <view class="con_btn">
+          <button @click="aa = false" class="con_btn_cancel">{{ language.text17 }}</button>
+          <button @click="conConfim" class="con_btn_confirm" style="background-color: #002FA7;">{{ language.text29 }}</button>
+        </view>
+      </view>
+    </u-modal>
+    <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
 <script>
 import InputTitle from './send/components/Input-title.vue'
-import language from './language/index.js'
+import language from '@/pages/mine/language/index.js'
 export default {
   components: {
     InputTitle
@@ -51,11 +63,26 @@ export default {
       showAddressErrorTipDuplicate: false,
       showWalletNameErrorTip: false,
       language: language[this.$cache.get('_language')],
+      aa: false
     }
   },
   methods: {
     saveAddress() {
       const addressBook = this.$cache.get('_addressBook')
+
+      if (this.book.walletAddress.trim() == '') {
+        this.showAddressErrorTipEmpty = true
+      } else {
+        this.showAddressErrorTipEmpty = false
+      }
+      
+      const bookIndex = addressBook.findIndex(item => item.walletAddress == this.book.walletAddress)
+      
+      if (addressBook.find((item, index) => bookIndex !== index && item.walletAddress == this.book.walletAddress)) {
+        this.showAddressErrorTipDuplicate = true
+      } else {
+        this.showAddressErrorTipDuplicate = false
+      }
 
       if (this.book.walletName.trim() == '') {
         this.showWalletNameErrorTip = true
@@ -63,20 +90,42 @@ export default {
         this.showWalletNameErrorTip = false
       }
 
-      if (!this.book.showWalletNameErrorTip) {
+      if (!this.showWalletNameErrorTip && !this.showAddressErrorTipEmpty && !this.showAddressErrorTipDuplicate) {
         const index = addressBook.findIndex(item => item.walletAddress == this.book.walletAddress)
 
         addressBook.splice(index, 1, this.book)
 
         this.$cache.set('_addressBook', addressBook, 0)
 
-        this.$refs.uToast.show({
-          type: 'success',
-          message: '保存地址成功',
-          complete() {
-            uni.navigateBack()
-          }
-        })
+        this.$refs.notify.show('', this.language.text30, { bgColor: ' #275EF1' })
+              
+        setTimeout(() => {
+          uni.navigateBack()
+        }, 1500)
+      }
+    },
+    conConfim() {
+      this.aa = false
+      const addressBook = this.$cache.get('_addressBook')
+      
+      const index = addressBook.findIndex(item => item.walletAddress == this.book.walletAddress)
+      
+      if (index > -1) {
+        addressBook.splice(index, 1)
+      
+        this.$cache.set('_addressBook', addressBook, 0)
+      
+        this.$refs.notify.show('', this.language.text18, { bgColor: ' #275EF1' })
+      
+        setTimeout(() => {
+          uni.navigateBack()
+        }, 1500)
+      } else {
+      
+        // this.$refs.uToast.show({
+        //   type: 'error',
+        //   message: '移除地址失败,请稍后再试'
+        // })
       }
     },
     scanCode() { //扫码
@@ -89,31 +138,7 @@ export default {
       })
     },
     deleteBook() {
-      this.$refs.uToast.hide()
-      const addressBook = this.$cache.get('_addressBook')
-
-      const index = addressBook.findIndex(item => item.walletAddress == this.book.walletAddress)
-
-      if (index > -1) {
-        addressBook.splice(index, 1)
-
-        this.$cache.set('_addressBook', addressBook, 0)
-
-        this.$refs.uToast.show({
-          type: 'success',
-          message: '移除地址成功',
-          complete() {
-            uni.navigateBack()
-          }
-        })
-      } else {
-
-        this.$refs.uToast.show({
-          type: 'error',
-          message: '移除地址失败,请稍后再试'
-        })
-      }
-
+      this.aa = true
     }
   }
 }
@@ -179,5 +204,72 @@ export default {
   
   /deep/ .u-button--active::before {
     opacity: 0 !important;
+  }
+  
+  /deep/ .hintModal {
+    .u-modal {
+    }
+  
+    .u-modal__content {
+      padding: 32rpx;
+      padding-top: 48rpx !important;
+      width: 100%;
+      flex-direction: column !important;
+    }
+  
+    .modalContent {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+  
+      .modal-title {
+        font-weight: 600;
+        font-size: 32rpx;
+        color: #2C365A;
+        margin-top: 32rpx;
+      }
+  
+      .modal-content {
+        width: 564rpx;
+        font-size: 28rpx;
+        color: #8397b1;
+        line-height: 42rpx;
+        margin-top: 32rpx;
+        margin-bottom: 48rpx;
+        text-align: center;
+      }
+      
+      .con_btn {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        
+        &_cancel {
+          font-size: 32rpx;
+          color: #8397B1;
+          background-color: #fff;
+          border: 2px solid rgba(131,151,177,0.30);
+          
+          &:after {
+            border: 0 !important;
+          }
+        }
+        
+        &_confirm {
+          font-size: 32rpx;
+          color: #FCFCFD;
+        }
+      }
+      
+      uni-button {
+        margin: 0 !important;
+        width: 272rpx;
+        height: 96rpx;
+        font-size: 32rpx;
+        line-height: 96rpx;
+        border-radius: 16rpx;
+      }
+    }
   }
 </style>

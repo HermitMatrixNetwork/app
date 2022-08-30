@@ -10,7 +10,8 @@
 				</view>
 			</view>
 			<div class="right">
-				<text class="num">{{item.balance.amount / mainCoin.decimals }}</text>
+				<text class="num" v-if="redirectURL !== '/pages/delegate/income'">{{item.balance.amount / mainCoin.decimals }}</text>
+				<text class="num" v-else>{{ (item.rewards.amount / mainCoin.delegateDecimals).toFixed(5) }}</text>
         <radio class="radio" shape="circle" :checked="index == selectIndex"></radio>
 			</div>
 		</view>

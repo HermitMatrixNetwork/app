@@ -2,7 +2,7 @@
 	<view class="sendPage">
     <view class="mask" v-show="loading"></view>
      <view :callWithdraw="callWithdraw" :change:callWithdraw="render.withdraw"></view>
-		<custom-header :title="'收益领取'" :style="titleStyle">
+		<custom-header :title="language.text31" :style="titleStyle">
 <!-- 			<template #right>
 				<u-icon :name="require('@/static/img/account/saoma.png')" size="44rpx" @click="scanCode" />
 			</template> -->
@@ -19,7 +19,7 @@
               <view class="name">{{selData.validator.description.moniker}}</view>
               <view class="address">{{selData.validator.operatorAddress| sliceAddress(10, -10)}}</view>
             </view>
-            <text v-else>点击去选择</text>
+            <text v-else>{{ language.text14 }}</text>
             <view class="icon-right">
               <image src="/static/img/ic-arrow1.png"></image>
             </view>
@@ -31,13 +31,18 @@
 				<view class="content-top">
 					<!-- 收款地址 -->
 					<view class="collection-adres">
-						<InputTitle :title="'收益领取接收地址'" :type="'text'" :placeholder="'输入或粘贴钱包地址'" ref="addressInptval"
-							:inputVal.sync="receiveAddress" readonly>
+						<InputTitle :title="language.text32" :type="'text'" :placeholder="'输入或粘贴钱包地址'" ref="addressInptval" disabled
+							:inputVal.sync="receiveAddress">
+              <template slot="title-icon">
+                <view style="font-size: 24rpx; color: #1E5EFF;" @click="toSetAddress">
+                  <text>去设置</text>
+                </view>
+              </template>
 						</InputTitle>
             
 					</view>
 					<view class="tip">
-						注：收益领取交易成功即到账！
+						{{ language.text33 }}
 					</view>
 				</view>
 			</view>
@@ -52,14 +57,14 @@
 				<view class="send-amount">
           <view class="amount">
             <view class="label">
-              <text>领取金额</text>
+              <text>{{ language.text34 }}</text>
             </view>
             <view class="value">
-              <u--input placeholder="请输入金额" v-model="amount" disabled></u--input>
+              <u--input :placeholder="language.text35" v-model="amount" disabled></u--input>
               <view class="right">
                 <text class="denom">GHM</text>
                 <view class="border"></view>
-                <text class="all" @click="testAmount">全部</text>
+                <text class="all" @click="testAmount">{{ language.text18 }}</text>
               </view>
             </view>
           </view>
@@ -76,7 +81,7 @@
 			<miners-column @getMinersCost="getMinersCost"></miners-column>
 
 			<view class="btn" @click="transferConfirm">
-				确认
+				{{ language.text20 }}
 			</view>
 		</view>
 
@@ -85,60 +90,79 @@
 			<view class="submitPopup">
 				<view class="main">
 					<view class="popup-title">
-						交易确认
+						{{ language.text25 }}
 						<u-icon :name="require('@/static/img/account/close.png')" size="32rpx"
 							@click="submitPopupIsShow=false"></u-icon>
 					</view>
 
 					<!-- 发送账户 -->
 					<view class="send-address">
-						<text>操作账户</text>
+						<text>{{ language.text26 }}</text>
 						<text>{{ userAddress }}</text>
 					</view>
 
 					<!-- 接收账户 -->
 					<view class="receive_address">
-						<text>接收账户</text>
+						<text>{{ language.text27 }}</text>
 						<text>{{ receiveAddress }}</text>
 					</view>
+          
+          <view class="receive_address">
+          	<text>领取数量</text>
+          	<text>100.00 {{ mainCoin.alias_name }}</text>
+          </view>
 
 					<!--矿工费-->
 					<view class="miners_fee">
-						<text>矿工费</text>
+						<text>{{ language.text29 }}</text>
 						<view>
-							<view>21000 GWEI*2100 GasPrice</view>
-							<view class="price">0.000287 GHM</view>
+							<view>25000 GWEI * {{ formData.gas }} GasPrice</view>
+							<view class="price">{{ formData.gas * 25000 }} GHM</view>
 						</view>
 					</view>
 				</view>
 				<view class="submit-btn" @click="submitAgain">
-					确认
+          {{ language.text20 }}
 				</view>
 			</view>
 		</u-popup>
 
 		<u-modal :show="modalPasswordIsShow" :showConfirmButton="false">
 		  <view class="modal_main">
-		    <view class="modal_title">
-		      密码确认
-		      <u-icon :name="require('static/img/account/close.png')" size="32rpx"
-		        @click="modalPasswordIsShow=false"></u-icon>
-		    </view>
+        <view class="modal_title">
+          <view>
+            {{ verifyMethod == 'touchID' ? `指纹验证` : language.text66 }}
+            <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
+              class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
+          </view>
+          <u-icon name="/static/img/account/close.png" size="32rpx"
+            @click="closeModalPasswordIsShow"></u-icon>
+        </view>
+        <view v-if="verifyMethod == 'password'">
 		    <view class="item">
 		      <view class="item-input item-input-password">
-		        <u-input :password="!passwordEye" v-model="payPassword" placeholder="输入资金密码">
+		        <u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text67">
 		        </u-input>
 		        <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
 		          @click="passwordEye = !passwordEye">
 		        </u-icon>
 		      </view>
 		    </view>
-		    <text :style="{opacity: passwordCheck ? 1 : 0 }" class="waringPrompt">资金密码错误，请确认后重新输入!</text>
-		    <u-button @click="passwordButton" class="pass_confirm">确认</u-button>
+		    <text :style="{opacity: passwordCheck ? 1 : 0 }" class="waringPrompt">{{ language.text69 }}</text>
+		    <u-button @click="passwordButton" class="pass_confirm">{{ language.text20 }}</u-button>
+        </view>
+        <view v-else class="touch-verify">
+          <view class="logo">
+            <image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
+          </view>
+        </view>
+        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">切换验证方式</view>
 		  </view>
 		</u-modal>
 		
 		<custom-notify ref="notify"></custom-notify>
+    
+    <view :callWithdrawAddress="callWithdrawAddress" :change:callWithdrawAddress="render.getWithdrawAddress"></view>
 	</view>
 </template>
 
@@ -151,12 +175,16 @@ import {
 } from '@/utils/filters.js'
 import mainCoin from '@/config/index.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
+import verifyTouchID from './mixins/verifyTouchID.js'
+import language from './language/index.js'
 export default {
+  mixins: [verifyTouchID],
   components: {
     InputTitle
   },
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       tokenUrl: '@/static/img/placeholder.jpeg',
       currentWallet: this.$cache.get('_currentWallet'),
       tokenName: 'GHM',
@@ -182,30 +210,101 @@ export default {
       },
       formData: {
         delegatorAddress: this.$cache.get('_currentWallet').address,
-        validatorAddress: ''
+        validatorAddress: '',
+        gas: ''
       },
-      amount: '',
+      amount: '100',
       selData: '',
       selectIndex: -1,
       loading: false,
-      callWithdraw: 0
+      callWithdraw: 0,
+      callWithdrawAddress: 0,
+      mainCoin,
+      // 指纹验证
+      touchId: this.$cache.get('_touchId'),
+      showToast: false,
+      toast: {
+        icon: '/static/img/mine/loading.gif',
+        // msg: '失败次数超出限制，请稍后再设置',
+        msg: '失败次数超出限制，请切换其它方式验证'
+      },
+      verifyMethod: 'password',
+      verifyTouchErrorTip: '',
     }
   },
   onLoad(options) {
+    if (this.touchId) this.verifyMethod = 'touchID'
     const index = options.selectIndex
+    
     if (index > -1) {
       this.selData = this.$cache.get('_delegateInfo').list[index]
-      this.balance = this.selData.balance.amount / mainCoin.decimals
+      this.balance = (this.selData.rewards.amount / mainCoin.delegateDecimals).toFixed(5)
       this.selectIndex = index
     }
+    
+
   },
-  mounted() {
-    this.$refs.addressInptval.childValue = this.currentWallet.address
+  onShow() {
+    const wallet = this.currentWallet
+    // if (!wallet.withdrawAddress) {
+    this.callWithdrawAddress = wallet.address
+    // } else {
+    //   this.$refs.addressInptval ? this.$refs.addressInptval.childValue = wallet.withdrawAddress : this.receiveAddress = wallet.withdrawAddress
+    // }
   },
   filters: {
     sliceAddress
   },
   methods: {
+    closeModalPasswordIsShow() {
+      this.modalPasswordIsShow = false
+      if (this.touchId) {
+        plus.fingerprint.cancel()
+      }
+    },
+    changeVerifyMethod() {
+      this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password'
+      if (this.verifyMethod == 'touchID') {
+        this.verify()
+      } else {
+        plus.fingerprint.cancel()
+      }
+    },
+    hideModel() {
+      this.modalPasswordIsShow = false
+    },
+    verifyTouchIDSuccess() {
+      this.passwordCheck = false
+      this.formData.validatorAddress = this.selData.delegation.validatorAddress
+      this.callWithdraw = this.formData
+      this.loading = true
+      this.$nextTick(() => {
+        uni.showToast({
+          title: '执行中...',
+          icon: 'loading',
+          duration: 999999999
+        })          
+      })
+    },
+    submitAgain() {
+      this.modalPasswordIsShow = true
+      // #ifdef APP-PLUS
+      if (this.touchId ) {
+        this.verify()
+      }
+      // #endif
+      
+      // #ifndef APP-PLUS
+      this.touchId = 0
+      // #endif
+      
+      this.submitPopupIsShow = false
+    },
+    toSetAddress() {
+      uni.navigateTo({
+        url: './setWithdrawAddress'
+      })
+    },
     scanCode() { //扫码
       uni.scanCode({
         onlyFromCamera: false,
@@ -221,14 +320,9 @@ export default {
       })
     },
     chooseToken() {
-      console.log('代币选择')
       uni.navigateTo({
         url: './token_list'
       })
-    },
-    submitAgain() {
-      this.modalPasswordIsShow = true
-      this.submitPopupIsShow = false
     },
     transferConfirm() { //转账确认
       let verify = true
@@ -270,7 +364,7 @@ export default {
         this.$cache.set('_updateDelegateInfo', true, 0)
         uni.showToast({
           title: '执行成功',
-          image: '/static/img/chenggong.png',
+          image: '/static/img/mine/success.png',
           mask: true,
           duration: 3000,
           complete: () => {
@@ -284,16 +378,28 @@ export default {
       } else {
         uni.showToast({
           title: '执行失败',
-          image: '/static/img/shibai1.png',
+          image: '/static/img/mine/fail.png',
           mask: true,
           duration: 3000,
         })
         console.log(res)
       }
     },
+    handlerWithdrawAddress(res) {
+      this.callWithdrawAddress = 0
+      if (res.withdrawAddress) {
+        const wallet = this.currentWallet
+        wallet.withdrawAddress = res.withdrawAddress
+        // this.$refs.addressInptval.childValue = res.withdrawAddress
+        this.$refs.addressInptval ? this.$refs.addressInptval.childValue = res.withdrawAddress : this.receiveAddress = res.withdrawAddress
+        this.$cache.set('_currentWallet', wallet, 0)
+        this.updateWalletList(wallet)
+      } else {
+        console.log('获取收益领取地址失败')
+      }
+    },
     getMinersCost(val) {
-      console.log('接收到值', val)
-      this.minersMsg = val
+      this.formData.gas = val.amount
     },
     toAddressBook() {
       uni.navigateTo({
@@ -309,28 +415,51 @@ export default {
       uni.redirectTo({
         url
       })
+    },
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.unshift(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
     }
   },
 }
 </script>
 
 <script lang="renderjs" module="render">
-  import { withdrawDelegatorReward } from '@/utils/secretjs/SDK.js'
+  import { withdrawDelegatorReward, getWithdrawAddress } from '@/utils/secretjs/SDK.js'
   import renderUtils from '@/utils/render.base.js'
+  import mainCoin from '@/config/index.js'
   export default {
     methods: {
       async withdraw(val) {
         if (val == 0) return
-        console.log(val);
         let res = {}
         try {
-          res = await withdrawDelegatorReward(val)
+          let gas = val.gas * mainCoin.decimals
+          res = await withdrawDelegatorReward(val, gas)
         } catch (e) {
           console.log(e)
           res.code = 7
         }
         renderUtils.runMethod(this._$id, 'handlerWithdraw', res, this)
         
+      },
+      async getWithdrawAddress(address) {
+        if (address == 0) return
+        let res = {}
+        try {
+          res = await getWithdrawAddress(address)
+        } catch (e) {
+          console.log(e)
+          res.code = 7
+        }
+        renderUtils.runMethod(this._$id, 'handlerWithdrawAddress', res, this)
       }
     }
   }
@@ -376,7 +505,7 @@ export default {
 			}
 
 			.tip {
-				line-height: 72rpx;
+				line-height: 36rpx;
 				font-size: 24rpx;
 				color: #EC2828;
 			}
@@ -766,5 +895,56 @@ export default {
     color: #FCFCFD;
     text-align: center;
     margin-top: 56rpx;
+  }
+  
+  .touch-verify {
+    margin-top: 80rpx;
+    .logo {
+      text-align: center;
+    }
+  }
+  
+  .changeVerifyMethod {
+    text-align: right;
+    font-family: PingFangSC-Regular;
+    font-size: 28rpx;
+    color: #1E5EFF;
+    margin-top: 20rpx;
+  }
+  
+  .toast {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) !important;
+    width: 240rpx;
+    background: rgba(0, 0, 0, .6);
+    padding: 0 20rpx 32rpx;
+    justify-content: center;
+    border-radius: 6rpx;
+    z-index: 999999999;
+  
+    &-icon {
+      text-align: center;
+      margin-top: 65rpx;
+  
+      image {
+        width: 65rpx;
+        height: 65rpx;
+      }
+    }
+  
+    &-content {
+      margin-top: 20rpx;
+      font-weight: 400;
+      font-size: 28rpx;
+      color: #FFFFFF;
+      text-align: center;
+    }
+  }
+  
+  .verifyTouchErrorTip {
+    color: red;
+    font-size: 24rpx;
   }
 </style>

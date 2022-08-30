@@ -1,13 +1,13 @@
 <template>
   <view class="address_pages">
-    <custom-header :title="'添加地址'" :customStyle="headerStyle">
+    <custom-header :title="language.text04" :customStyle="headerStyle">
       <template #right>
-        <text class="save" @click="saveAddress">添加</text>
+        <text class="save" @click="saveAddress">{{ language.text38 }}</text>
       </template>
     </custom-header>
     <view class="main">
       <view style="position: relative;">
-        <InputTitle :title="'地址信息'" :placeholder="'请输入地址'" :isTextarea="true" ref="textarea"
+        <InputTitle :title="language.text05" :placeholder="language.text06" :isTextarea="true" ref="textarea"
           :inputVal.sync="walletAddress">
           <template #inputRight>
             <view class="scan">
@@ -17,20 +17,19 @@
           </template>
         </InputTitle>
       </view>
-      <text class="errorTip" v-if="showAddressErrorTipEmpty">{{ language['addressErrorTipEmpty'] }}</text>
-      <text class="errorTip" v-if="showAddressErrorTipDuplicate">{{ language['addressErrorTipDuplicate'] }}</text>
-      <InputTitle :title="'钱包名称'" :placeholder="'设置钱包名称（不超过10个字符）'" :inputVal.sync="walletName"></InputTitle>
-      <text class="errorTip" v-if="showWalletNameErrorTip">{{ language['walletNameErrorTipEmpty'] }}</text>
-      <InputTitle :title="'描述'" :placeholder="'描述（选填，不超过20个字符）'" :inputVal.sync="walletDescribe"></InputTitle>
+      <text class="errorTip" :style="{ opacity: (showAddressErrorTipEmpty || showAddressErrorTipDuplicate) ? 1 : 0 }" v-text="showAddressErrorTipEmpty ? language['addressErrorTipEmpty'] : showAddressErrorTipDuplicate ? language['addressErrorTipDuplicate'] : '1' "> </text>
+      <InputTitle :title="language.text88" :placeholder="language.text07" :inputVal.sync="walletName"></InputTitle>
+      <text class="errorTip" :style="{ opacity: showWalletNameErrorTip ? 1 : 0 }">{{ language['walletNameErrorTipEmpty'] }}</text>
+      <InputTitle :title="language.text87" :placeholder="language.text08" :inputVal.sync="walletDescribe"></InputTitle>
     </view>
 
-    <u-toast ref="uToast"></u-toast>
+    <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
 <script>
 import InputTitle from './send/components/Input-title.vue'
-import language from './language/index.js'
+import language from '@/pages/mine/language/index.js'
 export default {
   components: {
     InputTitle
@@ -80,13 +79,11 @@ export default {
 
         this.$cache.set('_addressBook', addressBook, 0)
 
-        this.$refs.uToast.show({
-          type: 'success',
-          message: '保存地址成功',
-          complete() {
-            uni.navigateBack()
-          }
-        })
+        this.$refs.notify.show('', this.language.text10, { bgColor: '#275EF1' })
+        
+        setTimeout(() => {
+          uni.navigateBack()
+        }, 1500)
       }
     },
     scanCode() { //扫码

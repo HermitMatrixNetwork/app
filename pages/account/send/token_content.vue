@@ -2,7 +2,7 @@
   <view class="token_content">
     <custom-header tabUrl="/pages/account/index" :title="token.alias_name">
       <template #right>
-        <text class="customIcon" @click="toTokenDetail()">详情</text>
+        <text class="customIcon" @click="toTokenDetail()">{{ language.text69 }}</text>
       </template>
     </custom-header>
 
@@ -24,7 +24,7 @@
 
       <view class="token_details">
         <view class="available">
-          <text>可用</text>
+          <text>{{ language.text57 }}</text>
           <view class="quantity">
             <custom-loading v-if="loadingBalace"></custom-loading>
             <view class="top" v-else>{{ token.balance | formatBalance }}</view>
@@ -35,7 +35,7 @@
           </view>
         </view>
         <view class="lock">
-          <text>锁定</text>
+          <text>{{ language.text58 }}</text>
           <custom-loading v-if="lockAmountLoading"></custom-loading>
           <view v-else class="quantity">
             <view class="top">{{ lockAmount }}</view>
@@ -75,8 +75,8 @@
                   </view>
                   <view class="right">
                     <view class="amount"
-                      :class="[record.validator_address ? 'delegate-amount' : (record.to_address == address ? 'recipient-amount' : 'sender-amount')]">
-                      {{ record.validator_address ? '' : (record.to_address == address ? '+' : '-') }}
+                      :class="[`${record.type}-amount`]">
+                      {{ record.type == 'delegate' ? '' : (record.plus ? '+' : '-') }}
                       {{ record.amount }}
                     </view>
                     <view class="real-money">
@@ -97,7 +97,7 @@
                 <view v-else-if="pagination[item.type].nodata" class="loading-more">已全部加载完毕</view>
               </view>
             </template>
-            <no-data v-else tip="暂无记录" />
+            <no-data v-else :tip="language.text113" />
           </scroll-view>
         </swiper-item>
       </swiper>
@@ -105,10 +105,10 @@
     <view :callRenderDelegateRecord="callRenderDelegateRecord" :change:callRenderDelegateRecord="render.getAddress">
     </view>
     <view class="operation_btn">
-      <button @click="toSend('/pages/account/send/index', token)">发送</button>
-      <button @click="toGo('/pages/account/receive')">接收</button>
-      <button @click="dealBtn">交易</button>
-      <button @click="queryHash">委托</button>
+      <button @click="toSend('/pages/account/send/index', token)">{{ language.text64 }}</button>
+      <button @click="toGo('/pages/account/receive')">{{ language.text70 }}</button>
+      <button @click="dealBtn">{{ language.text61 }}</button>
+      <button @click="toDelegate">{{ language.text66 }}</button>
     </view>
   </view>
 </template>
@@ -127,6 +127,7 @@ import {
 import {
   txsQuery
 } from '@/api/cosmos.js'
+import language from '../language/index.js'
 export default {
   mixins: [mixin],
   components: {
@@ -134,6 +135,7 @@ export default {
   },
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       token: {},
       address: this.$cache.get('_currentWallet').address,
       listCurrentIndex: 0,
@@ -142,28 +144,29 @@ export default {
         paddingTop: '32rpx',
       },
       list: [{
-        name: '全部',
+        name: language[this.$cache.get('_language')].text63,
         type: 'all'
       }, {
-        name: '发送',
+        name: language[this.$cache.get('_language')].text64,
         type: 'sender',
         icon: require('@/static/img/account/fasong2.png')
       }, {
-        name: '收款',
+        name: language[this.$cache.get('_language')].text65,
         type: 'recipient',
         icon: require('@/static/img/account/shoukuan2.png')
       },
       {
-        name: '委托',
+        name: language[this.$cache.get('_language')].text66,
         type: 'delegate'
       },
+
       {
-        name: '领取',
-        type: 'draw'
+        name: language[this.$cache.get('_language')].text67,
+        type: 'withdraw'
       },
-      
+
       {
-        name: '失败',
+        name: language[this.$cache.get('_language')].text68,
         type: 'fail'
       }
       ],
@@ -171,7 +174,7 @@ export default {
         'sender': [],
         'recipient': [],
         'delegate': [],
-        'draw': [],
+        'withdraw': [],
         'fail': [],
         'all': []
       },
@@ -189,6 +192,12 @@ export default {
           loading: false
         },
         delegate: {
+          page: 0,
+          size: 5,
+          total: 0,
+          loading: false
+        },
+        withdraw: {
           page: 0,
           size: 5,
           total: 0,
@@ -243,21 +252,28 @@ export default {
           `pagination.limit=${this.pagination.sender.size}`
         ]),
         txsQuery([`events=message.module='${'bank'}'`, `events=transfer.recipient='${this.address}'`,
-          'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.sender.page}`,
-          `pagination.limit=${this.pagination.sender.size}`
+          'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.recipient.page}`,
+          `pagination.limit=${this.pagination.recipient.size}`
         ]),
         txsQuery([`events=message.module='${'staking'}'`, `events=message.sender='${this.address}'`,
-          'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.sender.page}`,
-          `pagination.limit=${this.pagination.sender.size}`
+          'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.delegate.page}`,
+          `pagination.limit=${this.pagination.delegate.size}`
+        ]),
+        txsQuery([`events=message.sender='${ this.address }'`, 'events=message.module=\'distribution\'',
+          'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.withdraw.page}`,
+          `pagination.limit=${this.pagination.withdraw.size}`
         ])
       ]).then(res => {
         if (this.pagination.sender.total == 0) {
           this.pagination.sender.total = res[0].data.pagination.total
           this.pagination.recipient.total = res[1].data.pagination.total
           this.pagination.delegate.total = res[2].data.pagination.total
-
+          this.pagination.withdraw.total = res[3].data.pagination.total
+          // #ifndef APP-PLUS
+          console.log(res)
+          // #endif
         }
-        
+
         res.forEach((result, type) => {
           const records = result.data.tx_responses
           for (let i = 0, len = records.length; i < len; i++) {
@@ -265,8 +281,10 @@ export default {
             item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.decimals + mainCoin.alias_name
             item.amount = 0
             item.memo = item.tx.body.memo
+
             item.from_address = item.tx.body.messages[0].from_address
             item.to_address = item.tx.body.messages[0].to_address
+            item.withdraw_address = item.tx.body.messages[0].withdraw_address
             item.delegator_address = item.tx.body.messages[0].delegator_address
             item.validator_address = item.tx.body.messages[0].validator_address
             item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
@@ -281,43 +299,62 @@ export default {
             })
             item.amount = item.amount / mainCoin.decimals + mainCoin.alias_name
             switch (type) {
-            case 1:
-              item.icon = require('@/static/img/account/shoukuan2.png')
-              break
             case 0:
               item.icon = require(
                 '@/static/img/account/fasong2.png')
+              item.type = 'sender'
+              item.plus = item.to_address == this.address ? true : false
+              break
+            case 1:
+              item.icon = require('@/static/img/account/shoukuan2.png')
+              item.type = 'recipient'
+              item.plus = true
               break
             case 2:
               item.icon = require(
                 '@/static/img/account/weituo2.png')
+              item.type = 'delegate'
+              break
+            case 3:
+              item.icon = require(
+                '@/static/img/account/lingqu.png')
+              item.type = 'withdraw'
+              item.plus = item.withdraw_address == this.address ? true : false
               break
             }
           }
-          this.accountTransfer['all'].push(...records)
         })
 
         this.accountTransfer['sender'] = res[0].data.tx_responses
         this.accountTransfer['recipient'] = res[1].data.tx_responses
         this.accountTransfer['delegate'] = res[2].data.tx_responses
-        
+        this.accountTransfer['withdraw'] = res[3].data.tx_responses
+
         if (this.accountTransfer['sender'].length == Number(this.pagination.sender.total)) {
           this.pagination.sender.nodata = true
         }
-        
+
         if (this.accountTransfer['recipient'].length == Number(this.pagination.recipient.total)) {
           this.pagination.recipient.nodata = true
         }
-        
+
         if (this.accountTransfer['delegate'].length == Number(this.pagination.delegate.total)) {
           this.pagination.delegate.nodata = true
         }
-        
-        
-        
+
+        if (this.accountTransfer['withdraw'].length == Number(this.pagination.withdraw.total)) {
+          this.pagination.withdraw.nodata = true
+        }
+
+        this.accountTransfer['all'] = [...this.accountTransfer['sender'], ...this.accountTransfer['recipient'],
+          ...this.accountTransfer['delegate'], ...this.accountTransfer['withdraw']
+        ]
+
         this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-
-
+        
+        // #ifndef APP-PLUS 
+        console.log(this.accountTransfer['all'])
+        // #endif
         this.loading = false
       })
     },
@@ -360,6 +397,13 @@ export default {
             `pagination.limit=${this.pagination[type].size}`
           ])).data.tx_responses
           break
+        case 'withdraw':
+          result = (await txsQuery([`events=message.sender='${ this.address }'`,
+            'events=message.module=\'distribution\'', 'order_by=ORDER_BY_DESC',
+            `pagination.offset=${this.pagination[type].page * this.pagination[type].size}`,
+            `pagination.limit=${this.pagination[type].size}`
+          ])).data.tx_responses
+          break
         }
 
         for (let i = 0, len = result.length; i < len; i++) {
@@ -385,21 +429,30 @@ export default {
           switch (type) {
           case 'recipient':
             item.icon = require('@/static/img/account/shoukuan2.png')
+            item.type = 'recipient'
             break
           case 'sender':
             item.icon = require(
               '@/static/img/account/fasong2.png')
+            item.type = 'sender'
             break
           case 'delegate':
             item.icon = require(
               '@/static/img/account/weituo2.png')
+            item.type = 'delegate'
+            break
+          case 'withdraw':
+            item.icon = require(
+              '@/static/img/account/lingqu.png')
+            item.type = 'withdraw'
             break
           }
         }
 
         this.accountTransfer[type].push(...result)
         this.accountTransfer['all'].push(...result)
-        if (Number(this.pagination[type].total) == this.accountTransfer[type].length) this.pagination[type].nodata = true
+        if (Number(this.pagination[type].total) == this.accountTransfer[type].length) this.pagination[type].nodata =
+            true
         this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
 
       } catch {
@@ -420,8 +473,10 @@ export default {
         url: `./transactionDetails?transactionHash=${hash}`
       })
     },
-    async queryHash() {
-      const res = await queryAccountHash('034ADCCBB782E26DB4FCAA5715CFF96E1B4576C6646E61019A25D890440B09FC')
+    toDelegate() {
+      uni.switchTab({
+        url: '/pages/delegate/index'
+      })
     },
     switchTabs(e) {
       const {

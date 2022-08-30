@@ -4,15 +4,15 @@
 
     <view class="container">
       <view class="item">
-        <view class="item-label">Keystore导入</view>
+        <view class="item-label">{{ language.text53 }}</view>
         <view class="item-input">
-          <u--textarea v-model="keystore" placeholder="输入Keystore文件内容" :maxlength="-1"></u--textarea>
+          <u--textarea v-model="keystore" :placeholder="language.text54" :maxlength="-1"></u--textarea>
         </view>
       </view>
       <view class="item">
-        <view class="item-label">资金密码</view>
+        <view class="item-label">{{ language.text55 }}</view>
         <view class="item-input item-input-password">
-          <u-input :password="!passwordEye" v-model="password" placeholder="输入资金密码">
+          <u-input :password="!passwordEye" v-model="password" :placeholder="language.text57">
           </u-input>
           <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'" @click="passwordEye = !passwordEye">
           </u-icon>
@@ -20,14 +20,14 @@
       </view>
       <view class="item">
         <view class="item-label">
-          钱包名称
+          {{ language.text48 }}
         </view>
         <view class="item-input item-input-name">
-          <u-input v-model="name" placeholder="设置钱包名称" :adjust-position="false"></u-input>
+          <u-input v-model="name" :placeholder="language.text38" :adjust-position="false"></u-input>
         </view>
       </view>
     </view>
-    <u-button class="btn" @click="importWallet">导入</u-button>
+    <u-button class="btn" @click="importWallet">{{ language.text58 }}</u-button>
     <view :callRenderCreate="callRenderCreate" :change:callRenderCreate="render.createWallet"></view>
     <!-- 错误提示 -->
     <Notify ref="notify"></Notify>
@@ -41,6 +41,7 @@ import {
   validateAll
 } from '@/utils/validator.js'
 import WalletCrypto from '@/utils/walletCrypto'
+import language from './language/index.js'
 export default {
   mixins: [mixin],
   components: {
@@ -48,6 +49,7 @@ export default {
   },
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       keystore: '{"version":"1.2","coinTypeForChain":{},"crypto":{"cipher":"aes-128-ctr","cipherparams":{"iv":"94f598f39aff49221010d4b41a6ef351"},"ciphertext":"6a28fd9c52d34417b4566b35a20756a622fb5bab118428feb51b2f41b9e43e34fa1f661930e8359fa2e872f3b97f927568b908a84cc93d1e61f9facdbc3f1079","kdf":"pbkdf2","kdfparams":{"salt":"27bdb1b8ff27bdd20309a93a6b8451ea2dc0d5f47e3710ff7f3d47154d011f1d","dklen":32,"n":131072,"r":8,"p":1},"mac":"94a59f7ac4fa0469f1d7a3ab796d7f9c30ba2c1ae0c92e3129a84036d9120c69"}}', // keystore
       privateKey64: '', // 私钥
       password: '11111111', // 资金密码

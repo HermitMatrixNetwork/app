@@ -7,11 +7,11 @@
     <view class="container">
       <div class="top">
         <view class="left" @click="selindex = 0" :class="{ actived: selindex == 0 }">
-          {{language.myDelegate}}
+          {{language.text01}}
           <view v-if="selindex == 0" class="line" />
         </view>
         <view class="right" @click="selindex = 1" :class="{ actived: selindex == 1 }">
-          {{language.verifiedBy}}
+          {{language.text44}}
           <view v-if="selindex == 1" class="line" />
         </view>
       </div>
@@ -70,13 +70,11 @@ export default {
       }
 
       .left {
-        width: 160rpx;
         text-align: center;
 
       }
 
       .right {
-        width: 120rpx;
         margin-left: 32rpx;
       }
 

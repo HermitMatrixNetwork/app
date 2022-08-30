@@ -2,28 +2,29 @@
   <view class="sendPage">
     <view class="mask" v-show="loading"></view>
     <view :updataDelegate="updataDelegate" :change:updataDelegate="render.unDelegate"></view>
-    <custom-header :title="'取消委托'" :style="titleStyle">
+    <custom-header :title="language.text06" :style="titleStyle">
     </custom-header>
     <view class="main-top">
       <!-- 选择取消委托节点 -->
       <view class="content">
         <view class="content-top">
           <view class="title">
-            选择取消委托节点
+            {{ language.text13 }}
           </view>
-          <view class="change-token" @click="selectNode(`/pages/delegate/selectNode?selectIndex=${selectIndex}&redirectURL=/pages/delegate/cancel`)">
+          <view class="change-token"
+            @click="selectNode(`/pages/delegate/selectNode?selectIndex=${selectIndex}&redirectURL=/pages/delegate/cancel`)">
 
             <view v-if="selData">
               <view class="name">{{selData.validator.description.moniker}}</view>
               <view class="address">{{selData.validator.operatorAddress| sliceAddress(10, -10)}}</view>
             </view>
-            <text v-else>点击去选择</text>
+            <text v-else>{{ language.text14 }}</text>
             <view class="icon-right">
               <image src="/static/img/ic-arrow1.png"></image>
             </view>
           </view>
           <view class="tip">
-            注：取消委托交易成功后，需等待2天才可成功到账！
+            {{ language.text15 }}
           </view>
         </view>
       </view>
@@ -36,16 +37,17 @@
         <view class="send-amount">
           <view class="amount">
             <view class="label">
-              <text>输入取消委托数量</text>
+              <text>{{ language.text16 }}</text>
             </view>
             <view class="value">
-              <u--input placeholder="请输入金额" type="number" v-model="formData.amount.amount" @change="sendAmountChange"></u--input>
-              <text @click="testAmount">全部</text>
+              <u--input :placeholder="language.text17" type="number" v-model="formData.amount.amount" @change="sendAmountChange">
+              </u--input>
+              <text @click="testAmount">{{ language.text18 }}</text>
             </view>
           </view>
-          <text class="waringPrompt" :style="{ opacity: showAmountError ? 1 : 0 }">输入金额超过选中节点委托数量，请重新输入</text>
+       <!--   <text class="waringPrompt" :style="{ opacity: showAmountError ? 1 : 0 }">输入金额超过选中节点委托数量，请重新输入</text> -->
           <view class="other">
-            <div class="title">当前节点委托：</div>
+            <div class="title">{{ language.text19 }}：</div>
             <div class="num" v-if="selData">{{selData.balance.amount / mainCoin.decimals }} GHM</div>
             <div class="num" v-else>0 GHM</div>
           </view>
@@ -56,43 +58,42 @@
             <text>Memo</text>
           </view>
           <view class="value">
-            <u--input placeholder="请输入Memo（选填）" v-model="formData.memo"></u--input>
+            <u--input :placeholder="language.text65" v-model="formData.memo"></u--input>
           </view>
         </view>
       </view>
     </view>
     <miners-column @getMinersCost="getMinersCost"></miners-column>
     <view class="main-bottom">
-     <view class="btn" @click="transferConfirm">
-        确认
+      <view class="btn" @click="transferConfirm">
+        {{ language.text20 }}
       </view>
     </view>
 
-    <u-popup :show="submitPopupIsShow" @close="submitPopupIsShow=false" mode="bottom"
-      :safeAreaInsetBottom="true">
+    <u-popup :show="submitPopupIsShow" @close="submitPopupIsShow=false" mode="bottom" :safeAreaInsetBottom="true">
       <view class="submitPopup">
         <view class="main">
           <view class="popup-title">
-            交易确认
+            {{ language.text25 }}
             <u-icon :name="require('@/static/img/account/close.png')" size="32rpx" @click="submitPopupIsShow=false">
             </u-icon>
           </view>
 
           <!-- 发送账户 -->
           <view class="send-address">
-            <text>操作账户</text>
+            <text>{{ language.text26 }}</text>
             <text>{{ formData.delegatorAddress }}</text>
           </view>
 
           <!-- 接收账户 -->
           <view class="receive_address">
-            <text>接收账户</text>
+            <text>{{ language.text27 }}</text>
             <text>{{ formData.delegatorAddress }}</text>
           </view>
 
           <!-- 取消委托数量 -->
           <view class="transfer_amount">
-            <text>取消委托数量</text>
+            <text>{{ language.text28 }}</text>
             <text>{{formData.amount.amount ? formData.amount.amount : '0' }}{{tokenName}}</text>
           </view>
 
@@ -104,15 +105,15 @@
 
           <!--矿工费-->
           <view class="miners_fee">
-            <text>矿工费</text>
+            <text>{{ language.text29 }}</text>
             <view>
-              <view>21000 GWEI*2100 GasPrice</view>
-              <view class="price">0.000287 GHM</view>
+              <view>30000 GWEI * {{ formData.gas }} GasPrice</view>
+              <view class="price">{{ formData.gas * 30000 }} GHM</view>
             </view>
           </view>
         </view>
         <view class="submit-btn" @click="submitAgain">
-          确认
+          {{ language.text20 }}
         </view>
       </view>
     </u-popup>
@@ -120,26 +121,46 @@
     <u-modal :show="modalPasswordIsShow" :showConfirmButton="false">
       <view class="modal_main">
         <view class="modal_title">
-          密码确认
-          <u-icon :name="require('static/img/account/close.png')" size="32rpx"
-            @click="modalPasswordIsShow=false"></u-icon>
+          <view>
+            {{ verifyMethod == 'touchID' ? `指纹验证` : language.text66 }}
+            <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
+              class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
+          </view>
+          <u-icon name="/static/img/account/close.png" size="32rpx"
+            @click="closeModalPasswordIsShow"></u-icon>
         </view>
-        <view class="item">
-          <view class="item-input item-input-password">
-            <u-input :password="!passwordEye" v-model="payPassword" placeholder="输入资金密码">
-            </u-input>
-            <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
-              @click="passwordEye = !passwordEye">
-            </u-icon>
+        <view v-if="verifyMethod == 'password'">
+          <view class="item">
+            <view class="item-input item-input-password">
+              <u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text67">
+              </u-input>
+              <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
+                @click="passwordEye = !passwordEye">
+              </u-icon>
+            </view>
+          </view>
+          <text :style="{opacity: passwordCheck ? 1 : 0 }" class="waringPrompt">{{ language.text69 }}</text>
+          <u-button @click="passwordButton" class="pass_confirm">{{ language.text68 }}</u-button>
+        </view>
+        <view v-else class="touch-verify">
+          <view class="logo">
+            <image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
           </view>
         </view>
-        <text :style="{opacity: passwordCheck ? 1 : 0 }" class="waringPrompt">资金密码错误，请确认后重新输入!</text>
-        <u-button @click="passwordButton" class="pass_confirm">确认</u-button>
+        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">切换验证方式</view>
       </view>
     </u-modal>
-    
+
     <custom-notify ref="notify"></custom-notify>
-    
+    <!-- 指纹验证 -->
+    <view class="toast" v-show="showToast">
+      <view class="toast-icon">
+        <image :src="toast.icon"></image>
+      </view>
+      <view class="toast-content">
+        <text>{{ toast.msg }}</text>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -148,13 +169,16 @@ import InputTitle from '@/pages/account/send/components/Input-title.vue'
 import mixin from './mixins/index.js'
 import mainCoin from '@/config/index.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
+import verifyTouchID from './mixins/verifyTouchID.js'
+import language from './language/index.js'
 export default {
-  mixins: [mixin],
+  mixins: [mixin, verifyTouchID],
   components: {
     InputTitle
   },
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       selData: '', //选择的委托
       confirmData: {},
       updataDelegate: 0, //更新委托
@@ -186,12 +210,24 @@ export default {
         }, //发送金额
         memo: '', //Memo
         delegatorAddress: this.$cache.get('_currentWallet').address,
-        validatorAddress: ''
+        validatorAddress: '',
+        gas: ''
       },
-      loading: false
+      loading: false,
+      // 指纹验证
+      touchId: this.$cache.get('_touchId'),
+      showToast: false,
+      toast: {
+        icon: '/static/img/mine/loading.gif',
+        // msg: '失败次数超出限制，请稍后再设置',
+        msg: '失败次数超出限制，请切换其它方式验证'
+      },
+      verifyMethod: 'password',
+      verifyTouchErrorTip: '',
     }
   },
   onLoad(options) {
+    if (this.touchId) this.verifyMethod = 'touchID'
     const index = options.selectIndex
     if (index > -1) {
       this.selData = this.$cache.get('_delegateInfo').list[index]
@@ -200,6 +236,20 @@ export default {
     }
   },
   methods: {
+    closeModalPasswordIsShow() {
+      this.modalPasswordIsShow = false
+      if (this.touchId) {
+        plus.fingerprint.cancel()
+      }
+    },
+    changeVerifyMethod() {
+      this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password'
+      if (this.verifyMethod == 'touchID') {
+        this.verify()
+      } else {
+        plus.fingerprint.cancel()
+      }
+    },
     sendAmountChange(val) {
       this.showAmountError = this.balance < this.formData.amount.amount ? true : false
     },
@@ -213,31 +263,59 @@ export default {
         url
       })
     },
+    hideModel() {
+      this.modalPasswordIsShow = false
+    },
+    verifyTouchIDSuccess() {
+      this.$nextTick(() => {
+        this.passwordCheck = false
+        this.formData.validatorAddress = this.selData.delegation.validatorAddress
+        this.updataDelegate = this.formData
+        this.loading = true
+        this.$nextTick(() => {
+          uni.showToast({
+            title: '执行中...',
+            icon: 'loading',
+            duration: 999999999
+          })          
+        })
+      })
+    },
     submitAgain() {
       this.modalPasswordIsShow = true
+      // #ifdef APP-PLUS
+      if (this.touchId ) {
+        this.verify()
+      }
+      // #endif
+      
+      // #ifndef APP-PLUS
+      this.touchId = 0
+      // #endif
+      
       this.submitPopupIsShow = false
     },
     transferConfirm() { //转账确认
       let verify = true
-      
-      if(this.showAmountError) {
+
+      if (this.showAmountError) {
         verify = false
       }
-      
+
       if (this.formData.amount.amount == '' || this.formData.amount.amount == 0) {
         verify = false
-        this.$refs.notify.show('error', '委托数量不能为空')        
+        this.$refs.notify.show('error', '委托数量不能为空')
       }
-      
+
       if (!this.selData) {
         verify = false
         this.$refs.notify.show('error', '委托节点不能为空')
       }
-     
+
       if (verify) {
         this.submitPopupIsShow = true
       }
-     
+
     },
     passwordButton() {
       const decode = WalletCrypto.decode(this.$cache.get('_currentWallet').password)
@@ -264,7 +342,7 @@ export default {
         this.$cache.set('_updateDelegateInfo', true, 36000)
         uni.showToast({
           title: '执行成功',
-          image: '/static/img/chenggong.png',
+          image: '/static/img/mine/success.png',
           mask: true,
           duration: 3000,
           complete: () => {
@@ -278,7 +356,7 @@ export default {
       } else {
         uni.showToast({
           title: '执行失败',
-          image: '/static/img/shibai1.png',
+          image: '/static/img/mine/fail.png',
           mask: true,
           duration: 3000,
         })
@@ -290,8 +368,7 @@ export default {
       this.formData.amount.amount = this.balance
     },
     getMinersCost(val) {
-      console.log('接收到值', val)
-      this.minersMsg = val
+      this.formData.gas = val.amount
     },
     selectNode(url) {
       uni.redirectTo({
@@ -322,12 +399,19 @@ export default {
     methods: {
       async unDelegate(val) {
         if (val == 0) return
-        let { memo, ...data } = JSON.parse(JSON.stringify(val))
+        let {
+          memo,
+          ...data
+        } = JSON.parse(JSON.stringify(val))
         let res = {}
         data.amount.amount = data.amount.amount * mainCoin.decimals + ''
-        console.log({ data, memo });
+        console.log({
+          data,
+          memo
+        });
         try {
-          res = await unDelegate(data, memo)
+          let gas = data.gas * mainCoin.decimals
+          res = await unDelegate(data, memo, gas)
         } catch (e) {
           console.log(e)
           res.code = 7
@@ -345,10 +429,10 @@ export default {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0,0,0,.5) !important;
+    background: rgba(0, 0, 0, .5) !important;
     z-index: 9999;
   }
-  
+
   .sendPage {
     height: 100vh;
     overflow: hidden;
@@ -382,6 +466,7 @@ export default {
         color: #EC2828;
         line-height: 24rpx;
         padding: 24rpx 0;
+        line-height: 30rpx;
       }
     }
 
@@ -463,7 +548,7 @@ export default {
       height: 80rpx;
       font-size: 24rpx;
       color: #2C365A;
-      // margin-top: 10rpx;
+      margin-top: 10rpx;
 
       .title {
         flex: 1;
@@ -515,10 +600,10 @@ export default {
         padding: 48rpx 0 16rpx 0;
         line-height: 32rpx;
       }
-      
-      
 
-      > view:not(:first-child) {
+
+
+      >view:not(:first-child) {
         font-size: 28rpx;
         display: flex;
         justify-content: space-between;
@@ -659,10 +744,12 @@ export default {
 
       /deep/ .u-input {
         color: #2C365A;
+
         .uni-input-input {
           font-size: 40rpx;
           font-weight: 600;
         }
+
         .input-placeholder {
           font-size: 28rpx !important;
           color: #8397B1 !important;
@@ -676,12 +763,14 @@ export default {
       }
     }
   }
-  
+
   .memo {
     .value {
       height: 96rpx;
+
       /deep/ .u-input {
         color: #2C365A;
+
         .uni-input-input {
           font-size: 32rpx;
           font-weight: 400;
@@ -689,7 +778,7 @@ export default {
       }
     }
   }
-  
+
   .btn {
     position: absolute;
     bottom: 64rpx;
@@ -705,18 +794,18 @@ export default {
     text-align: center;
     line-height: 96rpx;
   }
-  
+
   .item {
     margin-top: 64rpx;
-  
+
     &-input {
-  
+
       .u-input {
         height: 96rpx;
         background-color: #F2F4F8;
         border-radius: 16rpx 0 0 16rpx;
         padding-left: 0 !important;
-  
+
         /deep/ input {
           color: #2C365A !important;
           font-size: 28rpx !important;
@@ -724,7 +813,7 @@ export default {
           line-height: 48rpx !important;
         }
       }
-  
+
       /deep/ .input-placeholder {
         // height: 48rpx !important;
         font-weight: 400 !important;
@@ -733,10 +822,10 @@ export default {
         color: #8397B1 !important;
         // line-height: 48rpx !important;
       }
-  
+
       &-password {
         display: flex;
-  
+
         .u-icon {
           height: 96rpx;
           padding-right: 36rpx;
@@ -746,7 +835,7 @@ export default {
       }
     }
   }
-  
+
   .pass_confirm {
     height: 96rpx;
     background: #002FA7;
@@ -755,5 +844,56 @@ export default {
     color: #FCFCFD;
     text-align: center;
     margin-top: 56rpx;
+  }
+  
+  .touch-verify {
+    margin-top: 80rpx;
+    .logo {
+      text-align: center;
+    }
+  }
+  
+  .changeVerifyMethod {
+    text-align: right;
+    font-family: PingFangSC-Regular;
+    font-size: 28rpx;
+    color: #1E5EFF;
+    margin-top: 20rpx;
+  }
+  
+  .toast {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) !important;
+    width: 240rpx;
+    background: rgba(0, 0, 0, .6);
+    padding: 0 20rpx 32rpx;
+    justify-content: center;
+    border-radius: 6rpx;
+    z-index: 999999999;
+
+    &-icon {
+      text-align: center;
+      margin-top: 65rpx;
+
+      image {
+        width: 65rpx;
+        height: 65rpx;
+      }
+    }
+
+    &-content {
+      margin-top: 20rpx;
+      font-weight: 400;
+      font-size: 28rpx;
+      color: #FFFFFF;
+      text-align: center;
+    }
+  }
+
+  .verifyTouchErrorTip {
+    color: red;
+    font-size: 24rpx;
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<custom-header title="问题反馈">
+		<custom-header tabUrl="/pages/mine/index" title="问题反馈">
 			<template slot="right">
 				<view class="record" @click="showEditWalletNameModal = true">记录</view>
 			</template>
@@ -12,7 +12,7 @@
 					您的问题
 				</view>
 				<!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-				<u-input class="wallet-name-input" v-model="formData.title" placeholder="请输入您的问题"></u-input>
+				<u-input class="wallet-name-input" v-model="formData.title" :placeholder="language.text70"></u-input>
 				<!-- :style="{ opacity: confirmePasswordError ? 1 : 0 }" -->
 				<!--       <view class="error-tip">
             {{ language.errorTip }}
@@ -24,7 +24,7 @@
 					您的邮箱
 				</view>
 				<!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-				<u-input class="wallet-name-input address" v-model="formData.email" placeholder="请准确填写您的邮箱地址，邮箱错误将无法收到回复">
+				<u-input class="wallet-name-input address" v-model="formData.email" :placeholder="language.text71">
 				</u-input>
 				<!-- :style="{ opacity: confirmePasswordError ? 1 : 0 }" -->
 				<!--          <view class="error-tip">
@@ -35,12 +35,12 @@
 			<view class="item">
 				<view class="item-label">问题描述</view>
 				<view class="item-input">
-					<u--textarea v-model="formData.desc" placeholder="请具体描述您的问题" :maxlength="-1"></u--textarea>
+					<u--textarea v-model="formData.desc" :placeholder="language.text72" :maxlength="-1"></u--textarea>
 				</view>
 			</view>
 
 			<view class="item">
-				<view class="item-label">上传截图</view>
+				<view class="item-label">{{ language.text73 }}</view>
 				<view class="item-input">
 					<u-upload class="upload" :fileList="fileList" @afterRead="afterRead" :maxCount="5">
 						<view class="upload-content">
@@ -50,7 +50,7 @@
 				</view>
 			</view>
 
-			<SubmitBtn class="submit-btn" @click.native="submitBtn"></SubmitBtn>
+			<SubmitBtn class="submit-btn" @click.native="submitBtn">{{ language.text29 }}</SubmitBtn>
 		</view>
 
 		<!-- 模态框 -->
@@ -65,9 +65,9 @@
 					<u--input placeholder="输入邮箱查询" border="surround" v-model="email" class="edit-name-input"
 						:class="{ 'error-edit-name': editNameError }" clearable>
 					</u--input>
-					<view class="error-tip" :style="{ opacity: editNameError ? 1 : 0 }">
+		<!-- 			<view class="error-tip" :style="{ opacity: editNameError ? 1 : 0 }">
 						邮箱格式不正确, 请出入正确的邮箱
-					</view>
+					</view> -->
 					<!-- <u--input :placeholder="language.editNamePlaceholder" border="surround" v-model="name" class="edit-name-input"
             :class="{ 'error-edit-name': editNameError }" clearable>
           </u--input>
@@ -78,112 +78,117 @@
 			</template>
 			<template slot="confirmButton">
 				<view class="confirm-button">
-					<uni-button class="cancel" @click="cancel()">取消</uni-button>
-					<uni-button class="confirm" @click="confirm()">确认</uni-button>
+					<uni-button class="cancel" @click="cancel()">{{ language.text17 }}</uni-button>
+					<uni-button class="confirm" @click="confirm()">{{ language.text29 }}</uni-button>
 					<!--          <uni-button class="cancel" @click="cancel('name')">{{ language.cancel }}</uni-button>
           <uni-button class="confirm" @click="confirm('name')">{{ language.confirm }}</uni-button> -->
 				</view>
 			</template>
 		</u-modal>
-		<Notify ref="notify" />
+    <custom-notify ref="notify" class="notify" ></custom-notify>
 	</view>
 </template>
 
 <script>
-import language from './language/index.js'
+import language from '../language/index.js'
 import SubmitBtn from '../../account/send/components/submit-btn.vue'
-import Notify from '@/pages/index/components/notify.vue'
 import {
-	problemFeedback,
-	queryFeedbackHistory
+  problemFeedback,
+  queryFeedbackHistory
 } from '@/api/token.js'
-import { pathToBase64, base64ToPath } from 'image-tools'
+import { pathToBase64 } from 'image-tools'
 export default {
-	components: {
-		SubmitBtn, Notify
-	},
-	data () {
-		return {
-			language: language[this.$cache.get('_language')],
-			fileList: [],
-			showEditWalletNameModal: false,
-			email: '',
-			editNameError: false,
-			formData: {
-				title: '',
-				desc: '',
-				email: '',
-			}
-		}
-	},
-	methods: {
-		async afterRead (file, lists, name) {
-			pathToBase64(file.file.url).then(res => {
-				this.fileList.push({ ...file.file, base64: res })
-			})
-		},
-		cancel () {
-			this.showEditWalletNameModal = false
-		},
-		async confirm () {
-			//   if(/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(this.email)){
-			// console.log('正确')
-			const res = await queryFeedbackHistory(this.email)
-			console.log('历史记录', res)
-			if (res.data.code == 0 && res.data.data.notices.length !== 0) {
-				uni.navigateTo({
-					url: './record',
-					events: {
-						sendMessage (res) {
-							console.log(res)
-						}
-					},
-					success (data) {
-						data.eventChannel.emit('acceptDataFromOpenerPage', res)
-					}
-				})
-				this.email = ''
-			} else {
-				this.showEditWalletNameModal = false
-				this.$refs.notify.show('success', '暂无反馈历史')
-			}
+  components: {
+    SubmitBtn
+  },
+  data () {
+    return {
+      language: language[this.$cache.get('_language')],
+      fileList: [],
+      showEditWalletNameModal: false,
+      email: '',
+      editNameError: false,
+      formData: {
+        title: '',
+        desc: '',
+        email: '',
+      }
+    }
+  },
+  methods: {
+    async afterRead (file, lists, name) {
+      pathToBase64(file.file.url).then(res => {
+        this.fileList.push({ ...file.file, base64: res })
+      })
+    },
+    cancel () {
+      this.showEditWalletNameModal = false
+    },
+    async confirm () {
+      if(!(/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(this.email))) {
+        this.$refs.notify.show('', this.language.text71)
+        return
+      }
+      const res = await queryFeedbackHistory(this.email)
+      console.log('历史记录', res)
+      if (res.data.code == 0 && res.data.data.notices.length !== 0) {
+        uni.navigateTo({
+          url: './record',
+          events: {
+            sendMessage (res) {
+              console.log(res)
+            }
+          },
+          success (data) {
+            data.eventChannel.emit('acceptDataFromOpenerPage', res)
+          }
+        })
+        this.email = ''
+      } else {
+        this.showEditWalletNameModal = false
+        this.$refs.notify.show('success', '暂无反馈历史')
+      }
 
-			// }else{
-			//   this.editNameError = true
-			// }  
-		},
-		async submitBtn () {
-			const {
-				title,
-				desc,
-				email
-			} = this.formData
-			let arr = this.fileList.map(item => {
-				return item.base64
-			})
-			let data = {
-				title,
-				desc,
-				email,
-				photos: JSON.stringify(arr)
-			}
-			if (!(title && desc && email)) return this.$refs.notify.show('error', '输入的值不能为空！')
-			const res = await problemFeedback(data)
-			console.log(res)
-			if (res.data.code == 0) {
-				this.$refs.notify.show('success', res.data.msg)
+      // }else{
+      //   this.editNameError = true
+      // }  
+    },
+    async submitBtn () {
+      if(!(/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(this.formData.email))) {
+        this.$refs.notify.show('', this.language.text71)
+        return
+      }
+      const {
+        title,
+        desc,
+        email
+      } = this.formData
+      let arr = this.fileList.map(item => {
+        return item.base64
+      })
+      let data = {
+        title,
+        desc,
+        email,
+        photos: JSON.stringify(arr)
+      }
+      if (!(title && desc && email)) return this.$refs.notify.show('error', this.language.text76)
+      const res = await problemFeedback(data)
+      console.log(res)
+      if (res.data.code == 0) {
+        this.$refs.notify.show('success', this.language.text77, { bgColor: '#275EF1' })
 
-				this.formData = {
-					title: '',
-					desc: '',
-					email: ''
-				}
-				this.fileList = []
-			} else {
-				this.$refs.notify.show('error', res.data.msg)
-			}
-		}
-	}
+        this.formData = {
+          title: '',
+          desc: '',
+          email: ''
+        }
+        this.fileList = []
+      } else {
+        this.$refs.notify.show('error', res.data.msg)
+      }
+    }
+  }
 }
 </script>
 
@@ -404,6 +409,20 @@ export default {
 }
 
 .submit-btn {
-	margin-top: 120px;
+	position: absolute;
+	bottom: 64rpx;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 622rpx;
+	height: 96rpx;
+	border-radius: 16rpx;
+	background-color: #002FA7 !important;
+	font-weight: 400;
+	font-size: 32rpx;
+	color: #FCFCFD;
+}
+
+.notify {
+  z-index: 999999999999;
 }
 </style>

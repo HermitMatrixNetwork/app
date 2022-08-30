@@ -34,6 +34,7 @@ export default {
   /deep/ .u-notify {
     border-radius: 0 0 16rpx 16rpx;
     padding: 0 !important;
+    
     .u-notify__warpper {
       align-items: flex-end !important;
       justify-content: flex-start;
@@ -42,6 +43,7 @@ export default {
       .u-notify__warpper__text {
         margin-bottom: 40rpx;
         margin-left: 40rpx;
+        text-align: left;
       }
     }
   }

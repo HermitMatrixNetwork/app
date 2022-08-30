@@ -3,11 +3,11 @@
 		<custom-header class="header" title="消息详情"></custom-header>
 
 		<view class="message">
-			<view class="title">{{msg.cn_title}}</view>
+			<view class="title">{{msg[`${currentLanguage.toLowerCase()}_title`]}}</view>
 			<view class="meta">
 				<view class="create-time">{{timestamp(msg.timestamp)}}</view>
 				<view class="create-author">
-					<text>发布者：{{msg.author}}</text>
+					<text>{{ language.text92 }}：{{msg.author}}</text>
 				</view>
 			</view>
 			<view class="content" v-html="contentMsg">
@@ -18,9 +18,12 @@
 </template>
 
 <script>
+import language from '../language/index.js'
 export default {
   data() {
     return {
+      language: language[this.$cache.get('_language')],
+      currentLanguage: this.$cache.get('_language'),
       msg: {
         author:'',
         timestamp:'',
@@ -36,7 +39,7 @@ export default {
     eventChannel.on('acceptDataFromOpenerPage', function(data) {
 		    console.log('接收到的数据',data.data)			
       _this.msg = data.data
-      _this.content = data.data.cn_content
+      _this.content = data.data[`${_this.currentLanguage.toLowerCase()}_content`]
       // this.msg = data.data
       // console.log(this.msg)
     })

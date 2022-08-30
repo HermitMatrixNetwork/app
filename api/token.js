@@ -5,10 +5,6 @@ import async from 'pbkdf2/lib/async'
 
 const http = new Request()
 
-// const devServer = '/goServer'
-
-// const devServer = ''
-
 http.setConfig((config) => {
   /* config 为默认全局配置*/
 
@@ -54,4 +50,8 @@ export const getVersion = async () => {
 //通过email查询历史反馈
 export const queryFeedbackHistory = async (email) => {
   return http.post('/message/feedback_problem_history',{email})
+}
+
+export const getHelp = async () => {
+  return http.get('/message/get_help')
 }

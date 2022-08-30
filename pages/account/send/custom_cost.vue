@@ -1,27 +1,24 @@
 <template>
 	<view class="custom_cost">
-		<custom-header :title="'自定义'" />
+		<custom-header :title="language.text173" />
 		<view class="custom_main">
-
-
 			<!-- Gas price -->
 			<view class="gas_price">
-				<InputTitle :title="'Gas Price'" :type="'number'" :placeholder="'Gas Price'" :inputVal.sync="priceValue"
+				<InputTitle :title="'Gas Price'" :type="'number'" :placeholder="'Gas Price'" :inputVal.sync="amount"
 					:warningStyleisShow="waringIsShow">
 				</InputTitle>
 
 			</view>
-			<view v-if="waringIsShow" class="waringPrompt">Gas Price过低，将影响交易确认时间</view>
+			<view :style="{ opacity : waringIsShow ?  1 : 0}" class="waringPrompt">{{ language.text34 }}</view>
 			<!-- Gas -->
 			<view class="Gas_num">
-
-				<InputTitle :title="'Gas'" :type="'number'" :placeholder="'Gas'" :inputVal.sync="numValue">
+				<InputTitle :title="'Gas'" :type="'number'" :placeholder="'Gas'" :inputVal.sync="minersGas">
 				</InputTitle>
 			</view>
 		</view>
 		<view class="bottom-btn">
-			<view @click="submitCustom" :class="priceValue&&numValue?'submit-btn':'submit-btn submit-btn-grey'">
-				确认
+			<view @click="submitCustom" :class="amount && minersGas?'submit-btn':'submit-btn submit-btn-grey'">
+				{{ language.text144 }}
 			</view>
 		</view>
 	</view>
@@ -29,50 +26,41 @@
 
 <script>
 import InputTitle from './components/Input-title.vue'
+import language from '../language/index.js'
 export default {
   components: {
     InputTitle
   },
   data() {
     return {
-      priceValue: '',
-      numValue: '',
-      waringIsShow: false
+      amount: '',
+      minersGas: '',
+      waringIsShow: false,
+      language: language[this.$cache.get('_language')]
     }
   },
   watch: {
-    'priceValue'(val) {
-      if (val < 2000) {
+    amount(val) {
+      if (val && Number(val) < Number(this.minersGas)) {
         this.waringIsShow = true
       } else {
         this.waringIsShow = false
       }
     }
   },
-  onLoad() {
-
-
+  created() {
+    this.minersGas = this.$cache.get('_MINERS_GAS')
   },
   methods: {
     submitCustom() {
-      if (!(this.priceValue && this.numValue)) return
-      console.log('提交自定义')
-   
+      if (!(this.amount && this.minersGas)) return
+      this.$cache.set('_MINERS_GAS', this.minersGas, 0)
       const eventChannel = this.getOpenerEventChannel()
       eventChannel.emit('someEvent', {
-        price: this.priceValue,
-        num: this.numValue
+        amount: this.amount,
+        minersGas: this.minersGas
       })
       uni.navigateBack()
-     
-      
-      // this.$emit('someEvent', {
-      //   price: this.priceValue,
-      //   num: this.numValue
-      // })
-      // uni.navigateBack()
-      
-      // console.log('aaaaaaaaaaa',this.$scope)
     },
   }
 }
@@ -107,8 +95,7 @@ export default {
 		color: #EC2828;
 		letter-spacing: 0;
 		margin-top: 10rpx;
-		line-height: 24rpx;
-		height: 24rpx;
+		line-height: 30rpx;
 	}
 
 	.bottom-btn {

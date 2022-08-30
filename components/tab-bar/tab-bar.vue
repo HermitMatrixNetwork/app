@@ -6,7 +6,7 @@
 				<image :src="currentItem==item.id?item.selectIcon:item.icon"></image>
 			</view>
 			<view class="item-bottom" :class="[currentItem==item.id ? 'item-active' : '']">
-				<text>{{language[item.text]}}</text>
+				<text>{{ item.text }}</text>
 			</view>
 		</view>
 	</view>
@@ -30,35 +30,34 @@ export default {
         path: '/pages/account/index',
         icon: require('../../static/img/tabbar/assets.png'),
         selectIcon: require('../../static/img/tabbar/selAssets.png'),
-        text: 'asset',
+        text: languages[this.$cache.get('_language')].text01,
         centerItem: false
       }, {
         id: 1,
         path: '/pages/market/index',
         icon: require('../../static/img/tabbar/market.png'),
         selectIcon: require('../../static/img/tabbar/selMarket.png'),
-        text: 'market',
+        text: languages[this.$cache.get('_language')].text04,
         centerItem: false
       }, {
         id: 2,
         path: '/pages/delegate/index',
         icon: require('../../static/img/tabbar/delegate.png'),
         selectIcon: require('../../static/img/tabbar/delegate.png'),
-        text: 'delegate',
         centerItem: true
       }, {
         id: 3,
         path: '/pages/transaction/index',
         icon: require('../../static/img/tabbar/transaction.png'),
         selectIcon: require('../../static/img/tabbar/selTransaction.png'),
-        text: 'transaction',
+        text: languages[this.$cache.get('_language')].text03,
         centerItem: false
       }, {
         id: 4,
         path: '/pages/mine/index',
         icon: require('../../static/img/tabbar/mine.png'),
         selectIcon: require('../../static/img/tabbar/selMine.png'),
-        text: 'mine',
+        text: languages[this.$cache.get('_language')].text02,
         centerItem: false
       }]
 

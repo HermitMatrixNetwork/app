@@ -3,22 +3,21 @@
     <custom-header class="header" :title="describe.alias_name"></custom-header>
 
     <view class="basic">
-      <view class="title">基本信息</view>
+      <view class="title">{{ language.text76 }}</view>
       <view class="content">
         <view v-for="(item, key) in showLabelList" :key="key" class="content-item">
-          <text class="label">{{language[item]}} :</text>
+          <text class="label">{{language[item.label]}} :</text>
           <view class="value">
-            <text>{{ describe[item] || '暂无'}}</text>
-            <image v-if="['official', 'full_name'].includes(item) &&  describe[item]" src="/static/img/account/copy2.png" @click="copy(describe[item])"></image>
+            <text>{{ describe[item.value] || language.text113 }}</text>
+            <image v-if="['text79', 'text78'].includes(item.label) &&  describe[item.value]" src="/static/img/account/copy2.png" @click="copy(describe[item.value])"></image>
           </view>
         </view>
       </view>
     </view>
     <view style="height: 16rpx;background: #F4F6FA;" />
     <view class="release">
-      <view class="title">发行信息</view>
-      <text>
-        发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行信息描述发行......
+      <view class="title">{{ language.text81 }}</view>
+      <text v-text="describe.desc || language.text113">
       </text>
     </view>
     
@@ -28,18 +27,32 @@
 
 <script>
 import mainCoin from '@/config/index.js'
-import language from './language/index.js'
+import language from '../language/index.js'
 export default {
   data() {
     return {
-      describe: mainCoin.describe,
+      describe: mainCoin,
       language: language[this.$cache.get('_language')],
-      showLabelList: ['alias_name', 'full_name', 'official', 'contract_address']
+      showLabelList: [{
+        label: 'text77',
+        value: 'alias_name'
+      }, {
+        label: 'text78',
+        value: 'full_name'
+      }, {
+        label: 'text79',
+        value: 'official'
+      }, {
+        label: 'text80',
+        value: 'contract_address'
+      }]
     }
   },
   onLoad(options) {
     if (options.tokenID)
       this.describe = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
+      
+    console.log(this.describe)
   },
   methods: {
     copy(val) {
@@ -132,6 +145,7 @@ export default {
 
     text {
       margin-right: 12rpx;
+      text-align: right;
     }
     
     image {

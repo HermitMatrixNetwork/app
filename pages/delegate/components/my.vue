@@ -3,38 +3,38 @@
     <view :address="address" :change:address="init"></view>
     <view class="header-box">
       <view class="header">
-        <headerItem :title="language.totalDelegate" :value="allData.total" />
-        <headerItem :title="language.receiveRewards" />
+        <headerItem :title="language.text02" :value="allData.total" />
+        <headerItem :title="language.text03" />
         <!-- totalReward -->
-        <headerItem :title="language.rewardsReceived" :value="totalReward" :needFormat="false" />
-        <headerItem :title="language.unlocking" />
+        <headerItem :title="language.text04" :value="totalReward" :needFormat="false" />
+        <headerItem :title="language.text05" />
       </view>
     </view>
     <view class="account-box">
       <view class="account-column">
         <view class="column-item" @click="goTo('/pages/delegate/cancel')">
           <u-icon :name="require('@/static/img/delegate/quxiaoweituo@2x.png')" size="80rpx"></u-icon>
-          <text>取消委托</text>
+          <text>{{ language.text06 }}</text>
         </view>
         <view class="column-item" @click="goTo('/pages/delegate/income')">
           <u-icon :name="require('@/static/img/delegate/shouyilingqu@2x.png')" size="80rpx"></u-icon>
-          <text>收益领取</text>
+          <text>{{ language.text07 }}</text>
         </view>
         <view class="column-item" @click="goTo('/pages/delegate/transaction')">
           <u-icon :name="require('@/static/img/delegate/jiaoyijilu@2x.png')" size="80rpx"></u-icon>
-          <text>交易记录</text>
+          <text>{{ language.text08 }}</text>
         </view>
       </view>
     </view>
     <view class="my-delegate">
       <view class="title">
-        我的委托
+        {{ language.text01 }}
       </view>
       <view class="list">
         <view class="list-title">
-          <view class="left">节点</view>
-          <view class="center">待领取收益</view>
-          <view class="right">委托数量</view>
+          <view class="left">{{ language.text09 }}</view>
+          <view class="center">{{ language.text10 }}</view>
+          <view class="right">{{ language.text11 }}</view>
         </view>
         <custom-loading v-if="loading" class="loading"></custom-loading>
         <view class="list-data" v-else-if="list.length">
@@ -44,7 +44,7 @@
               <view class="other">{{item.validator.operatorAddress|sliceAddress(7, -8)}}</view>
             </view>
             <view class="center">
-              {{ item.rewards.amount / mainCoin.decimals }} {{ mainCoin.alias_name }}
+              {{ (item.rewards.amount / mainCoin.delegateDecimals).toFixed(5) }} {{ mainCoin.alias_name }}
             </view>
             <view class="right">
               <view class="name">{{item.balance.amount / mainCoin.decimals }}</view>
@@ -52,7 +52,7 @@
             </view>
           </view>
         </view>
-        <no-data v-else tip="暂无委托，点击" btnTx="参与委托" />
+        <no-data v-else :tip="language.text12" :btnTx="language.text64" @btnClick="btnClick" />
       </view>
     </view>
   </view>
@@ -85,15 +85,26 @@ export default {
     }
   },
   methods: {
+    btnClick() {
+      this.$parent.selindex = 1
+    },
     updateData() {
       console.log('delegate update data')
-      if (this.$cache.get('_updateDelegateInfo') === null || this.$cache.get('_updateDelegateInfo')) {
-        this.loading = true
+      // if (this.$cache.get('_updateDelegateInfo') === null || this.$cache.get('_updateDelegateInfo')) {
+      // this.loading = true
+      this.address = this.currentWallet.address
+      // } else {
+      //   this.allData = this.$cache.get('_delegateInfo')
+      //   this.list = this.allData.list
+      //   this.loading = false
+      // }
+      
+      if (this.$cache.get('_delegateInfo')) {
         this.address = this.currentWallet.address
-      } else {
         this.allData = this.$cache.get('_delegateInfo')
         this.list = this.allData.list
-        this.loading = false
+      } else {
+        this.loading = true
       }
     },
     goTo(url) {
@@ -104,9 +115,13 @@ export default {
     async initData(data) {
       this.allData = data
       let { list } = data
+      this.list.forEach((item, index) => {
+        item = Object.assign(item , list[index])
+      })
       for (let i = 0, len = list.length; i < len; i++) {
         const item = list[i]
         const { delegatorAddress, validatorAddress } = item.delegation
+        // 获取最新质押时间
         const res = (await txsQuery([`events=message.sender='${this.address}'`, `events=delegate.validator='${validatorAddress}'`])).data.tx_responses
         item.timestamp = res.pop().timestamp.replace(/T|Z/g, ' ')
       }
@@ -121,7 +136,7 @@ export default {
   },
   computed: {
     totalReward() {
-      let reward = this.allData.totalReward ? this.allData.totalReward + '' : '0.00'
+      let reward = this.allData.totalReward ? (this.allData.totalReward).toFixed(5) + '' : '0.00'
       if (reward.length > 13) {
         reward = reward.substr(0, 4) + '...' + reward.substr(-4)
       }
@@ -144,29 +159,28 @@ export default {
     methods: {
       async init(address) {
         if (address == '') return
-        let updateDelegateInfo = true
-        // #ifdef APP-PLUS
-        updateDelegateInfo = plus.storage.getItem('_updateDelegateInfo') === null ? true : plus.storage.getItem('_updateDelegateInfo')
-        // #endif
-        // #ifndef APP-PLUS
-        updateDelegateInfo = localStorage.getItem('_updateDelegateInfo') === null ? true : localStorage.getItem('_updateDelegateInfo')
-        // #endif
+        // let updateDelegateInfo = true
+        // // #ifdef APP-PLUS
+        // updateDelegateInfo = plus.storage.getItem('_updateDelegateInfo') === null ? true : plus.storage.getItem('_updateDelegateInfo')
+        // // #endif
+        // // #ifndef APP-PLUS
+        // updateDelegateInfo = localStorage.getItem('_updateDelegateInfo') === null ? true : localStorage.getItem('_updateDelegateInfo')
+        // // #endif
         
-        if (typeof updateDelegateInfo !== 'boolean') {
-          updateDelegateInfo = JSON.parse(updateDelegateInfo).data.data          
-        }
-        if (!updateDelegateInfo) return; 
-        // let totalRewards = await getDelegationTotalRewards(address)
-        // console.log('totalRewards',totalRewards)
+        // if (typeof updateDelegateInfo !== 'boolean') {
+        //   updateDelegateInfo = JSON.parse(updateDelegateInfo).data.data          
+        // }
+        // if (!updateDelegateInfo) return; 
         let list = await this.getLists(address)
         let total = 0, totalReward = 0
+        console.log(list)
         list.forEach(item => {
           total += Number(item.balance.amount)
           totalReward += Number(item.rewards.amount)
         })
         let data = {}
         data.total = total / mainCoin.decimals
-        data.totalReward = totalReward / mainCoin.decimals
+        data.totalReward = totalReward / mainCoin.delegateDecimals
         data.list = list
         renderUtils.runMethod(this._$id, 'initData', data, this)
 
@@ -191,7 +205,6 @@ export default {
 
     .header {
       width: 686rpx;
-      height: 280rpx;
       padding: 24rpx 0;
       display: flex;
       flex-flow: wrap;
@@ -276,6 +289,7 @@ export default {
 
             .other {
               font-size: 22rpx;
+              height: 22rpx;
               color: #8397B1;
             }
 

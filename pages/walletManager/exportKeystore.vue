@@ -1,13 +1,13 @@
 <template>
   <view>
-    <custom-header :title="language.exportKeyStore"></custom-header>
+    <custom-header :title="language.text121"></custom-header>
 
     
     <view class="border"></view>
     <view class="container">
       <view class="label">
-        <text>{{ language.keystore }}</text>
-        <text class="label-tip">({{ language.clickToCopy }})</text>
+        <text>{{ language.text140 }}</text>
+        <text class="label-tip">({{ language.text176 }})</text>
       </view>
       <view class="item" @click="copy">
         <view class="content">{{ keystore }}</view>
@@ -22,7 +22,7 @@
 <script>
 import Tooltip from './components/tooltip.vue'
 import Notify from './components/notify.vue'
-import language from './language'
+import language from '@/pages/account/language/index.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   components: {
@@ -50,10 +50,10 @@ export default {
         data: this.keystore,
         showToast: false,
         success: () => {
-          this.$refs.notify.show('error', this.language.copySuccess)
+          this.$refs.notify.show('error', this.language.text75)
         },
         fail: () => {
-          this.$refs.notify.show('error', this.language.copyfailure)
+          // this.$refs.notify.show('error', this.language.copyfailure)
         }
       })
     }

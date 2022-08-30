@@ -4,16 +4,19 @@ import baseServer from '@/config/requestConfig.js'
 
 const http = new Request()
 
-const devServer = '/cosmosServer'
-
-// const devServer = ''
-
-
-// http.setConfig((config) => {
-//   /* config 为默认全局配置*/
-//   config.baseURL = baseServer.cosmosServer /* 根域名 */
-//   return config
-// })
+http.setConfig((config) => {
+  /* config 为默认全局配置*/
+  
+  // #ifdef APP-PLUS
+  config.baseURL = baseServer.cosmosServer /* 根域名 */
+  // #endif
+  
+  // #ifndef APP-PLUS
+  config.baseURL = '/cosmosServer' /* 根域名 */
+  // #endif
+  
+  return config
+})
 
 export const txsQuery = async (events) => {
   let params = ''

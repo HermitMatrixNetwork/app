@@ -317,6 +317,13 @@
       }
 
     }, {
+      "path": "pages/mine/bangzhu/detail",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
       "path": "pages/mine/message/index",
       "style": {
         "navigationBarTitleText": "",
@@ -428,9 +435,44 @@
         "enablePullDownRefresh": false
       }
 
+    }, {
+      "path": "components/custom-notify/custom-notify",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/mine/wenti/record",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/mine/wenti/detail",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/delegate/setWithdrawAddress",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "components/custom-updateApp/custom-updateApp",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
     }
       ,{
-            "path" : "components/custom-notify/custom-notify",
+            "path" : "pages/market/webview",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
@@ -440,11 +482,12 @@
         }
     ],
   "globalStyle": {
-    "navigationStyle": "custom"
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "custom": true,
     "color": "#B6C3D2",
+    "height": "0px",
     "selectedColor": "#2B2E3D",
     "borderStyle": "black",
     "backgroundColor": "#FFFFFF",

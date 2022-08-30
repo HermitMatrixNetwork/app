@@ -1,61 +1,156 @@
 <template>
   <view class="container">
-    <custom-header class="header" title="添加节点" :customStyle="{ 'background-color': '#fff' }">
+    <custom-header backUrl="./index" class="header" :title="language.text39" :customStyle="{ 'background-color': '#fff' }">
       <template slot="right">
-        <view class="save">
-          保存
+        <view class="save" @click="addNode">
+          {{ language.text43 }}
         </view>
       </template>
     </custom-header>
 
     <view class="wallet-name item">
       <view class="wallet-name-label">
-        钱包名称
+        {{ language.text40 }}
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="name" placeholder="请输入网络名称"></u-input>
-      <!-- :style="{ opacity: confirmPasswordError ? 1 : 0 }" -->
-      <view class="error-tip">
+      <u-input class="wallet-name-input" v-model="formData.name" placeholder="请输入网络名称"></u-input>
+      <view class="error-tip" :style="{ opacity: nameError ? 1 : 0 }">
         {{ language.nameErrorTip }}
       </view>
     </view>
-    
+
     <view class="wallet-name item">
       <view class="wallet-name-label">
-        RPC地址
+        {{ language.text41 }}
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="name" placeholder="请输入RPC地址"></u-input>
-      <!-- :style="{ opacity: confirmPasswordError ? 1 : 0 }" -->
-      <view class="error-tip">
-        {{ language.nameErrorTip }}
+      <u-input class="wallet-name-input" v-model="formData.link" placeholder="请输入RPC地址"></u-input>
+      <view class="error-tip" :style="{ opacity: linkError ? 1 : 0 }">
+        {{ language[linkErrorList[linkErrorTip]] }}
       </view>
     </view>
-    
+
     <view class="wallet-name item">
       <view class="wallet-name-label">
         Chain ID
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="name" placeholder="请输入Chain ID"></u-input>
-      <!-- :style="{ opacity: confirmPasswordError ? 1 : 0 }" -->
-      <view class="error-tip">
-        {{ language.nameErrorTip }}
-      </view>
+      <u-input class="wallet-name-input" v-model="formData.chainId" placeholder="请输入Chain ID" disabled></u-input>
     </view>
+
+    <view :callRender="callRender" :change:callRender="render.checkRpcVerify"></view>
+    <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
 <script>
-import language from './language/index.js'
+import language from '../language/index.js'
 export default {
   data() {
     return {
-      name: '',
-      language: language[this.$cache.get('_language')]
+      language: language[this.$cache.get('_language')],
+      linkErrorList: ['text45', 'text44', 'text46'],
+      linkErrorTip: '',
+      nameError: false,
+      linkError: false,
+      formData: {
+        name: '',
+        link: '',
+        chainId: 'ghmdev'
+      },
+      callRender: 0
+    }
+  },
+  methods: {
+    addNode() {
+      let nodeList = this.$cache.get('_nodeList')
+      let verify = true
+      if (!(this.formData.link.startsWith('http://') || this.formData.link.startsWith('https://'))) {
+        this.linkErrorTip = 1
+        this.linkError = true
+        verify = false
+      } else if (this.checkExist(nodeList)) {
+        this.linkErrorTip = 2
+        this.linkError = true
+        verify = false
+      }
+        
+      if (this.formData.name.trim() == '') {
+        this.nameError = true
+        verify = false
+      } else {
+        this.nameError = false
+      }
+
+      verify && this.checkVerify()
+    },
+    handerResult(res) {
+      this.callRender = 0
+      if (res.code == 7) {
+        this.linkErrorTip = 0
+        this.linkError = true
+      } else {        
+        this.linkError = false
+        let nodeList = this.$cache.get('_nodeList')
+        nodeList.push(this.formData)
+        this.$cache.set('_nodeList', nodeList, 0)
+        this.$refs.notify.show('', this.language.text60, { bgColor: '#275EF1' })
+        setTimeout(() => {
+          uni.redirectTo({
+            url: './index'
+          })
+        }, 1000)
+      }
+    },
+    checkExist(nodeList) {
+      const node = nodeList.find(item => item.link == this.formData.link)
+      return node
+    },
+    checkVerify() {
+      this.callRender = this.formData
     }
   }
 }
+</script>
+
+<script lang="renderjs" module="render">
+  import renderUtils from '@/utils/render.base.js'
+  import {
+    SecretNetworkClient
+  } from 'secretjs-hmt'
+  
+  export default {
+    methods: {
+      async checkRpcVerify(val) {
+        if (val == 0) return
+        let wallet;
+        let res = {}
+        //#ifdef APP-PLUS
+        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+        //#endif
+        
+        //#ifndef APP-PLUS 
+        wallet = uni.getStorageSync('_currentWallet').data
+        //#endif
+        let client = await SecretNetworkClient.create({
+          grpcWebUrl: val.link,
+          chainId: val.chainId,
+          wallet,
+          walletAddress: wallet.address
+        })
+        try {
+          res = await client.query.bank.balance({
+            address: wallet.address,
+            denom: 'uGHM'
+          })
+        } catch (e) {
+          res.code = 7
+        }
+        
+        renderUtils.runMethod(this._$id, 'handerResult', res, this)
+      }
+    }
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -63,7 +158,7 @@ export default {
     height: 100vh;
     background-color: #F4F6F9;
   }
-  
+
   .header {
     border-bottom: 2rpx solid #F4F6F9;
   }
@@ -72,12 +167,12 @@ export default {
     font-size: 28rpx;
     color: #1E5EFF;
   }
-  
+
   .item {
     background-color: #fff;
     padding: 32rpx;
   }
-  
+
   .wallet-name {
     &-label {
       height: 28rpx;

@@ -34,13 +34,35 @@ export default {
     'confirmNewPassword': '确认新密码',
     'passwordDuplication': '新密码不能与原密码一致！',
     'verifyPasswordFail': '再次输入新密码与首次输入不一致，请确认！',
-    'verifyPasswordCheckPlaceholder': '再次输入信息密码确认'
+    'verifyPasswordCheckPlaceholder': '再次输入信息密码确认',
+    'text11': '添加钱包',
+    'text12': '创建钱包',
+    'text13': '导入钱包',
+    text02: '没有钱包',
+    text04: '已有钱包',
+    text25: '助记词',
+    text26: '由单词组成，以空格隔开',
+    text27: '私钥',
+    text28: '明文私钥',
+    text29: 'Keystore',
+    text30: '加密的私钥 JSON',
+    
     
   },
   'CT': {
 
   },
   'EN': {
-    
+    'text11': 'Add wallet',
+    'text12': 'Create wallet',
+    'text13': 'Import Wallet',
+    text02: 'No wallet',
+    text04: 'Already have a wallet.',
+    text25: 'Mnemonic words',
+    text26: 'It consists of words separated by spaces.',
+    text27: 'Private key',
+    text28: 'public key',
+    text29: 'keystore',
+    text30: 'Encrypted private key JSON',
   }
 }

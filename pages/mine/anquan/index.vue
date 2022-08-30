@@ -1,6 +1,6 @@
 <template>
   <view class="anquan">
-    <custom-header title="安全设置" :customStyle="{ 'background-color': '#fff' }">
+    <custom-header :title="language.text31" :customStyle="{ 'background-color': '#fff' }">
     </custom-header>
     <view class="border"></view>
     <view class="top">
@@ -33,9 +33,9 @@
     <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
       <view class="modalContent">
         <u-icon name="info-circle" size="64rpx" color="#FFA033" />
-        <view class="modal-title">提示</view>
-        <text class="modal-content">您未在手机设置处开启并录入指纹，Hermit Wallet 应用无法获取指纹信息，请先去设置！</text>
-        <button @click="aa = false">我知道了</button>
+        <view class="modal-title">{{ language.text89 }}</view>
+        <text class="modal-content">{{ language.text33 }}</text>
+        <button @click="aa = false">{{ language.text29 }}</button>
       </view>
     </u-modal>
     
@@ -43,22 +43,23 @@
     <u-modal :show="bb" width="686rpx" :showConfirmButton="false" class="hintModal">
       <view class="modalContent">
         <u-icon name="info-circle" size="64rpx" color="#FFA033" />
-        <view class="modal-title">提示</view>
+        <view class="modal-title">{{ language.text89 }}</view>
         <text class="modal-content">指纹识别次数超过限制，请稍后再设置</text>
-        <button @click="bb = false">我知道了</button>
+        <button @click="bb = false">{{ language.text29 }}</button>
       </view>
     </u-modal>
   </view>
 </template>
 
 <script>
+import language from '../language/index.js'
 export default {
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       top: [{
-        name: '指纹识别',
+        name: language[this.$cache.get('_language')].text32,
         icon: 'zhiwen.png',
-        page: './importFromMnemonic'
       }],
       touchId: this.$cache.get('_touchId'),
       firsetIn: true,
@@ -75,6 +76,7 @@ export default {
         uni.navigateTo({
           url: './verifyTouchId',
           events: {
+            // 0 未开启 ： 1 开启
             success: () => {
               this.firsetIn = false
               this.touchId = this.touchId ? 0 : 1

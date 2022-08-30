@@ -1,6 +1,6 @@
 <template>
 	<view class="select-node">
-		<custom-header :redirUrl='`${redirectURL}?selectIndex=${selectIndex}`' :title="'节点选择'" >
+		<custom-header :redirUrl='`${redirectURL}?selectIndex=${selectIndex}`' :title="language.text21" >
 			<template #right>
 				<u-icon name="search" size="44rpx" @click="toSearch" />
 			</template>
@@ -15,6 +15,7 @@
 
 <script>
 import List from './components/List.vue'
+import language from './language/index.js'
 import {
   sliceAddress
 } from '@/utils/filters.js'
@@ -27,6 +28,7 @@ export default {
   },
   data(){
     return {
+      language: language[this.$cache.get('_language')],
       list: [],
       loading: true,
       currentWallet: this.$cache.get('_currentWallet'),

@@ -6,12 +6,12 @@
     </view>
     <view class="wallet">
       <view class="wallet-create" @click="toCreateWallet">
-        <view>创建钱包</view>
-        <view class="wallet-create-describe">没有钱包</view>
+        <view>{{ language.text12 }}</view>
+        <view class="wallet-create-describe">{{ language.text02 }}</view>
       </view>
       <view class="wallet-import" @click="toImportWallet">
-        <view>导入钱包</view>
-        <view class="wallet-import-describe">已有钱包</view>
+        <view>{{ language.text13 }}</view>
+        <view class="wallet-import-describe">{{ language.text04 }}</view>
       </view>
     </view>
   </u-popup>

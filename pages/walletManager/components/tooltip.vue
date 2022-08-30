@@ -7,22 +7,24 @@
           <image class="hint-logo-image" src="@/static/img/jietu.png"></image>
         </view>
         <view class="hint-title">
-          请勿截屏
+          {{ language.text135 }}
         </view>
         <view class="hint-content">
           请勿截屏分享和存储，这将可能被第三方恶意软件收集，造成资产损失。
         </view>
-        <u-button class="hint-btn" @click="confrimHint">我知道了</u-button>
+        <u-button class="hint-btn" @click="confrimHint">{{ language.text50 }}</u-button>
       </view>
     </template>
   </u-modal>
 </template>
 
 <script>
+import language from '@/pages/account/language/index.js'
 export default {
   data() {
     return {
-      showHint: true
+      showHint: true,
+      language: language[this.$cache.get('_language')],
     }
   },
   methods: {

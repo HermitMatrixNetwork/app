@@ -2,19 +2,19 @@
   <view class="asset-manage">
     <custom-header tabUrl="/pages/account/index" :showRight="false">
       <view slot="center" class="search">
-        <u-search :placeholder="language.searchPlaceholder" shape="round" :clearabled="true" v-model="address"
+        <u-search :placeholder="language.text165" shape="round" :clearabled="true" v-model="address"
           :showAction="false" @search="searchCoin"></u-search>
       </view>
     </custom-header>
     <view class="home-assets" data-url="/pages/assetManage/home" @click="goTo">
       <view class="title">
-        {{language.homeAssets}}
+        {{language.text164}}
       </view>
       <image src="/static/img/ic-arrow1.png"></image>
     </view>
     <view class="space" />
     <view class="hot-asset">
-      <view class="title">{{language.hotAssets}}</view>
+      <view class="title">{{language.text166}}</view>
     </view>
     <custom-loading v-if="loading" style="margin-top: 100rpx;"></custom-loading>
     <view class="list" v-else-if="list.length">
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import languages from './language/index.js'
+import languages from '@/pages/account/language/index.js'
 import List from './components/List.vue'
 import {
   getHotList

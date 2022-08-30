@@ -10,14 +10,14 @@ import {
 } from 'secretjs-hmt'
 
 class NetworkClient {
-  static async create(wallet, walletAddress) {
+  static async create(wallet, walletAddress, rpc, chainId = 'ghmdev') {
     const secretjs = await SecretNetworkClient.create({
-      grpcWebUrl: 'http://167.179.118.118:9091',
-      chainId: 'ghmdev',
+      grpcWebUrl: rpc,
+      chainId,
       wallet,
       walletAddress
     })
-		return secretjs
+    return secretjs
     // return new NetworkClient(secretjs)
   }
 

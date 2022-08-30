@@ -7,7 +7,7 @@
 			<view class="meta">
 				<view class="create-time">{{timestamp(msg.timestamp)}}</view>
 				<view class="create-author">
-					<text>发布者：{{msg.email}}</text>
+					<text>{{ language.text92 }}：{{msg.email}}</text>
 				</view>
 			</view>
 			<view class="content">
@@ -21,9 +21,11 @@
 </template>
 
 <script>
+  import language from '../language/index.js'
 export default {
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       msg: {
         email:'',
         timestamp:'',

@@ -1,6 +1,6 @@
 <template>
 	<view class="main">
-		<custom-header :title="'查看viewkey'"></custom-header>
+		<custom-header :title="language.text101"></custom-header>
 		<view style="margin: 0 32rpx;">
 			<view class="title">
 				当前viewkey
@@ -12,8 +12,8 @@
 		
     
     <view class="viewkey_btn">
-    	<button @click="copy">复制viewkey</button>
-    	<button @click="toSetViewKey">设置viewkey</button>
+    	<button @click="copy">{{ language.text102 }}</button>
+    	<button @click="toSetViewKey">{{ language.text104 }}</button>
     </view>
     
     <Notify ref="notify"></Notify>
@@ -24,12 +24,14 @@
 import InputTitle from './components/Input-title.vue'
 import mixin from '../mixins/index.js'
 import Notify from './components/notify.vue'
+import language from '../language/index.js'
 export default {
   components: { InputTitle, Notify },
   mixins:[mixin],
   data() {
     return {
-      view_key: ''
+      view_key: '',
+      language: language[this.$cache.get('_language')]
     }
   },
   onLoad(options) {
@@ -42,7 +44,7 @@ export default {
         data: this.view_key,
         showToast: false,
         success: () => {
-          this.$refs.notify.show('error', '复制成功')
+          this.$refs.notify.show('error', this.language.text103)
         },
         fail: () => {
           this.$refs.notify.show('error', '复制失败')

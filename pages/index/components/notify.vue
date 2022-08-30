@@ -42,6 +42,7 @@ export default {
       .u-notify__warpper__text {
         margin-bottom: 40rpx;
         margin-left: 40rpx;
+        text-align: left;
       }
     }
   }

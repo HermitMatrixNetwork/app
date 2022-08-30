@@ -40,7 +40,6 @@ export default {
 <style lang="scss" scoped>
 	.header-item {
 		width: 343rpx;
-		// height: 140rpx;
 		display: flex;
 		padding: 24rpx  48rpx;
 		.hi-left {
@@ -56,12 +55,10 @@ export default {
 			.num {
 				height: 32rpx;
 				line-height: 32rpx;
-				margin-bottom: 12rpx;
 				font-size: 32rpx;
 				font-weight: bold;
 			}
 			.tip {
-				height: 24rpx;
 				font-size: 24rpx;
 				opacity: 0.8;
 			}

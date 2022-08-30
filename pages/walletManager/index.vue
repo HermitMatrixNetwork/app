@@ -1,22 +1,22 @@
 <template>
   <view class="container">
-    <custom-header tabUrl="/pages/account/index" class="header" title="钱包管理"></custom-header>
+    <custom-header tabUrl="/pages/account/index" class="header" :title="language.text175"></custom-header>
 
     <view class="wallet-detail">
       <view class="wallet-detail-address item">
-        <view class="label-address label">{{ language.walletAddress }}</view>
+        <view class="label-address label">{{ language.text54 }}</view>
         <view class="item-address">{{ wallet.address }}</view>
       </view>
       <view class="border"></view>
       <view class="wallet-detail-name item" @click="clickItem('editName')">
-        <text class="label-name label left">{{ language.walletName }}</text>
+        <text class="label-name label left">{{ language.text117 }}</text>
         <view class="right">
           <text class="item-name">{{ wallet.name }}</text>
           <image src="@/static/img/ic-arrow1.png" class="arrow-right"></image>
         </view>
       </view>
       <view class="wallet-detail-name item" @click="toResetPassword">
-        <text class="label-name label left">{{ language.resetFundPassword }}</text>
+        <text class="label-name label left">{{ language.text146 }}</text>
         <view class="right">
           <image src="@/static/img/ic-arrow1.png" class="arrow-right"></image>
         </view>
@@ -26,7 +26,7 @@
     <view class="export-detail">
       <view v-show="wallet.mnemonic" class="export-detail-mnemonic item" @click="clickItem('Mnemonic')">
         <view class="label">
-          {{ language.exportMnemonic }}
+          {{ language.text119 }}
         </view>
         <view class="right">
           <image src="@/static/img/ic-arrow1.png" class="arrow-right"></image>
@@ -35,7 +35,7 @@
       <view class="border"></view>
       <view class="export-detail-privatekey item" @click="clickItem('Privatekey')">
         <view class="label">
-          {{ language.exportPrivateKey }}
+          {{ language.text120 }}
         </view>
         <view class="right">
           <image src="@/static/img/ic-arrow1.png" class="arrow-right"></image>
@@ -44,7 +44,7 @@
       <view class="border"></view>
       <view class="export-detail-keystore item" @click="clickItem('Keystore')">
         <view class="label">
-          {{ language.exportKeyStore }}
+          {{ language.text121 }}
         </view>
         <view class="right">
           <image src="@/static/img/ic-arrow1.png" class="arrow-right"></image>
@@ -52,7 +52,7 @@
       </view>
     </view>
 
-    <uni-button class="remove-wallet-btn" @click="clickItem('removeWallet')">{{ language.removeWallet }}</uni-button>
+    <uni-button class="remove-wallet-btn" @click="clickItem('removeWallet')">{{ language.text122 }}</uni-button>
 
     <!-- 修改钱包名字模态框 -->
     <u-modal class="edit-name-modal" :show="showEditWalletNameModal" :closeOnClickOverlay="false"
@@ -60,20 +60,20 @@
       <template slot="default">
         <view>
           <view class="title">
-            <text>{{ language.editName }}</text>
+            <text>{{ language.text123 }}</text>
           </view>
-          <u--input :placeholder="language.editNamePlaceholder" border="surround" v-model="name" class="edit-name-input"
+          <u--input :placeholder="language.text124" border="surround" v-model="name" class="edit-name-input"
             :class="{ 'error-edit-name': editNameError }" clearable>
           </u--input>
           <view class="error-tip" :style="{ opacity: editNameError ? 1 : 0 }">
-            {{ language.editNameErrorTip }}
+            {{ language.text124 }}
           </view>
         </view>
       </template>
       <template slot="confirmButton">
         <view class="confirm-button">
-          <uni-button class="cancel" @click="cancel('name')">{{ language.cancel }}</uni-button>
-          <uni-button class="confirm" @click="confirm('name')">{{ language.confirm }}</uni-button>
+          <uni-button class="cancel" @click="cancel('name')">{{ language.text125 }}</uni-button>
+          <uni-button class="confirm" @click="confirm('name')">{{ language.text112 }}</uni-button>
         </view>
       </template>
     </u-modal>
@@ -84,10 +84,10 @@
       <template slot="default">
         <view>
           <view class="title">
-            <text>{{ language.confirmPassword }}</text>
+            <text>{{ language.text48 }}</text>
             <image src="@/static/img/ic-close.png" @click="cancel('password')"></image>
           </view>
-          <u-input :type="showPassword ? 'text' : 'password'" :placeholder="language.confirmPasswordPlaceholder"
+          <u-input :type="showPassword ? 'text' : 'password'" :placeholder="language.text49"
             border="surround" v-model="password" class="edit-name-input" :class="{ 'error-edit-name': editNameError }">
             <template slot="suffix">
               <u-icon :name="showPassword ? 'eye-fill' : 'eye-off'" color="#8F9BB3" size="24"
@@ -95,13 +95,13 @@
             </template>
           </u-input>
           <view class="error-tip" :style="{ opacity: confirmPasswordError ? 1 : 0 }">
-            {{ language.confirmPasswordErrorTip }}
+            {{ language.text150 }}
           </view>
         </view>
       </template>
       <template slot="confirmButton">
         <view class="confirm-button">
-          <uni-button class="confirm" @click="confirm('password')">{{ language.confirm }}</uni-button>
+          <uni-button class="confirm" @click="confirm('password')">{{ language.text144 }}</uni-button>
         </view>
       </template>
     </u-modal>
@@ -109,11 +109,11 @@
     <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
       <view class="modalContent">
         <u-icon name="info-circle" size="64rpx" color="#FFA033" />
-        <view class="modal-title">移除提示</view>
-        <text class="modal-content">钱包移除后将无法恢复，请务必先完成备份再操作，否则资产丢失无法找回！</text>
+        <view class="modal-title">{{ language.text159 }}</view>
+        <text class="modal-content">{{ language.text160 }}</text>
         <view class="con_btn">
-          <button @click="aa = false" class="con_btn_cancel">取消</button>
-          <button @click="conConfim" class="con_btn_confirm" style="background-color: #002FA7;">确认</button>
+          <button @click="aa = false" class="con_btn_cancel">{{ language.text14 }}</button>
+          <button @click="conConfim" class="con_btn_confirm" style="background-color: #002FA7;">{{ language.text50 }}</button>
         </view>
       </view>
     </u-modal>
@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import language from './language'
+import language from '@/pages/account/language/index.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
 export default {
   data() {
@@ -212,6 +212,7 @@ export default {
         this.$cache.set('_currentWallet', this.wallet, 0)
         this.editNameError = false
         this.showEditWalletNameModal = false
+        this.$refs.notify.show('', this.language.text127, { bgColor: '#275EF1' })
         this.name = ''
       } else if (this.target === 'removeWallet') {
         const result = this.verifyPawword()
@@ -489,6 +490,10 @@ export default {
         &_cancel {
           font-size: 32rpx;
           color: #8397B1;
+          border: 2rpx solid rgba(131,151,177,0.30);
+          &:after {
+            border: 0 !important;
+          }
         }
         
         &_confirm {

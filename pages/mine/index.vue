@@ -1,6 +1,6 @@
 <template>
 	<view class="mine">
-		<custom-header :showGoBack="false" title="我的" :customStyle="{ 'background-color': '#fff' }">
+		<custom-header :showGoBack="false" :title="language.text01" :customStyle="{ 'background-color': '#fff' }">
 			<template slot="right">
 				<view class="header-icon" @click="toMessage">
 					<image src="@/static/img/mine/message.png"></image>
@@ -68,85 +68,87 @@
 
 <script>
 import {
-	getNotice
+  getNotice
 } from '@/api/token.js'
+import language from './language/index.js'
 export default {
-	data () {
-		return {
-			top: [{
-				name: '地址薄',
-				icon: 'dizhipu.png',
-				page: '/pages/account/send/adres_book?edit=true'
-			}, {
-				name: '大额提醒',
-				icon: 'dae.png',
-				page: './dae/index'
-			}],
-			center: [{
-				name: '安全设置',
-				icon: 'anquan.png',
-				page: './anquan/index'
-			}, {
-				name: '节点设置',
-				icon: 'jiedian.png',
-				page: './jiedian/index'
-			}, {
-				name: '语言设置',
-				icon: 'yuyan.png',
-				page: './yuyan/index'
-			}],
-			bottom: [{
-				name: '帮助中心',
-				icon: 'bangzhu.png',
-				page: './bangzhu/index'
-			}, {
-				name: '联系我们',
-				icon: 'lianxi.png',
-				page: './lianxi/index'
-			}, {
-				name: '问题反馈',
-				icon: 'wentifankui.png',
-				page: './wenti/index'
-			}, {
-				name: '关于我们',
-				icon: 'guanyu.png',
-				page: './guanyu/index'
-			}],
-			messageNum: 0, //要显示的通知数量
-			noNotice: false, //通知是否显示
-			notices: 0, //本地存储中的通知数量
-		}
-	},
-	onShow () {
-		this.notices = this.$cache.get('_alreadyRead') ? this.$cache.get('_alreadyRead').length : 0
-		this.getNoticenum()
-	},
-	methods: {
-		toPage (position, index) {
-			uni.navigateTo({
-				url: this[position][index].page
-			})
-		},
-		toMessage () {
-			uni.navigateTo({
-				url: './message/index'
-			})
-		},
-		async getNoticenum () {
-			const res = await getNotice()
-			// console.log(res)
-			const messageNum = res.data.data.notices.length
-			if (messageNum == 0 || this.notices === messageNum) {
-				return this.noNotice = false
-			} //如果获取的通知数量为0则结束
+  data () {
+    return {
+      language: language[this.$cache.get('_language')],
+      top: [{
+        name: language[this.$cache.get('_language')].text02,
+        icon: 'dizhipu.png',
+        page: '/pages/account/send/adres_book?edit=true'
+      }, {
+        name: language[this.$cache.get('_language')].text22,
+        icon: 'dae.png',
+        page: './dae/index'
+      }],
+      center: [{
+        name: language[this.$cache.get('_language')].text31,
+        icon: 'anquan.png',
+        page: './anquan/index'
+      }, {
+        name: language[this.$cache.get('_language')].text37,
+        icon: 'jiedian.png',
+        page: './jiedian/index'
+      }, {
+        name: language[this.$cache.get('_language')].text55,
+        icon: 'yuyan.png',
+        page: './yuyan/index'
+      }],
+      bottom: [{
+        name: language[this.$cache.get('_language')].text61,
+        icon: 'bangzhu.png',
+        page: './bangzhu/index'
+      }, {
+        name: language[this.$cache.get('_language')].text64,
+        icon: 'lianxi.png',
+        page: './lianxi/index'
+      }, {
+        name: '问题反馈',
+        icon: 'wentifankui.png',
+        page: './wenti/index'
+      }, {
+        name: language[this.$cache.get('_language')].text78,
+        icon: 'guanyu.png',
+        page: './guanyu/index'
+      }],
+      messageNum: 0, //要显示的通知数量
+      noNotice: false, //通知是否显示
+      notices: 0, //本地存储中的通知数量
+    }
+  },
+  onShow () {
+    this.notices = this.$cache.get('_alreadyRead') ? this.$cache.get('_alreadyRead').length : 0
+    this.getNoticenum()
+  },
+  methods: {
+    toPage (position, index) {
+      uni.navigateTo({
+        url: this[position][index].page
+      })
+    },
+    toMessage () {
+      uni.navigateTo({
+        url: './message/index'
+      })
+    },
+    async getNoticenum () {
+      const res = await getNotice()
+      // console.log(res)
+      const messageNum = res.data.data.notices.length
+      if (messageNum == 0 || this.notices === messageNum) {
+        return this.noNotice = false
+      } //如果获取的通知数量为0则结束
 
-			if (this.notices !== messageNum) { //若不相等
-				this.messageNum = messageNum - this.notices
-				this.noNotice = true
-			}
-		}
+      if (this.notices !== messageNum) { //若不相等
+        this.messageNum = messageNum - this.notices
+        this.noNotice = true
+      }
+    }
 
-	}
+  }
 }
 </script>
 

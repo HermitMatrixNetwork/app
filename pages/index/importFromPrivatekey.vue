@@ -1,23 +1,23 @@
 <template>
   <view>
-    <custom-header class="header" title="私钥导入"></custom-header>
+    <custom-header class="header" :title="language.text44"></custom-header>
     <view class="container">
       <view class="item">
-        <view class="item-label">私钥</view>
+        <view class="item-label">{{ language.text27 }}</view>
         <view class="item-input">
           <u--textarea v-model.trim="privateKey64" placeholder="输入明文私钥"></u--textarea>
         </view>
       </view>
       <view class="item">
-        <view class="item-label">资金密码</view>
+        <view class="item-label">{{ language.text45 }}</view>
         <view class="item-input item-input-password">
-          <u-input :password="!passwordEye" v-model="password" placeholder="设置钱包密码（不少于8位）">
+          <u-input :password="!passwordEye" v-model="password" :placeholder="language.text46">
           </u-input>
           <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'" @click="passwordEye = !passwordEye">
           </u-icon>
         </view>
         <view class="item-input item-input-password password-check">
-          <u-input :password="!checkPasswordEye" v-model="checkPassword" placeholder="重复输入确认钱包密码">
+          <u-input :password="!checkPasswordEye" v-model="checkPassword" :placeholder="language.text47">
           </u-input>
           <u-icon color="#8F9BB3" size="20" :name="checkPasswordEye ? 'eye' : 'eye-off'"
             @click="checkPasswordEye = !checkPasswordEye">
@@ -26,10 +26,10 @@
       </view>
       <view class="item">
         <view class="item-label">
-          钱包名称
+          {{ language.text48 }}
         </view>
         <view class="item-input item-input-name">
-          <u-input v-model="name" placeholder="设置钱包名称" :adjust-position="false"></u-input>
+          <u-input v-model="name" :placeholder="language.text49" :adjust-position="false"></u-input>
         </view>
       </view>
     </view>
@@ -48,6 +48,7 @@ import {
   validateAll
 } from '@/utils/validator.js'
 import WalletCrypto from '@/utils/walletCrypto'
+import language from './language/index.js'
 export default {
   mixins: [mixin],
   components: {
@@ -55,6 +56,7 @@ export default {
   },
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       privateKey64: '', // 私钥
       password: '', // 资金密码
       name: '', // 钱包名称
@@ -72,7 +74,7 @@ export default {
             const reg = /^[A-Fa-f0-9]{64}$/
             return reg.test(value) 
           },
-          errMessage: '请输入有效的私钥格式'
+          errMessage: language[this.$cache.get('_language')].text50
         }],
         password: [{
           rule: 'required',
@@ -91,7 +93,7 @@ export default {
             if (value !== this.password) return false
             return true
           },
-          errMessage: '密码输入不一致，请重新输入。'
+          errMessage: language[this.$cache.get('_language')].text51
         }, {
           rule: 'required',
           errMessage: '钱包密码不能为空'

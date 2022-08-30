@@ -3,7 +3,7 @@
     <custom-header></custom-header>
 
     <view class="mnemonic">
-      <view class="mnemonic-title">备份助记词</view>
+      <view class="mnemonic-title">{{ language.text14 }}</view>
       <view class="mnemonic-hint">
         请按顺序抄写助记词，确保备份正确。
       </view>
@@ -30,7 +30,7 @@
           </view>
         </view>
       </view>
-      <u-button class="mnemonic-confirm" @click="toValidateMnemonic">已确认备份</u-button>
+      <u-button class="mnemonic-confirm" @click="toValidateMnemonic">{{ language.text19 }}</u-button>
     </view>
 
     <!-- 提示窗口-->
@@ -44,7 +44,7 @@
             请勿截屏
           </view>
           <view class="hint-content">
-            请勿截屏分享和存储，这将可能被第三方恶意软件收集，造成资产损失。
+           {{ language.text16 }}
           </view>
           <u-button class="hint-btn" @click="confrimHint">我知道了</u-button>
         </view>
@@ -54,13 +54,15 @@
 </template>
 
 <script>
+import language from './language/index.js'
 import WalletCryto from '@/utils/walletCrypto.js'
 export default {
   data() {
     return {
       showHint: true, // 是否显示提示窗口 @test: false
       mnemonicList: [],
-      wallet: {}
+      wallet: {},
+      language: language[this.$cache.get('_language')],
     }
   },
   created() {

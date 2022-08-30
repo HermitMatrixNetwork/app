@@ -2,7 +2,7 @@
   <view class="token_content">
     <custom-header :delay="300" :delayHandler="delayHandler" tabUrl="/pages/account/index" :title="token.alias_name">
       <template #right>
-        <text class="customIcon" @click="toTokenDetail()">详情</text>
+        <text class="customIcon" @click="toTokenDetail()">{{ language.text99 }}</text>
       </template>
     </custom-header>
 
@@ -40,8 +40,7 @@
       <view v-if="token.showWarn || !token.view_key" class="no-data">
         <image class="no-img" src="@/static/img/noviewkey.png" />
         <view class="tip" style="text-align: center;">
-          <text>当前没有viewkey或本地viewkey与链上不一致，
-            无法获取记录，请先设置！</text>
+          <text>{{ language.text114 }}</text>
         </view>
       </view>
 
@@ -88,18 +87,18 @@
                 <view v-else-if="pagination.nodata" class="loading-more">已全部加载完毕</view>
               </view>
             </template>
-            <no-data v-else tip="暂无记录" />
+            <no-data v-else :tip="language.text113" />
           </scroll-view>
         </swiper-item>
       </swiper>
     </view>
     <view class="operation_btn">
-      <u-button @click="toSend('/pages/account/send/index', token)">转账</u-button>
-      <u-button @click="toGo('/pages/account/receive')">接收</u-button>
-      <u-button @click="dealBtn">交易</u-button>
+      <u-button @click="toSend('/pages/account/send/index', token)">{{ language.text03 }}</u-button>
+      <u-button @click="toGo('/pages/account/receive')">{{ language.text04 }}</u-button>
+      <u-button @click="dealBtn">{{ language.text06 }}</u-button>
       <u-button class="view-key" @click="toViewKey">
         <view class="view-key-text">
-          <view>查看/设置</view>
+          <view>{{ language.text98 }}</view>
           <view>viewkey</view>
         </view>
       </u-button>
@@ -117,6 +116,7 @@
 import TokenColumn from './components/TokenColumn.vue'
 import mixin from '../mixins/index.js'
 import mainCoin from '@/config/index.js'
+import language from '../language/index.js'
 import {
   sliceAddress
 } from '@/utils/filters.js'
@@ -127,6 +127,7 @@ export default {
   },
   data() {
     return {
+      language: language[this.$cache.get('_language')],
       callBalanceLoading: 0,
       token: {},
       address: this.$cache.get('_currentWallet').address,
@@ -135,19 +136,19 @@ export default {
         paddingTop: '32rpx',
       },
       list: [{
-        name: '全部',
+        name: language[this.$cache.get('_language')].text63,
         type: 'all'
       }, {
-        name: '发送',
+        name: language[this.$cache.get('_language')].text64,
         type: 'transfer',
         icon: require('@/static/img/account/fasong2.png')
       }, {
-        name: '收款',
+        name: language[this.$cache.get('_language')].text65,
         type: 'recipient',
         icon: require('@/static/img/account/shoukuan2.png')
       },
       {
-        name: '失败',
+        name: language[this.$cache.get('_language')].text68,
         type: 'fail'
       }
       ],
@@ -172,6 +173,18 @@ export default {
   },
   async onLoad(options) {
     this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
+    if (this.token.loadingBalance) {
+      this.timer = setInterval(() => {
+        const token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
+        if (token.loadingBalance == false) {
+          this.token = token
+          clearInterval(this.timer)
+        }
+      }, 1500)
+    }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   },
   mounted() {
     if (this.token.view_key) {

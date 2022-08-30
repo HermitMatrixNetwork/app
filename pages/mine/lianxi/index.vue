@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <custom-header class="header" title="联系我们" :customStyle="{ 'background-color': '#fff' }"></custom-header>
+    <custom-header class="header" :title="language.text64" :customStyle="{ 'background-color': '#fff' }"></custom-header>
 
     <view class="list">
       <view class="item" v-for="(item, index) in list" :key="index">
@@ -24,7 +24,7 @@
 
 <script>
 import Notify from '@/pages/index/components/notify.vue'
-import language from './language/index.js'
+import language from '../language/index.js'
 import { getLinkList } from '@/api/token.js'
 export default {
   components: { Notify },
@@ -32,17 +32,17 @@ export default {
     return {
       language: language[this.$cache.get('_language')],
       list: [{
-        label: '官网',
+        label: language[this.$cache.get('_language')].text65,
         flag: 'official_website',
         icon: '/static/img/mine/contact/wallet.png',
         value: ''
       }, {
-        label: '推特',
+        label: language[this.$cache.get('_language')].text66,
         flag: 'twitter',
         icon: '/static/img/mine/contact/twitter.png',
         value: ''
       }, {
-        label: '电报群',
+        label: language[this.$cache.get('_language')].text67,
         flag: 'telegram',
         icon: '/static/img/mine/contact/telegram.png',
         value: ''
@@ -62,7 +62,7 @@ export default {
         icon: '/static/img/mine/contact/email.png',
         value: ''
       },{
-        label: '微信号',
+        label: language[this.$cache.get('_language')].text68,
         flag: 'wechat',
         icon: '/static/img/mine/contact/wechat.png',
         value: ''
@@ -83,10 +83,10 @@ export default {
         data: val,
         showToast: false,
         success: () => {
-          this.$refs.notify.show('success', this.language.copySuccess)
+          this.$refs.notify.show('success', this.language.text14)
         },
         fail: () => {
-          this.$refs.notify.show('error', this.language.copyfailure)
+          // this.$refs.notify.show('error', this.language.copyfailure)
         }
       })
     }

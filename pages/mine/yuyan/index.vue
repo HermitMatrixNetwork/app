@@ -1,9 +1,9 @@
 <template>
   <view class="language-set">
-    <custom-header title="语言设置">
+    <custom-header :title="language.text55">
       <template slot="right">
         <view class="save" @click="save">
-          <text>保存</text>
+          <text>{{ language.text56 }}</text>
         </view>
       </template>
     </custom-header>
@@ -12,15 +12,18 @@
     <view class="content">
       <view class="item" v-for="(item, index) in languageList" :key="index" @click="clickItem(item.value)">
         <text>{{ item.label }}</text>
-        <u-icon name="checkmark" v-show="language == item.value" color="#1E5EFF" size="44rpx"></u-icon>
+        <u-icon name="checkmark" v-show="currentLanguage == item.value" color="#1E5EFF" size="44rpx"></u-icon>
       </view>
     </view>
     
     <u-toast ref="uToast"></u-toast>
+    <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
 <script>
+// import { updateLanguage } from '@/config/index.js'
+import language from '../language/index.js'
 export default {
   data() {
     return {
@@ -34,23 +37,23 @@ export default {
         label: '简体中文',
         value: 'CN'
       }],
-      language: this.$cache.get('_language')
+      language: language[this.$cache.get('_language')],
+      currentLanguage: this.$cache.get('_language')
     }
   },
   methods: {
     clickItem(val) {
-      this.language = val
+      this.currentLanguage = val
     },
     save() {
-      this.$cache.set('_language', this.language, 0)
-      this.$refs.uToast.show({
-        type: 'success',
-        message: '语言更换成功',
-        duration: 2000,
-        complete: () => {
-          uni.navigateBack()
-        }
-      })
+      this.$cache.set('_language', this.currentLanguage, 0)
+      // updateLanguage()
+      this.$refs.notify.show('', language[this.$cache.get('_language')].text60, { bgColor: '#275EF1' })
+      setTimeout(() => {
+        uni.reLaunch({
+          url: '/pages/account/index'
+        })
+      }, 1500)
     }
   }
 }

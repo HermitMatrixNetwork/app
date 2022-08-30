@@ -8,7 +8,7 @@
 
     <view class="content">
       <view class="title">
-        备份提示
+        {{ language.text136 }}
       </view>
       <view class="hint">
         获得私钥等于拥有钱包资产所有权
@@ -18,32 +18,35 @@
         <view class="rules-item">
           <view class="rules-item-icon"></view>
           <view class="rules-item-describe">
-            请离线保存，勿保存至邮箱、聊天应用等在线工具，
-            存在泄漏风险
+            {{ language.text137 }}
           </view>
         </view>
         <view class="rules-item">
           <view class="rules-item-icon"></view>
           <view class="rules-item-describe">
-            请勿通过网络工具传输，如被获取将可能被盗取账
-            户资产，且无法找回
+            {{ language.text138 }}
           </view>
         </view>
         <view class="rules-item">
           <view class="rules-item-icon"></view>
           <view class="rules-item-describe">
-            请勿向任何人透漏或分享私钥，掌握私钥将获得资
-            产所有权
+            {{ language.text139 }}
           </view>
         </view>
       </view>
-      <u-button class="btn" @click="toNextStep">下一步</u-button>
+      <u-button class="btn" @click="toNextStep">{{ language.text152 }}</u-button>
     </view>
   </view>
 </template>
 
 <script>
+import language from '@/pages/account/language/index.js'
 export default {
+  data() {
+    return {
+      language: language[this.$cache.get('_language')],
+    }
+  },
   methods: {
     toNextStep() {
       uni.redirectTo({

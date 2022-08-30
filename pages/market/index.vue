@@ -21,13 +21,9 @@
         </view>
       </view>
       <view class="content">
-        <view class="item">
-          <image src="/static/img/account/uGHM.png"></image>
-          <text>区块浏览器</text>
-        </view>
-        <view class="item">
-          <image src="/static/img/account/uGHM.png"></image>
-          <text>区块浏览器</text>
+        <view class="item" v-for="(item, index) in recently.slice(0, 2)" :key="index">
+          <image :src="item.logo"></image>
+          <text>{{ item.name }}</text>
         </view>
       </view>
     </view>
@@ -40,13 +36,13 @@
           <image src="/static/img/ic-arrow1.png"></image>
         </view>
       </view>
-      <view class="content">
+      <view class="content" v-for="(item, index) in list" :key="index" @click="toWebView(item)">
         <view class="logo">
-          <image src="/static/img/account/uGHM.png"></image>
+          <image :src="item.logo"></image>
         </view>
         <view class="article">
-          <view class="title">区块浏览器</view>
-          <view class="describe">这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器</view>
+          <view class="title">{{ item.name }}</view>
+          <view class="describe">{{ item.des }}</view>
         </view>
       </view>
     </view>
@@ -56,10 +52,37 @@
 
 <script>
 export default {
+  data() {
+    return {
+      list: [
+        {
+          name: '区块浏览器',
+          des: '这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器',
+          url: '',
+          logo: '/static/img/account/uGHM.png'
+        }
+      ],
+      recently: [ {
+        name: '区块浏览器',
+        des: '这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器',
+        url: '',
+        logo: '/static/img/account/uGHM.png'
+      }]
+    }
+  },
+  created() {
+    this.recently = this.$cache.get('_recently') || this.recently
+    this.$cache.set('_recently', this.recently, 0)
+  },
   methods: {
     toRecently() {
       uni.navigateTo({
         url: './recently'
+      })
+    },
+    toWebView(item) {
+      uni.navigateTo({
+        url: `./webview?jumpUrl=${'http://www.baidu.com'}`
       })
     }
   }

@@ -1,6 +1,6 @@
 <template>
 	<view class="address-book">
-		<custom-header class="header" :title="'地址簿'">
+		<custom-header class="header" :title="language.text02">
 			<template #right>
 				<u-icon :name="require('@/static/img/account/add2.png')" size="44rpx" @click="toGo('/pages/account/writeAddress')"></u-icon>
 			</template>
@@ -26,17 +26,19 @@
 		
 		<view class="no-address" v-else>
 			<image src="../../../static/img/mipmap.png" />
-			<view>暂无地址，点击<text class="add" @click="toGo('/pages/account/writeAddress')">添加</text></view>
+			<view>{{ language.text03 }} {{ language.text86 }} <text class="add" @click="toGo('/pages/account/writeAddress')">{{ language.text04 }}</text></view>
 		</view>
 	</view>
 </template>
 
 <script>
 import mixin from '../mixins/index.js'
+import language from '@/pages/mine/language/index.js'
 export default {
   data() {
     return {
-      addressList: this.$cache.get('_addressBook') || []
+      addressList: this.$cache.get('_addressBook') || [],
+      language: language[this.$cache.get('_language')]
     }
   },
   onLoad(options) {
@@ -119,7 +121,6 @@ export default {
 
 	.no-address{
 		width: 252rpx;
-		height: 272rpx;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
