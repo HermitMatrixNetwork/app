@@ -18,6 +18,14 @@ http.setConfig((config) => {
   return config
 })
 
-export const getFailRecord = async () => {
-  return http.post('/browser')
-} 
+export const getFailRecord = async (data) => {
+  return http.post('/browser/txerr', data)
+}
+
+export const getWithdrawRecord = async (data) => {
+  return http.post('/browser/txwithdraw', data)
+}
+
+export const getValidatorInfo = (data) => {
+  return http.post('/browser/nodeinfo', data)
+}

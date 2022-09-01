@@ -167,7 +167,7 @@ export default {
         this.loading = true
         this.$nextTick(() => {
           uni.showToast({
-            title: '执行中...',
+            title: `${this.language.text77}...`,
             icon: 'loading',
             duration: 999999999
           })
@@ -213,7 +213,7 @@ export default {
         this.loading = true
         this.modalPasswordIsShow = false
         uni.showToast({
-          title: '执行中...',
+          title: `${this.language.text77}...`,
           icon: 'loading',
           mask: true,
           duration: 999999999
@@ -231,7 +231,7 @@ export default {
         this.$cache.set('_currentWallet', wallet, 0)
         this.updateWalletList(wallet)
         uni.showToast({
-          title: '执行成功',
+          title: this.language.text78,
           image: '/static/img/mine/success.png',
           mask: true,
           duration: 3000,
@@ -243,7 +243,7 @@ export default {
         })
       } else {
         uni.showToast({
-          title: '执行失败',
+          title: this.language.text79,
           image: '/static/img/mine/fail.png',
           mask: true,
           duration: 3000,

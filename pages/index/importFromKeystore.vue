@@ -1,6 +1,6 @@
 <template>
   <view>
-    <custom-header class="header" title="Keystore"></custom-header>
+    <custom-header class="header" :title="language.text53"></custom-header>
 
     <view class="container">
       <view class="item">
@@ -59,11 +59,11 @@ export default {
       rules: {
         keystore: [{
           rule: 'required',
-          errMessage: 'keystore不能为空'
+          errMessage: language[this.$cache.get('_language')].text63
         }],
         password: [{
           rule: 'required',
-          errMessage: '钱包密码不能为空'
+          errMessage: language[this.$cache.get('_language')].text64
         }, {
           rule: 'min',
           len: 8,
@@ -89,7 +89,7 @@ export default {
         this.$refs.notify.show('error', invalidateField.errMessage)
         return false
       } else if (!this.name) {
-        this.$refs.notify.show('error', '钱包名称不能为空')
+        this.$refs.notify.show('error', this.language.text65)
         return false
       } else {
         // 通过校验

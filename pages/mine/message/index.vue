@@ -1,8 +1,10 @@
 <template>
 	<view class="container">
 		<custom-header class="header" :title="language.text19" :customStyle="{ 'background-color': '#fff' }"></custom-header>
-
-		<view class="message">
+    
+    <custom-loading v-if="loading" class="custom-loading"></custom-loading>
+    
+		<view class="message" v-else>
 			<view class="message-item" v-for="(item, index) in [...noticeList,...readList]" :key="index" @click="toDetail(item)"
 				:class="alreadyRead.includes(item.ID)?'':'unread'">
 				<view class="title">{{ item[`${currentLanguage.toLowerCase()}_title`] }}</view>
@@ -26,7 +28,8 @@ export default {
       currentLanguage: this.$cache.get('_language'),
       noticeList: [],
       alreadyRead: this.$cache.get('_alreadyRead') || [],
-      readList:[]
+      readList:[],
+      loading: true
     }
   },
   onLoad() {
@@ -55,8 +58,8 @@ export default {
       console.log('通知信息', res)
       let arr = res.data.data.notices.sort((a, b) => b.timestamp - a.timestamp)
       if(this.alreadyRead.length == 0){
-        return this.noticeList = arr
-      }else{
+        this.noticeList = arr
+      } else {
         arr.forEach(item=>{
           if(this.alreadyRead.includes(item.ID)){
             this.readList.push(item)
@@ -65,6 +68,7 @@ export default {
           }
         })
       }
+      this.loading = false
     },
   },
   computed: {
@@ -89,6 +93,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .custom-loading {
+    margin-top: 20rpx;
+  }
 	.container {
 		height: 100vh;
 		background-color: #F4F6F9;

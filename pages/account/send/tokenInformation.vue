@@ -51,8 +51,6 @@ export default {
   onLoad(options) {
     if (options.tokenID)
       this.describe = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
-      
-    console.log(this.describe)
   },
   methods: {
     copy(val) {
@@ -60,10 +58,10 @@ export default {
         data: val,
         showToast: false,
         success: () => {
-          this.$refs.notify.show('error', '复制成功')
+          this.$refs.notify.show('error', this.language.text56)
         },
         fail: () => {
-          this.$refs.notify.show('error', '复制失败')
+          // this.$refs.notify.show('error', '复制失败')
         }
       })
     }

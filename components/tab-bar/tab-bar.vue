@@ -21,6 +21,9 @@ export default {
       default: 0
     }
   },
+  beforeCreate() {
+    uni.hideTabBar()
+  },
   data() {
     return {
       language: languages[this.$cache.get('_language')],
@@ -63,12 +66,9 @@ export default {
 
     }
   },
-  onShow() {
-    console.log(this.$cache.get('_language'))
-  },
   mounted() {
     this.currentItem = this.currentPage
-    uni.hideTabBar()
+    
   },
 
   methods: {
@@ -76,7 +76,7 @@ export default {
     changeItem(item) {
       if (item.id == 3) { // 交易
         uni.showToast({
-          title: '暂未开放',
+          title: this.language.text07,
           icon: 'none'
         })
       } else {

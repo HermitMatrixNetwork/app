@@ -8,7 +8,7 @@
     <view class="main-top">
       <view class="validator">
         <view class="label">
-          <text>验证人名称</text>
+          <text>{{ language.text84 }}</text>
         </view>
         <view class="value">
           <text>{{ delegatorInfo.operatorAddress }}</text>
@@ -88,8 +88,8 @@
           <view class="miners_fee">
             <text>{{ language.text29 }}</text>
             <view>
-              <view>25000 GWEI * {{ formData.gas }} GasPrice</view>
-              <view class="price">{{ formData.gas * 25000 }} GHM</view>
+              <view>26000 GWEI * {{ formData.gas }} GasPrice</view>
+              <view class="price">{{ formData.gas * 26000 }} GHM</view>
             </view>
           </view>
         </view>
@@ -103,7 +103,7 @@
       <view class="modal_main">
         <view class="modal_title">
           <view>
-            {{ verifyMethod == 'touchID' ? `指纹验证` : language.text66 }}
+            {{ verifyMethod == 'touchID' ? language83 : language.text66 }}
             <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
               class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
           </view>
@@ -128,7 +128,7 @@
             <image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
           </view>
         </view>
-        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">切换验证方式</view>
+        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">{{ language.text82 }}</view>
       </view>
     </u-modal>
     <!-- 指纹验证 -->
@@ -241,7 +241,7 @@ export default {
         this.updataDelegate = this.formData
         this.$nextTick(() => {
           uni.showToast({
-            title: '执行中...',
+            title: `${this.language.text77}...`,
             icon: 'loading',
             duration: 999999999
           })          
@@ -271,7 +271,7 @@ export default {
         this.passwordCheck = false
         this.updataDelegate = this.formData // 调用render.sendToken
         uni.showToast({
-          title: '执行中...',
+          title: `${this.language.text77}...`,
           icon: 'loading',
           mask: true,
           duration: 999999999
@@ -294,10 +294,10 @@ export default {
       let amount = this.formData.amount.amount
       if (amount == '' || amount <= 0) {
         verify = false
-        this.$refs.notify.show('error', '委托数量不能为空')
+        this.$refs.notify.show('error', this.language.text80)
       } else if (amount > this.balance){
         verify = false
-        this.$refs.notify.show('error', '委托数量大于可用额度')
+        this.$refs.notify.show('error', this.language.text81)
       } else {
         this.$refs.notify.close()
       }
@@ -315,7 +315,7 @@ export default {
       this.updataDelegate = 0
       if (res.code == 0) {
         uni.showToast({
-          title: '执行成功',
+          title: this.language.text78,
           image: '/static/img/mine/success.png',
           mask: true,
           duration: 3000,
@@ -330,7 +330,7 @@ export default {
         })
       } else {
         uni.showToast({
-          title: '执行失败',
+          title: this.language.text79,
           image: '/static/img/mine/fail.png',
           mask: true,
           duration: 3000,

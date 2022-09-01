@@ -231,7 +231,7 @@ export default {
             let mm = (date.getMinutes() + '').padStart(2, '0')
             let ss = (date.getSeconds() + '').padStart(2, '0')
 
-            return `${y}年${m}月${d}日 ${hh}:${mm}:${ss}`
+            return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
           }
           
           item.timestamp = format(item.block_time * 1000)

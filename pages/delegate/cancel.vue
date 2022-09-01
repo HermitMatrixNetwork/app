@@ -122,7 +122,7 @@
       <view class="modal_main">
         <view class="modal_title">
           <view>
-            {{ verifyMethod == 'touchID' ? `指纹验证` : language.text66 }}
+            {{ verifyMethod == 'touchID' ? language.text83 : language.text66 }}
             <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
               class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
           </view>
@@ -147,7 +147,7 @@
             <image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
           </view>
         </view>
-        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">切换验证方式</view>
+        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">{{ language.text82 }}</view>
       </view>
     </u-modal>
 
@@ -274,7 +274,7 @@ export default {
         this.loading = true
         this.$nextTick(() => {
           uni.showToast({
-            title: '执行中...',
+            title: `${language.text77}...`,
             icon: 'loading',
             duration: 999999999
           })          
@@ -328,7 +328,7 @@ export default {
         this.loading = true
         this.modalPasswordIsShow = false
         uni.showToast({
-          title: '执行中...',
+          title: `${language.text77}...`,
           icon: 'loading',
           mask: true,
           duration: 999999999
@@ -341,7 +341,7 @@ export default {
       if (res.code == 0) {
         this.$cache.set('_updateDelegateInfo', true, 36000)
         uni.showToast({
-          title: '执行成功',
+          title: this.language.text78,
           image: '/static/img/mine/success.png',
           mask: true,
           duration: 3000,
@@ -355,7 +355,7 @@ export default {
         })
       } else {
         uni.showToast({
-          title: '执行失败',
+          title: this.language.text79,
           image: '/static/img/mine/fail.png',
           mask: true,
           duration: 3000,

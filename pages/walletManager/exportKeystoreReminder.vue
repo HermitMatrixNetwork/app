@@ -11,7 +11,7 @@
         {{ language.text136 }}
       </view>
       <view class="hint">
-        获得Keystore等于拥有钱包资产所有权
+        {{ language.text189 }}
       </view>
       <view class="line"></view>
       <view class="rules">
@@ -77,11 +77,10 @@ export default {
     }
 
     .hint {
-      height: 28rpx;
       font-weight: 400;
       font-size: 28rpx;
       color: #8397B1;
-      line-height: 28rpx;
+      line-height: 40rpx;
     }
 
     .line {
@@ -101,6 +100,7 @@ export default {
         margin-right: 26rpx;
         border-radius: 50%;
         background-color: #8397B1;
+        flex-shrink: 0;
       }
 
       &-describe {

@@ -62,6 +62,16 @@ const languages = {
     text59: 'Keystore错误提示：不正确的Keystore内容，请检查！',
     text60: '钱包密码错误提示：Keystore原对应钱包密码错误，请确认！',
     text61: '成功提示：导入成功！',
+    text62: '选择导入类型',
+    text63: 'Keystore 不能为空',
+    text64: 'Password 不能为空',
+    text65: '钱包名字不能为空',
+    text66: '创建您自己的钱包',
+    text67: '保护您的资产',
+    text68: '用户协议',
+    text69: '获得助记词等于拥有钱包资产所有权',
+    text70: '下一步',
+    text71: '请勿截图'
   },
   'CT': {
     myDelegate: '我的委托',
@@ -128,7 +138,17 @@ const languages = {
     text58: 'import',
     text59: 'Keysore error prompt: incorrect keysore content, please check!',
     text60: 'Wallet password error prompt: the original corresponding wallet password of keysore is wrong, please confirm!',
-    text61: 'Success Tip: Imported successfully!'
+    text61: 'Success Tip: Imported successfully!',
+    text62: 'Select import type',
+    text63: 'Keystore can not be empty!',
+    text64: 'Wallet password can not be empty',
+    text65: 'Wallet name cannot be empty!',
+    text66: 'Create your Wallet',
+    text67: 'Protect your assets',
+    text68: 'User agreement',
+    text69: 'Acquiring mnemonic words is equivalent to owning the wallet assets',
+    text70: 'Next',
+    text71: 'Do not take screenshots.'
   }
 }
 export default languages

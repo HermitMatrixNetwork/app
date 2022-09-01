@@ -55,3 +55,7 @@ export const queryFeedbackHistory = async (email) => {
 export const getHelp = async () => {
   return http.get('/message/get_help')
 }
+
+export const getBannerList = async () => {
+  return http.get('/message/get_banner')
+} 

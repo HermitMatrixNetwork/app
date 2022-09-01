@@ -71,7 +71,6 @@
       </view>
     </u-popup>
     <view :callRender="callRender" :change:callRender="render.setViewkey"></view>
-    <Notify ref="notify"></Notify>
 
     <u-modal :show="modalPasswordIsShow" :showConfirmButton="false" @close="close">
       <view class="modal_main">
@@ -115,12 +114,14 @@
         <text>{{ toast.msg }}</text>
       </view>
     </view>
+    
+    <custom-notify ref="notify"></custom-notify>
+    
   </view>
 </template>
 
 <script>
 import InputTitle from './components/Input-title.vue'
-import Notify from './components/notify.vue'
 import WalletCrypto from '@/utils/walletCrypto.js'
 import Submitbtn from './components/submit-btn.vue'
 import verifyTouchID from '../mixins/verifyTouchID.js'
@@ -129,7 +130,6 @@ export default {
   mixins: [verifyTouchID],
   components: {
     InputTitle,
-    Notify,
     Submitbtn
   },
   data() {
@@ -157,7 +157,7 @@ export default {
       toast: {
         icon: '/static/img/mine/loading.gif',
         // msg: '失败次数超出限制，请稍后再设置',
-        msg: '失败次数超出限制，请切换其它方式验证'
+        msg: '失败次数超出限制，请稍后再设置',
       },
       verifyMethod: 'password',
       verifyTouchErrorTip: '',
@@ -193,7 +193,7 @@ export default {
         this.callRender = this.formData
         this.$nextTick(() => {
           uni.showToast({
-            title: '执行中...',
+            title: `${this.language.text184}...`,
             icon: 'loading',
             duration: 999999999
           })
@@ -229,7 +229,7 @@ export default {
         this.modalPasswordIsShow = false
         this.$nextTick(() => {
           uni.showToast({
-            title: '执行中...',
+            title: `${this.language.text184}...`,
             icon: 'loading',
             mask: true,
             duration: 999999999
@@ -246,7 +246,7 @@ export default {
       this.callRender = 0
       if (res.code == 0) {
         uni.showToast({
-          title: '执行成功',
+          title: `${this.language.text185}`,
           image: '/static/img/mine/success.png',
           mask: true,
           duration: 3000,
@@ -269,13 +269,7 @@ export default {
           }
         })
       } else {
-        uni.showToast({
-          title: '执行失败',
-          image: '/static/img/mine/fail.png',
-          mask: true,
-          duration: 3000,
-        })
-        this.$refs.notify.show('error', '出现了预期之外的错误', {
+        this.$refs.notify.show('error', this.language.text186, {
           bgColor: '#EC6665'
         })
       }

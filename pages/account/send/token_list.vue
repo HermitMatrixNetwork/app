@@ -1,6 +1,6 @@
 <template>
   <view class="choose_token">
-    <custom-header :title="'代币选择'" />
+    <custom-header :title="language.text192" />
     <view class="border"></view>
     <view class="token-list">
       <TokenColumn :tokenName="item.alias_name" v-for="item in tokenList" :key="item.full_name" :tokenIcon="item.logo"
@@ -18,6 +18,7 @@
 
 <script>
 import TokenColumn from './components/TokenColumn.vue'
+import language from '../language/index.js'
 export default {
   components: {
     TokenColumn
@@ -29,6 +30,7 @@ export default {
         paddingBottom: '32rpx',
         paddingTop: '32rpx',
       },
+      language: language[this.$cache.get('_language')]
     }
   },
   methods: {

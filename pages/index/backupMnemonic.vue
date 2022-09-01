@@ -41,12 +41,12 @@
             <image class="hint-logo-image" src="../../static/img/jietu.png"></image>
           </view>
           <view class="hint-title">
-            请勿截屏
+            {{ language.text71 }}
           </view>
           <view class="hint-content">
            {{ language.text16 }}
           </view>
-          <u-button class="hint-btn" @click="confrimHint">我知道了</u-button>
+          <u-button class="hint-btn" @click="confrimHint">{{ language.text22 }}</u-button>
         </view>
       </template>
     </u-modal>

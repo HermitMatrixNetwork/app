@@ -15,7 +15,7 @@
           <view v-if="selindex == 1" class="line" />
         </view>
       </div>
-      <component :is="['My', 'Ident'][selindex]" ref="customChildNode"></component>
+      <component :is="['My', 'Ident'][selindex]" ref="customChildNode" @switchToDelegate="switchToDelegate"></component>
     </view>
     <tab-bar :current-page="2" />
   </view>
@@ -40,6 +40,11 @@ export default {
     this.$nextTick(() => {
       this.$refs.customChildNode.updateData()
     })
+  },
+  methods: {
+    switchToDelegate() {
+      this.selindex = 1
+    }
   },
   watch: {
     selindex: {

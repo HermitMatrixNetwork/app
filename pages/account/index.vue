@@ -9,7 +9,7 @@
     <view class="main">
       <view class="account-header">
         <view class="header-left" @click="showSwitchWallet = true">
-          <view class="title"> 我的钱包 </view>
+          <view class="title">{{ languages.text183 }}</view>
           <u-icon :name="require('@/static/img/account/down.png')" size="32rpx" color="#333655" />
         </view>
 
@@ -90,13 +90,13 @@
         </scroll-view>
       </view>
     </view>
-    <tab-bar />
     <SwitchWallet :showSwitchWallet="showSwitchWallet" @close="closeSwitchWalletPopup" />
 
     <view :initRender="initRender" :change:initRender="render.init"></view>
     <view :callBalanceLoading="callBalanceLoading" :change:callBalanceLoading="render.setBalanceLoading"></view>
 
     <custom-notify ref="notify"></custom-notify>
+    <tab-bar />
   </view>
 </template>
 
@@ -217,7 +217,7 @@ export default {
     },
     dealBtn() {
       uni.showToast({
-        title: '暂未开放',
+        title: this.languages.text180,
         icon: 'none'
       })
     },

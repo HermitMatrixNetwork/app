@@ -17,9 +17,9 @@
           </template>
         </InputTitle>
       </view>
-      <text class="errorTip" :style="{ opacity: (showAddressErrorTipEmpty || showAddressErrorTipDuplicate) ? 1 : 0 }" v-text="showAddressErrorTipEmpty ? language['addressErrorTipEmpty'] : showAddressErrorTipDuplicate ? language['addressErrorTipDuplicate'] : '1' "> </text>
+      <text class="errorTip" :style="{ opacity: (showAddressErrorTipEmpty || showAddressErrorTipDuplicate) ? 1 : 0 }" v-text="showAddressErrorTipEmpty ? language.text101 : showAddressErrorTipDuplicate ? language['addressErrorTipDuplicate'] : '1' "> </text>
       <InputTitle :title="language.text88" :placeholder="language.text07" :inputVal.sync="walletName"></InputTitle>
-      <text class="errorTip" :style="{ opacity: showWalletNameErrorTip ? 1 : 0 }">{{ language['walletNameErrorTipEmpty'] }}</text>
+      <text class="errorTip" :style="{ opacity: showWalletNameErrorTip ? 1 : 0 }">{{ language.text100 }}</text>
       <InputTitle :title="language.text87" :placeholder="language.text08" :inputVal.sync="walletDescribe"></InputTitle>
     </view>
 

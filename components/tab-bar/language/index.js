@@ -8,7 +8,8 @@ var languages = {
     'text01': '资产',
     'text02': '我的',
     'text03': '交易',
-    'text04': '市场'
+    'text04': '市场',
+    'text07': '暂未开放'
   },
   TC: {
     asset: '資產',
@@ -26,7 +27,8 @@ var languages = {
     'text01': 'Assets',
     'text02': 'Me',
     'text03': 'Trade',
-    'text04': 'Market'
+    'text04': 'Market',
+    'text07': 'Under development'
   }
 }
 

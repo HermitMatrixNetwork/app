@@ -95,7 +95,16 @@ export default {
     'text89': '提示',
     'text90': '链接',
     'text91': '如需删除，请先切换使用其他节点，再进行该操作。',
-    'text92': '发布者'
+    'text92': '发布者',
+    'text93': '问题反馈',
+    'text94': '您的问题',
+    'text95': '记录',
+    'text96': '您的邮箱',
+    'text97': '问题描述',
+    'text98': '查询邮箱',
+    'text99': '输入查询邮箱',
+    text100: '钱包地址不能为空',
+    text101: '钱包名字不能为空'
   },
   EN: {
     addressErrorTipDuplicate: '钱包地址已存在，请勿重复添加',
@@ -193,7 +202,16 @@ export default {
     'text89': 'Warning',
     'text90': 'URL',
     'text91': 'To delete, please switch to other nodes before doing so.',
-    'text92': 'author'
+    'text92': 'author',
+    'text93': 'Problem Feedback',
+    'text94': 'Your Question',
+    'text95': 'Record',
+    'text96': 'Mailbox',
+    'text97': 'Describe',
+    'text98': 'Query Mail',
+    'text99': 'Enter Mailbox',
+    text100: 'Wallet address cannot be empty!',
+    text101: 'Wallet name cannot be empty!'
     
   },
   CT: {}

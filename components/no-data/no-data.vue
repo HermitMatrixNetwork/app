@@ -2,22 +2,28 @@
 	<view class="no-data">
 		<img class="no-img" src="@/static/img/account/nodata.png" alt="" />
 		<view class="tip" @click="btnClick">
-			<text>{{tip}}</text>
+			<text>{{ tip || language.text01 }}</text>
 			<text v-if="btnTx" class="btn">{{btnTx}}</text>
 		</view>
 	</view>
 </template>
 
 <script>
+  import language from './language/index.js'
 export default {
   props: {
     tip: {
       type: String,
-      default: '暂无数据'
+      default: ''
     },
     btnTx: {
       type: String,
       default: ''
+    }
+  },
+  data() {
+    return {
+      language: language[this.$cache.get('_language')]
     }
   },
   methods: {

@@ -58,10 +58,10 @@
 							<view class="other">{{item.operatorAddress|sliceAddress(7, -8)}}</view>
 						</view>
 						<view class="center">
-							99
+							{{ item.uptimes }}
 						</view>
 						<view class="right">
-							<view class="name">{{ item.tokens }}</view>
+							<view class="name">{{ item.token }}</view>
 							<view class="other">{{ language.text50 }}: {{ item.rate }}</view>
 						</view>
 					</view>
@@ -76,6 +76,7 @@
 import headerItem from './header-item'
 import mainCoin from '@/config/index.js'
 import language from '../language/index.js'
+import { getValidatorInfo } from '@/api/browers.js'
 import {
   sliceAddress
 } from '@/utils/filters.js'
@@ -129,6 +130,7 @@ export default {
   methods: {
     updateData() {
       console.log('indent update data')
+      this.loading = true
       this.address = this.currentWallet.address
     },
     click() {
@@ -148,12 +150,22 @@ export default {
     },
     ValidatorsData(data) {
       this.address = ''
-      this.validators = data
-      this.loading = false
-      console.log('validators', this.validators)
+      this.validators = []
+      data.forEach(async item => {
+        const res = (await getValidatorInfo({
+          'chain_id': 'ghmdev',
+          'address': item.operatorAddress
+        })).data.data
+        item.token = res.tokens  / mainCoin.decimals
+        item.uptimes = (1 - res.uptime) * 100 + '%'
+        Object.assign(item, res)
+        this.validators.push(item)
+      })
+      this.$nextTick(() => {
+        this.loading = false
+      })
     },
     confirm() {
-      console.log(this.validators)
       let selData = this.validators.filter(item => {
         return item.select.length >= 1
         console.log('   item.select.length>=1', item.select.length >= 1)
@@ -199,8 +211,6 @@ export default {
 				let data = await getValidators(status || '')
 				let validators = data.validators
 				validators.forEach(item => {
-          item._tokens = item.tokens
-          item.tokens = item.tokens / mainCoin.decimals
           item._rate = item.commission.commissionRates.rate
           item.rate = item._rate / 10 ** 18 * 100 + '%'
 				})

@@ -82,7 +82,16 @@ const languages = {
     'text74': '共识中',
     'text75': '待解禁',
     'text76': '候选者',
-    
+    'text77': '执行中',
+    'text78': '执行成功',
+    'text79': '执行失败',
+    'text80': '委托数量不能为0',
+    'text81': '输入金额超过钱包可用余额，请重新输入',
+    'text82': '切换验证方式',
+    'text83': '指纹验证',
+    'text84': '验证人名称',
+    'text85': '详情',
+    'text86': '输入验证名称或地址查询'
 
   },
   'CT': {
@@ -102,7 +111,7 @@ const languages = {
     'text09': 'validators',
     'text10': 'Under withdraw',
     'text11': 'Stakes',
-    'text12': 'No Stake',
+    'text12': 'No Stake ',
     'text13': 'Select Delegate Node',
     'text14': 'Click to select',
     'text15': 'Note: After the successful cancellation of the entrusted transaction, it will take 2 days to arrive successfully!',
@@ -167,6 +176,16 @@ const languages = {
     'text74': 'active',
     'text75': 'jailed',
     'text76': 'candidate',
+    'text77': 'In execution',
+    'text78': 'Success',
+    'text79': 'Fail',
+    'text80': 'Amount cannot be 0!',
+    'text81': 'The entered amount exceeds the available balance of the wallet, please re-enter!',
+    'text82': 'Switch authentication mode',
+    'text83': 'Fingerprint verification',
+    'text84': 'Name of verifier',
+    text85: 'Details',
+    text86: 'search by Moinker/Address'
     
   }
 }

@@ -1,15 +1,16 @@
 <template>
 	<view>
-		<custom-header tabUrl="/pages/mine/index" title="问题反馈">
+		<custom-header tabUrl="/pages/mine/index" :title="language.text93">
 			<template slot="right">
-				<view class="record" @click="showEditWalletNameModal = true">记录</view>
+				<view class="record" @click="showEditWalletNameModal = true">
+        {{ language.text95 }}</view>
 			</template>
 		</custom-header>
 
 		<view class="content">
 			<view class="wallet-name item">
 				<view class="wallet-name-label">
-					您的问题
+					{{ language.text94 }}
 				</view>
 				<!-- :class="{error: invalidFields.fieldName == 'name'}" -->
 				<u-input class="wallet-name-input" v-model="formData.title" :placeholder="language.text70"></u-input>
@@ -21,7 +22,7 @@
 
 			<view class="wallet-name item">
 				<view class="wallet-name-label">
-					您的邮箱
+					{{ language.text96 }}
 				</view>
 				<!-- :class="{error: invalidFields.fieldName == 'name'}" -->
 				<u-input class="wallet-name-input address" v-model="formData.email" :placeholder="language.text71">
@@ -33,7 +34,7 @@
 			</view>
 
 			<view class="item">
-				<view class="item-label">问题描述</view>
+				<view class="item-label">{{ language.text97 }}</view>
 				<view class="item-input">
 					<u--textarea v-model="formData.desc" :placeholder="language.text72" :maxlength="-1"></u--textarea>
 				</view>
@@ -60,9 +61,9 @@
 				<view>
 					<view class="title">
 						<!-- <text>{{ language.editName }}</text> -->
-						<text>查询邮箱</text>
+						<text>{{ language.text98 }}</text>
 					</view>
-					<u--input placeholder="输入邮箱查询" border="surround" v-model="email" class="edit-name-input"
+					<u--input :placeholder="language.text99" border="surround" v-model="email" class="edit-name-input"
 						:class="{ 'error-edit-name': editNameError }" clearable>
 					</u--input>
 		<!-- 			<view class="error-tip" :style="{ opacity: editNameError ? 1 : 0 }">

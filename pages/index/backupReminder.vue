@@ -11,7 +11,7 @@
         {{ language.text15 }}
       </view>
       <view class="hint">
-        获得助记词等于拥有钱包资产所有权
+        {{ language.text69 }}
       </view>
       <view class="line"></view>
       <view class="rules">
@@ -28,7 +28,7 @@
           </view>
         </view>
       </view>
-      <u-button class="btn" @click="toNextStep">下一步</u-button>
+      <u-button class="btn" @click="toNextStep">{{ language.text70 }}</u-button>
     </view>
   </view>
 </template>
@@ -71,11 +71,10 @@ export default {
     }
 
     .hint {
-      height: 28rpx;
       font-weight: 400;
       font-size: 28rpx;
       color: #8397B1;
-      line-height: 28rpx;
+      line-height: 40rpx;
     }
 
     .line {

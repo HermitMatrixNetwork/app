@@ -106,7 +106,7 @@ export default {
         icon: 'lianxi.png',
         page: './lianxi/index'
       }, {
-        name: '问题反馈',
+        name: language[this.$cache.get('_language')].text93,
         icon: 'wentifankui.png',
         page: './wenti/index'
       }, {

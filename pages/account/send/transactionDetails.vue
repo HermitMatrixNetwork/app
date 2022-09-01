@@ -1,6 +1,6 @@
 <template>
   <view class="transacTionDestail">
-    <custom-header :title="'交易详情'"></custom-header>
+    <custom-header :title="language.text82"></custom-header>
     <view class="transacTionMain">
       <view class="main_status">
         <image :src="statusIcon" />
@@ -45,13 +45,15 @@ export default {
       this.transactionHash = data.txhash
     } else if(data.transactionHash) {
       this.transactionHash = data.transactionHash
+    } else if(data.type == 'fail'){
+      this.formatFailData(data)
     } else {
       this.formOtherToken(data)
     }
   },
   methods: {
     init(res) {
-      console.log(res)
+      // console.log(res)
       this.result = res
       const typeUrl = res.tx.body.messages[0].typeUrl
       res.amount = 0
@@ -82,59 +84,59 @@ export default {
         let mm = (date.getMinutes() + '').padStart(2, '0')
         let ss = (date.getSeconds() + '').padStart(2, '0')
       
-        return `${y}年${m}月${d}日 ${hh}:${mm}:${ss}`
+        return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
       }
       
       // this.result.timestamp = format(item.block_time * 1000)
       this.result.timestamp = res.timestamp.trim().replace(/\-/g, (match, p1, p2) => {
         if (p1 == 4) {
-          return '年'
+          return '-'
         } else {
-          return '月'
+          return '-'
         }
-      }).split('T').join('日 ').replace(/Z/, '')
+      }).split('T').join(' ').replace(/Z/, '')
       if (res.code == 0) {
-        this.status = '成功'
+        this.status = this.language.text181
         this.statusIcon = '/static/img/chenggong.png'
       } else { // 失败
-        this.status = '失败'
+        this.status = this.language.text182
         this.statusIcon = '/static/img/shibai1.png'
       }
       if (typeUrl.includes('MsgSend')) {
         this.transactionMessage = {
-          '金额': res.to_address === this.$cache.get('_currentWallet').address ? '+' + res.amount : '-' + res.amount,
-          '矿工费': res.fee,
-          '收款地址': res.to_address,
-          '付款地址': res.from_address,
+          [this.language.text84]: res.to_address === this.$cache.get('_currentWallet').address ? '+' + res.amount : '-' + res.amount,
+          [this.language.text111]: res.fee,
+          [this.language.text16]: res.to_address,
+          [this.language.text87]: res.from_address,
           'Memo': res.tx.body.memo,
-          '交易号': res.transactionHash
+          [this.language.text88]: res.transactionHash
         }
       } else if (typeUrl.includes('MsgDelegate')) {
         this.transactionMessage = {
-          '金额': res.amount,
-          '矿工费': res.fee,
-          '委托人': res.tx.body.messages[0].value.delegatorAddress,
-          '被委托验证人': res.tx.body.messages[0].value.validatorAddress,
+          [this.language.text84]: res.amount,
+          [this.language.text111]: res.fee,
+          [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
+          [this.language.text91]: res.tx.body.messages[0].value.validatorAddress,
           'Memo': res.tx.body.memo,
-          '交易号': res.transactionHash
+          [this.language.text88]: res.transactionHash
         }
       } else if (typeUrl.includes('MsgExecuteContract')) {
         this.transactionMessage = {
-          '金额': res.amount,
-          '矿工费': res.fee,
-          '委托人': res.tx.body.messages[0].value.delegatorAddress,
-          '被委托验证人': res.tx.body.messages[0].value.validatorAddress,
+          [this.language.text84]: res.amount,
+          [this.language.text111]: res.fee,
+          [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
+          [this.language.text91]: res.tx.body.messages[0].value.validatorAddress,
           'Memo': res.tx.body.memo,
-          '交易号': res.transactionHash
+          [this.language.text88]: res.transactionHash
         }
       } else if (typeUrl.includes('MsgUndelegate')) {
         this.transactionMessage = {
           '取消委托金额': res.amount,
-          '矿工费': res.fee,
-          '委托人': res.tx.body.messages[0].value.delegatorAddress,
+          [this.language.text111]: res.fee,
+          [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
           '被取消验证人': res.tx.body.messages[0].value.validatorAddress,
           'Memo': res.tx.body.memo,
-          '交易号': res.transactionHash
+          [this.language.text88]: res.transactionHash
         }
       } else if (typeUrl.includes('MsgWithdrawDelegatorReward')) {
         res.rawLog.replace(/\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match, p1) => {
@@ -145,19 +147,19 @@ export default {
           res.withdrawAddress = p1
         })
         this.transactionMessage = {
-          '领取金额': res.amount,
-          '矿工费': res.fee,
-          '操作账户': res.tx.body.messages[0].value.delegatorAddress,
-          '领取接收地址': res.withdrawAddress,
+          [this.language.text92]: res.amount,
+          [this.language.text111]: res.fee,
+          [this.language.text93]: res.tx.body.messages[0].value.delegatorAddress,
+          [this.language.text94]: res.withdrawAddress,
           'Memo': res.tx.body.memo,
-          '交易号': res.transactionHash
+          [this.language.text88]: res.transactionHash
         }
       }
       
       this.loading = false
     },
     formOtherToken(res) {
-      this.status = '成功'
+      this.status = this.language.text181
       this.statusIcon = '/static/img/chenggong.png'
       function format(time) {
         let date = new Date(time)
@@ -168,16 +170,71 @@ export default {
         let mm = (date.getMinutes() + '').padStart(2, '0')
         let ss = (date.getSeconds() + '').padStart(2, '0')
       
-        return `${y}年${m}月${d}日 ${hh}:${mm}:${ss}`
+        return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
       }
       
       this.result.timestamp = format(res.block_time * 1000)
       this.transactionMessage = {
-        '金额': res.amount,
-        '收款地址': res.to_address,
-        '付款地址': res.from_address,
-        '执行者': res.sender,
+        [this.language.text84]: res.amount,
+        [this.language.text16]: res.to_address,
+        [this.language.text87]: res.from_address,
+        [this.language.text88]: res.sender,
         'Memo': res.memo
+      }
+      this.loading = false
+    },
+    formatFailData(res) {
+      function format(time) {
+        let date = new Date(time)
+        let y = date.getFullYear()
+        let m = (date.getMonth() + 1 + '').padStart(2, '0')
+        let d = (date.getDate() + '').padStart(2, '0')
+        let hh = (date.getHours() + '').padStart(2, '0')
+        let mm = (date.getMinutes() + '').padStart(2, '0')
+        let ss = (date.getSeconds() + '').padStart(2, '0')
+      
+        return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+      }
+      // const failType = ['MsgSend', 'MsgUndelegate', 'MsgInstantiateContract', 'MsgExecuteContract']
+      this.statusIcon = '/static/img/shibai1.png'
+      this.result.timestamp = format(res.timestamp)
+      switch (res.operate) {
+      case 'MsgSend': 
+        this.status = '发送失败'
+        this.transactionMessage = {
+          [this.language.text84]: res.amount,
+          [this.language.text111]: res.fee / mainCoin.decimals + mainCoin.alias_name,
+          [this.language.text16]: res.message.to_address,
+          [this.language.text87]: res.message.from_address,
+          [this.language.text88]: res.sender,
+        }
+        break
+      case 'MsgUndelegate':
+        this.status = '取消委托失败',
+        this.transactionMessage = {
+          [this.language.text84]: res.amount,
+          [this.language.text111]: res.fee / mainCoin.decimals + mainCoin.alias_name,
+          [this.language.text90]: res.message.delegator_address,
+          [this.language.text87]: res.message.validator_address,
+          [this.language.text88]: res.sender,
+        }
+        break
+      case 'MsgInstantiateContract':
+        this.status = '初始化合约失败',
+        this.transactionMessage = {
+          [this.language.text111]: res.fee / mainCoin.decimals + mainCoin.alias_name,
+          '合约Code_id': res.message.code_id,
+          [this.language.text88]: res.sender,
+        }
+        break
+      case 'MsgExecuteContract':
+        this.status = '调用合约失败',
+        this.transactionMessage = {
+          [this.language.text111]: res.fee / mainCoin.decimals + mainCoin.alias_name,
+          '合约地址': res.message.contract,
+          [this.language.text88]: res.sender,
+        }
+        break
       }
       this.loading = false
     }

@@ -69,14 +69,13 @@
                   </view>
                   <view class="content">
                     <view class="content-address">
-                      {{ (record.to_address || record.validator_address) | sliceAddress(6, -6) }}
+                      {{ (record.to_address || record.validator_address || record.sender) | sliceAddress(6, -6) }}
                     </view>
                     <view class="content-time">{{ record.timestamp }}</view>
                   </view>
                   <view class="right">
-                    <view class="amount"
-                      :class="[`${record.type}-amount`]">
-                      {{ record.type == 'delegate' ? '' : (record.plus ? '+' : '-') }}
+                    <view class="amount" :class="[`${record.type}-amount`]">
+                      {{ ['delegate', 'fail'].includes(record.type) ? '' : (record.plus ? '+' : '-') }}
                       {{ record.amount }}
                     </view>
                     <view class="real-money">
@@ -127,6 +126,10 @@ import {
 import {
   txsQuery
 } from '@/api/cosmos.js'
+import {
+  getFailRecord,
+  getWithdrawRecord
+} from '@/api/browers.js'
 import language from '../language/index.js'
 export default {
   mixins: [mixin],
@@ -217,7 +220,8 @@ export default {
       loadingBalace: true,
       lockAmountLoading: true,
       callRenderDelegateRecord: '',
-      lockAmount: 0
+      lockAmount: 0,
+      mainCoin
     }
   },
   async onLoad(options) {
@@ -259,22 +263,37 @@ export default {
           'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.delegate.page}`,
           `pagination.limit=${this.pagination.delegate.size}`
         ]),
-        txsQuery([`events=message.sender='${ this.address }'`, 'events=message.module=\'distribution\'',
+        txsQuery([`events=message.sender='${ this.address }'`, 'events=message.action=\'/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward\'',
           'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.withdraw.page}`,
           `pagination.limit=${this.pagination.withdraw.size}`
-        ])
+        ]),
+        getFailRecord({
+          'chain_id': 'ghmdev',
+          // 'limit': this.pagination.fail.size,
+          // 'index': this.pagination.fail.page,
+          'address': this.address
+        })
       ]).then(res => {
         if (this.pagination.sender.total == 0) {
           this.pagination.sender.total = res[0].data.pagination.total
           this.pagination.recipient.total = res[1].data.pagination.total
           this.pagination.delegate.total = res[2].data.pagination.total
           this.pagination.withdraw.total = res[3].data.pagination.total
-          // #ifndef APP-PLUS
-          console.log(res)
+          
+          // @toFixed 接口分页查找有重复的数据 暂不支持分页
+          // this.pagination.fail.total = res[3].data.data.total
+          this.pagination.fail.nodata = true
+          
+          
+          // #ifndef APP-PLUS          
+          console.log(res[4])
           // #endif
         }
 
+
+        // 处理 发送、接受、质押交易记录
         res.forEach((result, type) => {
+          if (type == 4) return
           const records = result.data.tx_responses
           for (let i = 0, len = records.length; i < len; i++) {
             const item = records[i]
@@ -319,16 +338,32 @@ export default {
               item.icon = require(
                 '@/static/img/account/lingqu.png')
               item.type = 'withdraw'
+              item.raw_log.replace(/\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match, p1) => {
+                item.amount = p1 / mainCoin.decimals + mainCoin.alias_name
+              })
+              item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
+                item.withdraw_address = p1
+              })
               item.plus = item.withdraw_address == this.address ? true : false
               break
             }
           }
         })
-
         this.accountTransfer['sender'] = res[0].data.tx_responses
         this.accountTransfer['recipient'] = res[1].data.tx_responses
         this.accountTransfer['delegate'] = res[2].data.tx_responses
         this.accountTransfer['withdraw'] = res[3].data.tx_responses
+        // 处理失败交易记录
+        
+        if (res[4].data.data.list) {
+          this.accountTransfer['fail'] = res[4].data.data.list.map(item => {
+            item.icon = require('@/static/img/account/shibai.png')
+            item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
+            item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
+            item.type = 'fail'
+            return item
+          })
+        }
 
         if (this.accountTransfer['sender'].length == Number(this.pagination.sender.total)) {
           this.pagination.sender.nodata = true
@@ -346,14 +381,19 @@ export default {
           this.pagination.withdraw.nodata = true
         }
 
+        // if (this.accountTransfer['fail'].length == Number(this.pagination.fail.total)) {
+        //   this.pagination.fail.nodata = true
+        // }
+
         this.accountTransfer['all'] = [...this.accountTransfer['sender'], ...this.accountTransfer['recipient'],
-          ...this.accountTransfer['delegate'], ...this.accountTransfer['withdraw']
+          ...this.accountTransfer['delegate'], ...this.accountTransfer['withdraw'], ...this.accountTransfer[
+            'fail']
         ]
 
         this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-        
+
         // #ifndef APP-PLUS 
-        console.log(this.accountTransfer['all'])
+        // console.log(this.accountTransfer['all'])
         // #endif
         this.loading = false
       })
@@ -398,56 +438,83 @@ export default {
           ])).data.tx_responses
           break
         case 'withdraw':
-          result = (await txsQuery([`events=message.sender='${ this.address }'`,
-            'events=message.module=\'distribution\'', 'order_by=ORDER_BY_DESC',
-            `pagination.offset=${this.pagination[type].page * this.pagination[type].size}`,
-            `pagination.limit=${this.pagination[type].size}`
+          result = (await txsQuery([`events=message.sender='${ this.address }'`, 'events=message.action=\'/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward\'',
+            'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.withdraw.page * this.pagination[type].size}`,
+            `pagination.limit=${this.pagination.withdraw.size}`
           ])).data.tx_responses
           break
+        case 'fail':
+          result = (await getFailRecord({
+            'chain_id': 'ghmdev',
+            'limit': this.pagination[type].size,
+            'index': this.pagination[type].page,
+            'address': this.address
+          })).data.data.list
         }
 
-        for (let i = 0, len = result.length; i < len; i++) {
-          const item = result[i]
-          item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.decimals + mainCoin.alias_name
-          item.amount = 0
-          item.memo = item.tx.body.memo
-          item.from_address = item.tx.body.messages[0].from_address
-          item.to_address = item.tx.body.messages[0].to_address
-          item.delegator_address = item.tx.body.messages[0].delegator_address
-          item.validator_address = item.tx.body.messages[0].validator_address
-          item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
-          item.tx.body.messages.forEach(cur => {
-            if (cur.amount) {
-              if (Array.isArray(cur.amount)) {
-                item.amount += Number(cur.amount[0].amount)
-              } else {
-                item.amount += Number(cur.amount.amount)
+        if (type == 'fail') {
+          for (let i = 0, len = result.length; i < len; i++) {
+            const item = result[i]
+            item.icon = require('@/static/img/account/shibai.png')
+            item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
+            item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
+            item.type = 'fail'
+          }
+        } else {
+          for (let i = 0, len = result.length; i < len; i++) {
+            const item = result[i]
+            item.fee = item.tx.auth_info.fee.amount[0].amount / mainCoin.decimals + mainCoin.alias_name
+            item.amount = 0
+            item.memo = item.tx.body.memo
+            item.from_address = item.tx.body.messages[0].from_address
+            item.to_address = item.tx.body.messages[0].to_address
+            item.delegator_address = item.tx.body.messages[0].delegator_address
+            item.validator_address = item.tx.body.messages[0].validator_address
+            item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
+            item.tx.body.messages.forEach(cur => {
+              if (cur.amount) {
+                if (Array.isArray(cur.amount)) {
+                  item.amount += Number(cur.amount[0].amount)
+                } else {
+                  item.amount += Number(cur.amount.amount)
+                }
               }
+            })
+            item.amount = item.amount / mainCoin.decimals + mainCoin.alias_name
+            switch (type) {
+            case 'recipient':
+              item.icon = require('@/static/img/account/shoukuan2.png')
+              item.type = 'recipient'
+              item.plus = true
+              break
+            case 'sender':
+              item.icon = require(
+                '@/static/img/account/fasong2.png')
+              item.type = 'sender'
+              item.plus = item.to_address == this.address ? true : false
+              break
+            case 'delegate':
+              item.icon = require(
+                '@/static/img/account/weituo2.png')
+              item.type = 'delegate'
+              break
+            case 'withdraw':
+              item.icon = require(
+                '@/static/img/account/lingqu.png')
+              item.type = 'withdraw'
+              item.raw_log.replace(/\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match, p1) => {
+                item.amount = p1 / mainCoin.decimals + mainCoin.alias_name
+              })
+              item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
+                item.withdraw_aAddress = p1
+              })
+              console.log(item)
+              item.plus = item.withdraw_address == this.address ? true : false
+              break
             }
-          })
-          item.amount = item.amount / mainCoin.decimals + mainCoin.alias_name
-          switch (type) {
-          case 'recipient':
-            item.icon = require('@/static/img/account/shoukuan2.png')
-            item.type = 'recipient'
-            break
-          case 'sender':
-            item.icon = require(
-              '@/static/img/account/fasong2.png')
-            item.type = 'sender'
-            break
-          case 'delegate':
-            item.icon = require(
-              '@/static/img/account/weituo2.png')
-            item.type = 'delegate'
-            break
-          case 'withdraw':
-            item.icon = require(
-              '@/static/img/account/lingqu.png')
-            item.type = 'withdraw'
-            break
           }
         }
+
 
         this.accountTransfer[type].push(...result)
         this.accountTransfer['all'].push(...result)
@@ -548,7 +615,7 @@ export default {
       if (float) {
         float = float.substr(0, 2)
       }
-      return int + '.' + float
+      return int + '.' + (float || '00')
     }
   }
 }
@@ -723,6 +790,11 @@ export default {
       background: rgba(255, 255, 255, 0.00);
       border: 2rpx solid rgba(131, 151, 177, 0.31);
       border-radius: 16rpx;
+      line-height: 80rpx;
+      
+      &:after {
+        border: 0 !important;
+      }
 
       &:nth-child(1) {
         background: #265EF2;

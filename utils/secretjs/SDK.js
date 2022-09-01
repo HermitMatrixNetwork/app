@@ -126,7 +126,7 @@ export async function toDelegate(data, memo = '', gas) {
   const result = await Secret.tx.staking.delegate(data, {
     gasPriceInFeeDenom: gas,
     feeDenom: 'uGHM',
-    // gasLimit: 30000,
+    gasLimit: 26000,
     memo
   })
   return result

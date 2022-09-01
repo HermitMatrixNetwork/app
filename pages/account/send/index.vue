@@ -28,7 +28,7 @@
                 @click="toAddressBook"></u-icon>
             </template>
           </InputTitle>
-          <text :style="{ opacity: showAddressErrorTip ? 1 : 0 }" class="waringPrompt">收款地址不能为空</text>
+          <text :style="{ opacity: showAddressErrorTip ? 1 : 0 }" class="waringPrompt">{{ language.text188 }}</text>
         </view>
 
         <!-- 发送金额 -->
@@ -38,13 +38,13 @@
               <view class="label">
                 <text>{{ language.text18 }}</text>
                 <view class="can-be-use">
-                  可用： 
+                  {{ language.text193 }}： 
                   <custom-loading v-if="loading"></custom-loading>
                   <text v-else>{{ token.balance || '0.00' }} {{ token.alias_name }}</text>
                 </view>
               </view>
               <view class="value">
-                <u--input placeholder="请输入金额" type="number" v-model="sendFormData.sendAmount"></u--input>
+                <u--input :placeholder="language.text19" type="number" v-model="sendFormData.sendAmount"></u--input>
                 <view class="value-info">
                   <text class="denom">{{ token.alias_name }}</text>
                   <view class="border"></view>
@@ -53,8 +53,8 @@
               </view>
             </view>
           </view>
-          <text v-if="sendFormData.sendAmount > token.balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text>
-          <text v-else-if="showAmountErrorTip" class="waringPrompt">转账金额不能为0</text>
+          <text v-if="sendFormData.sendAmount > token.balance" class="waringPrompt">{{ language.text194 }}</text>
+          <text v-else-if="showAmountErrorTip" class="waringPrompt">{{ language.text195 }}</text>
         </view>
 
         <view class="send-memo">
@@ -125,7 +125,7 @@
       <view class="modal_main">
         <view class="modal_title">
           <view>
-            {{ verifyMethod == 'touchID' ? `指纹验证` : language.text48 }}
+            {{ verifyMethod == 'touchID' ? language.text196 : language.text48 }}
             <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''" class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
           </view>
           <u-icon :name="require('../../../static/img/account/close.png')" size="32rpx"
@@ -150,7 +150,7 @@
             <image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
           </view>
         </view>
-        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">切换验证方式</view>
+        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">{{ language.text197 }}</view>
       </view>
     </u-modal>
     <view :check="checkSuccess" :change:check="render.sendToken"></view>
@@ -292,7 +292,7 @@ export default {
         this.transferLoading = true
         this.$nextTick(() => {
           uni.showToast({
-            title: '交易中',
+            title: `${language.text198}...`,
             icon: 'loading',
             duration: 999999999
           })          
@@ -405,7 +405,7 @@ export default {
       const eventChannel = this.getOpenerEventChannel()
       if (result.code == 0) {
         uni.showToast({
-          title: '交易成功',
+          title: this.language.text185,
           image: '/static/img/mine/success.png',
           mask: true,
           duration: 3000,
@@ -422,7 +422,7 @@ export default {
         !otherToken && fee && (this.token.balance = this.token.balance - fee - usedAmount)
       } else {
         uni.showToast({
-          title: '交易失败',
+          title: this.language.text182,
           image: '/static/img/mine/fail.png',
           mask: true,
           duration: 3000
@@ -612,7 +612,7 @@ export default {
 
     //发送金额
     .send-amount {
-      margin-top: 56rpx;
+      margin-top: 52rpx;
       position: relative;
 
       .balance {
@@ -649,7 +649,7 @@ export default {
     }
 
     .send-memo {
-      margin-top: 56rpx;
+      margin-top: 80rpx;
     }
   }
 
@@ -779,8 +779,6 @@ export default {
     font-size: 24rpx;
     color: #EC2828;
     letter-spacing: 0;
-    line-height: 24rpx;
-    height: 24rpx;
     position: absolute;
   }
 

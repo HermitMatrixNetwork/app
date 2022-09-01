@@ -1,12 +1,12 @@
 <template>
   <view class="container">
-    <custom-header title="详情"></custom-header>
+    <custom-header :title="language.text85"></custom-header>
 
     <view class="name">
       <image src="/static/img/delegate/theme2.png"></image>
       <view class="name-info">
         <view class="title">
-          验证人名称
+          {{ language.text84 }}
         </view>
         <view class="address">
           <text>{{ validatorInfo.operatorAddress }}</text>
@@ -22,7 +22,7 @@
           <text>{{ language.text52 }}</text>
         </view>
         <view class="value">
-          <text>{{ validatorInfo.tokens }}</text>
+          <text>{{ validatorInfo.tokens / mainCoin.decimals }}</text>
         </view>
       </view>
       <view class="item">
@@ -30,7 +30,7 @@
           <text>{{ language.text53 }}</text>
         </view>
         <view class="value">
-          <text>1000.00</text>
+          <text>{{ validatorInfo.self_delegate_tokens / mainCoin.decimals }}</text>
         </view>
       </view>
       <view class="item">
@@ -46,7 +46,7 @@
           <text>{{ language.text49 }}</text>
         </view>
         <view class="value">
-          <text>100%</text>
+          <text>{{ validatorInfo.uptimes }}</text>
         </view>
       </view>
     </view>
@@ -82,16 +82,19 @@
 
 <script>
 import language from './language/index.js'
+import { getValidatorInfo } from '@/api/browers.js'
+import mainCoin from '@/config/index.js'
 export default {
   data() {
     return {
       language: language[this.$cache.get('_language')],
-      validatorInfo: {}
+      validatorInfo: {},
+      mainCoin
     }
   },
-  onLoad(options) {
+  async onLoad(options) {
     this.validatorInfo = JSON.parse(options.validatorInfo)
-    console.log(this.validatorInfo)
+    console.log('验证人信息', this.validatorInfo)
   },
   methods: {
     toDelegate() {
@@ -177,7 +180,7 @@ export default {
     .item {
       display: flex;
       justify-content: space-between;
-      padding: 36rpx 0;
+      padding: 24rpx 0;
 
       &:not(:last-child) {
         border-bottom: 2rpx solid rgba(131, 151, 177, 0.12)
@@ -186,14 +189,14 @@ export default {
       .label {
         font-size: 28rpx;
         color: #8397B1;
-        line-height: 28rpx;
+        line-height: 48rpx;
       }
 
       .value {
         font-weight: 600;
         font-size: 28rpx;
         color: #212121;
-        line-height: 28rpx;
+        line-height: 48rpx;
       }
     }
   }
@@ -202,7 +205,7 @@ export default {
     margin: 0 32rpx;
     background-color: #fff;
     border-radius: 16rpx;
-    padding: 0 40rpx 0 32rpx;
+    padding: 0 40rpx 20rpx 32rpx;
 
     .item {
       .label {

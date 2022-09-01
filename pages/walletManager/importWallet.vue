@@ -1,6 +1,6 @@
 <template>
   <view class="content">
-    <custom-header class="header" title="选择导入类型"></custom-header>
+    <custom-header class="header" :title="language.text31"></custom-header>
     <view class="import-container">
       <view class="import-type" v-for="(item, index) in importTypes" :key="index" @click="toPage(index)">
         <view class="import-type-icon">

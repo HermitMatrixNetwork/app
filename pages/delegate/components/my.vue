@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     btnClick() {
-      this.$parent.selindex = 1
+      this.$emit('switchToDelegate')
     },
     updateData() {
       console.log('delegate update data')
@@ -130,8 +130,6 @@ export default {
       this.address = ''
       this.$cache.set('_updateDelegateInfo', false, 36000)
       this.$cache.set('_delegateInfo', this.allData, 0)
-      
-      console.log('allData', this.allData)
     }
   },
   computed: {
@@ -173,7 +171,6 @@ export default {
         // if (!updateDelegateInfo) return; 
         let list = await this.getLists(address)
         let total = 0, totalReward = 0
-        console.log(list)
         list.forEach(item => {
           total += Number(item.balance.amount)
           totalReward += Number(item.rewards.amount)

@@ -2,7 +2,7 @@
 	<view class="asset-manage">
 			<view :reAddress="reAddress" :change:reAddress="render.search"></view>
 		<view class="top">
-			<u-search placeholder="输入验证名称或地址查询" shape="round" :clearabled="true" v-model="address" actionText="取消" :actionStyle="searchStyle"  @search="searchCoin" @custom="goBack"></u-search>
+			<u-search :placeholder="language.text86" shape="round" :clearabled="true" v-model="address" actionText="取消" :actionStyle="searchStyle"  @search="searchCoin" @custom="goBack"></u-search>
 		</view>
 		<view class="list" v-if="list.length > 0">
 			<List :list="list"/>
@@ -18,12 +18,12 @@
 </template>
 
 <script>
-// import languages from './language/index.js'
+import languages from './language/index.js'
 import List from './components/List.vue'
 export default {
   data(){
     return {
-      // language: languages[this.$cache.get('_language')],
+      language: languages[this.$cache.get('_language')],
       reAddress: '',//renderjs调用
       address: '',//查询地址
       list: [],//查询结果

@@ -150,7 +150,7 @@
                     "changeOrigin" : true,
                     "secure" : false,
                     "pathRewrite" : {
-                        "^/cosmosServer" : "/"
+                        "^/browserServer" : "/"
                     }
                 }
             }

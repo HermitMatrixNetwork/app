@@ -4,19 +4,26 @@
       <!-- APP下会占用系统原生消息因此需要该占位符 -->
     </view>
     <view class="header">
-      <u--input placeholder="搜索DAPP或输入链接访问" prefixIcon="search" prefixIconStyle="font-size: 22px;color: #909399">
+      <u--input :placeholder="language.text02" prefixIcon="search" prefixIconStyle="font-size: 22px;color: #909399" disabled>
       </u--input>
     </view>
 
     <view class="banner-wrap">
-      <div class="banner"></div>
+      <view class="uni-margin-wrap">
+        <swiper class="swiper" circular :indicator-dots="indicatorDots" :indicator-color="'rgba(255,255,255,0.55)'" :indicator-active-color="'#fff'" :autoplay="autoplay" :interval="interval"
+          :duration="duration">
+          <swiper-item v-for="(item, index) in bannerList" :key="index" @click="jump(item.link)">
+            <image class="swiper-item" :src="item.url" style="width: 100%"/>
+          </swiper-item>
+        </swiper>
+      </view>
     </view>
 
     <view class="recently">
       <view class="heade">
-        <view class="left">最近</view>
+        <view class="left">{{ language.text03 }}</view>
         <view class="right" @click="toRecently">
-          <text>全部</text>
+          <text>{{ language.text04 }}</text>
           <image src="/static/img/ic-arrow1.png"></image>
         </view>
       </view>
@@ -32,7 +39,7 @@
       <view class="heade">
         <view class="left">Tools</view>
         <view class="right">
-          <text>全部</text>
+          <text>{{ language.text04 }}</text>
           <image src="/static/img/ic-arrow1.png"></image>
         </view>
       </view>
@@ -51,28 +58,37 @@
 </template>
 
 <script>
+import language from './lanugage/index.js'
+import { getBannerList } from '@/api/token.js'
 export default {
   data() {
     return {
-      list: [
-        {
-          name: '区块浏览器',
-          des: '这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器',
-          url: '',
-          logo: '/static/img/account/uGHM.png'
-        }
-      ],
-      recently: [ {
+      language: language[this.$cache.get('_language')],
+      list: [{
         name: '区块浏览器',
         des: '这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器',
         url: '',
         logo: '/static/img/account/uGHM.png'
-      }]
+      }],
+      recently: [{
+        name: '区块浏览器',
+        des: '这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器',
+        url: '',
+        logo: '/static/img/account/uGHM.png'
+      }],
+      bannerList: [],
+      background: ['#ff0', '#f00', '#0ff'],
+      indicatorDots: true,
+      autoplay: true,
+      interval: 2000,
+      duration: 500
     }
   },
-  created() {
+  async created() {
     this.recently = this.$cache.get('_recently') || this.recently
     this.$cache.set('_recently', this.recently, 0)
+    const res = (await getBannerList()).data.data.banner.photos.photos
+    this.bannerList = res
   },
   methods: {
     toRecently() {
@@ -82,7 +98,12 @@ export default {
     },
     toWebView(item) {
       uni.navigateTo({
-        url: `./webview?jumpUrl=${'http://www.baidu.com'}`
+        url: `./webview?jumpUrl=${'http://localhost:8082/'}`
+      })
+    },
+    jump(link) {
+      uni.navigateTo({
+        url: `./webview?jumpUrl=${link}`
       })
     }
   }
@@ -196,18 +217,21 @@ export default {
     padding: 32rpx;
     background-color: #fff;
     margin-top: 24rpx;
-    
+
     .content {
       display: flex;
       align-items: center;
       margin-top: 32rpx;
+
       .logo {
         margin-right: 24rpx;
+
         image {
           width: 96rpx;
           height: 96rpx;
         }
       }
+
       .title {
         height: 28rpx;
         font-weight: 600;
@@ -216,6 +240,7 @@ export default {
         line-height: 28rpx;
         margin-bottom: 12rpx;
       }
+
       .describe {
         font-size: 24rpx;
         color: #8397B1;
@@ -229,4 +254,37 @@ export default {
       }
     }
   }
+  
+  	.uni-margin-wrap {
+  		width: 690rpx;
+  		width: 100%;
+  	}
+  	.swiper {
+  		height: 300rpx;
+      border-radius: 20rpx;
+      overflow: hidden;
+
+  	}
+  	.swiper-item {
+  		display: block;
+  		height: 300rpx;
+  		line-height: 300rpx;
+  		text-align: center;
+  	}
+  	.swiper-list {
+  		margin-top: 40rpx;
+  		margin-bottom: 0;
+  	}
+  	.uni-common-mt {
+  		margin-top: 60rpx;
+  		position: relative;
+  	}
+  	.info {
+  		position: absolute;
+  		right: 20rpx;
+  	}
+  	.uni-padding-wrap {
+  		width: 550rpx;
+  		padding: 0 100rpx;
+  	}
 </style>

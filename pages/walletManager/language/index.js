@@ -46,6 +46,7 @@ export default {
     text28: '明文私钥',
     text29: 'Keystore',
     text30: '加密的私钥 JSON',
+    text31: '选择导入类型'
     
     
   },
@@ -64,5 +65,6 @@ export default {
     text28: 'public key',
     text29: 'keystore',
     text30: 'Encrypted private key JSON',
+    text31: 'Select import type'
   }
 }

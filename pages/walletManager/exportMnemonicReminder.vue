@@ -11,7 +11,7 @@
         {{ language.text136 }}
       </view>
       <view class="hint">
-        获得助记词等于拥有钱包资产所有权
+        {{ language.text191 }}
       </view>
       <view class="line"></view>
       <view class="rules">

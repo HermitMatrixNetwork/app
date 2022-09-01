@@ -68,11 +68,11 @@ export default {
       rules: {
         name: {
           rule: 'required',
-          errMessage: '钱包名称不能为空'
+          errMessage: language[this.$cache.get('_language')].text65
         },
         password: [{
           rule: 'required',
-          errMessage: '钱包密码不能为空'
+          errMessage: language[this.$cache.get('_language')].text64
         }, {
           rule: 'min',
           len: 8,
@@ -90,7 +90,7 @@ export default {
           errMessage: language[this.$cache.get('_language')].text13
         }, {
           rule: 'required',
-          errMessage: '钱包密码不能为空'
+          errMessage: language[this.$cache.get('_language')].text64
         }]
       }
     }

@@ -1,6 +1,6 @@
 <template>
   <view>
-    <custom-header class="header" :title="language.test31"></custom-header>
+    <custom-header class="header" :title="language.text31"></custom-header>
     <view class="container">
       <view class="item">
         <view class="item-label">{{ language.text25 }}</view>
@@ -71,7 +71,7 @@ export default {
       rules: {
         password: [{
           rule: 'required',
-          errMessage: '钱包密码不能为空'
+          errMessage: language[this.$cache.get('_language')].text63
         }, {
           rule: 'min',
           len: 8,
@@ -89,7 +89,7 @@ export default {
           errMessage: language[this.$cache.get('_language')].text42
         }, {
           rule: 'required',
-          errMessage: '钱包密码不能为空'
+          errMessage: language[this.$cache.get('_language')].text64
         }]
       }
     }
@@ -155,7 +155,7 @@ export default {
       } else if (invalidateField) {
         this.$refs.notify.show('error', invalidateField.errMessage)
       } else if (!this.name) {
-        this.$refs.notify.show('error', '钱包名称不能为空')
+        this.$refs.notify.show('error', this.language.text65)
       } else {
         // 通过校验
         return true

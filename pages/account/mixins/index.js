@@ -36,7 +36,7 @@ export default {
     },
     dealBtn() {
 		  uni.showToast({
-		    title: '暂未开放',
+		    title: this.language.text180,
 		    icon: 'none',
 		  })
     },

@@ -9,7 +9,15 @@ import {
 export default {
   data() {
     return {
-      isTor: false
+      isTor: false,
+      language: {
+        CN: {
+          text01: '请开启洋葱代理服务器'
+        },
+        EN: {
+          text01: 'Please open onion proxy server!'
+        }
+      }
     }
   },
   async onLaunch() {
@@ -63,7 +71,7 @@ export default {
     this.isTor = await isTor()
     if (!this.isTor) {
       uni.showToast({
-        title: '请开启洋葱代理服务器',
+        title: this.language[this.$cache.get('_language')].text01,
         icon: 'none'
       })
       // uni.reLaunch({
