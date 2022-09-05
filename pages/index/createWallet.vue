@@ -12,28 +12,28 @@
         {{ language.text07 }}
       </view>
       <u-input class="wallet-name-input" :class="{error: invalidFields.fieldName == 'name'}" v-model="name"
-        placeholder="设置钱包名称"></u-input>
+        :placeholder="language.text76"></u-input>
     </view>
 
     <view class="wallet-password">
       <view class="wallet-password-label">
         {{ language.text09 }}
       </view>
-      <view class="wallet-password-item">
+      <view class="wallet-password-item" >
         <u-input :password="!passwordEye" class="wallet-password-input"
-          :class="{error: invalidFields.fieldName == 'password'}" v-model="password" :placeholder="language.text10">
+           v-model="password" :placeholder="language.text10" :class="{error: invalidFields.fieldName == 'password'}">
         </u-input>
-        <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
-          :class="{error: invalidFields.fieldName == 'password'}" @click="passwordEye = !passwordEye">
-        </u-icon>
+        <view :class="{error: invalidFields.fieldName == 'password'}" style="height: 100%; display: flex; align-items: center; border-radius: 0 16rpx 16rpx 0; overflow: hidden;">
+          <image  :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="passwordEye = !passwordEye" style="width: 32rpx; height: 32rpx;"></image>
+        </view>
       </view>
       <view class="wallet-password-item" :class="{error: invalidFields.fieldName == 'checkPassword'}">
         <u-input :password="!checkPasswordEye" :class="{error: invalidFields.fieldName == 'checkPassword'}"
           class="wallet-password-input" v-model="checkPassword" :placeholder="language.text11">
         </u-input>
-        <u-icon color="#8F9BB3" size="20" :name="checkPasswordEye ? 'eye' : 'eye-off'"
-          :class="{error: invalidFields.fieldName == 'checkPassword'}" @click="checkPasswordEye = !checkPasswordEye">
-        </u-icon>
+        <view :class="{error: invalidFields.fieldName == 'checkPassword'}" style="height: 100%; display: flex; align-items: center; border-radius: 0 16rpx 16rpx 0; overflow: hidden;">
+          <image  :src="checkPasswordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="checkPasswordEye = !checkPasswordEye" style="width: 32rpx; height: 32rpx;"></image>
+        </view>
       </view>
     </view>
 
@@ -204,7 +204,11 @@ export default {
       margin-bottom: 32rpx;
       background-color: #F2F4F8;
       border-radius: 16rpx;
-
+      align-items: center;
+      
+      image {
+        margin-right: 36rpx;
+      }
       .u-icon {
         height: 96rpx;
         padding-right: 36rpx;

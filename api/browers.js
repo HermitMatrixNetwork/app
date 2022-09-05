@@ -29,3 +29,7 @@ export const getWithdrawRecord = async (data) => {
 export const getValidatorInfo = (data) => {
   return http.post('/browser/nodeinfo', data)
 }
+
+export const getNodeList = (data) => {
+  return http.post('/browser/nodelist', data)
+}

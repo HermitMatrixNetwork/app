@@ -1,6 +1,6 @@
 <template>
 	<view class="ident">
-		<view :address="address" :change:address="init"></view>
+		<!-- <view :address="address" :change:address="init"></view> -->
 		<!-- <view :state="state" :change:state="changeData"></view> -->
 		<view class="header-box">
 			<view class="header">
@@ -13,12 +13,13 @@
         class="tabs"
         :list="statusList"
         lineColor="#1E5EFF"
-        @click="click"
+        @click="changeStatus"
         :inactiveStyle="inactiveStyle"
         :activeStyle="activeStyle"
         lineWidth="20"
         lineHeight="3"
         :itemStyle="itemStyle"
+        :current="status"
       >
       </u-tabs>
      <view class="sort-list">
@@ -51,10 +52,10 @@
 					<view class="right">{{ language.text52 }}</view>
 				</view>
 				<custom-loading v-if="loading" class="loading"></custom-loading>
-        <view class="list-data" v-else-if="validators.length">
-					<view class="list-item" v-for="(item,index) in validators" :key="index" @click="toValidatorDetail(item)">
+        <view class="list-data" v-else-if="showList.length">
+					<view class="list-item" v-for="(item,index) in showList" :key="index" @click="toValidatorDetail(item)">
 						<view class="left">
-							<view class="name">{{item.description.moniker}}</view>
+							<view class="name">{{item.validator_name }}</view>
 							<view class="other">{{item.operatorAddress|sliceAddress(7, -8)}}</view>
 						</view>
 						<view class="center">
@@ -66,7 +67,7 @@
 						</view>
 					</view>
 				</view>
-				<!-- <no-data v-else tip="暂无委托，点击" btnTx="参与委托" /> -->
+				<no-data v-else :tip="language.text101"/>
 			</view>
 		</view>
 	</view>
@@ -76,7 +77,7 @@
 import headerItem from './header-item'
 import mainCoin from '@/config/index.js'
 import language from '../language/index.js'
-import { getValidatorInfo } from '@/api/browers.js'
+import { getValidatorInfo, getNodeList } from '@/api/browers.js'
 import {
   sliceAddress
 } from '@/utils/filters.js'
@@ -121,19 +122,24 @@ export default {
       },
       sortTarget: language[this.$cache.get('_language')].text48,
       sortRule: 'des', // asc:升序; des:降序
-      mainCoin
+      mainCoin,
+      status: 0,
     }
   },
   created() {
-    this.address = this.currentWallet.address
+    console.log('created')
+    // this.address = this.currentWallet.address
+    this.ValidatorsData()
   },
   methods: {
     updateData() {
       console.log('indent update data')
       this.loading = true
-      this.address = this.currentWallet.address
+      this.ValidatorsData()
+      // this.address = this.currentWallet.address
     },
-    click() {
+    changeStatus(status) {
+      this.status = status.index
     },
     toValidatorDetail(item) {
       uni.navigateTo({
@@ -148,22 +154,19 @@ export default {
         this.sortRule = 'des'
       }
     },
-    ValidatorsData(data) {
-      this.address = ''
-      this.validators = []
-      data.forEach(async item => {
-        const res = (await getValidatorInfo({
-          'chain_id': 'ghmdev',
-          'address': item.operatorAddress
-        })).data.data
-        item.token = res.tokens  / mainCoin.decimals
-        item.uptimes = (1 - res.uptime) * 100 + '%'
-        Object.assign(item, res)
-        this.validators.push(item)
+    async ValidatorsData() {
+      const res = (await getNodeList({
+        'chain_id':'ghmdev'
+      })).data.data.list
+      // this.validators = res
+      this.validators = res.map(item => {
+        item.token = item.tokens / mainCoin.decimals
+        item.uptimes = (1 - item.uptime) * 100 + '%'
+        item.rate = item.commission_rate * 100 + '%'
+        return item
       })
-      this.$nextTick(() => {
-        this.loading = false
-      })
+      // console.log(this.validators)
+      this.loading = false
     },
     confirm() {
       let selData = this.validators.filter(item => {
@@ -182,48 +185,94 @@ export default {
         url:`/pages/delegate/confirm?data=${data}`
       })
     }
+  },
+  computed: {
+    showList() {
+      let validatorsList = [] 
+      let descList = []
+      let ascList = []
+      switch(this.status) {
+      case 0: 
+        // console.log('全部')
+        validatorsList = this.validators
+        break
+      case 1:
+        // console.log('共识中')
+        validatorsList = this.validators.filter(item => item.jailed == 'false')
+        break
+      case 2:
+        // console.log('待解禁')
+        validatorsList = this.validators.filter(item => item.jailed == 'true')
+        break
+      case 3: 
+        // console.log('候选者')
+        validatorsList = this.validators.slice(21)
+        break
+      }
+      
+      
+      
+      switch(this.sortTarget) {
+      // 总委托数
+      case this.language.text48:
+        ascList = validatorsList.sort((a, b) => a.token - b.token)
+        break
+        // 活跃度
+      case this.language.text49:
+        ascList = validatorsList.sort((a, b) => a.uptimes.slice(0, -1) - b.uptimes.slice(0, -1))
+        break
+        // 佣金率
+      case this.language.text50:
+        ascList = validatorsList.sort((a, b) => a.commission_rate - b.commission_rate)
+        break
+      }
+      
+      descList = ascList.reverse()
+
+      return this.sortRule == 'asc' ? ascList : descList
+    }
   }
 }
 </script>
 
 
-<script lang="renderjs" module="render">
-	import {
-		getValidators,
-		getSigningInfo
-	} from '@/utils/secretjs/SDK'
-	import renderUtils from '@/utils/render.base.js'
-  import mainCoin from '@/config/index.js'
-	export default {
-		data() {
-			return {
-				address: '',
-				checked: '',
-			}
-		},
-		methods: {
-			async init(address) {
-				if (address == '') return
-				this.address = address
-				this.getValidators()
-			},
-			async getValidators(status) {
-				let data = await getValidators(status || '')
-				let validators = data.validators
-				validators.forEach(item => {
-          item._rate = item.commission.commissionRates.rate
-          item.rate = item._rate / 10 ** 18 * 100 + '%'
-				})
+// <script lang="renderjs" module="render">
+// 	import {
+// 		getValidators,
+// 		getSigningInfo
+// 	} from '@/utils/secretjs/SDK'
+// 	import renderUtils from '@/utils/render.base.js'
+//   import mainCoin from '@/config/index.js'
+// 	export default {
+// 		data() {
+// 			return {
+// 				address: '',
+// 				checked: '',
+// 			}
+// 		},
+// 		methods: {
+// 			async init(address) {
+// 				if (address == '') return
+// 				this.address = address
+// 				this.getValidators()
+// 			},
+// 			async getValidators(status) {
+// 				let data = await getValidators(status || '')
+// 				let validators = data.validators
+// 				validators.forEach(item => {
+//           item._rate = item.commission.commissionRates.rate
+//           item.rate = item._rate / 10 ** 18 * 100 + '%'
+// 				})
 
-				renderUtils.runMethod(this._$id, 'ValidatorsData', validators, this)
-			},
-			async getSigningInfo(address) {
-				let signInfo = await getSigningInfo(address)
-				return signInfo
-			}
-		}
-	}
-</script>
+// 				renderUtils.runMethod(this._$id, 'ValidatorsData', validators, this)
+// 			},
+// 			async getSigningInfo(address) {
+// 				let signInfo = await getSigningInfo(address)
+// 				return signInfo
+// 			}
+// 		}
+// 	}
+// </script>
 
 <style lang="scss" scoped>
   .loading {

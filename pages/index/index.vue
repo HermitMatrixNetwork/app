@@ -38,7 +38,7 @@
           {{ language.text68 }}
         </view>
         <view class="protocol-header-close" @click="closeProtocol">
-          <u-icon name="close" color="#2C365A" size="32rpx"></u-icon>
+          <image src="/static/img/ic-close.png" style="width: 32rpx;height: 32rpx;"></image>
         </view>
       </view>
       <view class="protocol-content">

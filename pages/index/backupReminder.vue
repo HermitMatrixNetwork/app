@@ -18,13 +18,13 @@
         <view class="rules-item">
           <view class="rules-item-icon"></view>
           <view class="rules-item-describe">
-            助记词由英文单词组成，请抄写并妥善保管。
+            {{ language.text77 }}
           </view>
         </view>
         <view class="rules-item">
           <view class="rules-item-icon"></view>
           <view class="rules-item-describe">
-            助记词丢失，无法找回，请务必备份助记词。
+            {{ language.text78 }}
           </view>
         </view>
       </view>
@@ -94,11 +94,12 @@ export default {
         margin-right: 26rpx;
         border-radius: 50%;
         background-color: #8397B1;
+        flex-shrink: 0;
       }
 
       &-describe {
         font-size: 28rpx;
-        line-height: 28rpx;
+        line-height: 40rpx;
         color: #8397B1;
       }
     }

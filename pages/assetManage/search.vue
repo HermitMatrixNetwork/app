@@ -1,9 +1,9 @@
 <template>
   <view class="asset-manage">
-    <view :reAddress="reAddress" :change:reAddress="render.search"></view>
+    <view class="status_bar"></view>
     <view class="top">
       <u-search :placeholder="language.searchPlaceholder" shape="round" :clearabled="true" v-model="address"
-        actionText="取消" :actionStyle="searchStyle" @search="searchCoin" @custom="goBack"></u-search>
+        actionText="取消" :actionStyle="searchStyle" @search="searchCoin" @custom="goBack" searchIcon="/static/img/delegate/search2.png"></u-search>
     </view>
     <custom-loading v-if="loading" class="loading"></custom-loading>
     <view class="list" v-else-if="list.length">
@@ -21,9 +21,8 @@
             </view>
           </view>
           <view class="right" v-if="item.full_name !== mainCoin.full_name">
-            <u-icon v-if="tokenAddressList.includes(item.contract_address)" :name="require('@/static/img/account/ic-delect.png')" size="44rpx" @click="deleteToken(item)"></u-icon>
-            <u-icon v-else :name="require('@/static/img/account/ic-add.png')" size="44rpx" @click="addToken(item)">
-            </u-icon>
+            <image v-if="tokenAddressList.includes(item.contract_address)" src="/static/img/account/ic-delect.png" @click="deleteToken(item)" style="width: 44rpx;height: 44rpx;"></image>
+            <image v-else src="/static/img/account/ic-add.png" @click="addToken(item)" style="width: 44rpx;height: 44rpx;"></image>
           </view>
         </view>
         <view class="border">
@@ -35,7 +34,7 @@
       <img v-if="reAddress!=''" class="data" src="@/static/img/account/nodata.png" alt="">
       <img v-else class="searchbg" src="@/static/img/account/searchbg.png" alt="">
       <view class="tip">
-        {{reAddress?'未搜索到相关代币':'支持所有 Hermit Matrix Network 代币请输入代币合约地址进行搜索'}}
+        {{address !== ''?'未搜索到相关代币':'支持所有 Hermit Matrix Network 代币请输入代币合约地址进行搜索'}}
       </view>
     </view>
   </view>
@@ -46,6 +45,9 @@ import languages from './language/index.js'
 import List from './components/List.vue'
 import mainCoin from '@/config/index.js'
 import { sliceAddress } from '@/utils/filters.js'
+import {
+  searchCoin
+} from '@/api/token.js'
 export default {
   data() {
     return {
@@ -70,7 +72,7 @@ export default {
   onLoad(options) {
     if (options.address) {
       this.address = options.address
-      this.reAddress = options.address
+      this.search(options.address)
     }
   },
   created() {
@@ -84,7 +86,20 @@ export default {
     //查询合约
     searchCoin() {
       this.loading = true
-      this.reAddress = this.address
+      this.search(this.address)
+    },
+    async search(address) {
+      if (address == '') return
+      let data = await searchCoin(address)
+      console.log(data)
+      if (data.data.code == 7) {
+        this.list = []
+        this.loading = false
+      } else {
+        
+        let result = data.data.data.result || null
+        this.searchData(result)
+      }
     },
     goBack() {
       this.reAddress = ''
@@ -137,24 +152,11 @@ export default {
   }
 }
 </script>
-<script lang="renderjs" module="render">
-  import {
-    searchCoin
-  } from '@/api/token.js'
-  import renderUtils from '@/utils/render.base.js'
-  export default {
-    methods: {
-      async search(address) {
-        if (address == '') return
-        let data = await searchCoin(address)
-        
-        let result = data.data.data.result || null
-        renderUtils.runMethod(this._$id, 'searchData', data.data.data.result, this)
-      }
-    }
-  }
-</script>
 <style lang="scss" scoped>
+  .status_bar {
+    height: var(--status-bar-height);
+    width: 100%;
+  }
   .top {
     padding: 20rpx 32rpx;
     margin-bottom: 32rpx;

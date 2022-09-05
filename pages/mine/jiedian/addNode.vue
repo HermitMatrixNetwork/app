@@ -13,7 +13,7 @@
         {{ language.text40 }}
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="formData.name" placeholder="请输入网络名称"></u-input>
+      <u-input class="wallet-name-input" v-model="formData.name" :placeholder="language.text105"></u-input>
       <view class="error-tip" :style="{ opacity: nameError ? 1 : 0 }">
         {{ language.nameErrorTip }}
       </view>
@@ -24,7 +24,7 @@
         {{ language.text41 }}
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="formData.link" placeholder="请输入RPC地址"></u-input>
+      <u-input class="wallet-name-input" v-model="formData.link" :placeholder="language.text106"></u-input>
       <view class="error-tip" :style="{ opacity: linkError ? 1 : 0 }">
         {{ language[linkErrorList[linkErrorTip]] }}
       </view>
@@ -35,7 +35,7 @@
         Chain ID
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="formData.chainId" placeholder="请输入Chain ID" disabled></u-input>
+      <u-input class="wallet-name-input" v-model="formData.chainId" :placeholder="language.text107" disabled></u-input>
     </view>
 
     <view :callRender="callRender" :change:callRender="render.checkRpcVerify"></view>

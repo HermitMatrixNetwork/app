@@ -91,7 +91,22 @@ const languages = {
     'text83': '指纹验证',
     'text84': '验证人名称',
     'text85': '详情',
-    'text86': '输入验证名称或地址查询'
+    'text86': '输入验证名称或地址查询',
+    text87: '验证指纹中',
+    text88: '验证成功',
+    text89: '验证失败',
+    text90: '尝试次数过多。请切换验证方式',
+    text91: '选择领取收益节点',
+    text92: '去设置',
+    text93: '输入或粘贴钱包地址',
+    text94: '当前节点委托',
+    text95: '领取数量',
+    text96: '设置地址',
+    text97: '收益领取地址',
+    text98: '长按粘贴或扫一扫输入地址',
+    text99: '请输入验证人地址进行搜索',
+    text100: '未搜索到相关节点',
+    text101: '暂无数据'
 
   },
   'CT': {
@@ -123,13 +138,13 @@ const languages = {
     'text21': 'Node selection',
     'text22': 'search by Moinker/Address',
     'text23': 'Support to search for the validator of the current delegate',
-    'text24': 'cancel',
+    'text24': 'Cancel',
     'text25': 'confirm payment',
     'text26': 'operation Address',
     'text27': 'withdraw Address',
     'text28': 'Number of cancellations',
     'text29': 'Fee',
-    'text30': 'confirm',
+    'text30': 'Confirm',
     'text31': 'withdraw rewards',
     'text32': 'withdraw Address',
     'text33': 'Note: the proceeds will be received upon successful transaction!',
@@ -185,8 +200,22 @@ const languages = {
     'text83': 'Fingerprint verification',
     'text84': 'Name of verifier',
     text85: 'Details',
-    text86: 'search by Moinker/Address'
-    
+    text86: 'search by Moinker/Address',
+    text87: 'Verifying',
+    text88: 'Success',
+    text89: 'Fail',
+    text90: 'Too many attempts. Please switch the authentication method!',
+    text91: 'Select a node to receive revenue',
+    text92: 'Setup',
+    text93: 'Enter or paste the wallet address',
+    text94: 'Current node delegate',
+    text95: 'withdraw Amount',
+    text96: 'Set address',
+    text97: 'Withdraw address',
+    text98: 'Long press to paste or scan to enter address',
+    text99: 'Please enter validator address to search.',
+    text100: 'No related nodes found.',
+    text101: 'No data yet'
   }
 }
 export default languages

@@ -3,7 +3,7 @@
 		<custom-header :title="language.text101"></custom-header>
 		<view style="margin: 0 32rpx;">
 			<view class="title">
-				当前viewkey
+				{{ language.text209 }} viewkey
 			</view>
 			<u--textarea v-model="view_key" cols="30" rows="10" placeholder="当前viewkey" class="viewkey_input" disabled></u--textarea>
 			
@@ -47,7 +47,7 @@ export default {
           this.$refs.notify.show('error', this.language.text103)
         },
         fail: () => {
-          this.$refs.notify.show('error', '复制失败')
+          // this.$refs.notify.show('error', '复制失败')
         }
       })
     },
@@ -113,6 +113,9 @@ export default {
 			background: #002FA8;
 			color: #FFFFFF;
 		}
+    &:after {
+      border: 0 !important;
+    }
 	}
 }
 </style>

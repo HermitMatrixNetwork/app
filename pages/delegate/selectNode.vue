@@ -2,7 +2,7 @@
 	<view class="select-node">
 		<custom-header :redirUrl='`${redirectURL}?selectIndex=${selectIndex}`' :title="language.text21" >
 			<template #right>
-				<u-icon name="search" size="44rpx" @click="toSearch" />
+        <image src="/static/img/delegate/search2.png" style="width: 44rpx; height: 44rpx;" @click="toSearch"></image>
 			</template>
 		</custom-header>
 		<view class="lists">

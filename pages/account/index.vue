@@ -10,20 +10,20 @@
       <view class="account-header">
         <view class="header-left" @click="showSwitchWallet = true">
           <view class="title">{{ languages.text183 }}</view>
-          <u-icon :name="require('@/static/img/account/down.png')" size="32rpx" color="#333655" />
+          <image src="/static/img/account/down.png" style="width: 32rpx; height: 32rpx;"></image>
         </view>
 
         <view class="header-icon">
-          <u-icon name="scan" size="44rpx" color="#333655" @click="scanCode" />
-          <u-icon name="setting" size="44rpx" color="#333655" @click="toGo('/pages/walletManager/index')" />
+          <image src="/static/img/account/saoma.png" style="width:44rpx;height:44rpx;" @click="scanCode" />
+          <image src="/static/img/account/setting.png" style="width:44rpx;height:44rpx;" @click="toGo('/pages/walletManager/index')"></image>
         </view>
       </view>
       <view class="basic-data">
         <view class="user-msg">
-          <view class="allassets">
+          <view class="allassets" style="display: flex; align-items: center;">
             <!-- 总资产 -->
-            <u-icon :name="eyeAsset ? 'eye' : 'eye-off'" size="32rpx" color="#FFFFFF" :label="languages.text02" labelPos="left"
-              labelSize="28rpx" labelColor="#FFFFFF" space="8rpx" @click="assentIsShow" />
+              <text style="font-size:28rpx; padding-right: 8rpx;">{{ languages.text02 }}</text>
+              <image :src="eyeAsset? '/static/img/eye.png' : '/static/img/eye-close.png'" @click="assentIsShow" style="width: 32rpx; height: 32rpx;"></image>
           </view>
           <view class="user-balance">
             ${{ eyeAsset ? allassets : '∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗' }}
@@ -40,26 +40,26 @@
       </view>
       <view class="account-column">
         <view class="column-item" @click="toGo('/pages/account/send/index')">
-          <u-icon :name="require('../../static/img/account/send.png')" size="80rpx"></u-icon>
+          <image src="/static/img/account/send.png" style="width:80rpx; height: 80rpx"></image>
           <text>{{ languages.text03 }}</text>
         </view>
         <view class="column-item" @click="toGo('./receive')">
-          <u-icon :name="require('../../static/img/account/receive.png')" size="80rpx"></u-icon>
+          <image src="/static/img/account/receive.png" style="width:80rpx; height: 80rpx"></image>
           <text>{{ languages.text04 }}</text>
         </view>
         <view class="column-item" @click="toDelegate">
-          <u-icon :name="require('../../static/img/account/delegate.png')" size="80rpx"></u-icon>
+          <image src="/static/img/account/delegate.png" style="width:80rpx; height: 80rpx"></image>
           <text>{{ languages.text05 }}</text>
         </view>
         <view class="column-item" @click="dealBtn">
-          <u-icon :name="require('../../static/img/account/transaction.png')" size="80rpx"></u-icon>
+          <image src="/static/img/account/transaction.png" style="width:80rpx; height: 80rpx"></image>
           <text>{{ languages.text06 }}</text>
         </view>
       </view>
 
       <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
         <view class="modalContent">
-          <u-icon name="info-circle" size="64rpx" color="#FFA033" />
+          <image src="/static/img/tishi2.png" style="width: 64rpx; height: 64rpx;"></image>
           <view class="modal-title">{{ languages.text172 }}</view>
           <text class="modal-content">{{ languages.text08 }}</text>
           <button @click="aa = false">{{ languages.text09 }}</button>
@@ -67,11 +67,9 @@
       </u-modal>
       <view class="coin-list">
         <u-tabs :list="coinList" lineColor="#2C365A" @click="click" :inactiveStyle="inactiveStyle"
-          :activeStyle="activeStyle" lineWidth="20" lineHeight="3" :itemStyle="itemStyle">
+          :activeStyle="activeStyle" lineWidth="20" lineHeight="3" :itemStyle="itemStyle" :current="currentIndex">
           <view slot="right" style="padding-bottom: 8rpx">
-            <u-icon @click="toAsset" :name="require('../../static/img/account/add.png')" size="48rpx" color="#8895b0"
-              bold>
-            </u-icon>
+            <image src="/static/img/account/add.png" @click="toAsset" style="width: 48rpx;height: 48rpx;"></image>
           </view>
         </u-tabs>
         <scroll-view v-if="visibaleTokenList.length" class="coinbox" scroll-y>
@@ -148,9 +146,11 @@ export default {
       aa: false,
       firstShowAa: true,
       tokenList: [],
+      tempList: [],
       coinType: 'All',
       initRender: 0, // call render.init
-      callBalanceLoading: 0
+      callBalanceLoading: 0,
+      currentIndex: 0
     }
   },
   onShow() {
@@ -159,10 +159,14 @@ export default {
     this.aa = false
     this.firstShowAa = true
     this.initRender++
+    
+
+        
   },
   created() {
-    this.address = this.currentWallet.address
     //获取选择的代币
+    this.address = this.currentWallet.address
+
   },
   methods: {
     initCoinList() {
@@ -210,8 +214,12 @@ export default {
     copy() {
       uni.setClipboardData({
         data: this.currentWallet.address,
-        success: function() {
-          console.log('success')
+        showToast: false,
+        success: () => {
+          this.$refs.notify.show('', this.languages.text56, { bgColor: '#275EF1' })
+        },
+        fail: () => {
+          // this.$refs.notify.show('error', this.language.copyfailure)
         }
       })
     },
@@ -228,6 +236,7 @@ export default {
     closeSwitchWalletPopup() {
       this.showSwitchWallet = false
       this.currentWallet = this.$cache.get('_currentWallet')
+      this.initRender++
       this.initCoinList()
       this.tokenList = this.currentWallet.coinList
     },
@@ -265,7 +274,7 @@ export default {
     },
     toAsset() {
       this.$nextTick(() => {
-        uni.navigateTo({
+        uni.redirectTo({
           url: '/pages/assetManage/index'
         })
       })
@@ -278,8 +287,13 @@ export default {
         'token': 'SNIP20',
         'default': 'NFT'
       }
-      return this.coinType === 'All' ? this.tokenList : this.tokenList.filter(item => type[item.apply_type ||
+
+      let result = this.coinType === 'All' ? this.tokenList : this.tokenList.filter(item => type[item.apply_type ||
           'default'] === this.coinType)
+      if (result.length == 0) {
+        result = this.tokenList
+      }
+      return result
     }
   },
   watch: {
@@ -328,9 +342,7 @@ export default {
         let coinList = wallet.coinList || []
         //代币数组为空时，为其添加主币
         if (coinList.length == 0) coinList.push(mainCoin)
-
         renderUtils.runMethod(this._$id, 'updateCoinList', coinList, this)
-
         this.getBalance(coinList, wallet)
       },
       async getBalance(coin, wallet) {
@@ -340,7 +352,6 @@ export default {
           let balance = 0
           if (coin.alias_name == mainCoin.alias_name) {
             coin.showWarn = false
-
             let res = await getBalance(wallet.address)
             balance = res.balance.amount
           } else { // 非主网币
@@ -449,6 +460,7 @@ export default {
 
       .header-left {
         display: flex;
+        align-items: center;
       }
 
       .header-icon {

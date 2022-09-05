@@ -3,10 +3,10 @@
     <view class="mask" v-show="transferLoading"></view>
     <custom-header :title="language.text15" :style="titleStyle">
       <template #right>
-        <u-icon :name="require('@/static/img/account/saoma.png')" size="44rpx" @click="scanCode" />
+        <image src="/static/img/account/saoma.png" style="width:44rpx; height: 44rpx;" @click="scanCode"></image>
       </template>
     </custom-header>
-    <view class="main-top">
+  <view class="main-top">
 
       <view class="content">
 
@@ -15,7 +15,7 @@
           <image :src="token.logo"></image>
           <text>{{ token.alias_name }}</text>
           <view class="icon-right">
-            <u-icon name="arrow-right" />
+            <image src="/static/img/ic-arrow1.png" style="width:32rpx; height: 32rpx;"></image>
           </view>
         </view>
 
@@ -24,8 +24,7 @@
           <InputTitle :title="language.text16" :type="'text'" :placeholder="language.text17" ref="addressInptval"
             :inputVal.sync="sendFormData.receiveAddress">
             <template #title-icon>
-              <u-icon :name="require('../../../static/img/account/addressbook.png')" size="44rpx"
-                @click="toAddressBook"></u-icon>
+                <image src="/static/img/account/addressbook.png" @click="toAddressBook" style="width:44rpx; height: 44rpx;"></image>
             </template>
           </InputTitle>
           <text :style="{ opacity: showAddressErrorTip ? 1 : 0 }" class="waringPrompt">{{ language.text188 }}</text>
@@ -53,7 +52,7 @@
               </view>
             </view>
           </view>
-          <text v-if="sendFormData.sendAmount > token.balance" class="waringPrompt">{{ language.text194 }}</text>
+          <text v-if="Number(sendFormData.sendAmount) > Number(token.balance)" class="waringPrompt">{{ language.text194 }}</text>
           <text v-else-if="showAmountErrorTip" class="waringPrompt">{{ language.text195 }}</text>
         </view>
 
@@ -78,8 +77,7 @@
         <view class="main">
           <view class="popup-title">
             {{ language.text42 }}
-            <u-icon :name="require('../../../static/img/account/close.png')" size="32rpx"
-              @click="submitPopupIsShow=false"></u-icon>
+            <image src="/static/img/account/close.png" style="width: 32rpx; height: 32rpx;" @click="submitPopupIsShow=false"></image>
           </view>
 
           <!-- 发送账户 -->
@@ -128,8 +126,7 @@
             {{ verifyMethod == 'touchID' ? language.text196 : language.text48 }}
             <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''" class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
           </view>
-          <u-icon :name="require('../../../static/img/account/close.png')" size="32rpx"
-            @click="closeModalPasswordIsShow"></u-icon>
+          <image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;" @click="closeModalPasswordIsShow"></image>
         </view>
         <!--  -->
         <view v-if="verifyMethod == 'password'">
@@ -137,9 +134,7 @@
             <view class="item-input item-input-password">
               <u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text49">
               </u-input>
-              <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
-                @click="passwordEye = !passwordEye">
-              </u-icon>
+              <image  :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="passwordEye = !passwordEye" style="width: 32rpx; height: 32rpx; margin-right: 36rpx;"></image>
             </view>
           </view>
           <text v-if="passwordCheck" class="waringPrompt">{{ language.text51 }}</text>
@@ -290,14 +285,22 @@ export default {
       this.$nextTick(() => {
         this.checkSuccess = this.sendFormData
         this.transferLoading = true
-        this.$nextTick(() => {
-          uni.showToast({
-            title: `${language.text198}...`,
-            icon: 'loading',
-            duration: 999999999
-          })          
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = `${this.language.text198}...`
+        this.toast.icon = '/static/img/mine/loading.gif'
+        // uni.showToast({
+        //   title: `${this.language.text198}...`,
+        //   icon: 'loading',
+        //   duration: 999999999
+        // })
       })
+    },
+    verifyTouchIDFail() {
+      this.showToast = false
+    },
+    verifyTouchIDOverTime() {
+      this.showToast = false
     },
     async submitAgain() {
       this.modalPasswordIsShow = true
@@ -333,7 +336,7 @@ export default {
       }
 
       // && this.sendFormData.sendAmount < this.token.balance   
-      console.log(this.showAddressErrorTip, this.showAmountErrorTip, this.sendFormData.sendAmount <= this.token.balance)
+      // console.log(this.showAddressErrorTip, this.showAmountErrorTip, this.sendFormData.sendAmount <= this.token.balance)
       if (!this.showAddressErrorTip && !this.showAmountErrorTip && this.sendFormData.sendAmount <= this.token.balance) {
         this.submitPopupIsShow = true
       }
@@ -347,12 +350,16 @@ export default {
         this.checkSuccess = this.sendFormData // 调用render.sendToken
         this.modalPasswordIsShow = false
         this.transferLoading = true
-        uni.showToast({
-          title: '交易中',
-          icon: 'loading',
-          mask: true,
-          duration: 999999999
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = `${this.language.text198}...`
+        this.toast.icon = '/static/img/mine/loading.gif'
+        // uni.showToast({
+        //   title: `${this.language.text198}...`,
+        //   icon: 'loading',
+        //   mask: true,
+        //   duration: 999999999
+        // })
       }
     },
     testAmount() {
@@ -404,29 +411,47 @@ export default {
       uni.hideToast()
       const eventChannel = this.getOpenerEventChannel()
       if (result.code == 0) {
-        uni.showToast({
-          title: this.language.text185,
-          image: '/static/img/mine/success.png',
-          mask: true,
-          duration: 3000,
-          complete: () => {
-            setTimeout(() => {
-              uni.redirectTo({
-                url: `./transactionDetails?data=${JSON.stringify(result)}`
-              })
-              eventChannel.emit('addRecordToSendList', result)
-            }, 1500)
-          }
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text185
+        this.toast.icon = '/static/img/mine/success.png'
+        setTimeout(() => {
+          this.showToast = false
+          uni.redirectTo({
+            url: `./transactionDetails?data=${JSON.stringify(result)}`
+          })
+          eventChannel.emit('addRecordToSendList', result)
+        }, 1500)
+        // uni.showToast({
+        //   title: this.language.text185,
+        //   image: '/static/img/mine/success.png',
+        //   mask: true,
+        //   duration: 3000,
+        //   complete: () => {
+        //     setTimeout(() => {
+        //       uni.redirectTo({
+        //         url: `./transactionDetails?data=${JSON.stringify(result)}`
+        //       })
+        //       eventChannel.emit('addRecordToSendList', result)
+        //     }, 1500)
+        //   }
+        // })
 
         !otherToken && fee && (this.token.balance = this.token.balance - fee - usedAmount)
       } else {
-        uni.showToast({
-          title: this.language.text182,
-          image: '/static/img/mine/fail.png',
-          mask: true,
-          duration: 3000
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text182
+        this.toast.icon = '/static/img/mine/fail.png'
+        setTimeout(() => {
+          this.showToast = false
+        }, 3000)
+        // uni.showToast({
+        //   title: this.language.text182,
+        //   image: '/static/img/mine/fail.png',
+        //   mask: true,
+        //   duration: 3000
+        // })
         !otherToken && fee && (this.token.balance = this.token.balance - fee)
       }
 
@@ -567,7 +592,7 @@ export default {
   .main-top {
     background: #FFFFFF;
     padding-top: 48rpx;
-    height: 812rpx;
+    padding-bottom: 48rpx;
     width: 100%;
 
     .content {
@@ -658,8 +683,8 @@ export default {
     width: 100%;
     height: 612rpx;
     background: #F4F6FA;
-    position: absolute;
-    bottom: 0;
+    // position: absolute;
+    // bottom: 0;
 
     .submit-btn {
       margin: 0 64rpx;
@@ -938,11 +963,13 @@ export default {
 
       &-password {
         display: flex;
+        height: 96rpx;
+        align-items: center;
+        background-color: #F2F4F8;
+        border-radius: 16rpx;
 
         .u-icon {
-          height: 96rpx;
           padding-right: 36rpx;
-          background-color: #F2F4F8;
           border-radius: 0 16rpx 16rpx 0 !important;
         }
       }

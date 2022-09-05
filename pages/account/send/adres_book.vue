@@ -2,7 +2,7 @@
 	<view class="address-book">
 		<custom-header class="header" :title="language.text02">
 			<template #right>
-				<u-icon :name="require('@/static/img/account/add2.png')" size="44rpx" @click="toGo('/pages/account/writeAddress')"></u-icon>
+        <image src="/static/img/account/add2.png" style="width: 44rpx;height: 44rpx;" @click="toGo('/pages/account/writeAddress')"></image>
 			</template>
 		</custom-header>
     <view class="border">

@@ -5,8 +5,7 @@
 			<view class="main">
 				<view class="popup-title">
 					{{title}}
-					<u-icon :name="require('@/static/img/account/close.png')" size="32rpx"
-						@click="popupshow=false"></u-icon>
+            <image src="/static/img/account/close.png" style="width: 32rpx; height: 32rpx;" @click="popupshow=false"></image>
 				</view>
 				
 				<view class="main_item" v-for="item in keys" :key="item">

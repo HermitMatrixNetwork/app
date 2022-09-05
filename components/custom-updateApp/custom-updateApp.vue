@@ -68,7 +68,7 @@ export default {
           versionCode, 
           version
         } = inf
-        res.version = '100'
+        // res.version = '100'
         if (Number(versionCode) >= Number(res.version)) {
           if (this.tip) {
             this.$emit('update:latestVersion', version)
@@ -83,12 +83,13 @@ export default {
           versionCode, 
           version
         } = inf
-        res.version = '100'
+        // res.version = '100'
         if (Number(versionCode) >= Number(res.version)) {
           if (this.tip) {
             this.$emit('update:latestVersion', version)
-            uni.showToast({ 
-              title: '已是最新版本，无需更新！',
+            uni.showToast({
+              // 已是最新版本，无需更新！
+              title: this.language.text115,
               icon: 'none'
             })
           }
@@ -99,6 +100,8 @@ export default {
           this.$emit('update:updating', true)
           this.show = true
         }
+        
+        this.$emit('update:checking', false)
       })
     },
     cancel() {

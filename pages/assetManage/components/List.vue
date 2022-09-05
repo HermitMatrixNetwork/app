@@ -11,10 +11,8 @@
         </view>
       </view>
       <view class="right" v-if="item.alias_name != mainCoin.alias_name">
-        <u-icon v-if="searchList.includes(item.contract_address)" :name="require('@/static/img/account/ic-delect.png')"
-          size="44rpx" @click="changeCoin(item,'del')"></u-icon>
-        <u-icon v-else :name="require('@/static/img/account/ic-add.png')" size="44rpx" @click="changeCoin(item,'add')">
-        </u-icon>
+        <image v-if="searchList.includes(item.contract_address)" src="/static/img/account/ic-delect.png" @click="changeCoin(item,'del')" style="width: 44rpx;height: 44rpx;"></image>
+        <image v-else src="/static/img/account/ic-add.png" @click="changeCoin(item,'add')" style="width: 44rpx;height: 44rpx;"></image>
       </view>
     </view>
   </view>

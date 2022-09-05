@@ -5,7 +5,7 @@
     <view class="mnemonic">
       <view class="mnemonic-title">{{ language.text14 }}</view>
       <view class="mnemonic-hint">
-        请按顺序抄写助记词，确保备份正确。
+        {{ language.text73 }}
       </view>
       <view class="mnemonic-content">
         <view v-for="(item, index) in mnemonicList" :key="index" class="mnemonic-content-item">
@@ -19,14 +19,13 @@
         <view class="mnemonic-rules-item">
           <view class="mnemonic-rules-item-icon"></view>
           <view class="mnemonic-rules-item-describe">
-            妥善保管助记词至隔离网络的安全地方。
+            {{ language.text74 }}。
           </view>
         </view>
         <view class="mnemonic-rules-item">
           <view class="mnemonic-rules-item-icon"></view>
           <view class="mnemonic-rules-item-describe">
-            请勿将助记词在联网环境下分享和存储，比如
-            邮件、相册、社交应用等。
+            {{ language.text75 }}
           </view>
         </view>
       </view>
@@ -98,7 +97,7 @@ export default {
       font-weight: 400;
       font-size: 28rpx;
       color: #8397B1;
-      line-height: 28rpx;
+      line-height: 40rpx;
       margin-top: 16rpx;
       margin-bottom: 48rpx;
     }
@@ -171,12 +170,12 @@ export default {
           margin-right: 26rpx;
           border-radius: 50%;
           background-color: #8397B1;
+          flex-shrink: 0;
         }
 
         &-describe {
           font-size: 28rpx;
-          line-height: 28rpx;
-          line-height: 50rpx;
+          line-height: 40rpx;
           color: #8397B1;
         }
       }

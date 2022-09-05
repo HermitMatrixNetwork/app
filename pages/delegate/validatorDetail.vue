@@ -9,7 +9,7 @@
           {{ language.text84 }}
         </view>
         <view class="address">
-          <text>{{ validatorInfo.operatorAddress }}</text>
+          <text>{{ validatorInfo.operator_address }}</text>
           <image src="/static/img/account/copy.png" @click="copy"></image>
         </view>
       </view>
@@ -104,7 +104,7 @@ export default {
     },
     copy() {
       uni.setClipboardData({
-        data: this.validatorInfo.operatorAddress,
+        data: this.validatorInfo.operator_address,
         showToast: false,
         success: () => {
           this.$refs.notify.show('error', '复制成功', { bgColor: '#275EF1' })

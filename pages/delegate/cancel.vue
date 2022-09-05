@@ -40,12 +40,13 @@
               <text>{{ language.text16 }}</text>
             </view>
             <view class="value">
-              <u--input :placeholder="language.text17" type="number" v-model="formData.amount.amount" @change="sendAmountChange">
+              <u--input :placeholder="language.text17" type="number" v-model="formData.amount.amount"
+                @change="sendAmountChange">
               </u--input>
               <text @click="testAmount">{{ language.text18 }}</text>
             </view>
           </view>
-       <!--   <text class="waringPrompt" :style="{ opacity: showAmountError ? 1 : 0 }">输入金额超过选中节点委托数量，请重新输入</text> -->
+          <!--   <text class="waringPrompt" :style="{ opacity: showAmountError ? 1 : 0 }">输入金额超过选中节点委托数量，请重新输入</text> -->
           <view class="other">
             <div class="title">{{ language.text19 }}：</div>
             <div class="num" v-if="selData">{{selData.balance.amount / mainCoin.decimals }} GHM</div>
@@ -75,8 +76,8 @@
         <view class="main">
           <view class="popup-title">
             {{ language.text25 }}
-            <u-icon :name="require('@/static/img/account/close.png')" size="32rpx" @click="submitPopupIsShow=false">
-            </u-icon>
+            <image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
+              @click="submitPopupIsShow=false"></image>
           </view>
 
           <!-- 发送账户 -->
@@ -126,17 +127,17 @@
             <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
               class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
           </view>
-          <u-icon name="/static/img/account/close.png" size="32rpx"
-            @click="closeModalPasswordIsShow"></u-icon>
+          <image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
+            @click="closeModalPasswordIsShow"></image>
         </view>
         <view v-if="verifyMethod == 'password'">
           <view class="item">
             <view class="item-input item-input-password">
               <u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text67">
               </u-input>
-              <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
-                @click="passwordEye = !passwordEye">
-              </u-icon>
+              <image :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
+                @click="passwordEye = !passwordEye"
+                style="width: 32rpx; height: 32rpx; margin-right: 36rpx; border-radius: 0 16rpx 16rpx 0;"></image>
             </view>
           </view>
           <text :style="{opacity: passwordCheck ? 1 : 0 }" class="waringPrompt">{{ language.text69 }}</text>
@@ -236,6 +237,12 @@ export default {
     }
   },
   methods: {
+    verifyTouchIDOverTime() {
+      this.showToast = false
+    },
+    verifyTouchIDFail() {
+      this.showToast = false
+    },
     closeModalPasswordIsShow() {
       this.modalPasswordIsShow = false
       if (this.touchId) {
@@ -272,27 +279,31 @@ export default {
         this.formData.validatorAddress = this.selData.delegation.validatorAddress
         this.updataDelegate = this.formData
         this.loading = true
-        this.$nextTick(() => {
-          uni.showToast({
-            title: `${language.text77}...`,
-            icon: 'loading',
-            duration: 999999999
-          })          
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text77 + '...'
+        this.toast.icon = '/static/img/mine/loading.gif'
+        // this.$nextTick(() => {
+        //   uni.showToast({
+        //     title: `${language.text77}...`,
+        //     icon: 'loading',
+        //     duration: 999999999
+        //   })          
+        // })
       })
     },
     submitAgain() {
       this.modalPasswordIsShow = true
       // #ifdef APP-PLUS
-      if (this.touchId ) {
+      if (this.touchId) {
         this.verify()
       }
       // #endif
-      
+
       // #ifndef APP-PLUS
       this.touchId = 0
       // #endif
-      
+
       this.submitPopupIsShow = false
     },
     transferConfirm() { //转账确认
@@ -327,12 +338,16 @@ export default {
         this.updataDelegate = this.formData // 调用render.sendToken
         this.loading = true
         this.modalPasswordIsShow = false
-        uni.showToast({
-          title: `${language.text77}...`,
-          icon: 'loading',
-          mask: true,
-          duration: 999999999
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text77 + '...'
+        this.toast.icon = '/static/img/mine/loading.gif'
+        // uni.showToast({
+        //   title: `${language.text77}...`,
+        //   icon: 'loading',
+        //   mask: true,
+        //   duration: 999999999
+        // })
       }
     },
     handlerResult(res) {
@@ -340,26 +355,42 @@ export default {
       this.loading = false
       if (res.code == 0) {
         this.$cache.set('_updateDelegateInfo', true, 36000)
-        uni.showToast({
-          title: this.language.text78,
-          image: '/static/img/mine/success.png',
-          mask: true,
-          duration: 3000,
-          complete: () => {
-            setTimeout(() => {
-              uni.redirectTo({
-                url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
-              })
-            }, 1500)
-          }
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text78
+        this.toast.icon = '/static/img/mine/success.png'
+        setTimeout(() => {
+          uni.redirectTo({
+            url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
+          })
+        }, 1500)
+        // uni.showToast({
+        //   title: this.language.text78,
+        //   image: '/static/img/mine/success.png',
+        //   mask: true,
+        //   duration: 3000,
+        //   complete: () => {
+        //     setTimeout(() => {
+        //       uni.redirectTo({
+        //         url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
+        //       })
+        //     }, 1500)
+        //   }
+        // })
       } else {
-        uni.showToast({
-          title: this.language.text79,
-          image: '/static/img/mine/fail.png',
-          mask: true,
-          duration: 3000,
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text79
+        this.toast.icon = '/static/img/mine/fail.png'
+        setTimeout(() => {
+          this.showToast = false
+        }, 3000)
+        // uni.showToast({
+        //   title: this.language.text79,
+        //   image: '/static/img/mine/fail.png',
+        //   mask: true,
+        //   duration: 3000,
+        // })
         console.log(res)
       }
     },
@@ -825,11 +856,13 @@ export default {
 
       &-password {
         display: flex;
+        height: 96rpx;
+        align-items: center;
+        background-color: #F2F4F8;
+        border-radius: 16rpx;
 
         .u-icon {
-          height: 96rpx;
           padding-right: 36rpx;
-          background-color: #F2F4F8;
           border-radius: 0 16rpx 16rpx 0 !important;
         }
       }
@@ -845,14 +878,15 @@ export default {
     text-align: center;
     margin-top: 56rpx;
   }
-  
+
   .touch-verify {
     margin-top: 80rpx;
+
     .logo {
       text-align: center;
     }
   }
-  
+
   .changeVerifyMethod {
     text-align: right;
     font-family: PingFangSC-Regular;
@@ -860,7 +894,7 @@ export default {
     color: #1E5EFF;
     margin-top: 20rpx;
   }
-  
+
   .toast {
     position: fixed;
     left: 50%;

@@ -6,7 +6,7 @@
       <view class="title">
         {{ language.text105 }}
       </view>
-      <textarea v-model="formData.view_key" cols="30" rows="10" placeholder="当前viewkey"
+      <textarea v-model="formData.view_key" cols="30" rows="10" :placeholder="language.text205"
         class="viewkey_input"></textarea>
     </view>
     <view style="height: 16rpx;background: #F4F6FA;" />
@@ -28,8 +28,8 @@
         <view class="main">
           <view class="popup-title">
             {{ language.text108 }}
-            <u-icon :name="require('../../../static/img/account/close.png')" size="32rpx"
-              @click="submitPopupIsShow=false"></u-icon>
+            <image src="/static/img/account/close.png" style="width: 32rpx; height: 32rpx;"
+              @click="submitPopupIsShow=false"></image>
           </view>
 
           <view class="item">
@@ -76,20 +76,21 @@
       <view class="modal_main">
         <view class="modal_title">
           <view>
-            {{ verifyMethod == 'touchID' ? `指纹验证` : language.text48 }}
+            {{ verifyMethod == 'touchID' ? language.text196 : language.text48 }}
             <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
               class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
           </view>
-          <u-icon name="/static/img/account/close.png" size="32rpx" @click="closeModalPasswordIsShow"></u-icon>
+          <image src="/static/img/account/close.png" style="width: 32rpx; height: 32rpx;"
+            @click="closeModalPasswordIsShow"></image>
         </view>
         <view v-if="verifyMethod == 'password'">
           <view class="item">
             <view class="item-input item-input-password">
               <u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text49">
               </u-input>
-              <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
-                @click="passwordEye = !passwordEye">
-              </u-icon>
+              <image :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
+                @click="passwordEye = !passwordEye"
+                style="width: 32rpx; height: 32rpx; margin-right: 36rpx; border-radius: 0 16rpx 16rpx 0;"></image>
             </view>
           </view>
           <!-- <input type="text"> -->
@@ -102,7 +103,7 @@
             <image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
           </view>
         </view>
-        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">切换验证方式</view>
+        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">{{ language.text197 }}</view>
       </view>
     </u-modal>
     <!-- 指纹验证 -->
@@ -114,9 +115,9 @@
         <text>{{ toast.msg }}</text>
       </view>
     </view>
-    
+
     <custom-notify ref="notify"></custom-notify>
-    
+
   </view>
 </template>
 
@@ -169,6 +170,12 @@ export default {
     Object.assign(this.formData, this.token)
   },
   methods: {
+    verifyTouchIDFail() {
+      this.showToast = false
+    },
+    verifyTouchIDOverTime() {
+      this.showToast = false
+    },
     closeModalPasswordIsShow() {
       this.modalPasswordIsShow = false
       if (this.touchId) {
@@ -191,13 +198,17 @@ export default {
         this.passwordCheck = false
         this.loading = true
         this.callRender = this.formData
-        this.$nextTick(() => {
-          uni.showToast({
-            title: `${this.language.text184}...`,
-            icon: 'loading',
-            duration: 999999999
-          })
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = `${this.language.text184}...`
+        this.toast.icon = '/static/img/mine/loading.gif'
+        // this.$nextTick(() => {
+        //   uni.showToast({
+        //     title: `${this.language.text184}...`,
+        //     icon: 'loading',
+        //     duration: 999999999
+        //   })
+        // })
       })
     },
     submitAgain() {
@@ -227,14 +238,18 @@ export default {
         this.loading = true
         this.callRender = this.formData
         this.modalPasswordIsShow = false
-        this.$nextTick(() => {
-          uni.showToast({
-            title: `${this.language.text184}...`,
-            icon: 'loading',
-            mask: true,
-            duration: 999999999
-          })
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = `${this.language.text184}...`
+        this.toast.icon = '/static/img/mine/loading.gif'
+        // this.$nextTick(() => {
+        //   uni.showToast({
+        //     title: `${this.language.text184}...`,
+        //     icon: 'loading',
+        //     mask: true,
+        //     duration: 999999999
+        //   })
+        // })
       }
     },
     close() {
@@ -245,33 +260,56 @@ export default {
       this.loading = false
       this.callRender = 0
       if (res.code == 0) {
-        uni.showToast({
-          title: `${this.language.text185}`,
-          image: '/static/img/mine/success.png',
-          mask: true,
-          duration: 3000,
-          complete: () => {
-            this.token.view_key = this.formData.view_key
-            this.token.loadingBalance = true
-            this.token.showWarn = false
-            const wallet = this.$cache.get('_currentWallet')
-            const coinList = wallet.coinList
-            const coinIndex = coinList.findIndex(item => item.ID == this.token.ID)
-            coinList.splice(coinIndex, 1, this.token)
-            wallet.coinList = coinList
-            this.$cache.set('_currentWallet', wallet, 0)
-            this.updateWalletList(wallet)
-            setTimeout(() => {
-              uni.reLaunch({
-                url: `/pages/account/send/token_content_other?tokenID=${this.token.ID}`
-              })
-            }, 2000)
-          }
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text185
+        this.toast.icon = '/static/img/mine/success.png'
+        this.token.view_key = this.formData.view_key
+        this.token.loadingBalance = true
+        this.token.showWarn = false
+        const wallet = this.$cache.get('_currentWallet')
+        const coinList = wallet.coinList
+        const coinIndex = coinList.findIndex(item => item.ID == this.token.ID)
+        coinList.splice(coinIndex, 1, this.token)
+        wallet.coinList = coinList
+        this.$cache.set('_currentWallet', wallet, 0)
+        this.updateWalletList(wallet)
+        setTimeout(() => {
+          uni.reLaunch({
+            url: `/pages/account/send/token_content_other?tokenID=${this.token.ID}`
+          })
+        }, 3000)
+        // uni.showToast({
+        //   title: `${this.language.text185}`,
+        //   image: '/static/img/mine/success.png',
+        //   mask: true,
+        //   duration: 3000,
+        //   complete: () => {
+        //     this.token.view_key = this.formData.view_key
+        //     this.token.loadingBalance = true
+        //     this.token.showWarn = false
+        //     const wallet = this.$cache.get('_currentWallet')
+        //     const coinList = wallet.coinList
+        //     const coinIndex = coinList.findIndex(item => item.ID == this.token.ID)
+        //     coinList.splice(coinIndex, 1, this.token)
+        //     wallet.coinList = coinList
+        //     this.$cache.set('_currentWallet', wallet, 0)
+        //     this.updateWalletList(wallet)
+        //     setTimeout(() => {
+        //       uni.reLaunch({
+        //         url: `/pages/account/send/token_content_other?tokenID=${this.token.ID}`
+        //       })
+        //     }, 2000)
+        //   }
+        // })
       } else {
-        this.$refs.notify.show('error', this.language.text186, {
-          bgColor: '#EC6665'
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text182
+        this.toast.icon = '/static/img/mine/fail.png'
+        setTimeout(() => {
+          this.showToast = false
+        }, 3000)
       }
     },
     setViekey() {
@@ -281,7 +319,7 @@ export default {
     },
     validate() {
       if (this.formData.view_key.trim() === '') {
-        this.$refs.notify.show('error', 'viewkey不能为空', {
+        this.$refs.notify.show('error', this.language.text210, {
           bgColor: '#EC6665'
         })
         return false
@@ -315,13 +353,15 @@ export default {
     methods: {
       async setViewkey(data) {
         if (data == 0) return
+        let res = {}
         try {
           let gas = data.gas * mainCoin.decimals
-          const res = await setViewKey(data, gas)
-          renderUtils.runMethod(this._$id, 'handlerResult', res, this)
+          res = await setViewKey(data, gas)
         } catch (e) {
-          console.log(e)
+          console.log(res, e)
+          res.code = 7
         }
+        renderUtils.runMethod(this._$id, 'handlerResult', res, this)
       }
     }
   }
@@ -503,11 +543,13 @@ export default {
 
         &-password {
           display: flex;
+          height: 96rpx;
+          background-color: #F2F4F8;
+          align-items: center;
+          border-radius: 16rpx;
 
           .u-icon {
-            height: 96rpx;
             padding-right: 36rpx;
-            background-color: #F2F4F8;
             border-radius: 0 16rpx 16rpx 0 !important;
           }
         }
@@ -539,14 +581,15 @@ export default {
     color: #8F9BB3;
     margin-top: 24rpx;
   }
-  
+
   .touch-verify {
     margin-top: 80rpx;
+
     .logo {
       text-align: center;
     }
   }
-  
+
   .changeVerifyMethod {
     text-align: right;
     font-family: PingFangSC-Regular;
@@ -554,7 +597,7 @@ export default {
     color: #1E5EFF;
     margin-top: 20rpx;
   }
-  
+
   .toast {
     position: fixed;
     left: 50%;
@@ -566,17 +609,17 @@ export default {
     justify-content: center;
     border-radius: 6rpx;
     z-index: 999999999;
-  
+
     &-icon {
       text-align: center;
       margin-top: 65rpx;
-  
+
       image {
         width: 65rpx;
         height: 65rpx;
       }
     }
-  
+
     &-content {
       margin-top: 20rpx;
       font-weight: 400;
@@ -585,7 +628,7 @@ export default {
       text-align: center;
     }
   }
-  
+
   .verifyTouchErrorTip {
     color: red;
     font-size: 24rpx;

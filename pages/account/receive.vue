@@ -5,7 +5,7 @@
 		<view class="topPrompt">
 			<view class="promptBg" />
 			<view class="promptText">
-				<u-icon :name="require('@/static/img/account/prompt.png')" size="32rpx"></u-icon>
+        <image src="/static/img/account/prompt.png" style="width: 32rpx;height: 32rpx;"></image>
 				{{ language.text52 }}
 			</view>
 		</view>
@@ -27,8 +27,8 @@
 
 
 			<button class="copy_btn" @click="copy(code['val'])">
-				<u-icon :name="require('@/static/img/account/copy2.png')" :label="language.text55" label-size="28rpx" size="40rpx">
-				</u-icon>
+        <image src="/static/img/account/copy2.png" style="width: 40rpx;height: 40rpx; margin-right:8rpx;"></image>
+        <text style="font-size:28rpx; margin:0;">{{ language.text55 }}</text>
 			</button>
 
 		</view>
@@ -124,9 +124,11 @@ export default {
 			font-size: 28rpx;
 			color: #FFFFFF;
 			line-height: 40rpx;
-
+      image {
+        flex-shrink: 0;
+        margin: 8rpx 16rpx 0 0;
+      }
 			/deep/ .u-icon__img {
-				margin: 8rpx 16rpx 0 0 !important;
 			}
 		}
 	}

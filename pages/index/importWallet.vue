@@ -13,7 +13,7 @@
           </view>
         </view>
         <view class="import-type-arrow-right">
-          <u-icon name="arrow-right" color="#8397B1" size="32rpx"></u-icon>
+          <image src="/static/img/ic-arrow1.png" style="width: 32rpx; height: 32rpx;"></image>
         </view>
       </view>
     </view>
@@ -40,7 +40,8 @@ export default {
         icon: 'keystore.png',
         describe: language[this.$cache.get('_language')].text30,
         page: './importFromKeystore'
-      }]
+      }],
+      language: language[this.$cache.get('_language')]
     }
   },
   methods: {

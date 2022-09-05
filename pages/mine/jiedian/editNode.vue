@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <custom-header backUrl="./index" class="header" title="编辑节点" :customStyle="{ 'background-color': '#fff' }">
+    <custom-header backUrl="./index" class="header" :title="language.text108" :customStyle="{ 'background-color': '#fff' }">
       <template slot="right">
         <view class="save" @click="confirm">
           {{ language.text49 }}
@@ -13,7 +13,7 @@
         {{ language.text40 }}
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="formData.name" placeholder="请输入网络名称"></u-input>
+      <u-input class="wallet-name-input" v-model="formData.name" :placeholder="language.text105"></u-input>
       <view class="error-tip" :style="{ opacity: nameError ? 1 : 0 }">
         {{ language.nameErrorTip }}
       </view>
@@ -24,7 +24,7 @@
         RPC {{ language.text90 }}
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="formData.link" placeholder="请输入RPC地址"></u-input>
+      <u-input class="wallet-name-input" v-model="formData.link" :placeholder="language.text106"></u-input>
       <view class="error-tip" :style="{ opacity: linkError ? 1 : 0 }">
         {{ language[linkErrorList[linkErrorTip]] }}
       </view>
@@ -35,17 +35,17 @@
         Chain ID
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="formData.chainId" placeholder="请输入Chain ID" disabled></u-input>
+      <u-input class="wallet-name-input" v-model="formData.chainId" :placeholder="language.text107" disabled></u-input>
     </view>
 
     <view :callRender="callRender" :change:callRender="render.checkRpcVerify"></view>
     <custom-notify ref="notify"></custom-notify>
 
-    <uni-button class="remove-wallet-btn" @click="removeNode">删除节点</uni-button>
+    <uni-button class="remove-wallet-btn" @click="removeNode">{{ language.text109 }}</uni-button>
 
     <u-modal :show="showWarn" width="686rpx" :showConfirmButton="false" class="hintModal">
       <view class="modalContent">
-        <u-icon name="info-circle" size="64rpx" color="#FFA033" />
+        <image src="/static/img/tishi2.png" style="width: 64rpx; height: 64rpx;"></image>
         <view class="modal-title">{{ language.text89 }}</view>
         <text class="modal-content-top">
           {{ language.text53 }}
@@ -59,13 +59,13 @@
 
     <u-modal :show="showDeleteWarn" width="686rpx" :showConfirmButton="false" class="hintModal delete-warn">
       <view class="modalContent">
-        <u-icon name="info-circle" size="64rpx" color="#FFA033" />
+        <image src="/static/img/tishi2.png" style="width: 64rpx; height: 64rpx;"></image>
         <view class="modal-title">{{ language.text89 }}</view>
         <text class="modal-content-top">
           {{ language.text50 }}
         </text>
         <text class="modal-content-bottom">
-          请确认是否删除？
+          {{ language.text110 }}
         </text>
         <view class="control_btn">
           <button @click="showDeleteWarn = false" class="cancel_btn">{{ language.text17 }}</button>

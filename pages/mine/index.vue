@@ -19,7 +19,7 @@
 							<view class="content-content-name">{{ item.name }}</view>
 						</view>
 						<view class="content-arrow-right">
-							<u-icon name="arrow-right" color="#8397B1" size="32rpx"></u-icon>
+              <image src="/static/img/ic-arrow1.png" style="width:32rpx; height: 32rpx;"></image>
 						</view>
 					</view>
 					<view class="border">
@@ -36,7 +36,7 @@
 							<view class="content-content-name">{{ item.name }}</view>
 						</view>
 						<view class="content-arrow-right">
-							<u-icon name="arrow-right" color="#8397B1" size="32rpx"></u-icon>
+              <image src="/static/img/ic-arrow1.png" style="width:32rpx; height: 32rpx;"></image>
 						</view>
 					</view>
 					<view class="border">
@@ -53,7 +53,7 @@
 							<view class="content-content-name">{{ item.name }}</view>
 						</view>
 						<view class="content-arrow-right">
-							<u-icon name="arrow-right" color="#8397B1" size="32rpx"></u-icon>
+              <image src="/static/img/ic-arrow1.png" style="width:32rpx; height: 32rpx;"></image>
 						</view>
 					</view>
 					<view class="border">

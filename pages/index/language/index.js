@@ -71,7 +71,18 @@ const languages = {
     text68: '用户协议',
     text69: '获得助记词等于拥有钱包资产所有权',
     text70: '下一步',
-    text71: '请勿截图'
+    text71: '请勿截图',
+    text72: '输入明文私钥',
+    text73: '请按顺序抄写助记词，确保备份正确。',
+    text74: '妥善保管助记词至隔离网络的安全地方。',
+    text75: '请勿将助记词在联网环境下分享和存储，比如邮件、相册、社交应用等。  ',
+    text76: '设置钱包名称',
+    text77: '助记词由英文单词组成，请抄写并妥善保管。',
+    text78: '助记词丢失，无法找回，请务必备份助记词。',
+    text79: '钱包密码不能位空！',
+    text80: '密码长度不能少于8位',
+    text81: '私钥不能位空',
+    text82: '导入'
   },
   'CT': {
     myDelegate: '我的委托',
@@ -135,7 +146,7 @@ const languages = {
     text55: 'wallet password',
     text56: 'Enter the original corresponding wallet password of keystore',
     text57: 'please input wallet name',
-    text58: 'import',
+    text58: 'Import',
     text59: 'Keysore error prompt: incorrect keysore content, please check!',
     text60: 'Wallet password error prompt: the original corresponding wallet password of keysore is wrong, please confirm!',
     text61: 'Success Tip: Imported successfully!',
@@ -148,7 +159,18 @@ const languages = {
     text68: 'User agreement',
     text69: 'Acquiring mnemonic words is equivalent to owning the wallet assets',
     text70: 'Next',
-    text71: 'Do not take screenshots.'
+    text71: 'Do not take screenshots.',
+    text72: 'Enter the plaintext private key',
+    text73: 'Please write the mnemonic down in order to ensure the backup is correct.',
+    text74: 'Keep the mnemonic phrase in a safe place isolated from the network.',
+    text75: 'Do not share and store mnemonic phrases in a networked environment, such as emails, photo albums, social applications, etc.',
+    text76: 'Set wallet name',
+    text77: 'The mnemonic is composed of English words, please copy and keep it properly.',
+    text78: 'If the mnemonic is lost and cannot be retrieved, be sure to back up the mnemonic.',
+    text79: 'Wallet password cannot be empty!',
+    text80: 'password is not less than 8 digits',
+    text81: 'Private key cannot be empty!',
+    text82: 'Import'
   }
 }
 export default languages

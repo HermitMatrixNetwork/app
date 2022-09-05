@@ -4,8 +4,7 @@
       <!-- APP下会占用系统原生消息因此需要该占位符 -->
     </view>
     <view class="header">
-      <u--input :placeholder="language.text02" prefixIcon="search" prefixIconStyle="font-size: 22px;color: #909399" disabled>
-      </u--input>
+      <u-search :showAction="false" :placeholder="language.text02" shape="round" :clearabled="true" v-model="searchVal" @search="search" searchIcon="/static/img/delegate/search2.png"></u-search>
     </view>
 
     <view class="banner-wrap">
@@ -81,7 +80,12 @@ export default {
       indicatorDots: true,
       autoplay: true,
       interval: 2000,
-      duration: 500
+      duration: 500,
+      searchVal: '',
+      searchStyle: {
+        fontSize: '28rpx',
+        color: '#275EF1'
+      },
     }
   },
   async created() {
@@ -105,7 +109,8 @@ export default {
       uni.navigateTo({
         url: `./webview?jumpUrl=${link}`
       })
-    }
+    },
+    search() {}
   }
 }
 </script>

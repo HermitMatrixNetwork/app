@@ -46,10 +46,10 @@
 
       <custom-loading v-else-if="loading" class="loading"></custom-loading>
       <swiper v-else class="transaction_history_item" :current="listCurrentIndex" @change="switchSwiper"
-        style="height: 1000rpx">
+        style="height: 980rpx">
         <swiper-item v-for="(item,index) in list" :key="item.name" :item-id="index+''">
           <!-- @scrolltolower="loadMore(item.type)" -->
-          <scroll-view scroll-y class="scroll-container" style="height: 1000rpx">
+          <scroll-view scroll-y class="scroll-container" style="height: 980rpx">
             <template v-if="accountTransfer[item.type].length">
               <view class="list-item" v-for="(record, index) in accountTransfer[item.type]" :key="index"
                 @click="toRecordDetail(record)">
@@ -80,11 +80,11 @@
               <!-- todo -->
               <view v-if="item.type == 'all'">
                 <view v-if="!pagination.nodata && !pagination.loading" class="loading-more" @click="nextPage">
-                  点击加载更多
+                  {{ language.text206 }}
                 </view>
-                <u-loading-icon v-else-if="pagination.loading" class="loading-more" mode="circle" text="加载中">
+                <u-loading-icon v-else-if="pagination.loading" class="loading-more" mode="circle" :text="language.text207">
                 </u-loading-icon>
-                <view v-else-if="pagination.nodata" class="loading-more">已全部加载完毕</view>
+                <view v-else-if="pagination.nodata" class="loading-more">{{ language.text208 }}</view>
               </view>
             </template>
             <no-data v-else :tip="language.text113" />

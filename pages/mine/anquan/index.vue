@@ -13,7 +13,7 @@
             <view class="content-content-name">{{ item.name }}</view>
           </view>
           <view class="content-arrow-right" v-if="item.icon !== 'zhiwen.png'">
-            <u-icon name="arrow-right" color="#8397B1" size="32rpx"></u-icon>
+            <image src="/static/img/ic-arrow1.png" style="width: 32rpx;height: 32rpx;"></image>
           </view>
           <view v-else class="content-switch">
             <view class="content-switch-bar"></view>
@@ -32,7 +32,7 @@
     <!-- 您未在手机设置处开启并录入指纹，Hermit Wallet 应用无法获取指纹信息，请先去设置！ -->
     <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
       <view class="modalContent">
-        <u-icon name="info-circle" size="64rpx" color="#FFA033" />
+        <image src="/static/img/tishi2.png" style="width: 64rpx; height: 64rpx;"></image>
         <view class="modal-title">{{ language.text89 }}</view>
         <text class="modal-content">{{ language.text33 }}</text>
         <button @click="aa = false">{{ language.text29 }}</button>
@@ -42,9 +42,9 @@
     <!-- 指纹识别次数超过限制，请稍后再设置 -->
     <u-modal :show="bb" width="686rpx" :showConfirmButton="false" class="hintModal">
       <view class="modalContent">
-        <u-icon name="info-circle" size="64rpx" color="#FFA033" />
+        <image src="/static/img/tishi2.png" style="width: 64rpx; height: 64rpx;"></image>
         <view class="modal-title">{{ language.text89 }}</view>
-        <text class="modal-content">指纹识别次数超过限制，请稍后再设置</text>
+        <text class="modal-content">{{ language.text111 }}</text>
         <button @click="bb = false">{{ language.text29 }}</button>
       </view>
     </u-modal>
@@ -70,9 +70,9 @@ export default {
   methods: {
     switchTouchId() {
       try {
-        if (!plus || !plus.fingerprint.isSupport() || !plus.fingerprint.isEnrolledFingerprints()) return this.aa = true
-        const AUTHENTICATE_OVERLIMIT = this.$cache.get('_AUTHENTICATE_OVERLIMIT')
-        if (AUTHENTICATE_OVERLIMIT) return this.bb = true
+        // if (!plus || !plus.fingerprint.isSupport() || !plus.fingerprint.isEnrolledFingerprints()) return this.aa = true
+        // const AUTHENTICATE_OVERLIMIT = this.$cache.get('_AUTHENTICATE_OVERLIMIT')
+        // if (AUTHENTICATE_OVERLIMIT) return this.bb = true
         uni.navigateTo({
           url: './verifyTouchId',
           events: {

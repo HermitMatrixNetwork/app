@@ -12,7 +12,7 @@
           @click="resetItem(item)">
           <view class="item">{{ item }}</view>
           <view class="error-icon" v-show="errorIndex > -1 && index >= errorIndex">
-            <u-icon name="close-circle-fill" color="#F53F3F" size="36rpx"></u-icon>
+            <image src="/static/img/close.png" style="width: 36rpx; height: 36rpx;"></u-icon>
           </view>
         </view>
       </view>

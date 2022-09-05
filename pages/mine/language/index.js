@@ -104,7 +104,21 @@ export default {
     'text98': '查询邮箱',
     'text99': '输入查询邮箱',
     text100: '钱包地址不能为空',
-    text101: '钱包名字不能为空'
+    text101: '钱包名字不能为空',
+    text102: '验证指纹中',
+    text103: '失败次数超出限制，请稍后再设置',
+    text104: '钱包地址已存在，请勿重复添加',
+    text105: '请输入网络名称',
+    text106: '请输入RPC地址',
+    text107: '请输入Chain ID',
+    text108: '编辑节点',
+    text109: '删除节点',
+    text110: '请确认是否删除？',
+    text111: '失败次数过多，请稍后重试！（具体重试时间参考本机指纹验证规则）',
+    text112: '验证成功',
+    text113: '验证失败',
+    text114: '检查中',
+    text115: '已是最新版本，无需更新！'
   },
   EN: {
     addressErrorTipDuplicate: '钱包地址已存在，请勿重复添加',
@@ -211,7 +225,21 @@ export default {
     'text98': 'Query Mail',
     'text99': 'Enter Mailbox',
     text100: 'Wallet address cannot be empty!',
-    text101: 'Wallet name cannot be empty!'
+    text101: 'Wallet name cannot be empty!',
+    text102: 'Verifying',
+    text103: 'The number of failures exceeded the limit, please set it later',
+    text104: 'The wallet address already exists, please do not add it again.',
+    text105: 'Please enter a network name',
+    text106: 'Please enter an RPC address',
+    text107: 'Please enter Chain ID',
+    text108: 'Edit node',
+    text109: 'Delete node',
+    text110: 'Please confirm to delete?',
+    text111: 'Too many failures, please try again later! (Refer to local fingerprint verification rules for specific retry time)',
+    text112: 'Success',
+    text113: 'Fail',
+    text114: 'In inspection',
+    text115: 'Already the latest version, no need to update!'
     
   },
   CT: {}

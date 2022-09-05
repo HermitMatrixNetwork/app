@@ -21,73 +21,104 @@ export default {
     }
   },
   async onLaunch() {
+    uni.hideTabBar()
+    if (!this.isTor && this.$cache.get('_currentWallet') == null) { 
+      uni.clearStorageSync()
+    }
     this.$cache.get('_language') || this.$cache.set('_language', 'CN', 0)
     this.$cache.get('_addressBook') || this.$cache.set('_addressBook', [], 0)
     this.$cache.get('_touchId') || this.$cache.set('_touchId', 0, 0)
     this.$cache.get('_MINERS_GAS') || this.$cache.set('_MINERS_GAS', MINERS_GAS, 0)
     this.$cache.get('_currentRpc') || this.$cache.set('_currentRpc', DEFAULT_RPC.link, 0)
-      
+    // 0 表示第一次进入
+    this.$cache.get('_appInit') || this.$cache.set('_appInit', 0, 0)
+    let _appInit = this.$cache.get('_appInit')
     // #ifdef APP-PLUS
     // 判断是否是被洋葱代理服务代理
     this.isTor = await isTor()
 
     if (!this.isTor) {
+      uni.showToast({
+        icon: 'none',
+        title: this.language[this.$cache.get('_language')].text01,
+        duration: 3000,
+      })
       uni.reLaunch({
         url: '/pages/index/index',
         success: () => {
-            
           plus.navigator.closeSplashscreen()
-            
+          setTimeout(() => {
+            plus.runtime.quit()
+          }, 3000)
         }
       })
-    } 
+    } else if (this.$cache.get('_currentWallet') == null) {
+      this.$cache.set('_agree_protocol', false, 0)
+      uni.reLaunch({
+        url: '/pages/index/index',
+        success: () => {
+          plus.navigator.closeSplashscreen()
+        }
+      })
+    } else if (_appInit == 0 && this.$cache.get('_touchId') == 1) {
+      console.log('fire')
+      uni.navigateTo({
+        url: '/pages/mine/anquan/backgroundVerify?redirectUrl=/pages/account/index&type=reLaunch',
+        animationType: 'none',
+        success: () => {
+          plus.navigator.closeSplashscreen()
+        }
+      })
+    } else if(_appInit !== 1){
+      uni.reLaunch({
+        url: '/pages/account/index',
+        success: () => {
+          plus.navigator.closeSplashscreen()
+        }
+      })
+    }
     // #endif
-      
-    // if (!this.isTor && this.$cache.get('_currentWallet') == null) {
-    //   uni.clearStorageSync()
-    //   this.$cache.set('_agree_protocol', false, 0)
-    //   uni.reLaunch({
-    //     url: '/pages/index/index',
-    //     success: () => {
-    //       // #ifdef APP-PLUS
-    //       plus.navigator.closeSplashscreen()
-    //       // #endif
-    //     }
-    //   })
-    // } else {
-    //   uni.reLaunch({
-    //     url: '/pages/account/index',
-    //     success: () => {
-    //       // #ifdef APP-PLUS
-    //       plus.navigator.closeSplashscreen()
-    //       // #endif
-    //     }
-    //   })
-    // }
   },
   async onShow() {
     uni.hideTabBar()
     // #ifdef APP-PLUS
-    this.isTor = await isTor()
-    if (!this.isTor) {
-      uni.showToast({
-        title: this.language[this.$cache.get('_language')].text01,
-        icon: 'none'
-      })
-      // uni.reLaunch({
-      //   url: '/pages/index/index',
-      //   success: () => {
-
-      //     plus.navigator.closeSplashscreen()
-
-      //   }
-      // })
-
-      setTimeout(() => {
-        // plus.runtime.quit()
-      }, 1500)
+    if (this.$cache.get('_appInit') == 1) {
+      // const _appInit = this.$cache.get('_appInit')
+      // 从后台唤起
+      if (this.$cache.get('_touchId') == 1) {
+        console.log('fire2')
+        uni.navigateTo({
+          url: '/pages/mine/anquan/backgroundVerify?redirectUrl=',
+          animationType: 'none',
+          success: () => {
+            plus.navigator.closeSplashscreen()
+          }
+        })
+      } else {
+        this.isTor = await isTor()
+        if (!this.isTor) {
+          uni.showToast({
+            title: this.language[this.$cache.get('_language')].text01,
+            icon: 'none'
+          })
+          uni.reLaunch({
+            url: '/pages/index/index',
+            success: () => {
+              plus.navigator.closeSplashscreen()
+              setTimeout(() => {
+                plus.runtime.quit()
+              }, 3000)
+            }
+          })
+        }
+      }
+      this.$cache.set('_appInit', 0, 0)
     }
     // #endif
+  },
+  onHide() {
+    console.log('hide')
+    this.$cache.set('_appInit', 1, 0)
   }
 }
 </script>

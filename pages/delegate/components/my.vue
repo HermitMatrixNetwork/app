@@ -13,15 +13,15 @@
     <view class="account-box">
       <view class="account-column">
         <view class="column-item" @click="goTo('/pages/delegate/cancel')">
-          <u-icon :name="require('@/static/img/delegate/quxiaoweituo@2x.png')" size="80rpx"></u-icon>
+          <image src="/static/img/delegate/quxiaoweituo@2x.png" style="width: 80rpx; height: 80rpx;"></image>
           <text>{{ language.text06 }}</text>
         </view>
         <view class="column-item" @click="goTo('/pages/delegate/income')">
-          <u-icon :name="require('@/static/img/delegate/shouyilingqu@2x.png')" size="80rpx"></u-icon>
+          <image src="/static/img/delegate/shouyilingqu@2x.png" style="width: 80rpx; height: 80rpx;"></image>
           <text>{{ language.text07 }}</text>
         </view>
         <view class="column-item" @click="goTo('/pages/delegate/transaction')">
-          <u-icon :name="require('@/static/img/delegate/jiaoyijilu@2x.png')" size="80rpx"></u-icon>
+          <image src="/static/img/delegate/jiaoyijilu@2x.png" style="width: 80rpx; height: 80rpx;"></image>
           <text>{{ language.text08 }}</text>
         </view>
       </view>

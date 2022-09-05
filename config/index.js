@@ -40,14 +40,18 @@ const DEFAULT_RPC = {
 
 const getCurrentRpc = () => {
   let rpc 
-  
-  //#ifdef APP-PLUS
-  rpc = JSON.parse(plus.storage.getItem('_currentRpc')).data.data
-  //#endif
-  
-  //#ifndef APP-PLUS
-  rpc = uni.getStorageSync('_currentRpc').data
-  //#endif
+  try {
+    //#ifdef APP-PLUS
+    rpc = JSON.parse(plus.storage.getItem('_currentRpc')).data.data
+    //#endif
+    
+    //#ifndef APP-PLUS
+    rpc = uni.getStorageSync('_currentRpc').data
+    //#endif
+  } catch {
+    rpc = DEFAULT_RPC.link
+  }
+
   
   if (!rpc) {
     rpc = DEFAULT_RPC.link

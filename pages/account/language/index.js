@@ -224,7 +224,19 @@ const languages = {
     text197: '切换验证方式',
     text198: '交易中',
     text199: '钱包地址不能为空',
-    text200: '钱包名字不能为空'
+    text200: '钱包名字不能为空',
+    text201: '验证指纹中',
+    text202: '验证成功',
+    text203: '验证失败',
+    text204: '尝试次数过多。请切换验证方式',
+    text205: '请输入Viewkey',
+    text206: '点击加载更多',
+    text207: '加载中',
+    text208: '已全部加载完毕',
+    text209: '当前',
+    text210: 'viewkey 不能为空！',
+    text211: '提示：钱包移除成功！',
+    text212: '暂无热门代币'
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -282,7 +294,7 @@ const languages = {
     'text06': 'Transfer',
     'text07': 'Tokens',
     'text08': 'the current viewkey is inconsistent with the chain, and the token balance and transaction record will not be available. Please enter the token details page and click Set viewkey.',
-    'text09': 'confirm',
+    'text09': 'Confirm',
     'text10': 'Switch wallets',
     'text11': 'Add wallet',
     'text12': 'Create wallet',
@@ -320,7 +332,7 @@ const languages = {
     'text44': 'Receiver',
     'text45': 'Amount',
     'text46': 'Fee',
-    'text47': 'confirm',
+    'text47': 'Confirm',
     'text48': 'Fund password',
     'text49': 'Please enter your password.',
     'text50': 'Confirm ',
@@ -473,7 +485,19 @@ const languages = {
     text197: 'Switch authentication mode',
     text198: 'Trading',
     text199: 'Wallet address cannot be empty!',
-    text200: 'Wallet name cannot be empty!'
+    text200: 'Wallet name cannot be empty!',
+    text201: 'Verifying',
+    text202: 'Success',
+    text203: 'Fail',
+    text204: 'Too many attempts. Please switch the authentication method!',
+    text205: 'Please enter viewkey',
+    text206: 'Click to load more',
+    text207: 'Loading',
+    text208: 'All loaded',
+    text209: 'Current',
+    text210: 'viewkey cannot be empty!',
+    text211: 'The wallet was removed successfully!',
+    text212: 'No popular tokens yet'
   }
 }
 export default languages

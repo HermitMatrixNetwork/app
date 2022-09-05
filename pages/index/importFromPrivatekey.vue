@@ -5,7 +5,7 @@
       <view class="item">
         <view class="item-label">{{ language.text27 }}</view>
         <view class="item-input">
-          <u--textarea v-model.trim="privateKey64" placeholder="输入明文私钥"></u--textarea>
+          <u--textarea v-model.trim="privateKey64" :placeholder="language.text72"></u--textarea>
         </view>
       </view>
       <view class="item">
@@ -13,15 +13,15 @@
         <view class="item-input item-input-password">
           <u-input :password="!passwordEye" v-model="password" :placeholder="language.text46">
           </u-input>
-          <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'" @click="passwordEye = !passwordEye">
-          </u-icon>
+          <image :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
+            @click="passwordEye = !passwordEye" style="width: 32rpx; height: 32rpx; margin-right: 32rpx;"></image>
         </view>
         <view class="item-input item-input-password password-check">
           <u-input :password="!checkPasswordEye" v-model="checkPassword" :placeholder="language.text47">
           </u-input>
-          <u-icon color="#8F9BB3" size="20" :name="checkPasswordEye ? 'eye' : 'eye-off'"
-            @click="checkPasswordEye = !checkPasswordEye">
-          </u-icon>
+          <image :src="checkPasswordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
+            @click="checkPasswordEye = !checkPasswordEye" style="width: 32rpx; height: 32rpx; margin-right: 32rpx;">
+          </image>
         </view>
       </view>
       <view class="item">
@@ -33,8 +33,8 @@
         </view>
       </view>
     </view>
-    <u-button class="btn" @click="importWallet">导入</u-button>
-    
+    <u-button class="btn" @click="importWallet">{{ language.text82 }}</u-button>
+
     <view :callRenderCreate="callRenderCreate" :change:callRenderCreate="render.createWallet"></view>
     <!-- 错误提示 -->
     <Notify ref="notify"></Notify>
@@ -67,22 +67,22 @@ export default {
       rules: {
         privateKey64: [{
           rule: 'required',
-          errMessage: '私钥明文不能为空'
-        },{
+          errMessage: language[this.$cache.get('_language')].text81
+        }, {
           validator(value) {
             // 校验私钥合法性
             const reg = /^[A-Fa-f0-9]{64}$/
-            return reg.test(value) 
+            return reg.test(value)
           },
           errMessage: language[this.$cache.get('_language')].text50
         }],
         password: [{
           rule: 'required',
-          errMessage: '钱包密码不能为空'
+          errMessage: language[this.$cache.get('_language')].text79
         }, {
           rule: 'min',
           len: 8,
-          errMessage: '密码长度不能少于8位'
+          errMessage: language[this.$cache.get('_language')].text80
         }, {
           rule: 'max',
           len: 48,
@@ -96,7 +96,7 @@ export default {
           errMessage: language[this.$cache.get('_language')].text51
         }, {
           rule: 'required',
-          errMessage: '钱包密码不能为空'
+          errMessage: language[this.$cache.get('_language')].text79
         }]
       }
     }
@@ -114,7 +114,7 @@ export default {
         this.$refs.notify.show('error', invalidateField.errMessage)
         return false
       } else if (!this.name) {
-        this.$refs.notify.show('error', '钱包名称不能为空')
+        this.$refs.notify.show('error', this.language.text65)
         return false
       } else {
         // 通过校验
@@ -205,11 +205,13 @@ export default {
 
         &-password {
           display: flex;
+          height: 96rpx;
+          background-color: #F2F4F8;
+          align-items: center;
+          border-radius: 16rpx;
 
           .u-icon {
-            height: 96rpx;
             padding-right: 36rpx;
-            background-color: #F2F4F8;
             border-radius: 0 16rpx 16rpx 0 !important;
           }
         }

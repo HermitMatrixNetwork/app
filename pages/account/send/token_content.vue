@@ -286,7 +286,7 @@ export default {
           
           
           // #ifndef APP-PLUS          
-          console.log(res[4])
+          // console.log(res[4])
           // #endif
         }
 

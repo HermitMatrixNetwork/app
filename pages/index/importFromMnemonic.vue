@@ -15,15 +15,12 @@
         <view class="item-input item-input-password">
           <u-input :password="!passwordEye" v-model="password" :placeholder="language.text35">
           </u-input>
-          <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'" @click="passwordEye = !passwordEye">
-          </u-icon>
+          <image  :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="passwordEye = !passwordEye" style="width: 32rpx; height: 32rpx; margin-right: 32rpx;"></image>
         </view>
         <view class="item-input item-input-password password-check">
           <u-input :password="!checkPasswordEye" v-model="checkPassword" :placeholder="language.text36">
           </u-input>
-          <u-icon color="#8F9BB3" size="20" :name="checkPasswordEye ? 'eye' : 'eye-off'"
-            @click="checkPasswordEye = !checkPasswordEye">
-          </u-icon>
+          <image  :src="checkPasswordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="checkPasswordEye = !checkPasswordEye" style="width: 32rpx; height: 32rpx; margin-right: 32rpx;"></image>
         </view>
       </view>
       <view class="item">
@@ -35,7 +32,7 @@
         </view>
       </view>
     </view>
-    <u-button class="btn" @click="importWallet">{{ language.text39 }}</u-button>
+    <u-button class="btn" @click="importWallet">{{ language.text82 }}</u-button>
 
     <view :callRenderMnemonic="callRenderMnemonic" :change:callRenderMnemonic="render.getMnemonic"></view>
     <!-- 错误提示 -->
@@ -71,7 +68,7 @@ export default {
       rules: {
         password: [{
           rule: 'required',
-          errMessage: language[this.$cache.get('_language')].text63
+          errMessage: language[this.$cache.get('_language')].text64
         }, {
           rule: 'min',
           len: 8,
@@ -248,9 +245,12 @@ export default {
 
         &-password {
           display: flex;
-
+          align-items: center;
+          background-color: #F2F4F8;
+          height: 96rpx;
+          border-radius: 16rpx;
+          
           .u-icon {
-            height: 96rpx;
             padding-right: 36rpx;
             background-color: #F2F4F8;
             border-radius: 0 16rpx 16rpx 0 !important;

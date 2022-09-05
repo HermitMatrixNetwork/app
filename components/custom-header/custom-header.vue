@@ -7,7 +7,7 @@
 
     <view class="container">
       <view class="left">
-        <u-icon v-if="showGoBack" name="arrow-left" color="#8397B1" @click="beforeGoBack"></u-icon>
+        <image v-if="showGoBack" src="/static/img/black.png" @click="beforeGoBack" style="width:48rpx;height:48rpx"></image>
         <slot v-else name="left"></slot>
       </view>
       <view class="center">

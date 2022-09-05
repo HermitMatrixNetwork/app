@@ -11,13 +11,12 @@
           :inputVal.sync="walletAddress">
           <template #inputRight>
             <view class="scan">
-              <u-icon :name="require('@/static/img/account/mipmap-mdpi_saoma.png')" size="44rpx" @click="scanCode">
-              </u-icon>
+              <image src="/static/img/account/mipmap-mdpi_saoma.png" style="width: 44rpx;height: 44rpx;" @click="scanCode"></image>
             </view>
           </template>
         </InputTitle>
       </view>
-      <text class="errorTip" :style="{ opacity: (showAddressErrorTipEmpty || showAddressErrorTipDuplicate) ? 1 : 0 }" v-text="showAddressErrorTipEmpty ? language.text101 : showAddressErrorTipDuplicate ? language['addressErrorTipDuplicate'] : '1' "> </text>
+      <text class="errorTip" :style="{ opacity: (showAddressErrorTipEmpty || showAddressErrorTipDuplicate) ? 1 : 0 }" v-text="showAddressErrorTipEmpty ? language.text101 : showAddressErrorTipDuplicate ? language.text104 : '1' "> </text>
       <InputTitle :title="language.text88" :placeholder="language.text07" :inputVal.sync="walletName"></InputTitle>
       <text class="errorTip" :style="{ opacity: showWalletNameErrorTip ? 1 : 0 }">{{ language.text100 }}</text>
       <InputTitle :title="language.text87" :placeholder="language.text08" :inputVal.sync="walletDescribe"></InputTitle>

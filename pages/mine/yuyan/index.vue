@@ -12,7 +12,7 @@
     <view class="content">
       <view class="item" v-for="(item, index) in languageList" :key="index" @click="clickItem(item.value)">
         <text>{{ item.label }}</text>
-        <u-icon name="checkmark" v-show="currentLanguage == item.value" color="#1E5EFF" size="44rpx"></u-icon>
+        <image src="/static/img/mine/check.png" v-show="currentLanguage == item.value" style="width: 44rpx; height: 44rpx;"></image>
       </view>
     </view>
     

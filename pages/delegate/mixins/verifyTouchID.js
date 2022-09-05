@@ -7,11 +7,13 @@ export default {
       console.log('star verify')
 
       plus.fingerprint.authenticate(res => {
-        this.toast.msg = '验证指纹中'
+        // 指纹验证中
+        this.toast.msg = this.language.text87
         this.toast.icon = '/static/img/mine/loading.gif'
         this.showToast = true
         setTimeout(() => {
-          this.toast.msg = '验证成功'
+          // 验证成功
+          this.toast.msg = this.language.text88
           this.verifyTouchID = 1
           this.toast.icon = '/static/img/mine/success.png'
           this.hideModel && this.hideModel()
@@ -24,10 +26,12 @@ export default {
           this.verifyTouchErrorTip = ''
           this.firstTime = false
         } else if (this.firstTime && e.code == 5 || e.code == 7) {
-          this.verifyTouchErrorTip = '尝试次数过多。请切换验证方式'
+          // '尝试次数过多。请切换验证方式'
+          this.verifyTouchErrorTip = this.language.text90
           this.verifyTouchID = 2
         } else {
-          this.toast.msg = '验证指纹中'
+          // 验证指纹中
+          this.toast.msg = this.language.text87
           this.toast.icon = '/static/img/mine/loading.gif'
           this.showToast = true
           this.verifyTouchErrorTip = ''
@@ -39,9 +43,11 @@ export default {
             this.verifyTouchID = 0
           }
           plus.nativeUI.closeWaiting() //兼容Android平台关闭等待框
-          this.toast.msg = '指纹匹配失败，请重新验证'
+          // 验证失败
+          this.toast.msg = this.language.text89
           if (this.firstTime && e.code == 5 || e.code == 7) {
-            this.verifyTouchErrorTip = '尝试次数过多。请切换验证方式'
+            // '尝试次数过多。请切换验证方式'
+            this.verifyTouchErrorTip = this.language.text90
             this.firstTime = false
           }
         }, 1000)
@@ -53,7 +59,7 @@ export default {
       handler(newVal) {
         if (newVal) {
           setTimeout(() => {
-            this.showToast = false
+            // this.showToast = false
             switch (this.verifyTouchID) {
             case 1:
               this.verifyTouchIDSuccess && this.verifyTouchIDSuccess()
@@ -63,6 +69,8 @@ export default {
               break
             case 2:
               this.verifyTouchIDOverTime && this.verifyTouchIDOverTime()
+              break
+            case 3: // 啥也不做
               break
             default:
               this.verifyTouchIDFail && this.verifyTouchIDFail()

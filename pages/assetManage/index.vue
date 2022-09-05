@@ -3,7 +3,7 @@
     <custom-header tabUrl="/pages/account/index" :showRight="false">
       <view slot="center" class="search">
         <u-search :placeholder="language.text165" shape="round" :clearabled="true" v-model="address"
-          :showAction="false" @search="searchCoin"></u-search>
+          :showAction="false" @search="searchCoin" searchIcon="/static/img/delegate/search2.png"></u-search>
       </view>
     </custom-header>
     <view class="home-assets" data-url="/pages/assetManage/home" @click="goTo">
@@ -23,7 +23,7 @@
     <view v-else class="noData">
       <image class="data" src="@/static/img/account/nodata.png" />
       <view class="tip">
-        暂无热门代币
+        {{ language.text212 }}
       </view>
     </view>
   </view>

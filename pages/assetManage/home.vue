@@ -2,7 +2,7 @@
 	<view class="asset-manage">
 		<custom-header redirUrl="/pages/assetManage/index" :showRight="false">
 			<view slot="center" class="search">
-				<u-search :placeholder="language.text169" shape="round" :clearabled="true" v-model="address" :showAction="false" @search="searchCoin"></u-search>
+				<u-search :placeholder="language.text169" shape="round" :clearabled="true" v-model="address" :showAction="false" @search="searchCoin" searchIcon="/static/img/delegate/search2.png"></u-search>
 			</view>
 		</custom-header>
 		<view class="space"/>

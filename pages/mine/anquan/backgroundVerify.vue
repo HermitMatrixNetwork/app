@@ -1,6 +1,6 @@
 <template>
   <view class="touchId">
-    <custom-header :title="language.text32"></custom-header>
+    <view class="status_bar"></view>
     <view class="content">
       <view class="title">
         <text>{{ language.text34 }}</text>
@@ -63,6 +63,22 @@ export default {
   onUnload() {
     plus.fingerprint.cancel()
   },
+  onLoad(options) {
+    this.redirectUrl = options.redirectUrl
+    this.type = options.type
+  },
+  onHide() {
+    uni.navigateBack()
+  },
+  onBackPress(events) {
+    console.log(events)
+    if (events.from == 'backbutton') {
+      // plus.runtime.quit = function() {
+      //   main.moveTaskToBack(false)
+      // }
+      plus.runtime.quit()
+    }
+  },
   methods: {
     verify() {
       const eventChannel = this.getOpenerEventChannel()
@@ -84,7 +100,8 @@ export default {
       }, e => {
         console.log(e)
         if (e.code == 6) {
-          plus.fingerprint.cancel()
+          // plus.runtime.quit()
+          // plus.fingerprint.cancel()
           // uni.navigateBack()
         } else {
           this.toast.msg = `${this.language.text102}...`
@@ -122,11 +139,19 @@ export default {
       })
     },
     verifyTouchIDSuccess() {
-      uni.navigateBack()
+      switch(this.type) {
+      case 'reLaunch':
+        uni.reLaunch({
+          url: this.redirectUrl
+        })
+        break
+      default:
+        uni.navigateBack()
+      }
     },
     confirm() {
       this.aa = false
-      uni.navigateBack()
+      plus.runtime.quit()
     }
   },
   watch: {
@@ -162,6 +187,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .status_bar {
+    height: var(--status-bar-height);
+    width: 100%;
+  }
   .touchId {
     height: 100vh;
     background-color: #F4F6F9;

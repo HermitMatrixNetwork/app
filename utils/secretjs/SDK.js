@@ -18,6 +18,7 @@ export async function getSecret() {
   //#ifndef APP-PLUS
   wallet = uni.getStorageSync('_currentWallet').data
   //#endif
+  
   let rpc = getCurrentRpc()
   let walletAddress = wallet.address
   let privateKey64 = WalletCrpto.decode(wallet.privateKey64)

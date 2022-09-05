@@ -30,11 +30,12 @@
 				</view>
 				<view class="arrow tag-info">
 					<text v-if="latestVersion == version">{{ language.text81 }}</text>
-					<image src="/static/img/ic-arrow1.png"></image>
+					<image v-if="!checking" src="/static/img/ic-arrow1.png"></image>
+          <u-loading-icon v-else :text="language.text114" textSize="14"></u-loading-icon>
 				</view>
 			</view>
 		</view>
-    <custom-updateApp tip :updating.sync="updating" :latestVersion.sync="latestVersion" ref="updateApp" />
+    <custom-updateApp tip :updating.sync="updating" :checking.sync="checking" :latestVersion.sync="latestVersion" ref="updateApp" />
 	</view>
 </template>
 
@@ -50,7 +51,8 @@ export default {
       version: '',
       updateIsShow:false,
       latestVersion: '-1',
-      updating: false
+      updating: false,
+      checking: false
     }
   },
   onLoad() {
@@ -60,6 +62,7 @@ export default {
   },
   methods: {
     checkVersion() {
+      this.checking = true
       this.$refs.updateApp.checkUpdate()
     },
     getAppVersion() {

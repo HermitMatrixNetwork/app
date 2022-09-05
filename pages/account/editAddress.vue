@@ -11,13 +11,12 @@
           :inputVal.sync="book.walletAddress">
           <template #inputRight>
             <view class="scan">
-              <u-icon :name="require('@/static/img/account/mipmap-mdpi_saoma.png')" size="44rpx" @click="scanCode">
-              </u-icon>
+              <image src="/static/img/account/mipmap-mdpi_saoma.png" @click="scanCode" style="width: 44rpx;height: 44rpx;"></image>
             </view>
           </template>
         </InputTitle>
       </view>
-      <text class="errorTip" :style="{ opacity: (showAddressErrorTipEmpty || showAddressErrorTipDuplicate) ? 1 : 0 }" v-text="showAddressErrorTipEmpty ? language['addressErrorTipEmpty'] : showAddressErrorTipDuplicate ? language['addressErrorTipDuplicate'] : '1' "> </text>
+      <text class="errorTip" :style="{ opacity: (showAddressErrorTipEmpty || showAddressErrorTipDuplicate) ? 1 : 0 }" v-text="showAddressErrorTipEmpty ? language.text100 : showAddressErrorTipDuplicate ? language.text104 : '1' "> </text>
 
       <InputTitle :title="language.text88" :placeholder="language.text07" :inputVal.sync="book.walletName"></InputTitle>
       <text class="errorTip" :style="{ opacity: showWalletNameErrorTip ? 1 : 0 }">{{ language['walletNameErrorTipEmpty'] }}</text>
@@ -27,7 +26,7 @@
     
     <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
       <view class="modalContent">
-        <u-icon name="info-circle" size="64rpx" color="#FFA033" />
+        <image src="/static/img/tishi2.png" style="width: 64rpx; height: 64rpx;"></image>
         <view class="modal-title">{{ language.text89 }}</view>
         <text class="modal-content">{{ language.text16 }}</text>
         <view class="con_btn">

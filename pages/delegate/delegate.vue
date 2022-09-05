@@ -4,14 +4,14 @@
     <view :updataDelegate="updataDelegate" :change:updataDelegate="render.delegate"></view>
     <custom-header :title="language.text58" :style="titleStyle">
     </custom-header>
-   <view class="top-border"></view>
+    <view class="top-border"></view>
     <view class="main-top">
       <view class="validator">
         <view class="label">
           <text>{{ language.text84 }}</text>
         </view>
         <view class="value">
-          <text>{{ delegatorInfo.operatorAddress }}</text>
+          <text>{{ delegatorInfo.operator_address }}</text>
         </view>
       </view>
       <view class="border"></view>
@@ -30,7 +30,7 @@
             <div class="title">{{ language.text61 }}：</div>
             <div class="num">{{ balance }} GHM</div>
           </view>
-<!--          <text v-if="sendAmount>balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text> -->
+          <!--          <text v-if="sendAmount>balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text> -->
         </view>
 
         <view class="amount memo">
@@ -45,7 +45,7 @@
     </view>
     <miners-column @getMinersCost="getMinersCost"></miners-column>
     <view class="main-bottom">
-     <view class="btn" @click="transferConfirm">
+      <view class="btn" @click="transferConfirm">
         {{ language.text68 }}
       </view>
     </view>
@@ -56,8 +56,8 @@
         <view class="main">
           <view class="popup-title">
             {{ language.text25 }}
-            <u-icon :name="require('@/static/img/account/close.png')" size="32rpx" @click="submitPopupIsShow=false">
-            </u-icon>
+            <image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
+              @click="submitPopupIsShow=false"></image>
           </view>
 
           <!-- 发送账户 -->
@@ -103,25 +103,25 @@
       <view class="modal_main">
         <view class="modal_title">
           <view>
-            {{ verifyMethod == 'touchID' ? language83 : language.text66 }}
+            {{ verifyMethod == 'touchID' ? language.text83 : language.text66 }}
             <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
               class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
           </view>
-          <u-icon name="/static/img/account/close.png" size="32rpx"
-            @click="closeModalPasswordIsShow"></u-icon>
+          <image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
+            @click="closeModalPasswordIsShow"></image>
         </view>
         <view v-if="verifyMethod == 'password'">
-        <view class="item">
-          <view class="item-input item-input-password">
-            <u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text67">
-            </u-input>
-            <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'"
-              @click="passwordEye = !passwordEye">
-            </u-icon>
+          <view class="item">
+            <view class="item-input item-input-password">
+              <u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text67">
+              </u-input>
+              <image :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
+                @click="passwordEye = !passwordEye"
+                style="width: 32rpx; height: 32rpx; margin-right: 36rpx; border-radius: 0 16rpx 16rpx 0;"></image>
+            </view>
           </view>
-        </view>
-        <text :style="{opacity: passwordCheck ? 1 : 0 }" class="waringPrompt">{{ language.text69 }}</text>
-        <u-button @click="passwordButton" class="pass_confirm">{{ language.text68 }}</u-button>
+          <text :style="{opacity: passwordCheck ? 1 : 0 }" class="waringPrompt">{{ language.text69 }}</text>
+          <u-button @click="passwordButton" class="pass_confirm">{{ language.text68 }}</u-button>
         </view>
         <view v-else class="touch-verify">
           <view class="logo">
@@ -210,10 +210,16 @@ export default {
     if (this.touchId) this.verifyMethod = 'touchID'
     this.balance = this.wallet.coinList[0].balance
     this.delegatorInfo = JSON.parse(value.data)
-    this.formData.validatorAddress = this.delegatorInfo.operatorAddress
+    this.formData.validatorAddress = this.delegatorInfo.operator_address
     this.formData.delegatorAddress = this.userAddress
   },
   methods: {
+    verifyTouchIDOverTime() {
+      this.showToast = false
+    },
+    verifyTouchIDFail() {
+      this.showToast = false
+    },
     closeModalPasswordIsShow() {
       this.modalPasswordIsShow = false
       if (this.touchId) {
@@ -239,27 +245,31 @@ export default {
         this.passwordCheck = false
         this.loading = true
         this.updataDelegate = this.formData
-        this.$nextTick(() => {
-          uni.showToast({
-            title: `${this.language.text77}...`,
-            icon: 'loading',
-            duration: 999999999
-          })          
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text77 + '...'
+        this.toast.icon = '/static/img/mine/loading.gif'
+        // this.$nextTick(() => {
+        //   uni.showToast({
+        //     title: `${this.language.text77}...`,
+        //     icon: 'loading',
+        //     duration: 999999999
+        //   })          
+        // })
       })
     },
     submitAgain() {
       this.modalPasswordIsShow = true
       // #ifdef APP-PLUS
-      if (this.touchId ) {
+      if (this.touchId) {
         this.verify()
       }
       // #endif
-      
+
       // #ifndef APP-PLUS
       this.touchId = 0
       // #endif
-      
+
       this.submitPopupIsShow = false
     },
     passwordButton() {
@@ -270,12 +280,16 @@ export default {
         this.loading = true
         this.passwordCheck = false
         this.updataDelegate = this.formData // 调用render.sendToken
-        uni.showToast({
-          title: `${this.language.text77}...`,
-          icon: 'loading',
-          mask: true,
-          duration: 999999999
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text77 + '...'
+        this.toast.icon = '/static/img/mine/loading.gif'
+        // uni.showToast({
+        //   title: `${this.language.text77}...`,
+        //   icon: 'loading',
+        //   mask: true,
+        //   duration: 999999999
+        // })
         this.modalPasswordIsShow = false
       }
     },
@@ -295,13 +309,13 @@ export default {
       if (amount == '' || amount <= 0) {
         verify = false
         this.$refs.notify.show('error', this.language.text80)
-      } else if (amount > this.balance){
+      } else if (amount > this.balance) {
         verify = false
         this.$refs.notify.show('error', this.language.text81)
       } else {
         this.$refs.notify.close()
       }
-      
+
       if (verify) this.submitPopupIsShow = true
     },
     testAmount() {
@@ -314,27 +328,44 @@ export default {
       this.loading = false
       this.updataDelegate = 0
       if (res.code == 0) {
-        uni.showToast({
-          title: this.language.text78,
-          image: '/static/img/mine/success.png',
-          mask: true,
-          duration: 3000,
-          complete: () => {
-            this.$cache.set('_updateDelegateInfo', true, 0)
-            setTimeout(() => {
-              uni.redirectTo({
-                url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
-              })
-            }, 1500)
-          }
-        })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text78
+        this.toast.icon = '/static/img/mine/success.png'
+        this.$cache.set('_updateDelegateInfo', true, 0)
+        // uni.showToast({
+        //   title: this.language.text78,
+        //   image: '/static/img/mine/success.png',
+        //   mask: true,
+        //   duration: 3000,
+        //   complete: () => {
+        //     this.$cache.set('_updateDelegateInfo', true, 0)
+        //     setTimeout(() => {
+        //       uni.redirectTo({
+        //         url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
+        //       })
+        //     }, 1500)
+        //   }
+        // })
+        setTimeout(() => {
+          uni.redirectTo({
+            url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
+          })
+        }, 1500)
       } else {
-        uni.showToast({
-          title: this.language.text79,
-          image: '/static/img/mine/fail.png',
-          mask: true,
-          duration: 3000,
-        })
+        // uni.showToast({
+        //   title: this.language.text79,
+        //   image: '/static/img/mine/fail.png',
+        //   mask: true,
+        //   duration: 3000,
+        // })
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text79
+        this.toast.icon = '/static/img/mine/fail.png'
+        setTimeout(() => {
+          this.showToast = false
+        }, 3000)
         console.log(res)
       }
     }
@@ -352,7 +383,10 @@ export default {
     methods: {
       async delegate(val) {
         if (val == 0) return
-        let { memo, ...data } = JSON.parse(JSON.stringify(val))
+        let {
+          memo,
+          ...data
+        } = JSON.parse(JSON.stringify(val))
         let res = {}
         data.amount.amount = data.amount.amount * mainCoin.decimals + ''
         try {
@@ -375,9 +409,10 @@ export default {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0,0,0,.5) !important;
+    background: rgba(0, 0, 0, .5) !important;
     z-index: 9999;
   }
+
   .sendPage {
     height: 100vh;
     overflow: hidden;
@@ -387,7 +422,7 @@ export default {
   .main-top {
     background: #FFFFFF;
     padding-bottom: 48rpx;
-    
+
     .content {
       margin: 0 32rpx;
     }
@@ -544,7 +579,7 @@ export default {
         line-height: 32rpx;
       }
 
-      > view:not(:first-child) {
+      >view:not(:first-child) {
         font-size: 28rpx;
         display: flex;
         justify-content: space-between;
@@ -685,10 +720,12 @@ export default {
 
       /deep/ .u-input {
         color: #2C365A;
+
         .uni-input-input {
           font-size: 40rpx;
           font-weight: 600;
         }
+
         .input-placeholder {
           font-size: 28rpx !important;
           color: #8397B1 !important;
@@ -702,12 +739,14 @@ export default {
       }
     }
   }
-  
+
   .memo {
     .value {
       height: 96rpx;
+
       /deep/ .u-input {
         color: #2C365A;
+
         .uni-input-input {
           font-size: 32rpx;
           font-weight: 400;
@@ -715,7 +754,7 @@ export default {
       }
     }
   }
-  
+
   .btn {
     position: absolute;
     bottom: 64rpx;
@@ -731,33 +770,35 @@ export default {
     text-align: center;
     line-height: 96rpx;
   }
-  
+
   .validator {
     background-color: #fff;
     padding: 48rpx 32rpx 33rpx;
+
     .label {
       font-weight: 600;
       font-size: 28rpx;
       color: #2C365A;
       margin-bottom: 16rpx;
     }
+
     .value {
       font-size: 24rpx;
       color: #8397B1;
     }
   }
-  
+
   .border {
     height: 2rpx;
-    background-color: rgba(131,151,177,0.20);
+    background-color: rgba(131, 151, 177, 0.20);
     margin: 0 32rpx;
   }
-  
+
   .top-border {
     height: 2rpx;
-    background-color: rgba(131,151,177,0.20);
+    background-color: rgba(131, 151, 177, 0.20);
   }
-  
+
   .pass_confirm {
     height: 96rpx;
     background: #002FA7;
@@ -767,18 +808,18 @@ export default {
     text-align: center;
     margin-top: 56rpx;
   }
-  
+
   .item {
     margin-top: 64rpx;
-  
+
     &-input {
-  
+
       .u-input {
         height: 96rpx;
         background-color: #F2F4F8;
         border-radius: 16rpx 0 0 16rpx;
         padding-left: 0 !important;
-  
+
         /deep/ input {
           color: #2C365A !important;
           font-size: 28rpx !important;
@@ -786,7 +827,7 @@ export default {
           line-height: 48rpx !important;
         }
       }
-  
+
       /deep/ .input-placeholder {
         // height: 48rpx !important;
         font-weight: 400 !important;
@@ -795,27 +836,30 @@ export default {
         color: #8397B1 !important;
         // line-height: 48rpx !important;
       }
-  
+
       &-password {
         display: flex;
-  
+        height: 96rpx;
+        background-color: #F2F4F8;
+        border-radius: 16rpx;
+        align-items: center;
+
         .u-icon {
-          height: 96rpx;
           padding-right: 36rpx;
-          background-color: #F2F4F8;
           border-radius: 0 16rpx 16rpx 0 !important;
         }
       }
     }
   }
-  
+
   .touch-verify {
     margin-top: 80rpx;
+
     .logo {
       text-align: center;
     }
   }
-  
+
   .changeVerifyMethod {
     text-align: right;
     font-family: PingFangSC-Regular;
@@ -823,7 +867,7 @@ export default {
     color: #1E5EFF;
     margin-top: 20rpx;
   }
-  
+
   .toast {
     position: fixed;
     left: 50%;
@@ -835,17 +879,17 @@ export default {
     justify-content: center;
     border-radius: 6rpx;
     z-index: 999999999;
-  
+
     &-icon {
       text-align: center;
       margin-top: 65rpx;
-  
+
       image {
         width: 65rpx;
         height: 65rpx;
       }
     }
-  
+
     &-content {
       margin-top: 20rpx;
       font-weight: 400;
@@ -854,7 +898,7 @@ export default {
       text-align: center;
     }
   }
-  
+
   .verifyTouchErrorTip {
     color: red;
     font-size: 24rpx;

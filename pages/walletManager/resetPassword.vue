@@ -10,8 +10,9 @@
         <u-input :password="!passwordEye" class="wallet-password-input" :class="{error: confirmPasswordError}"
           v-model="originVal" :placeholder="language[placeholder[flag]]">
         </u-input>
-        <u-icon color="#8F9BB3" size="20" :name="passwordEye ? 'eye' : 'eye-off'" :class="{error: confirmPasswordError}"
-          @click="passwordEye = !passwordEye">
+        <view :class="{error: confirmPasswordError}" style="height: 100%; display: flex; align-items: center; border-radius: 0 16rpx 16rpx 0; overflow: hidden;">
+          <image  :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="passwordEye = !passwordEye" style="width: 32rpx; height: 32rpx; margin-right: 36rpx"></image>
+        </view>
         </u-icon>
       </view>
       <view class="error-tip" :style="{ opacity: confirmPasswordError ? 1 : 0 }">

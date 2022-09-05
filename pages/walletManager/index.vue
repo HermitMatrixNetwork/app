@@ -90,8 +90,7 @@
           <u-input :type="showPassword ? 'text' : 'password'" :placeholder="language.text49"
             border="surround" v-model="password" class="edit-name-input" :class="{ 'error-edit-name': editNameError }">
             <template slot="suffix">
-              <u-icon :name="showPassword ? 'eye-fill' : 'eye-off'" color="#8F9BB3" size="24"
-                @click="showPassword = !showPassword"></u-icon>
+              <image :src="showPassword? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="showPassword = !showPassword" style="width: 32rpx; height: 32rpx;"></image>
             </template>
           </u-input>
           <view class="error-tip" :style="{ opacity: confirmPasswordError ? 1 : 0 }">
@@ -108,7 +107,7 @@
     
     <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
       <view class="modalContent">
-        <u-icon name="info-circle" size="64rpx" color="#FFA033" />
+        <image src="/static/img/tishi2.png" style="width: 64rpx; height: 64rpx;"></image>
         <view class="modal-title">{{ language.text159 }}</view>
         <text class="modal-content">{{ language.text160 }}</text>
         <view class="con_btn">
@@ -185,7 +184,7 @@ export default {
     },
     removeWallet() {
       const walletList = this.$cache.get('_walletList')
-      this.$refs.notify.show('error', '移除钱包成功', { bgColor: '#275EF1' })
+      this.$refs.notify.show('error', this.language.text211, { bgColor: '#275EF1' })
       let url = ''
       if (walletList.length > 1) {
         walletList.shift()
