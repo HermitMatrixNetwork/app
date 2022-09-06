@@ -1,7 +1,6 @@
 {
   "name": "hmn-app",
   "version": "1.0.0",
-  "description": "",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,5 +22,14 @@
     "randombytes": "^2.1.0",
     "secretjs-hmt": "^1.0.1",
     "tki-qrcode": "^0.1.6"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HermitMatrixNetwork/app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HermitMatrixNetwork/app/issues"
+  },
+  "homepage": "https://github.com/HermitMatrixNetwork/app#readme",
+  "description": ""
 }

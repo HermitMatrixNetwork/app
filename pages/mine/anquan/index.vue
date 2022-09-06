@@ -70,8 +70,8 @@ export default {
   methods: {
     switchTouchId() {
       try {
-        // if (!plus || !plus.fingerprint.isSupport() || !plus.fingerprint.isEnrolledFingerprints()) return this.aa = true
-        // const AUTHENTICATE_OVERLIMIT = this.$cache.get('_AUTHENTICATE_OVERLIMIT')
+        if (!plus || !plus.fingerprint.isSupport() || !plus.fingerprint.isEnrolledFingerprints()) return this.aa = true
+        const AUTHENTICATE_OVERLIMIT = this.$cache.get('_AUTHENTICATE_OVERLIMIT')
         // if (AUTHENTICATE_OVERLIMIT) return this.bb = true
         uni.navigateTo({
           url: './verifyTouchId',
