@@ -15,7 +15,7 @@
 				{{ language.text53 }}
 			</view>
 
-			<view class="qrcode">
+			<view class="qrcode" @click="capture">
 				<tki-qrcode ref="qrcode" :val="code.val" :size="code.size" :unit="code.upx" :onval="code.onval"
 					:loadMake="code.loadMake" @result="qrR" />
 			</view>
@@ -71,6 +71,41 @@ export default {
   methods: {
     qrR(res){
       this.qrUrl = res
+    },
+    //生成当前页面图片
+    capture() {
+      var pages = getCurrentPages() //获取当前页面信息
+      var page = pages[pages.length - 1]
+      var bitmap = null
+      var currentWebview = page.$getAppWebview()
+      bitmap = new plus.nativeObj.Bitmap('amway_img')
+      // 将webview内容绘制到Bitmap对象中
+      currentWebview.draw(bitmap, function() {
+        // console.log('截屏绘制图片成功');
+        //这里我将文件名用四位随机数拼接了，不然会出现当前图片替换上一张图片只能保存一张图片的问题
+        let rand = Math.floor(Math.random() * 10000)
+        let saveUrl = '_doc/' + rand + 'a.jpg'
+        bitmap.save(saveUrl, {}, function(i) {
+          // console.log('保存图片成功：' + JSON.stringify(i));
+          uni.saveImageToPhotosAlbum({
+            filePath: i.target,
+            success: function() {
+              // bitmap.clear(); //销毁Bitmap图片
+              uni.showToast({
+                title: '图片已保存',
+                icon: 'none',
+                mask: false,
+                duration: 1500
+              })
+            }
+          })
+        }, function(e) {
+          console.log('保存图片失败：' + JSON.stringify(e))
+        })
+      }, function(e) {
+        console.log('截屏绘制图片失败：' + JSON.stringify(e))
+      })
+      //currentWebview.append(amway_bit);
     },
   }
 }
