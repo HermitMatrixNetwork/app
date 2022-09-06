@@ -19,8 +19,8 @@
       <text class="errorTip" :style="{ opacity: (showAddressErrorTipEmpty || showAddressErrorTipDuplicate) ? 1 : 0 }" v-text="showAddressErrorTipEmpty ? language.text100 : showAddressErrorTipDuplicate ? language.text104 : '1' "> </text>
 
       <InputTitle :title="language.text88" :placeholder="language.text07" :inputVal.sync="book.walletName"></InputTitle>
-      <text class="errorTip" :style="{ opacity: showWalletNameErrorTip ? 1 : 0 }">{{ language['walletNameErrorTipEmpty'] }}</text>
-      <InputTitle :title="language.text87" :placeholder="language.text08" :inputVal.sync="book.walletDescribe"></InputTitle>
+      <text class="errorTip" :style="{ opacity: showWalletNameErrorTip ? 1 : 0 }">{{ language[walletNamerError] }}</text>
+      <InputTitle style="margin-top: 32rpx;" :title="language.text87" :placeholder="language.text08" :inputVal.sync="book.walletDescribe"></InputTitle>
     </view>
     <u-button class="btn" @click="deleteBook">{{ language.text15 }}</u-button>
     
@@ -62,7 +62,8 @@ export default {
       showAddressErrorTipDuplicate: false,
       showWalletNameErrorTip: false,
       language: language[this.$cache.get('_language')],
-      aa: false
+      aa: false,
+      walletNamerError: 'text100', // text100, text116 '钱包地址不能为空', '钱包名称不能超过10个字符'
     }
   },
   methods: {
@@ -85,6 +86,14 @@ export default {
 
       if (this.book.walletName.trim() == '') {
         this.showWalletNameErrorTip = true
+        this.alletNamerError = text100
+      } else {
+        this.showWalletNameErrorTip = false
+      }
+      
+      if (this.book.walletName.trim().length > 10) {
+        this.showWalletNameErrorTip = true
+        this.walletNamerError = 'text116'
       } else {
         this.showWalletNameErrorTip = false
       }

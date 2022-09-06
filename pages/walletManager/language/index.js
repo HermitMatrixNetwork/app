@@ -24,7 +24,7 @@ export default {
     'switchWallet': '切换钱包',
     'addWallet': '添加钱包',
     'createWallet': '创建钱包',
-    'hermitWalle': 'Hermit Walle',
+    'hermitWalle': 'Hermit Wallet',
     'verifyWalletPassword': '验证钱包密码',
     'resetFundPassword': '重置资金密码',
     'resetPassword': '重置密码',
@@ -65,6 +65,7 @@ export default {
     text28: 'public key',
     text29: 'keystore',
     text30: 'Encrypted private key JSON',
-    text31: 'Select import type'
+    text31: 'Select import type',
+    'hermitWalle': 'Hermit Wallet',
   }
 }

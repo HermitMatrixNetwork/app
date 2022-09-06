@@ -6,8 +6,8 @@ export default {
     removeNode: '删除节点',
     'text01': '我的',
     'text02': '地址簿',
-    'text03': '暂无地址记录',
-    'text04': '添加地址',
+    'text03': '暂无地址',
+    'text04': '添加',
     'text05': '地址信息',
     'text06': '请输入地址',
     'text07': '设置钱包名称（不超过10个字符）',
@@ -89,7 +89,7 @@ export default {
     'text83': '版本更新',
     'text84': '取消',
     'text85': '升级',
-    'text86': '点击',
+    'text86': ' 点击',
     'text87': '描述',
     'text88': '钱包名称',
     'text89': '提示',
@@ -118,7 +118,8 @@ export default {
     text112: '验证成功',
     text113: '验证失败',
     text114: '检查中',
-    text115: '已是最新版本，无需更新！'
+    text115: '已是最新版本，无需更新！',
+    text116: '钱包名称不能超过10个字符'
   },
   EN: {
     addressErrorTipDuplicate: '钱包地址已存在，请勿重复添加',
@@ -127,7 +128,7 @@ export default {
     removeNode: '删除节点',
     'text01': 'me',
     'text02': 'address book',
-    'text03': 'No address record yet.',
+    'text03': 'No address record yet',
     'text04': 'Add an address',
     'text05': 'Address information',
     'text06': 'Please enter the address.',
@@ -239,7 +240,8 @@ export default {
     text112: 'Success',
     text113: 'Fail',
     text114: 'In inspection',
-    text115: 'Already the latest version, no need to update!'
+    text115: 'Already the latest version, no need to update!',
+    text116: 'Wallet name cannot exceed 10 characters'
     
   },
   CT: {}

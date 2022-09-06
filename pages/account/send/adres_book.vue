@@ -26,7 +26,7 @@
 		
 		<view class="no-address" v-else>
 			<image src="../../../static/img/mipmap.png" />
-			<view>{{ language.text03 }} {{ language.text86 }} <text class="add" @click="toGo('/pages/account/writeAddress')">{{ language.text04 }}</text></view>
+			<view>{{ language.text03 }},{{ language.text86 }} <text class="add" @click="toGo('/pages/account/writeAddress')">{{ language.text04 }}</text></view>
 		</view>
 	</view>
 </template>

@@ -9,7 +9,7 @@
     <view class="main">
       <view class="account-header">
         <view class="header-left" @click="showSwitchWallet = true">
-          <view class="title">{{ languages.text183 }}</view>
+          <view class="title">{{ currentWallet.name }}</view>
           <image src="/static/img/account/down.png" style="width: 32rpx; height: 32rpx;"></image>
         </view>
 
@@ -26,13 +26,12 @@
               <image :src="eyeAsset? '/static/img/eye.png' : '/static/img/eye-close.png'" @click="assentIsShow" style="width: 32rpx; height: 32rpx;"></image>
           </view>
           <view class="user-balance">
-            ${{ eyeAsset ? allassets : '∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗' }}
+            {{ eyeAsset ? '$' + allassets : '∗∗∗∗∗∗∗∗' }}
           </view>
           <view class="user-address">
-            <text v-if="eyeAsset">{{
+            <text >{{
               currentWallet.address | sliceAddress
             }}</text>
-            <text v-else>∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗</text>
             <image class="copy-icon" src="/static/img/account/copy.png" @click="copy"></image>
             <!-- {{eyeAsset?(currentWallet.address|sliceAddress):'∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗'}} -->
           </view>

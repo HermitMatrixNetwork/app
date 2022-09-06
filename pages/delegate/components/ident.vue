@@ -155,18 +155,22 @@ export default {
       }
     },
     async ValidatorsData() {
-      const res = (await getNodeList({
-        'chain_id':'ghmdev'
-      })).data.data.list
-      // this.validators = res
-      this.validators = res.map(item => {
-        item.token = item.tokens / mainCoin.decimals
-        item.uptimes = (1 - item.uptime) * 100 + '%'
-        item.rate = item.commission_rate * 100 + '%'
-        return item
-      })
-      // console.log(this.validators)
-      this.loading = false
+      try {
+        const res = (await getNodeList({
+          'chain_id':'ghmdev'
+        })).data.data.list        
+        // this.validators = res
+        this.validators = res.map(item => {
+          item.token = item.tokens / mainCoin.decimals
+          item.uptimes = (1 - item.uptime) * 100 + '%'
+          item.rate = item.commission_rate * 100 + '%'
+          return item
+        })
+      } catch (e) {
+        console.log('request errpr', e)
+      } finally {
+        this.loading = false
+      }
     },
     confirm() {
       let selData = this.validators.filter(item => {
