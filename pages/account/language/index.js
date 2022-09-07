@@ -236,7 +236,9 @@ const languages = {
     text209: '当前',
     text210: 'viewkey 不能为空！',
     text211: '提示：钱包移除成功！',
-    text212: '暂无热门代币'
+    text212: '暂无热门代币',
+    text213:'保存分享'
+		
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -497,7 +499,8 @@ const languages = {
     text209: 'Current',
     text210: 'viewkey cannot be empty!',
     text211: 'The wallet was removed successfully!',
-    text212: 'No popular tokens yet'
+    text212: 'No popular tokens yet',
+    text213:'Save and share'
   }
 }
 export default languages
