@@ -10,7 +10,7 @@
           <view class="price">$ {{ item.price }}</view>
           <view class="time">{{ item.time }}</view>
         </view>
-        <view class="custom" @click="addCustom">
+        <view class="custom" @click="addCustom" v-if="minersList.length < 4">
           <text>{{ language.text27 }}</text>
         </view>
       </view>
@@ -27,7 +27,7 @@ export default {
     return {
       selectedMiners: 1,
       minersList: [{
-        amount: '0.000215',
+        amount: '0.000000215',
         demon: 'GHM',
         price: '0.00',
         speed: language[this.$cache.get('_language')].text25,
@@ -35,14 +35,14 @@ export default {
       },
 
       {
-        amount: '0.000215',
+        amount: '0.000000215',
         demon: 'GHM',
         price: '0.00',
         speed: language[this.$cache.get('_language')].text24,
         time: `${language[this.$cache.get('_language')].text28} 5 ${language[this.$cache.get('_language')].text26}`
       },
       {
-        amount: '0.000215',
+        amount: '0.000000215',
         demon: 'GHM',
         price: '0.00',
         speed: language[this.$cache.get('_language')].text23,
@@ -77,7 +77,7 @@ export default {
             data = Object.assign({
               price: '0.00',
               demon: 'GHM',
-              speed: '快',
+              speed: '自定义',
               time: '约3分钟'
             }, data)
             this.minersList.push(data)
@@ -180,6 +180,7 @@ export default {
         }
 
         .selectedMiners {
+          position: relative;
           border: 2rpx solid rgba(30, 94, 255, 0.60);
           box-sizing: border-box;
 
@@ -193,6 +194,8 @@ export default {
           .time {
             border-top: 2rpx solid rgba(30, 94, 255, 0.60);
           }
+          
+          
         }
 
         .custom {

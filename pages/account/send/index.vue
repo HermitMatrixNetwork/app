@@ -6,7 +6,7 @@
         <image src="/static/img/account/saoma.png" style="width:44rpx; height: 44rpx;" @click="scanCode"></image>
       </template>
     </custom-header>
-  <view class="main-top">
+    <view class="main-top">
 
       <view class="content">
 
@@ -24,7 +24,8 @@
           <InputTitle :title="language.text16" :type="'text'" :placeholder="language.text17" ref="addressInptval"
             :inputVal.sync="sendFormData.receiveAddress">
             <template #title-icon>
-                <image src="/static/img/account/addressbook.png" @click="toAddressBook" style="width:44rpx; height: 44rpx;"></image>
+              <image src="/static/img/account/addressbook.png" @click="toAddressBook"
+                style="width:44rpx; height: 44rpx;"></image>
             </template>
           </InputTitle>
           <text :style="{ opacity: showAddressErrorTip ? 1 : 0 }" class="waringPrompt">{{ language.text188 }}</text>
@@ -37,13 +38,14 @@
               <view class="label">
                 <text>{{ language.text18 }}</text>
                 <view class="can-be-use">
-                  {{ language.text193 }}： 
+                  {{ language.text193 }}：
                   <custom-loading v-if="loading"></custom-loading>
                   <text v-else>{{ token.balance || '0.00' }} {{ token.alias_name }}</text>
                 </view>
               </view>
               <view class="value">
-                <u--input :placeholder="language.text19" type="number" v-model="sendFormData.sendAmount"></u--input>
+                <u--input :placeholder="language.text19" type="number" v-model="sendFormData.sendAmount"
+                  @input="sendAmountInput"></u--input>
                 <view class="value-info">
                   <text class="denom">{{ token.alias_name }}</text>
                   <view class="border"></view>
@@ -52,7 +54,8 @@
               </view>
             </view>
           </view>
-          <text v-if="Number(sendFormData.sendAmount) > Number(token.balance)" class="waringPrompt">{{ language.text194 }}</text>
+          <text v-if="Number(sendFormData.sendAmount) > Number(token.balance)"
+            class="waringPrompt">{{ language.text194 }}</text>
           <text v-else-if="showAmountErrorTip" class="waringPrompt">{{ language.text195 }}</text>
         </view>
 
@@ -77,7 +80,8 @@
         <view class="main">
           <view class="popup-title">
             {{ language.text42 }}
-            <image src="/static/img/account/close.png" style="width: 32rpx; height: 32rpx;" @click="submitPopupIsShow=false"></image>
+            <image src="/static/img/account/close.png" style="width: 32rpx; height: 32rpx;"
+              @click="submitPopupIsShow=false"></image>
           </view>
 
           <!-- 发送账户 -->
@@ -100,7 +104,7 @@
 
           <!--Memo-->
           <view class="memo_type">
-            <text>Meno</text>
+            <text>Memo</text>
             <text>{{ sendFormData.memo }}</text>
           </view>
 
@@ -108,8 +112,11 @@
           <view class="miners_fee">
             <text>{{language.text46}}</text>
             <view>
-              <view>{{ token.alias_name == mainCoin.alias_name ? 25000 : 40000 }} GWEI * {{ sendFormData.gas }} GasPrice</view>
-              <view class="price">{{ token.alias_name == mainCoin.alias_name ? 25000 * sendFormData.gas : 40000 * sendFormData.gas }} GHM</view>
+              <view>{{ token.alias_name == mainCoin.alias_name ? 25000 : 40000 }} GWEI * {{ sendFormData.gas }} GasPrice
+              </view>
+              <view class="price">
+                {{ token.alias_name == mainCoin.alias_name ? 25000 * sendFormData.gas : 40000 * sendFormData.gas }} GHM
+              </view>
             </view>
           </view>
         </view>
@@ -124,9 +131,11 @@
         <view class="modal_title">
           <view>
             {{ verifyMethod == 'touchID' ? language.text196 : language.text48 }}
-            <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''" class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
+            <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
+              class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
           </view>
-          <image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;" @click="closeModalPasswordIsShow"></image>
+          <image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
+            @click="closeModalPasswordIsShow"></image>
         </view>
         <!--  -->
         <view v-if="verifyMethod == 'password'">
@@ -134,7 +143,8 @@
             <view class="item-input item-input-password">
               <u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text49">
               </u-input>
-              <image  :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="passwordEye = !passwordEye" style="width: 32rpx; height: 32rpx; margin-right: 36rpx;"></image>
+              <image :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
+                @click="passwordEye = !passwordEye" style="width: 32rpx; height: 32rpx; margin-right: 36rpx;"></image>
             </view>
           </view>
           <text v-if="passwordCheck" class="waringPrompt">{{ language.text51 }}</text>
@@ -149,7 +159,7 @@
       </view>
     </u-modal>
     <view :check="checkSuccess" :change:check="render.sendToken"></view>
-    
+
     <!-- 指纹验证 -->
     <view class="toast" v-show="showToast">
       <view class="toast-icon">
@@ -174,11 +184,17 @@ import mixin from '../mixins/index.js'
 import verifyTouchID from '../mixins/verifyTouchID.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
 import mainCoin from '@/config/index.js'
+import {
+  onlyPositiveNumber
+} from '@/utils/directives.js'
 export default {
   mixins: [mixin, verifyTouchID],
   components: {
     InputTitle,
     Submitbtn
+  },
+  directives: {
+    onlyPositiveNumber
   },
   data() {
     return {
@@ -237,9 +253,9 @@ export default {
       this.token = this.$cache.get('_currentWallet').coinList[0]
     }
     this.sendFormData.decimals = this.token.decimals || 1
-    
+
     this.sendFormData.token = this.token
-    
+
     clearInterval(this.timer)
     if (this.token.loadingBalance) {
       this.loading = true
@@ -254,6 +270,9 @@ export default {
     }
   },
   methods: {
+    sendAmountInput(val) {
+      this.sendFormData.sendAmount = val.replace(/\D+/, '')
+    },
     closeModalPasswordIsShow() {
       this.modalPasswordIsShow = false
       if (this.touchId) {
@@ -261,7 +280,7 @@ export default {
       }
     },
     changeVerifyMethod() {
-      this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password' 
+      this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password'
       if (this.verifyMethod == 'touchID') {
         this.verify()
       } else {
@@ -305,15 +324,15 @@ export default {
     async submitAgain() {
       this.modalPasswordIsShow = true
       // #ifdef APP-PLUS
-      if (this.touchId ) {
+      if (this.touchId) {
         this.verify()
       }
       // #endif
-      
+
       // #ifndef APP-PLUS
       this.touchId = 0
       // #endif
-      
+
       this.submitPopupIsShow = false
     },
     async transferConfirm() { //转账确认
@@ -322,7 +341,7 @@ export default {
         sendAmount,
         memo
       } = this.sendFormData
-      
+
       if (receiveAddress.trim() === '') {
         this.showAddressErrorTip = true
       } else {
@@ -337,7 +356,8 @@ export default {
 
       // && this.sendFormData.sendAmount < this.token.balance   
       // console.log(this.showAddressErrorTip, this.showAmountErrorTip, this.sendFormData.sendAmount <= this.token.balance)
-      if (!this.showAddressErrorTip && !this.showAmountErrorTip && this.sendFormData.sendAmount <= this.token.balance) {
+      if (!this.showAddressErrorTip && !this.showAmountErrorTip && this.sendFormData.sendAmount <= this.token
+        .balance) {
         this.submitPopupIsShow = true
       }
     },
@@ -388,7 +408,8 @@ export default {
             if (this.token.loadingBalance) {
               this.loading = true
               this.timer = setInterval(() => {
-                const latestTokenInfo = this.$cache.get('_currentWallet').coinList.find(item => item.ID == this.token.ID)
+                const latestTokenInfo = this.$cache.get('_currentWallet').coinList.find(item => item.ID ==
+                    this.token.ID)
                 this.token.balance = latestTokenInfo.balance
                 if (!latestTokenInfo.loadingBalance) {
                   clearInterval(this.timer)
@@ -400,7 +421,10 @@ export default {
         }
       })
     },
-    dealSuccessJump({ res: result, otherToken }) {
+    dealSuccessJump({
+      res: result,
+      otherToken
+    }) {
       this.transferLoading = false
       this.checkSuccess = 0
       let fee, usedAmount
@@ -468,7 +492,7 @@ export default {
       this.$cache.set('_currentWallet', wallet, 0)
 
       this.updateWalletList(wallet)
-      
+
       this.checkSuccess = 0
     },
     updateWalletList(wallet) {
@@ -544,30 +568,38 @@ export default {
             }, newValue.memo, gas)
             if (result.code !== 0) throw result
             res = (await getOtherTransationHistory({
-              contract: { address: newValue.token.contract_address, codeHash: newValue.token.codeHash },
+              contract: {
+                address: newValue.token.contract_address,
+                codeHash: newValue.token.codeHash
+              },
               address: userAddress,
-              auth: { key: newValue.token.view_key }
+              auth: {
+                key: newValue.token.view_key
+              }
             }, {
               page_size: 1,
               page: 1
             }, newValue.token)).transaction_history.txs[0]
             console.log('record', res)
-            for(let val of Object.values(res.action)) {
+            for (let val of Object.values(res.action)) {
               res.to_address = val.recipient
               res.from_address = val.from
               res.sender = val.sender
             }
             res.type = res.to_address == userAddress ? 'recipient' : 'transfer'
-            
+
             res.amount = res.coins.amount / newValue.token.decimals + newValue.token.alias_name
             res.timestamp = new Date(res.block_time * 1000).toLocaleString()
             res.code = 0
-          } catch(e) {
+          } catch (e) {
             console.log(e);
             res.code = 7
           }
         }
-        renderUtils.runMethod(this._$id, 'dealSuccessJump', { res, otherToken }, this)
+        renderUtils.runMethod(this._$id, 'dealSuccessJump', {
+          res,
+          otherToken
+        }, this)
 
       }
     }
@@ -580,9 +612,10 @@ export default {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0,0,0,.5) !important;
+    background: rgba(0, 0, 0, .5) !important;
     z-index: 9999;
   }
+
   .sendPage {
     width: 100%;
     height: 100%;
@@ -860,6 +893,7 @@ export default {
         font-weight: 400;
         font-size: 24rpx;
         color: #8397B1;
+
         text {
           font-weight: 400;
           font-size: 24rpx;
@@ -975,16 +1009,17 @@ export default {
       }
     }
   }
-  
-  
+
+
   // 指纹验证
   .touch-verify {
     margin-top: 80rpx;
+
     .logo {
       text-align: center;
     }
   }
-  
+
   .changeVerifyMethod {
     text-align: right;
     font-family: PingFangSC-Regular;
@@ -992,7 +1027,7 @@ export default {
     color: #1E5EFF;
     margin-top: 20rpx;
   }
-  
+
   .toast {
     position: fixed;
     left: 50%;
@@ -1004,17 +1039,17 @@ export default {
     justify-content: center;
     border-radius: 6rpx;
     z-index: 999999999;
-  
+
     &-icon {
       text-align: center;
       margin-top: 65rpx;
-  
+
       image {
         width: 65rpx;
         height: 65rpx;
       }
     }
-  
+
     &-content {
       margin-top: 20rpx;
       font-weight: 400;
@@ -1023,7 +1058,7 @@ export default {
       text-align: center;
     }
   }
-  
+
   .verifyTouchErrorTip {
     color: red;
     font-size: 24rpx;

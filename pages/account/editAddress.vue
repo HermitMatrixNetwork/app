@@ -63,7 +63,7 @@ export default {
       showWalletNameErrorTip: false,
       language: language[this.$cache.get('_language')],
       aa: false,
-      walletNamerError: 'text100', // text100, text116 '钱包地址不能为空', '钱包名称不能超过10个字符'
+      walletNamerError: 'text101', // text101, text116 '钱包地址不能为空', '钱包名称不能超过10个字符'
     }
   },
   methods: {
@@ -86,18 +86,14 @@ export default {
 
       if (this.book.walletName.trim() == '') {
         this.showWalletNameErrorTip = true
-        this.alletNamerError = text100
-      } else {
-        this.showWalletNameErrorTip = false
-      }
-      
-      if (this.book.walletName.trim().length > 10) {
+        this.alletNamerError = 'text101'
+      } else if (this.book.walletName.trim().length > 10) {
         this.showWalletNameErrorTip = true
         this.walletNamerError = 'text116'
       } else {
         this.showWalletNameErrorTip = false
       }
-
+      
       if (!this.showWalletNameErrorTip && !this.showAddressErrorTipEmpty && !this.showAddressErrorTipDuplicate) {
         const index = addressBook.findIndex(item => item.walletAddress == this.book.walletAddress)
 

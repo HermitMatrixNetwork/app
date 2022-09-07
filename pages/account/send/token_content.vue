@@ -69,9 +69,9 @@
                   </view>
                   <view class="content">
                     <view class="content-address">
-                      {{ (record.to_address || record.validator_address || record.sender) | sliceAddress(6, -6) }}
+                      {{ record.txhash | sliceAddress(6, -6) }}
                     </view>
-                    <view class="content-time">{{ record.timestamp }}</view>
+                    <view class="content-time">{{ record.timestamp }} +UTC</view>
                   </view>
                   <view class="right">
                     <view class="amount" :class="[`${record.type}-amount`]">
@@ -353,14 +353,15 @@ export default {
         this.accountTransfer['recipient'] = res[1].data.tx_responses
         this.accountTransfer['delegate'] = res[2].data.tx_responses
         this.accountTransfer['withdraw'] = res[3].data.tx_responses
-        // 处理失败交易记录
         
+        // 处理失败交易记录
         if (res[4].data.data.list) {
           this.accountTransfer['fail'] = res[4].data.data.list.map(item => {
             item.icon = require('@/static/img/account/shibai.png')
             item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
             item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
             item.type = 'fail'
+            item.txhash = item._id
             return item
           })
         }
@@ -393,7 +394,7 @@ export default {
         this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
 
         // #ifndef APP-PLUS 
-        // console.log(this.accountTransfer['all'])
+        console.log(this.accountTransfer)
         // #endif
         this.loading = false
       })
@@ -459,6 +460,7 @@ export default {
             item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
             item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
             item.type = 'fail'
+            item.txhash = item._id
           }
         } else {
           for (let i = 0, len = result.length; i < len; i++) {
@@ -565,9 +567,14 @@ export default {
         url: `${url}?tokenID=${this.token.ID}`,
         events: {
           addRecordToSendList: (data) => {
+            const typeUrl = data.tx.body.messages[0].typeUrl
+            if (typeUrl.includes('MsgSend')) { 
+              data.type = 'sender' 
+            }
             data.from_address = data.tx.body.messages[0].value.fromAddress
             data.to_address = data.tx.body.messages[0].value.toAddress
             data.amount = 0
+            data.txhash = data.transactionHash
             data.tx.body.messages.forEach(cur => {
               if (cur.value.amount) {
                 if (Array.isArray(cur.value.amount)) {

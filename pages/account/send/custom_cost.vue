@@ -35,13 +35,14 @@ export default {
     return {
       amount: '',
       minersGas: '',
+      leastGas: 0.000000215,
       waringIsShow: false,
       language: language[this.$cache.get('_language')]
     }
   },
   watch: {
     amount(val) {
-      if (val && Number(val) < Number(this.minersGas)) {
+      if (val && Number(val) < this.leastGas) {
         this.waringIsShow = true
       } else {
         this.waringIsShow = false

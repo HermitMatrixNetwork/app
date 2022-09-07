@@ -10,8 +10,8 @@
           <view class="address">
             {{ item.validator_address | sliceAddress(6, -6) }}
           </view>
-          <view class="name">
-            {{ item.timestamp }}
+          <view class="name" v-show="item.timestamp">
+            {{ item.timestamp }} +UTC
           </view>
         </view>
         <div class="right">

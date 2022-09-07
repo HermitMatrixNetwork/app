@@ -80,7 +80,7 @@ const languages = {
     'text53': '扫二维码，转入 Hermit Matrix Network 资产',
     'text54': '钱包地址',
     'text55': '点击复制',
-    'text56': '提示：复制成功！',
+    'text56': '复制成功！',
     'text57': '可用',
     'text58': '锁定',
     'text59': '发送',

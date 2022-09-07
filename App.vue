@@ -22,7 +22,7 @@ export default {
   },
   async onLaunch() {
     uni.hideTabBar()
-    if (!this.isTor && this.$cache.get('_currentWallet') == null) { 
+    if (!this.isTor && this.$cache.get('_currentWallet') == null) {
       uni.clearStorageSync()
     }
     this.$cache.get('_language') || this.$cache.set('_language', 'CN', 0)
@@ -35,24 +35,53 @@ export default {
     let _appInit = this.$cache.get('_appInit')
     // #ifdef APP-PLUS
     // 判断是否是被洋葱代理服务代理
-    this.isTor = await isTor()
+    // this.isTor = await isTor()
 
-    if (!this.isTor) {
-      uni.showToast({
-        icon: 'none',
-        title: this.language[this.$cache.get('_language')].text01,
-        duration: 3000,
-      })
-      uni.reLaunch({
-        url: '/pages/index/index',
-        success: () => {
-          plus.navigator.closeSplashscreen()
-          setTimeout(() => {
-            plus.runtime.quit()
-          }, 3000)
-        }
-      })
-    } else if (this.$cache.get('_currentWallet') == null) {
+    // if (!this.isTor) {
+    //   uni.showToast({
+    //     icon: 'none',
+    //     title: this.language[this.$cache.get('_language')].text01,
+    //     duration: 3000,
+    //   })
+    //   uni.reLaunch({
+    //     url: '/pages/index/index',
+    //     success: () => {
+    //       plus.navigator.closeSplashscreen()
+    //       setTimeout(() => {
+    //         plus.runtime.quit()
+    //       }, 3000)
+    //     }
+    //   })
+    // } else if (this.$cache.get('_currentWallet') == null) {
+    //   this.$cache.set('_agree_protocol', false, 0)
+    //   uni.reLaunch({
+    //     url: '/pages/index/index',
+    //     success: () => {
+    //       plus.navigator.closeSplashscreen()
+    //     }
+    //   })
+    // } else if (_appInit == 0 && this.$cache.get('_touchId') == 1) {
+    //   console.log('fire')
+    //   uni.navigateTo({
+    //     url: '/pages/mine/anquan/backgroundVerify?redirectUrl=/pages/account/index&type=reLaunch',
+    //     animationType: 'none',
+    //     success: () => {
+    //       plus.navigator.closeSplashscreen()
+    //     }
+    //   })
+    // } else if(_appInit !== 1){
+    //   uni.reLaunch({
+    //     url: '/pages/account/index',
+    //     success: () => {
+    //       plus.navigator.closeSplashscreen()
+    //     }
+    //   })
+    // }
+    // #endif
+
+    // 测试版（忽略洋葱代理判断）
+    // #ifdef APP-PLUS
+    if (this.$cache.get('_currentWallet') == null) {
       this.$cache.set('_agree_protocol', false, 0)
       uni.reLaunch({
         url: '/pages/index/index',
@@ -69,7 +98,7 @@ export default {
           plus.navigator.closeSplashscreen()
         }
       })
-    } else if(_appInit !== 1){
+    } else if (_appInit !== 1) {
       uni.reLaunch({
         url: '/pages/account/index',
         success: () => {
@@ -82,6 +111,42 @@ export default {
   async onShow() {
     uni.hideTabBar()
     // #ifdef APP-PLUS
+    // if (this.$cache.get('_appInit') == 1) {
+    //   // const _appInit = this.$cache.get('_appInit')
+    //   // 从后台唤起
+    //   if (this.$cache.get('_touchId') == 1) {
+    //     console.log('fire2')
+    //     uni.navigateTo({
+    //       url: '/pages/mine/anquan/backgroundVerify?redirectUrl=',
+    //       animationType: 'none',
+    //       success: () => {
+    //         plus.navigator.closeSplashscreen()
+    //       }
+    //     })
+    //   } else {
+    //     this.isTor = await isTor()
+    //     if (!this.isTor) {
+    //       uni.showToast({
+    //         title: this.language[this.$cache.get('_language')].text01,
+    //         icon: 'none'
+    //       })
+    //       uni.reLaunch({
+    //         url: '/pages/index/index',
+    //         success: () => {
+    //           plus.navigator.closeSplashscreen()
+    //           setTimeout(() => {
+    //             plus.runtime.quit()
+    //           }, 3000)
+    //         }
+    //       })
+    //     }
+    //   }
+    //   this.$cache.set('_appInit', 0, 0)
+    // }
+    // #endif
+
+    // 测试版（忽略洋葱代理判断）
+    // #ifndef APP-PLUS
     if (this.$cache.get('_appInit') == 1) {
       // const _appInit = this.$cache.get('_appInit')
       // 从后台唤起
@@ -94,26 +159,9 @@ export default {
             plus.navigator.closeSplashscreen()
           }
         })
-      } else {
-        this.isTor = await isTor()
-        if (!this.isTor) {
-          uni.showToast({
-            title: this.language[this.$cache.get('_language')].text01,
-            icon: 'none'
-          })
-          uni.reLaunch({
-            url: '/pages/index/index',
-            success: () => {
-              plus.navigator.closeSplashscreen()
-              setTimeout(() => {
-                plus.runtime.quit()
-              }, 3000)
-            }
-          })
-        }
       }
-      this.$cache.set('_appInit', 0, 0)
     }
+    this.$cache.set('_appInit', 0, 0)
     // #endif
   },
   onHide() {

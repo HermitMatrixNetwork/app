@@ -13,7 +13,6 @@ export const sliceAddress =(address,start=16,end = -6)=>{
   } else {
     return ''
   }
-	
 }
 
 /**

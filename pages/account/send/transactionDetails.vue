@@ -5,7 +5,7 @@
       <view class="main_status">
         <image :src="statusIcon" />
         <text class="status"> {{ status }} </text>
-        <text class="times">{{ result.timestamp }}</text>
+        <text class="times" v-show="result.timestamp">{{ result.timestamp }} +UTC</text>
       </view>
       <custom-loading v-if="loading" style="margin-top: 50rpx"></custom-loading>
       <view class="main_message" v-else>
@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     init(res) {
-      // console.log(res)
+      console.log(res)
       this.result = res
       const typeUrl = res.tx.body.messages[0].typeUrl
       res.amount = 0
@@ -159,6 +159,7 @@ export default {
       this.loading = false
     },
     formOtherToken(res) {
+      console.log(res)
       this.status = this.language.text181
       this.statusIcon = '/static/img/chenggong.png'
       function format(time) {

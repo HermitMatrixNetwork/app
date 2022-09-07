@@ -38,7 +38,7 @@ export default {
     'text32': '指纹识别',
     'text33': '提示：您未在手机设置处开启并录入指纹，Hermit Wallet 应用无法获取指纹信息，请先去设置！',
     'text34': '请输入指纹完成验证',
-    'text35': '错误提示：录入指纹错误，请重新录入！',
+    'text35': '验证失败请重新验证',
     'text36': '成功提示：录入成功！',
     'text37': '节点设置',
     'text38': '添加',
@@ -119,7 +119,8 @@ export default {
     text113: '验证失败',
     text114: '检查中',
     text115: '已是最新版本，无需更新！',
-    text116: '钱包名称不能超过10个字符'
+    text116: '钱包名称不能超过10个字符',
+    text117: '不能超过20个字符'
   },
   EN: {
     addressErrorTipDuplicate: '钱包地址已存在，请勿重复添加',
@@ -241,7 +242,8 @@ export default {
     text113: 'Fail',
     text114: 'In inspection',
     text115: 'Already the latest version, no need to update!',
-    text116: 'Wallet name cannot exceed 10 characters'
+    text116: 'Wallet name cannot exceed 10 characters',
+    text117: 'Cannot exceed 20 characters'
     
   },
   CT: {}

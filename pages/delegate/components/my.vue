@@ -48,7 +48,7 @@
             </view>
             <view class="right">
               <view class="name">{{item.balance.amount / mainCoin.decimals }}</view>
-              <view class="other">{{ item.timestamp }}</view>
+              <view class="other">{{ item.timestamp }} +UTC</view>
             </view>
           </view>
         </view>

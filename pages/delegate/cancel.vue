@@ -46,7 +46,8 @@
               <text @click="testAmount">{{ language.text18 }}</text>
             </view>
           </view>
-          <!--   <text class="waringPrompt" :style="{ opacity: showAmountError ? 1 : 0 }">输入金额超过选中节点委托数量，请重新输入</text> -->
+          <!-- 输入金额超过选中节点委托数量，请重新输入 -->
+            <text class="waringPrompt" :style="{ opacity: showAmountError ? 1 : 0 }">{{ language.text102 }}</text>
           <view class="other">
             <div class="title">{{ language.text19 }}：</div>
             <div class="num" v-if="selData">{{selData.balance.amount / mainCoin.decimals }} GHM</div>
@@ -258,6 +259,9 @@ export default {
       }
     },
     sendAmountChange(val) {
+      if (val.startsWith('-')) {
+        this.formData.amount.amount = val.slice(1)
+      }
       this.showAmountError = this.balance < this.formData.amount.amount ? true : false
     },
     chooseAddress() {
