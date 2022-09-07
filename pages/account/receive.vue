@@ -15,7 +15,7 @@
 				{{ language.text53 }}
 			</view>
 
-			<view class="qrcode" @click="capture">
+			<view class="qrcode">
 				<tki-qrcode ref="qrcode" :val="code.val" :size="code.size" :unit="code.upx" :onval="code.onval"
 					:loadMake="code.loadMake" @result="qrR" />
 			</view>
@@ -26,10 +26,16 @@
 			</view>
 
 
-			<button class="copy_btn" @click="copy(code['val'])">
-        <image src="/static/img/account/copy2.png" style="width: 40rpx;height: 40rpx; margin-right:8rpx;"></image>
-        <text style="font-size:28rpx; margin:0;">{{ language.text55 }}</text>
-			</button>
+			<view class="copy_btn">
+					<view @click="copy(code['val'])">
+					  <image src="/static/img/account/copy2.png" style="width: 40rpx;height: 40rpx; margin-right:8rpx;"></image>
+					  <text style="font-size:28rpx; margin:0;">{{ language.text55 }}</text>
+					</view>
+					<view @click="capture">
+					  <image src="/static/img/account/mipmap-mdpi_copy2.png" style="width: 40rpx;height: 40rpx; margin-right:8rpx;"></image>
+					  <text style="font-size:28rpx; margin:0;">{{ language.text214 }}</text>
+					</view>
+			</view>
 
 		</view>
 		<view class="bottom_title">
@@ -87,18 +93,21 @@ export default {
         let saveUrl = '_doc/' + rand + 'a.jpg'
         bitmap.save(saveUrl, {}, function(i) {
           // console.log('保存图片成功：' + JSON.stringify(i));
-          uni.saveImageToPhotosAlbum({
-            filePath: i.target,
-            success: function() {
-              // bitmap.clear(); //销毁Bitmap图片
-              uni.showToast({
-                title: '图片已保存',
-                icon: 'none',
-                mask: false,
-                duration: 1500
+          uni.share({
+					  provider: 'weixin',
+					  scene: 'WXSceneSession',
+					  type: 2,
+					  imageUrl:saveUrl,
+					  complete(){
+              uni.saveImageToPhotosAlbum({
+							  filePath: i.target,
+							  success: function() {
+							    // bitmap.clear() //销毁Bitmap图片
+							  }
               })
-            }
+            }	
           })
+          
         }, function(e) {
           console.log('保存图片失败：' + JSON.stringify(e))
         })
@@ -172,7 +181,8 @@ export default {
 		margin: 0 32rpx;
 		height: 952rpx;
 		margin-top: 32rpx;
-		background: #F5F6FA;
+		// background: #F5F6FA;
+		background: #FFFFFF;
 		border-radius: 16rpx;
 		display: flex;
 		flex-direction: column;
@@ -237,6 +247,16 @@ export default {
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			>view{
+				flex: 1;
+				text-align: center;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				&:first-child{
+					border-right: 1px solid #748BAA;
+				}
+			}
 		}
 	}
 
