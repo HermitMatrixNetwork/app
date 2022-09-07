@@ -35,6 +35,7 @@ export async function getSecret() {
 //查询余额
 export async function getBalance(address, denom = 'uGHM') {
   let Secret = await getSecret()
+
   const result = await Secret.query.bank.balance({
     address,
     denom

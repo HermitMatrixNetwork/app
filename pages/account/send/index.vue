@@ -21,7 +21,7 @@
 
         <!-- 收款地址 -->
         <view class="collection-adres">
-          <InputTitle :title="language.text16" :type="'text'" :placeholder="language.text17" ref="addressInptval"
+          <InputTitle :title="language.text16" :type="'text'" :placeholder="language.text17" :isTextarea="true" ref="addressInptval"
             :inputVal.sync="sendFormData.receiveAddress">
             <template #title-icon>
               <image src="/static/img/account/addressbook.png" @click="toAddressBook"

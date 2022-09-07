@@ -137,6 +137,9 @@ export default {
         const inferAddressPages = ['importFromPrivatekey', 'importFromKeystore']
         let address = wallet.address
         if (inferAddressPages.includes(action)) {
+					if (this.privateKey64.split('').find(item => item.charCodeAt(0) === 65533) !== undefined) {
+						throw Error('私钥错误')
+					}
           const pubkey = await WalletCrypto.getPublickey(WalletCrypto.StringToUint(this.privateKey64))
           address = WalletCrypto.pubkeyToAddress(pubkey)
         }

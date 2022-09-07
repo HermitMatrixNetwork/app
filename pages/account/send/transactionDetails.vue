@@ -99,12 +99,12 @@ export default {
         this.status = this.language.text181
         this.statusIcon = '/static/img/chenggong.png'
       } else { // 失败
-        this.status = this.language.text182
+        this.status = this.language.text182 // 失败
         this.statusIcon = '/static/img/shibai1.png'
       }
       if (typeUrl.includes('MsgSend')) {
         this.transactionMessage = {
-          [this.language.text84]: res.to_address === this.$cache.get('_currentWallet').address ? '+' + res.amount : '-' + res.amount,
+          [this.language.text84]: this.status == this.language.text182 ? '0.00GHM' : res.to_address === this.$cache.get('_currentWallet').address ? '+' + res.amount : '-' + res.amount,
           [this.language.text111]: res.fee,
           [this.language.text16]: res.to_address,
           [this.language.text87]: res.from_address,
@@ -113,7 +113,7 @@ export default {
         }
       } else if (typeUrl.includes('MsgDelegate')) {
         this.transactionMessage = {
-          [this.language.text84]: res.amount,
+          [this.language.text84]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
           [this.language.text111]: res.fee,
           [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
           [this.language.text91]: res.tx.body.messages[0].value.validatorAddress,
@@ -122,7 +122,7 @@ export default {
         }
       } else if (typeUrl.includes('MsgExecuteContract')) {
         this.transactionMessage = {
-          [this.language.text84]: res.amount,
+          [this.language.text84]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
           [this.language.text111]: res.fee,
           [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
           [this.language.text91]: res.tx.body.messages[0].value.validatorAddress,
@@ -131,7 +131,7 @@ export default {
         }
       } else if (typeUrl.includes('MsgUndelegate')) {
         this.transactionMessage = {
-          '取消委托金额': res.amount,
+          '取消委托金额': this.status == this.language.text182 ? '0.00GHM' : res.amount,
           [this.language.text111]: res.fee,
           [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
           '被取消验证人': res.tx.body.messages[0].value.validatorAddress,
@@ -147,7 +147,7 @@ export default {
           res.withdrawAddress = p1
         })
         this.transactionMessage = {
-          [this.language.text92]: res.amount,
+          [this.language.text92]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
           [this.language.text111]: res.fee,
           [this.language.text93]: res.tx.body.messages[0].value.delegatorAddress,
           [this.language.text94]: res.withdrawAddress,
@@ -203,7 +203,7 @@ export default {
       case 'MsgSend': 
         this.status = '发送失败'
         this.transactionMessage = {
-          [this.language.text84]: res.amount,
+          [this.language.text84]: '0.00', //res.amount,
           [this.language.text111]: res.fee / mainCoin.decimals + mainCoin.alias_name,
           [this.language.text16]: res.message.to_address,
           [this.language.text87]: res.message.from_address,
@@ -213,7 +213,7 @@ export default {
       case 'MsgUndelegate':
         this.status = '取消委托失败',
         this.transactionMessage = {
-          [this.language.text84]: res.amount,
+          [this.language.text84]: '0.00', //res.amount
           [this.language.text111]: res.fee / mainCoin.decimals + mainCoin.alias_name,
           [this.language.text90]: res.message.delegator_address,
           [this.language.text87]: res.message.validator_address,

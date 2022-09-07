@@ -66,10 +66,14 @@ export default {
       invalidFields: {}, // 校验失败的字段
       callRenderCreate: 0,
       rules: {
-        name: {
+        name: [{
           rule: 'required',
           errMessage: language[this.$cache.get('_language')].text65
-        },
+        },{
+					rule: 'max',
+					len: 10,
+					errMessage: language[this.$cache.get('_language')].text85
+				}],
         password: [{
           rule: 'required',
           errMessage: language[this.$cache.get('_language')].text64
@@ -87,7 +91,7 @@ export default {
             if (value !== this.password) return false
             return true
           },
-          errMessage: language[this.$cache.get('_language')].text13
+          errMessage: language[this.$cache.get('_language')].text84
         }, {
           rule: 'required',
           errMessage: language[this.$cache.get('_language')].text64

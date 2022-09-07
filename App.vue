@@ -83,55 +83,26 @@
 			}
 			// #endif
 
-			// 测试版（忽略洋葱代理判断）
-			// #ifdef APP-PLUS
-			//   if (this.$cache.get('_currentWallet') == null) {
-			// console.log(1);
-			//     this.$cache.set('_agree_protocol', false, 0)
-			//     uni.reLaunch({
-			//       url: '/pages/index/index',
-			//       success: () => {
-			//         plus.navigator.closeSplashscreen()
-			//       }
-			//     })
-			//   } else if (_appInit == 0 && this.$cache.get('_touchId') == 1) {
-			// console.log(2);
-			//     uni.navigateTo({
-			//       url: '/pages/mine/anquan/backgroundVerify?redirectUrl=/pages/account/index&type=reLaunch',
-			//       animationType: 'none',
-			//       success: () => {
-			//         plus.navigator.closeSplashscreen()
-			//       }
-			//     })
-			//   } else if (_appInit == 0){
-			// console.log(3);
-			//     uni.reLaunch({
-			//       url: '/pages/account/index',
-			//       success: () => {
-			//         plus.navigator.closeSplashscreen()
-			//       }
-			//     })
-			//   }
-			// #endif
 		},
 		async onShow() {
+			var pages = getCurrentPages();
+			var page = pages[pages.length - 1];
 			uni.hideTabBar()
 			// #ifdef APP-PLUS
 			if (this.$cache.get('_appInit') == 1) {
 				// const _appInit = this.$cache.get('_appInit')
 				// 从后台唤起
 				if (this.$cache.get('_touchId') == 1) {
-					console.log(5)
 					uni.navigateTo({
-						url: '/pages/mine/anquan/backgroundVerify?redirectUrl=',
+						url: `/pages/mine/anquan/backgroundVerify?redirectUrl=`,
 						animationType: 'none',
 						success: () => {
 							plus.navigator.closeSplashscreen()
 						}
 					})
 				} else {
-					if (this.$cache.get('_currentWallet') !== null) {
-						console.log(6);
+					console.log(page && page.route)
+					if (this.$cache.get('_currentWallet') !== null && !page) {
 						uni.reLaunch({
 							url: '/pages/account/index',
 							success: () => {
@@ -161,26 +132,6 @@
 				this.$cache.set('_appInit', 0, 0)
 			}
 			// #endif
-
-			// 测试版（忽略洋葱代理判断）
-			//   // #ifdef APP-PLUS
-			//   if (this.$cache.get('_appInit') == 1) {
-
-			//     // const _appInit = this.$cache.get('_appInit')
-			//     // 从后台唤起
-			//     if (this.$cache.get('_touchId') == 1) {
-			//       console.log(5)
-			//       uni.navigateTo({
-			//         url: '/pages/mine/anquan/backgroundVerify',
-			//         animationType: 'none',
-			//         success: () => {
-			//           plus.navigator.closeSplashscreen()
-			//         }
-			//       })
-			//     }
-			//   }
-			//   this.$cache.set('_appInit', 0, 0)
-			//   // #endif
 		},
 		onHide() {
 			console.log('hide')

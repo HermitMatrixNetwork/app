@@ -13,7 +13,7 @@
           <view style="padding-right: 16rpx;" class="token_price">
             <!-- <view class="balance" v-if="token.balance === undefined">0.00</view> -->
             <custom-loading v-if="loadingBalace"></custom-loading>
-            <view class="balance" v-else>{{ token.balance | formatBalance }}</view>
+            <view class="balance" v-else>{{ ( token.balance + lockAmount)  | formatBalance }}</view>
             <view>
               <text class="symbol">$</text>
               <text>0.00000</text>
@@ -358,7 +358,8 @@ export default {
         if (res[4].data.data.list) {
           this.accountTransfer['fail'] = res[4].data.data.list.map(item => {
             item.icon = require('@/static/img/account/shibai.png')
-            item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
+            // item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
+						item.amount = '0.00'
             item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
             item.type = 'fail'
             item.txhash = item._id
@@ -457,7 +458,8 @@ export default {
           for (let i = 0, len = result.length; i < len; i++) {
             const item = result[i]
             item.icon = require('@/static/img/account/shibai.png')
-            item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
+            // item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
+						item.amount = '0.00'
             item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
             item.type = 'fail'
             item.txhash = item._id

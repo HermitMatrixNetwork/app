@@ -32,7 +32,7 @@
         </view>
       </view>
     </view>
-    <u-button class="btn" @click="importWallet">{{ language.text82 }}</u-button>
+    <u-button class="btn" @click="importWallet" :disabled="!mnemonic || !password || !checkPassword || !name">{{ language.text82 }}</u-button>
 
     <view :callRenderMnemonic="callRenderMnemonic" :change:callRenderMnemonic="render.getMnemonic"></view>
     <!-- 错误提示 -->

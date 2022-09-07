@@ -79,7 +79,7 @@ export default {
 
     .line {
       height: 2rpx;
-      background-color: #8397B1;
+      background-color: rgba(131,151,177, 0.3);
       margin: 48rpx 0;
     }
 

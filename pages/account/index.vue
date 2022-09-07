@@ -28,11 +28,11 @@
           <view class="user-balance">
             {{ eyeAsset ? '$' + allassets : '∗∗∗∗∗∗∗∗' }}
           </view>
-          <view class="user-address">
+          <view class="user-address"  @click="copy">
             <text >{{
               currentWallet.address | sliceAddress
             }}</text>
-            <image class="copy-icon" src="/static/img/account/copy.png" @click="copy"></image>
+            <image class="copy-icon" src="/static/img/account/copy.png"></image>
             <!-- {{eyeAsset?(currentWallet.address|sliceAddress):'∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗'}} -->
           </view>
         </view>
