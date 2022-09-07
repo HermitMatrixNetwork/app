@@ -48,10 +48,10 @@ export default {
         data: WalletCrypto.decode(this.wallet.mnemonic),
         showToast: false,
         success: () => {
-          this.$refs.notify.show('error', this.language.copySuccess)
+          this.$refs.notify.show('error', this.language.text56)
         },
         fail: () => {
-          this.$refs.notify.show('error', this.language.copyfailure)
+          // this.$refs.notify.show('error', this.language.copyfailure)
         }
       })
     },

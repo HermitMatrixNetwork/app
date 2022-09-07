@@ -23,7 +23,7 @@
               <text>{{ language.text59 }}</text>
             </view>
             <view class="value">
-              <u--input type="number" :placeholder="language.text60" v-model="formData.amount.amount"></u--input>
+              <u--input type="number" :placeholder="language.text60" v-model="formData.amount.amount" @input="sendAmountChange"></u--input>
             </view>
           </view>
           <view class="other">
@@ -235,6 +235,9 @@ export default {
       }
     },
     sendAmountChange(val) {
+      if (val.startsWith('-')) {
+        this.formData.amount.amount = val.slice(1)
+      }
       this.showAmountError = this.balance < this.formData.amount.amount ? true : false
     },
     hideModel() {

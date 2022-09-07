@@ -61,7 +61,7 @@
                     <view class="content-address">
                       {{ (record.to_address || record.validator_address) | sliceAddress(6, -6) }}
                     </view>
-                    <view class="content-time">{{ record.timestamp }}</view>
+                    <view class="content-time">{{ record.timestamp }} +UTC</view>
                   </view>
                   <view class="right">
                     <view class="amount"
