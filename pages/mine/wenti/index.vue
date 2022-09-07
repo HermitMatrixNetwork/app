@@ -43,7 +43,7 @@
 			<view class="item">
 				<view class="item-label">{{ language.text73 }}</view>
 				<view class="item-input">
-					<u-upload class="upload" :fileList="fileList" @afterRead="afterRead" :maxCount="5">
+					<u-upload class="upload" :fileList="fileList" @afterRead="afterRead" @delete="deletePic" :maxCount="5">
 						<view class="upload-content">
 							<image src="/static/img/account/add.png"></image>
 						</view>
@@ -113,7 +113,8 @@ export default {
         title: '',
         desc: '',
         email: '',
-      }
+      },
+      btnswitch:true
     }
   },
   methods: {
@@ -130,25 +131,33 @@ export default {
         this.$refs.notify.show('', this.language.text71)
         return
       }
-      const res = await queryFeedbackHistory(this.email)
-      console.log('历史记录', res)
-      if (res.data.code == 0 && res.data.data.notices.length !== 0) {
-        uni.navigateTo({
-          url: './record',
-          events: {
-            sendMessage (res) {
-              console.log(res)
-            }
-          },
-          success (data) {
-            data.eventChannel.emit('acceptDataFromOpenerPage', res)
-          }
-        })
-        this.email = ''
-      } else {
-        this.showEditWalletNameModal = false
-        this.$refs.notify.show('success', '暂无反馈历史')
+      if(this.btnswitch){
+        console.log('执行')
+        this.btnswitch = false
+        const res = await queryFeedbackHistory(this.email)
+        console.log(this.btnswitch)
+        console.log('历史记录', res)
+        if (res.data.code == 0 && res.data.data.notices.length !== 0) {
+				  uni.navigateTo({
+				    url: './record',
+				    events: {
+				      sendMessage (res) {
+				        console.log(res)
+				      }
+				    },
+				    success (data) {
+				      data.eventChannel.emit('acceptDataFromOpenerPage', res)
+				    }
+				  })
+				  this.email = ''
+        } else {
+				  
+				  this.showEditWalletNameModal = false
+				  this.$refs.notify.show('success', '暂无反馈历史')
+        }
+        this.btnswitch = true
       }
+      
 
       // }else{
       //   this.editNameError = true
@@ -188,6 +197,9 @@ export default {
       } else {
         this.$refs.notify.show('error', res.data.msg)
       }
+    },
+    deletePic(e){
+      this.fileList.splice(e.index,1)
     }
   }
 }
