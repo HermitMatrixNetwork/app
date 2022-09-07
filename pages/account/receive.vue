@@ -33,7 +33,7 @@
 					</view>
 					<view @click="capture">
 					  <image src="/static/img/account/mipmap-mdpi_copy2.png" style="width: 40rpx;height: 40rpx; margin-right:8rpx;"></image>
-					  <text style="font-size:28rpx; margin:0;">{{ language.text213 }}</text>
+					  <text style="font-size:28rpx; margin:0;">{{ language.text214 }}</text>
 					</view>
 			</view>
 

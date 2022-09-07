@@ -20,7 +20,7 @@
       </view>
     </view>
 
-    <u-button class="btn" :class="{disable: disable}" @click="toNextStep">{{ language.text149 }}</u-button>
+    <u-button class="btn" :class="{disable: disable}" @click="toNextStep">{{ flag == 2 ? language.text162 : language.text149 }}</u-button>
     <!-- <u-toast ref="uToast"></u-toast> -->
     <custom-notify ref="notify"></custom-notify>
   </view>

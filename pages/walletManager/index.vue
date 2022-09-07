@@ -203,7 +203,7 @@ export default {
     confirm() {
       if (this.target === 'editName') {
         const name = this.name.trim()
-        if (name.length > 10) {
+        if (name.length > 10 || name == '') {
           this.editNameError = true
           return
         }
