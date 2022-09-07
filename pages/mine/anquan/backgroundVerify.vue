@@ -146,7 +146,9 @@ export default {
         })
         break
       default:
-        uni.navigateBack()
+        uni.reLaunch({
+        	url: '/pages/account/index'
+        })
       }
     },
     confirm() {
