@@ -9,8 +9,12 @@ import secretjs from './secretjs/index'
 import * as bn from './bn.js'
 import isTor from './isTor'
 
+export const checkAddress = (address) => {
+	return /^ghm1[a-z0-9]{38}$/.test(address)
+}
+
 export {
   secretjs,
   bn,
-  isTor
+  isTor,
 }

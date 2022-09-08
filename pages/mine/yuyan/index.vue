@@ -1,6 +1,6 @@
 <template>
   <view class="language-set">
-    <custom-header :title="language.text55">
+    <custom-header relaunchUrl="/pages/mine/index" :title="language.text55">
       <template slot="right">
         <view class="save" @click="save">
           <text>{{ language.text56 }}</text>
@@ -49,11 +49,7 @@ export default {
       this.$cache.set('_language', this.currentLanguage, 0)
       // updateLanguage()
       this.$refs.notify.show('', language[this.$cache.get('_language')].text60, { bgColor: '#275EF1' })
-      setTimeout(() => {
-        uni.reLaunch({
-          url: '/pages/account/index'
-        })
-      }, 1500)
+			this.language = language[this.$cache.get('_language')]
     }
   }
 }

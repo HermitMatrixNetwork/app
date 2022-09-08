@@ -41,7 +41,7 @@ export default {
       language: languages[this.$cache.get('_language')],
       address: '', //查询地址
       list: [],
-      tokenList: [],
+      tokenList: this.$cache.get('_currentWallet').coinList,
       loading: true
     }
   },

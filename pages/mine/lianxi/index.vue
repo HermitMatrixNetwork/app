@@ -18,16 +18,14 @@
       </view>
     </view>
     
-    <Notify ref="notify" />
+    <custom-notify ref="notify" />
   </view>
 </template>
 
 <script>
-import Notify from '@/pages/index/components/notify.vue'
 import language from '../language/index.js'
 import { getLinkList } from '@/api/token.js'
 export default {
-  components: { Notify },
   data() {
     return {
       language: language[this.$cache.get('_language')],
@@ -83,7 +81,7 @@ export default {
         data: val,
         showToast: false,
         success: () => {
-          this.$refs.notify.show('success', this.language.text14)
+          this.$refs.notify.show('success', this.language.text14, { bgColor: '#275EF1' })
         },
         fail: () => {
           // this.$refs.notify.show('error', this.language.copyfailure)

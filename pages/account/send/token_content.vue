@@ -7,8 +7,7 @@
     </custom-header>
 
     <view class="main_token">
-      <TokenColumn :tokenIcon="token.logo" :tokenName="token.alias_name" :tokenColumnStyle="tokenColumnStyle"
-        :tokenAddress="address | sliceAddress(6, -16) ">
+      <TokenColumn :tokenIcon="token.logo" :tokenName="token.alias_name" :tokenColumnStyle="tokenColumnStyle">
         <template #right>
           <view style="padding-right: 16rpx;" class="token_price">
             <!-- <view class="balance" v-if="token.balance === undefined">0.00</view> -->
@@ -391,7 +390,7 @@ export default {
           ...this.accountTransfer['delegate'], ...this.accountTransfer['withdraw'], ...this.accountTransfer[
             'fail']
         ]
-
+				this.accountTransfer['fail'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
         this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
 
         // #ifndef APP-PLUS 
@@ -519,7 +518,10 @@ export default {
           }
         }
 
-
+				if (type == 'fail') {
+					result.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+				}
+				
         this.accountTransfer[type].push(...result)
         this.accountTransfer['all'].push(...result)
         if (Number(this.pagination[type].total) == this.accountTransfer[type].length) this.pagination[type].nodata =

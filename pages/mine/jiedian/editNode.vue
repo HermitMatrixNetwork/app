@@ -160,6 +160,7 @@ export default {
       this.callRender = this.formData
     },
     handerResult(res) {
+			let nodeList = this.$cache.get('_nodeList') || []
       this.callRender = 0
       if (res.code == 7) {
         this.linkErrorTip = 0

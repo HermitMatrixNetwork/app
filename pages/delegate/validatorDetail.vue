@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <custom-header :title="language.text85"></custom-header>
+    <custom-header tabUrl="/pages/delegate/index" :title="language.text85"></custom-header>
 
     <view class="name">
       <image src="/static/img/delegate/theme2.png"></image>
@@ -8,9 +8,9 @@
         <view class="title">
           {{ language.text84 }}
         </view>
-        <view class="address">
-          <text>{{ validatorInfo.operator_address }}</text>
-          <image src="/static/img/account/copy.png" @click="copy"></image>
+        <view class="address" @click="copy">
+          <text>{{ validatorInfo.validator_name }}</text>
+          <image src="/static/img/account/copy.png" ></image>
         </view>
       </view>
     </view>
@@ -98,7 +98,7 @@ export default {
   },
   methods: {
     toDelegate() {
-      uni.redirectTo({
+      uni.navigateTo({
         url: `./delegate?data=${JSON.stringify(this.validatorInfo)}`
       })
     },

@@ -8,7 +8,7 @@
         <view v-for="(item, key) in showLabelList" :key="key" class="content-item">
           <text class="label">{{language[item.label]}} :</text>
           <view class="value">
-            <text>{{ describe[item.value] || language.text113 }}</text>
+            <text :class="{ isLink : item.label == 'text79' }">{{ describe[item.value] || language.text113 }}</text>
             <image v-if="['text79', 'text78'].includes(item.label) &&  describe[item.value]" src="/static/img/account/copy2.png" @click="copy(describe[item.value])"></image>
           </view>
         </view>
@@ -58,7 +58,7 @@ export default {
         data: val,
         showToast: false,
         success: () => {
-          this.$refs.notify.show('error', this.language.text56)
+          this.$refs.notify.show('error', this.language.text56, { bgColor: '#275EF1' })
         },
         fail: () => {
           // this.$refs.notify.show('error', '复制失败')
@@ -151,4 +151,8 @@ export default {
       height: 28rpx !important;
     }
   }
+	
+	.isLink {
+		color: #1E5EFF;
+	}
 </style>

@@ -2,7 +2,7 @@
   <view class="sendPage">
     <view class="mask" v-show="loading"></view>
     <view :updataDelegate="updataDelegate" :change:updataDelegate="render.delegate"></view>
-    <custom-header :title="language.text58" :style="titleStyle">
+    <custom-header :backUrl="`/pages/delegate/validatorDetail?validatorInfo=${JSON.stringify(delegatorInfo)}`" :title="language.text58" :style="titleStyle">
     </custom-header>
     <view class="top-border"></view>
     <view class="main-top">
@@ -11,7 +11,7 @@
           <text>{{ language.text84 }}</text>
         </view>
         <view class="value">
-          <text>{{ delegatorInfo.operator_address }}</text>
+          <text>{{ delegatorInfo.validator_name }}</text>
         </view>
       </view>
       <view class="border"></view>
@@ -221,6 +221,7 @@ export default {
       this.showToast = false
     },
     closeModalPasswordIsShow() {
+			this.payPassword = ''
       this.modalPasswordIsShow = false
       if (this.touchId) {
         plus.fingerprint.cancel()

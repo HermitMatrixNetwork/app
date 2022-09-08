@@ -45,6 +45,10 @@ export default {
       type: String,
       default: ''
     },
+		relaunchUrl: {
+			type: String,
+			default: ''
+		},
     delay: Number,
     delayHandler: Function
   },
@@ -75,7 +79,11 @@ export default {
         uni.redirectTo({
           url: this.redirUrl
         })
-      } else {
+      } else if (this.relaunchUrl) {
+				uni.reLaunch({
+					url: this.relaunchUrl
+				})
+			} else {
         uni.navigateBack()
       }
     }
