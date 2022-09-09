@@ -80,7 +80,7 @@
 
           <!--Memo-->
           <view class="memo_type">
-            <text>Meno</text>
+            <text>Memo</text>
             <text>{{ formData.memo }}</text>
           </view>
 

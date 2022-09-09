@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import language from './lanugage/index.js'
+import language from './language/index.js'
 import { getBannerList } from '@/api/token.js'
 export default {
   data() {

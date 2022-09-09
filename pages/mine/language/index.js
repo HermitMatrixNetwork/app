@@ -120,7 +120,9 @@ export default {
     text114: '检查中',
     text115: '已是最新版本，无需更新！',
     text116: '钱包名称不能超过10个字符',
-    text117: '不能超过20个字符'
+    text117: '不能超过20个字符',
+		text118: '消息详情',
+		text119: '额度不能为负数'
   },
   EN: {
     addressErrorTipDuplicate: '钱包地址已存在，请勿重复添加',
@@ -243,7 +245,9 @@ export default {
     text114: 'In inspection',
     text115: 'Already the latest version, no need to update!',
     text116: 'Wallet name cannot exceed 10 characters',
-    text117: 'Cannot exceed 20 characters'
+    text117: 'Cannot exceed 20 characters',
+		text118: 'Message Details',
+		text119: 'Limit cannot be negative'
     
   },
   CT: {}

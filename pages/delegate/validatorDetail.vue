@@ -107,7 +107,7 @@ export default {
         data: this.validatorInfo.operator_address,
         showToast: false,
         success: () => {
-          this.$refs.notify.show('error', '复制成功', { bgColor: '#275EF1' })
+          this.$refs.notify.show('error', this.language.text103, { bgColor: '#275EF1' })
         },
         fail: () => {
           this.$refs.notify.show('error', '复制失败')

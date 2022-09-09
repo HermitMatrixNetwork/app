@@ -10,6 +10,7 @@
 				<view class="title">{{ item[`${currentLanguage.toLowerCase()}_title`] }}</view>
 				<view class="content" v-html="content(item[`${currentLanguage.toLowerCase()}_content`])"></view>
 				<view class="time">{{timestamp(item.timestamp)}}</view>
+				<view class="line"></view>
 			</view>
 		</view>
 	</view>
@@ -115,7 +116,7 @@ export default {
 		overflow: auto;
 
 		&-item {
-			padding: 32rpx 30rpx 34rpx 42rpx;
+			padding: 32rpx 30rpx 0 42rpx;
 			background-color: #fff;
 
 			&:not(:last-child) {
@@ -155,5 +156,11 @@ export default {
 	
 	.unread{
 		background: #F5F8FF;
+	}
+	
+	.line {
+		  height: 2rpx;
+			padding-top: 37rpx;
+		  border-bottom:2rpx solid rgba(131,151,177, 0.3);
 	}
 </style>

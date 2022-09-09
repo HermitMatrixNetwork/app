@@ -107,7 +107,8 @@ const languages = {
     text99: '请输入验证人地址进行搜索',
     text100: '未搜索到相关节点',
     text101: '暂无数据',
-    text102: '输入金额超过选中节点委托数量，请重新输入'
+    text102: '输入金额超过选中节点委托数量，请重新输入',
+		text103: '复制成功'
 
   },
   'CT': {
@@ -217,7 +218,8 @@ const languages = {
     text99: 'Please enter validator address to search.',
     text100: 'No related nodes found.',
     text101: 'No data yet',
-    text102: 'The input amount exceeds the number of selected nodes, please re-enter'
+    text102: 'The input amount exceeds the number of selected nodes, please re-enter',
+		text103: 'Copy successfully!'
   }
 }
 export default languages

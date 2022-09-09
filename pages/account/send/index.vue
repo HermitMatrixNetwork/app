@@ -246,6 +246,9 @@ export default {
     }
   },
   onLoad(options) {
+		if (options.receiveAddress) {
+			this.sendFormData.receiveAddress = options.receiveAddress
+		}
     if (this.touchId) this.verifyMethod = 'touchID'
     if (options.tokenID) {
       this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)

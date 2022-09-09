@@ -1,13 +1,13 @@
 <template>
 	<view class="container">
-		<custom-header class="header" :title="'消息详情'"></custom-header>
+		<custom-header class="header" :title="language.text118"></custom-header>
 
 		<view class="message">
 			<view class="title">{{msg.cn_title}}</view>
 			<view class="meta">
 				<view class="create-time">{{timestamp(msg.timestamp)}}</view>
 				<view class="create-author">
-					<text>发布者：{{msg.author}}</text>
+					<text>{{ language.text92 }}：{{msg.author}}</text>
 				</view>
 			</view>
 			<view class="content" v-html="contentMsg">

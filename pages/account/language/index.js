@@ -238,7 +238,10 @@ const languages = {
     text211: '提示：钱包移除成功！',
     text212: '暂无热门代币',
 		text213: '助记词',
-    text214:'保存分享'
+    text214:'保存分享',
+		text215: '请勿截屏分享和存储，这将可能被第三方恶意软件收集，造成资产损失。',
+		text216: '取消委托金额',
+		text217: '被取消验证人'
 		
   },
   CT: {
@@ -462,7 +465,7 @@ const languages = {
     'text171': 'Successful deletion!',
     'text172': 'Warning',
     'text173': 'Miner fee settings',
-    'text174': 'withdraw Address',
+    'text174': 'Receiver',
     'text175': 'Wallet Manager',
     'text176': 'click to copy',
     'text177': 'Do not disclose or share the keystore to anyone. Mastering the keystore will gain ownership of the assets.',
@@ -470,7 +473,7 @@ const languages = {
     text179: 'Mnemonic error prompt: mnemonic error, please check it!',
     text180: 'Under development',
     text181: 'Success',
-    text182: 'Fail',
+    text182: 'Failed',
     text183: 'My wallet',
     text184: 'In execution',
     text185: 'Success',
@@ -502,7 +505,10 @@ const languages = {
     text211: 'The wallet was removed successfully!',
     text212: 'No popular tokens yet',
 		text213: 'Mnemonics',
-    text214:'Save and share'
+    text214:'Save and share',
+		text215: 'Do not share and store screenshots, which may be collected by third-party malware, resulting in asset loss.',
+		text216: 'Cancellation of commission amount',
+		text217: 'Cancelled verifier'
   }
 }
 export default languages

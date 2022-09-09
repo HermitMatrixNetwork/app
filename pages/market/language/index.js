@@ -6,7 +6,8 @@ export default {
     'text04': '全部',
     'text05': '最近使用',
     'text06': '交易',
-    'text07': '暂未开放'
+    'text07': '暂未开放',
+		text08: '最近使用'
   },
   EN: {
     'text01': 'DAPPs',
@@ -15,7 +16,8 @@ export default {
     'text04': 'All',
     'text05': 'Recently used',
     'text06': 'Trade',
-    'text07': 'Under development'
+    'text07': 'Under development',
+		text08: 'Recently used'
   },
   CT: {}
 }
