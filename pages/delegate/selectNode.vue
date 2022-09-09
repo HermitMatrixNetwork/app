@@ -8,7 +8,9 @@
 		<view class="lists">
       <custom-loading class="loading" v-if="loading"></custom-loading>
 			<List v-else-if="list.length" :list="list" :selectIndex="selectIndex" :redirectURL="redirectURL"/>
-			<no-data v-else></no-data>
+			<view v-else class="no-data">
+				<no-data ></no-data>
+			</view>
 		</view>
 	</view>
 </template>
@@ -76,4 +78,11 @@ export default {
   .loading {
     margin-top: 20rpx;
   }
+	.no-data {
+		height: calc(100vh - var(--status-bar-height) - 112rpx);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		transform: translateY(-112rpx);
+	}
 </style>

@@ -43,7 +43,7 @@
                   <text v-else>{{ token.balance || '0.00' }} {{ token.alias_name }}</text>
                 </view>
               </view>
-              <view class="value">
+              <view class="value" :class="{ valueError : (Number(sendFormData.sendAmount) > Number(token.balance) || showAmountErrorTip)}">
                 <u--input :placeholder="language.text19" type="number" v-model="sendFormData.sendAmount"
                   @input="sendAmountInput"></u--input>
                 <view class="value-info">
@@ -246,6 +246,9 @@ export default {
     }
   },
   onLoad(options) {
+		if (options.receiveAddress) {
+			this.sendFormData.receiveAddress = options.receiveAddress
+		}
     if (this.touchId) this.verifyMethod = 'touchID'
     if (options.tokenID) {
       this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
@@ -910,6 +913,7 @@ export default {
       background-color: #F2F4F8;
       padding: 0 32rpx;
       border-radius: 16rpx;
+			border: 4rpx solid transparent;
 
       /deep/ .u-input {
         color: #2C365A;
@@ -1063,4 +1067,12 @@ export default {
     color: red;
     font-size: 24rpx;
   }
+	
+	.valueError {
+		border: 4rpx solid #EC2828 !important;
+		background-color: rgba(236,40,40,0.06) !important;
+		/deep/ .u-input__content__field-wrapper__field {
+			color: #EC2828 !important;
+		}
+	}
 </style>

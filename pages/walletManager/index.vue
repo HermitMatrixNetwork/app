@@ -62,9 +62,9 @@
           <view class="title">
             <text>{{ language.text123 }}</text>
           </view>
-          <u--input :placeholder="language.text124" border="surround" v-model="name" class="edit-name-input"
-            :class="{ 'error-edit-name': editNameError }" clearable>
-          </u--input>
+          <u--textarea :placeholder="language.text124" border="surround" v-model="name" maxlength="60" :autoHeight="$cache.get('_language') == 'CN'"
+            :class="{ 'error-edit-name': editNameError }" clearable class="textarea">
+          </u--textarea>
           <view class="error-tip" :style="{ opacity: editNameError ? 1 : 0 }">
             {{ language.text124 }}
           </view>
@@ -330,8 +330,8 @@ export default {
     }
 
     /deep/ .edit-name-input {
-      background-color: #F2F4F8;
-      height: 96rpx;
+      // background-color: #F2F4F8;
+      // height: 96rpx;
 
       .uni-input-input {
         height: 48rpx;
@@ -511,4 +511,32 @@ export default {
       }
     }
   }
+	
+	//自动换行input
+	.textarea {
+	  /deep/ .u-textarea__field {
+	    line-height: 60rpx !important;
+	    font-size: 28rpx;
+	    color: #2C365A;
+	  }
+	
+	  /deep/ .uni-textarea-wrapper {
+	    width: 560rpx !important;
+	  }
+	}
+	
+	.u-textarea {
+	  background: #F2F4F8 !important;
+	  margin-top: 16rpx;
+	  padding: 18rpx 32rpx;
+	
+	  .uni-textarea-placeholder {
+	    color: #8397B1 !important;
+	    font-size: 28rpx !important;
+	  }
+	}
+	
+	.u-textarea--radius {
+	  border-radius: 16rpx;
+	}
 </style>

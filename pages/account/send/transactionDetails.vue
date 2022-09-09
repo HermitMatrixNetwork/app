@@ -131,10 +131,10 @@ export default {
         }
       } else if (typeUrl.includes('MsgUndelegate')) {
         this.transactionMessage = {
-          '取消委托金额': this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text216]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
           [this.language.text111]: res.fee,
           [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
-          '被取消验证人': res.tx.body.messages[0].value.validatorAddress,
+          [this.language.text217]: res.tx.body.messages[0].value.validatorAddress,
           'Memo': res.tx.body.memo,
           [this.language.text88]: res.transactionHash
         }

@@ -207,7 +207,8 @@
           onlyFromCamera: false,
           scanType: ['qrCode'],
           success: (res) => {
-            this.$refs.textarea.childValue = res.result
+						console.log(res);
+            this.$refs.addressInptval.childValue = res.result
           },
         })
       },

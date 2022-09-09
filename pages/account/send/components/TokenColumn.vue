@@ -10,7 +10,7 @@
 					{{ tokenAddress | sliceAddress }}
 				</view>
 			</view>
-      <view class="tishi" v-if="showWarn">
+      <view class="tishi" v-if="showWarn" @click.stop="$emit('showTishi')">
         <image src="/static/img/tishi-red.png" style="width: 40rpx; height: 40rpx;"></image>
       </view>
 			<view class="right">

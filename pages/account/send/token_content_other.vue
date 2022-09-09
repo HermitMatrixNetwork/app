@@ -15,7 +15,7 @@
           <view class="center">
             <view class="title">{{token.alias_name}}</view>
             <view class="address" :style="{display:address?'block':'none'}">
-              {{ address | sliceAddress(6, -16) }}
+              {{ token.contract_address | sliceAddress(6, -16) }}
             </view>
           </view>
           <view class="right">
@@ -87,7 +87,7 @@
                 <view v-else-if="pagination.nodata" class="loading-more">{{ language.text208 }}</view>
               </view>
             </template>
-            <no-data v-else :tip="language.text113" />
+						  <no-data v-else :tip="language.text113" />
           </scroll-view>
         </swiper-item>
       </swiper>
@@ -879,9 +879,13 @@ export default {
   .no-data {
     display: flex;
     flex-direction: column;
+		justify-content: center;
     align-items: center;
     font-size: 28rpx;
     color: #8397B1;
+		height: 740rpx;
+		padding: 0 64rpx;
+		
 
     .no-img {
       width: 240rpx;

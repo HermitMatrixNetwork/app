@@ -52,7 +52,7 @@ export default {
     'text46': '报错提示：URL 已存在于现有的网络列表中',
     'text47': '成功提示：添加成功！',
     'text48': '删除（按钮）',
-    'text49': '确认（按钮）',
+    'text49': '确认',
     'text50': '节点信息删除后，不再显示在节点列表，无法设置从该节点获取数据。请确认是否删除。',
     'text51': '取消（按钮）',
     'text52': '确认（按钮）',
@@ -63,7 +63,7 @@ export default {
     'text57': '英文',
     'text58': '简体中文',
     'text59': '繁体中文',
-    'text60': '提示：设置成功！',
+    'text60': '设置成功！',
     'text61': '帮助中心',
     'text62': '详情',
     'text63': '更新于',
@@ -120,7 +120,9 @@ export default {
     text114: '检查中',
     text115: '已是最新版本，无需更新！',
     text116: '钱包名称不能超过10个字符',
-    text117: '不能超过20个字符'
+    text117: '不能超过20个字符',
+		text118: '消息详情',
+		text119: '额度不能为负数'
   },
   EN: {
     addressErrorTipDuplicate: '钱包地址已存在，请勿重复添加',
@@ -243,7 +245,9 @@ export default {
     text114: 'In inspection',
     text115: 'Already the latest version, no need to update!',
     text116: 'Wallet name cannot exceed 10 characters',
-    text117: 'Cannot exceed 20 characters'
+    text117: 'Cannot exceed 20 characters',
+		text118: 'Message Details',
+		text119: 'Limit cannot be negative'
     
   },
   CT: {}

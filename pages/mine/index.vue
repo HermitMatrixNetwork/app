@@ -117,16 +117,18 @@ export default {
       messageNum: 0, //要显示的通知数量
       noNotice: false, //通知是否显示
       notices: 0, //本地存储中的通知数量
+			reflesh: false
     }
   },
   onShow () {
     this.notices = this.$cache.get('_alreadyRead') ? this.$cache.get('_alreadyRead').length : 0
     this.getNoticenum()
+		this.$forceUpdate()
   },
   methods: {
     toPage (position, index) {
       uni.navigateTo({
-        url: this[position][index].page
+        url: this[position][index].page,
       })
     },
     toMessage () {

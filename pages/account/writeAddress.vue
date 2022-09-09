@@ -17,9 +17,11 @@
         </InputTitle>
       </view>
       <text class="errorTip" :style="{ opacity: (showAddressErrorTipEmpty || showAddressErrorTipDuplicate) ? 1 : 0 }" v-text="showAddressErrorTipEmpty ? language.text100 : showAddressErrorTipDuplicate ? language.text104 : '1' "> </text>
-      <InputTitle :title="language.text88" :placeholder="language.text07" :inputVal.sync="walletName"></InputTitle>
-      <text class="errorTip" :style="{ opacity: showWalletNameErrorTip ? 1 : 0 }">{{ language[walletNamerError] }}</text>
-      <InputTitle style="margin-top: 32rpx;" :title="language.text87" :placeholder="language.text08" :inputVal.sync="walletDescribe"></InputTitle>
+      <!-- <InputTitle @textareaFocus="textareaFocus" @textareaBlur="textareaBlur" ref="walletNameTextarea" :title="language.text88" :inputVal.sync="walletName" isTextarea :class="{ 'wallet-name-input': walletName == language.text07 }"></InputTitle> -->
+      <view class="label-title">{{ language.text88 }}</view>
+			<u--textarea v-model="walletName" :placeholder="language.text07" maxlength="60" class="textarea" :autoHeight="$cache.get('_language') == 'CN'"></u--textarea>
+			<text class="errorTip" :style="{ opacity: showWalletNameErrorTip ? 1 : 0 }">{{ language[walletNamerError] }}</text>
+      <InputTitle style="margin-top: 32rpx;" isTextarea :isAutoHeight="$cache.get('_language') == 'CN'" :title="language.text87" :placeholder="language.text08" :inputVal.sync="walletDescribe"></InputTitle>
       <text class="errorTip" :style="{ opacity: showWalletDescribeErrorTip ? 1 : 0 }">{{ language.text117 }}</text>
     </view>
 
@@ -36,7 +38,7 @@ export default {
   },
   data() {
     return {
-      walletName: '', //钱包名称
+      walletName: '', //钱包名称 placeholder:language.text07
       walletDescribe: '', //钱包描述
       walletAddress: '', // 钱包地址
       headerStyle: {
@@ -51,6 +53,16 @@ export default {
     }
   },
   methods: {
+		textareaFocus() {
+			// if (this.$refs.walletNameTextarea.childValue == this.language.text07) {
+			// 	this.$refs.walletNameTextarea.childValue = ''
+			// }
+		},
+		textareaBlur() {
+			// if (this.$refs.walletNameTextarea.childValue.trim() == '') {
+			// 	this.$refs.walletNameTextarea.childValue = this.language.text07
+			// }
+		},
     saveAddress() {
       const addressBook = this.$cache.get('_addressBook')
 
@@ -155,4 +167,45 @@ export default {
     line-height: 24rpx;
     height: 24rpx;
   }
+	
+	/deep/ .wallet-name-input {
+		.uni-textarea-textarea {
+			color: #8397B1;
+		}
+	}
+	
+	.label-title {
+		font-weight: 600;
+		font-size: 28rpx;
+		color: #2C365A;
+		letter-spacing: 0;
+	}
+	
+	//自动换行input
+	.textarea {
+	  /deep/ .u-textarea__field {
+	    line-height: 60rpx !important;
+	    font-size: 28rpx;
+	    color: #2C365A;
+	  }
+	
+	  /deep/ .uni-textarea-wrapper {
+	    width: 560rpx !important;
+	  }
+	}
+	
+	.u-textarea {
+	  background: #F2F4F8 !important;
+	  margin-top: 16rpx;
+	  padding: 18rpx 32rpx;
+	
+	  .uni-textarea-placeholder {
+	    color: #8397B1 !important;
+	    font-size: 28rpx !important;
+	  }
+	}
+	
+	.u-textarea--radius {
+	  border-radius: 16rpx;
+	}
 </style>

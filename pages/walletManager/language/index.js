@@ -46,7 +46,8 @@ export default {
     text28: '明文私钥',
     text29: 'Keystore',
     text30: '加密的私钥 JSON',
-    text31: '选择导入类型'
+    text31: '选择导入类型',
+		text32: '切换钱包'
     
     
   },
@@ -66,6 +67,7 @@ export default {
     text29: 'keystore',
     text30: 'Encrypted private key JSON',
     text31: 'Select import type',
+		text32: 'Switch wallets',
     'hermitWalle': 'Hermit Wallet',
   }
 }

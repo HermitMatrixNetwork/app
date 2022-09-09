@@ -1,6 +1,6 @@
 <template>
   <view>
-    <custom-header title="最近使用"></custom-header>
+    <custom-header :title="language.text08"></custom-header>
     <view class="border"></view>
 
     <view class="list">
@@ -27,10 +27,12 @@
 </template>
 
 <script>
+	import language from './language/index.js'
 export default {
   data() {
     return {
-      recently: []
+      recently: [],
+			language: language[this.$cache.get('_language')]
     }
   },
   created() {

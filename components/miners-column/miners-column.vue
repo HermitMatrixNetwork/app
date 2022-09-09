@@ -137,7 +137,7 @@ export default {
           background: #FFFFFF;
           border: 2rpx solid rgba(131, 151, 177, 0.20);
           border-radius: 8rpx;
-          overflow: hidden;
+          // overflow: hidden;
 
           &:not(:first-child) {
             margin-left: 18rpx;
@@ -183,7 +183,19 @@ export default {
           position: relative;
           border: 2rpx solid rgba(30, 94, 255, 0.60);
           box-sizing: border-box;
-
+					
+					&:after {
+						position: absolute;
+						content: '';
+						width: 32rpx;
+						height: 32rpx;
+						top: -10rpx;
+						right: -2rpx;
+						border-top-right-radius: 8rpx;
+						background: url('/static/img/xuanzhong3.png') no-repeat;
+						background-size: contain;
+					}
+					
           .price,
           .amount,
           .time,

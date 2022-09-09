@@ -64,15 +64,15 @@
               <u--input :placeholder="language.text35" v-model="balance" disabled></u--input>
               <view class="right">
                 <text class="denom">GHM</text>
-                <view class="border"></view>
-                <text class="all" @click="testAmount">{{ language.text18 }}</text>
+   <!--             <view class="border"></view>
+                <text class="all" @click="testAmount">{{ language.text18 }}</text> -->
               </view>
             </view>
           </view>
-          <view class="other">
+<!--          <view class="other">
             <div class="title">{{ language.text94 }}：</div>
             <div class="num">{{ selectIndex == -1 ? 0 : balance }} GHM</div>
-          </view>
+          </view> -->
           <!-- 					<text v-if="sendAmount>balance" class="waringPrompt">输入金额超过钱包可用余额，请重新输入</text> -->
         </view>
       </view>
@@ -529,6 +529,7 @@
 
   .main-top {
     background: #FFFFFF;
+		padding-bottom: 32rpx;
     width: 100%;
 
     .content {

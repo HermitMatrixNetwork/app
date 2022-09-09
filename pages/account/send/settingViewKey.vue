@@ -37,7 +37,7 @@
               {{ language.text109 }}
             </view>
             <view class="value">
-              {{ formData.address }}
+              {{ token.contract_address }}
             </view>
           </view>
           <view class="item">
@@ -72,7 +72,7 @@
     </u-popup>
     <view :callRender="callRender" :change:callRender="render.setViewkey"></view>
 
-    <u-modal :show="modalPasswordIsShow" :showConfirmButton="false" @close="close">
+    <u-modal :show="modalPasswordIsShow" :showConfirmButton="false">
       <view class="modal_main">
         <view class="modal_title">
           <view>
@@ -178,6 +178,7 @@ export default {
     },
     closeModalPasswordIsShow() {
       this.modalPasswordIsShow = false
+			this.payPassword = ''
       if (this.touchId) {
         plus.fingerprint.cancel()
       }
@@ -253,6 +254,7 @@ export default {
       }
     },
     close() {
+			console.log('close');
       this.passwordCheck = false
       this.payPassword = ''
     },

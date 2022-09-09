@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<custom-header class="header" title="消息详情"></custom-header>
+		<custom-header class="header" :title="language.text118"></custom-header>
 
 		<view class="message">
 			<view class="title">{{msg[`${currentLanguage.toLowerCase()}_title`]}}</view>

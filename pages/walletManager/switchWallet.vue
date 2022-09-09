@@ -2,7 +2,7 @@
   <view>
     <u-popup class="switch-wallet-popup" :show="showSwitchWallet" closeOnClickOverlay @close="close">
       <view class="header">
-        <text>{{ language.switchWallet }}</text>
+        <text>{{ language.text32 }}</text>
         <image src="@/static/img/ic-close.png" @click="close"></image>
       </view>
       <u-list class="content" height="1080rpx">

@@ -17,7 +17,7 @@
 
 			<view class="qrcode">
 				<tki-qrcode ref="qrcode" :val="code.val" :size="code.size" :unit="code.upx" :onval="code.onval"
-					:loadMake="code.loadMake" @result="qrR" :loadingText="language.text215" />
+					:loadMake="code.loadMake" @result="qrR" :loadingText="language.text218" />
 			</view>
 
 			<text>{{ language.text54 }}</text>
@@ -101,7 +101,7 @@ export default {
 					  imageUrl:saveUrl,
 					  complete(){
               uni.showToast({
-                title:_this.language.text216
+                title:_this.language.text219
               })
               uni.saveImageToPhotosAlbum({
 							  filePath: i.target,

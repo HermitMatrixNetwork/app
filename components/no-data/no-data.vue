@@ -1,6 +1,6 @@
 <template>
 	<view class="no-data">
-		<img class="no-img" src="@/static/img/account/nodata.png" alt="" />
+		<image class="no-img" src="/static/img/account/nodata.png" />
 		<view class="tip" @click="btnClick">
 			<text>{{ tip || language.text01 }}</text>
 			<text v-if="btnTx" class="btn">{{btnTx}}</text>
@@ -46,6 +46,7 @@ export default {
 		color: #8397B1;
 		.no-img {
 			width: 240rpx;
+			height: 240rpx;
 			margin-bottom: 32rpx;
 		}
 		.btn {

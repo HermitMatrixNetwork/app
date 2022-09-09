@@ -73,8 +73,8 @@
         </u-tabs>
         <scroll-view v-if="visibaleTokenList.length" class="coinbox" scroll-y>
           <view class="content" v-for="item in visibaleTokenList" :key="item.ID">
-            <TokenColumn :showWarn="item.showWarn" :tokenName="item.alias_name" :tokenAddress="item.contract_address"
-              :tokenIcon="item.logo" class="token" @click.native="queryToken(item)">
+            <TokenColumn :showWarn="item.showWarn" :tokenName="item.alias_name"
+              :tokenIcon="item.logo" class="token" @click.native="queryToken(item)" @showTishi="aa = true">
               <template #right>
                 <custom-loading v-if="item.loadingBalance"></custom-loading>
                 <view class="coinNumber" v-else>
@@ -295,17 +295,17 @@ export default {
       return result
     }
   },
-  watch: {
-    tokenList: {
-      deep: true,
-      handler(newVal) {
-        if (this.firstShowAa) {
-          this.aa = newVal.find(item => item.showWarn) ? true : false
-          if (this.aa) this.firstShowAa = false
-        }
-      }
-    }
-  }
+  // watch: {
+  //   tokenList: {
+  //     deep: true,
+  //     handler(newVal) {
+  //       if (this.firstShowAa) {
+  //         this.aa = newVal.find(item => item.showWarn) ? true : false
+  //         if (this.aa) this.firstShowAa = false
+  //       }
+  //     }
+  //   }
+  // }
 }
 </script>
 
@@ -337,8 +337,8 @@ export default {
         wallet = uni.getStorageSync('_currentWallet').data
         //#endif
         //获取主网币余额
-
         let coinList = wallet.coinList || []
+				
         //代币数组为空时，为其添加主币
         if (coinList.length == 0) coinList.push(mainCoin)
         renderUtils.runMethod(this._$id, 'updateCoinList', coinList, this)

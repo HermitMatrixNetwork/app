@@ -8,7 +8,7 @@
         </view>
         <view class="center">
           <view class="address">
-            {{ item.validator_address | sliceAddress(6, -6) }}
+            {{ item.txhash | sliceAddress(6, -6) }}
           </view>
           <view class="name" v-show="item.timestamp">
             {{ item.timestamp }} +UTC
@@ -19,7 +19,9 @@
         </div>
       </view>
     </template>
-    <no-data v-else :tip="language.text40" />
+		<view v-else class="no-data">
+			<no-data :tip="language.text40" />
+		</view>
   </view>
 </template>
 
@@ -171,4 +173,12 @@
       }
     }
   }
+	
+	.no-data {
+		height: calc(100vh - var(--status-bar-height) - 112rpx);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		transform: translateY(-112rpx);
+	}
 </style>

@@ -23,7 +23,7 @@
       </view>
     </view>
     <EditModal :title="language.text26" :showModal="showModal" :placeholder="language.text27" :value="wallet.quota[0].amount" @cancel="cancel"
-      @confirm="confirm" :errorTip="'额度不能为负数'" />
+      @confirm="confirm" :errorTip="language.text119" />
       
       <custom-notify ref="notify"></custom-notify>
   </view>

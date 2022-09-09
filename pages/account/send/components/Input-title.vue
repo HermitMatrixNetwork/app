@@ -13,7 +13,7 @@
         :disabled="disabled"
       />
 
-      <u--textarea v-model="childValue" :placeholder="placeholder" autoHeight v-else class="textarea" maxlength="60" :disabled="disabled">
+      <u--textarea v-model="childValue" @focus="textareaFocus" @blur="textareaBlur" :placeholder="placeholder" :autoHeight="isAutoHeight" v-else class="textarea" maxlength="60" :disabled="disabled">
       </u--textarea>
       <slot name="inputRight"></slot>
     </view>
@@ -67,13 +67,25 @@ export default {
     readonly: {
       type: Boolean,
       default: false
-    }
+    },
+		isAutoHeight: {
+			type: Boolean,
+			default: true
+		}
   },
   data() {
     return {
       childValue: this.inputVal,
     }
   },
+	methods: {
+		textareaFocus(val) {
+			this.$emit('textareaFocus')
+		},
+		textareaBlur(val) {
+			this.$emit('textareaBlur')
+		}
+	},
   watch: {
     childValue: {
       handler(newVal) {

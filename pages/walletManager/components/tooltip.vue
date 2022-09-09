@@ -10,7 +10,7 @@
           {{ language.text135 }}
         </view>
         <view class="hint-content">
-          请勿截屏分享和存储，这将可能被第三方恶意软件收集，造成资产损失。
+          {{ language.text215 }}
         </view>
         <u-button class="hint-btn" @click="confrimHint">{{ language.text50 }}</u-button>
       </view>
