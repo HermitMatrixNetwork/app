@@ -42,7 +42,7 @@
     		    <view class="miners_fee">
             <text>{{ language.text29 }}</text>
     		      <view>
-              <view>25000 GWEI * {{ formData.gas }} GasPrice</view>
+              <view>25000 * {{ formData.gas }} GHM</view>
               <view class="price">{{ 25000 * formData.gas }} GHM</view>
     		      </view>
     	     </view>

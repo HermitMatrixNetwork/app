@@ -16,7 +16,7 @@
         </u-icon>
       </view>
       <view class="error-tip" :style="{ opacity: confirmPasswordError ? 1 : 0 }">
-        {{ language[errorTip[flag]] }}
+        {{ language[errorTip] }}
       </view>
     </view>
 
@@ -36,6 +36,7 @@ export default {
     return {
       language: language[this.$cache.get('_language')],
       errorTip: ['text150', 'text157', 'text156'],
+			errorTip: 'text150',
       label: ['text147', 'text153', 'text154'],
       placeholder: ['text148', 'text153', 'text154'],
       passwordEye: false,
@@ -54,6 +55,7 @@ export default {
       case 0:
         result = this.verifyPassword()
         if (!result) {
+					this.errorTip = 'text150' // 资金密码错误，请重新输入！
           this.confirmPasswordError = true
         } else {
           this.flag++
@@ -74,6 +76,7 @@ export default {
       case 2:
         result = this.verifyPasswordCheck()
         if (!result) {
+					this.errorTip = 'text156' // 再次输入新密码与首次输入不一致，请确认！
           this.confirmPasswordError = true
         } else {
           this.confirmPasswordError = false
@@ -99,8 +102,15 @@ export default {
     verifyNewPassword() {
       const wallet = this.$cache.get('_currentWallet')
       const originPassword = WalletCrypto.decode(wallet.password)
-      if (this.originVal.trim() === '' || originPassword === this.originVal) return false
-      return true
+      if (originPassword === this.originVal) {
+				this.errorTip = 'text157' // 新密码不能与原密码一致！
+				return false
+			} else if (this.originVal.trim() == '' || this.originVal.trim().length < 8) {
+				this.errorTip =  'text221' // 钱包密码不能少于8位
+				return false
+			} else {
+				return true
+			}
     },
     verifyPasswordCheck() {
       return this.newPassword === this.originVal

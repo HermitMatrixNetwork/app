@@ -61,7 +61,7 @@
               {{ language.text111 }}
             </view>
             <view class="value">
-              25000 GWEI * {{ formData.gas }} GasPrice
+              25000 * {{ formData.gas }} GHM
               <view class="price">{{ 25000 * formData.gas }} GHM</view>
             </view>
           </view>

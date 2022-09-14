@@ -175,7 +175,8 @@ export default {
         name: this.languages.text07
       },
       {
-        name: 'NFT'
+        name: 'NFT',
+				disabled: true
       }
       ]
       coinList.forEach(item => item.apply_type && (tokenType.add(item.apply_type)))
@@ -286,7 +287,6 @@ export default {
         'token': 'SNIP20',
         'default': 'NFT'
       }
-
       let result = this.coinType === 'All' ? this.tokenList : this.tokenList.filter(item => type[item.apply_type ||
           'default'] === this.coinType)
       if (result.length == 0) {

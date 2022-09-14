@@ -37,7 +37,7 @@
           <text>{{ language.text58 }}</text>
           <custom-loading v-if="lockAmountLoading"></custom-loading>
           <view v-else class="quantity">
-            <view class="top">{{ lockAmount }}</view>
+            <view class="top">{{ lockAmount | formatBalance }}</view>
             <view class="bottom">
               <text class="symbol">$</text>
               <text>0.00000</text>
@@ -624,9 +624,9 @@ export default {
       const int = (val + '').split('.')[0]
       let float = (val + '').split('.')[1]
       if (float) {
-        float = float.substr(0, 2)
+        float = float.substr(0, 6)
       }
-      return int + '.' + (float || '00')
+      return int + '.' + (float || '000000')
     }
   }
 }

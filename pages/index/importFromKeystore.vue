@@ -98,11 +98,15 @@ export default {
       }
     },
     async getPrivateKeyFromKeystore(wallet) {
-      const keystore = JSON.parse(this.keystore)
-        
-      this.privateKey64 = await WalletCrypto.generateKeystore.decrypt(keystore, this.password)
+			try {
+				const keystore = JSON.parse(this.keystore)
+				this.privateKey64 = await WalletCrypto.generateKeystore.decrypt(keystore, this.password)
+				wallet.privateKey64 = this.privateKey64
+			} catch(e) {
+				console.log(e);
+				this.$refs.notify.show('error', this.language.text59)
+			}
       
-      wallet.privateKey64 = this.privateKey64  
     },
     cbInitWallet() {
       uni.reLaunch({

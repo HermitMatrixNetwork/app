@@ -4,7 +4,7 @@ export default {
     'text23': '快',
     'text24': '推荐',
     'text25': '慢',
-    'text26': '分钟',
+    'text26': '秒',
     'text27': '自定义',
     'text28': '约'
   },

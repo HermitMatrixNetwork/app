@@ -9,10 +9,11 @@
 				<view class="address" :style="{display:tokenAddress?'block':'none'}">
 					{{ tokenAddress | sliceAddress }}
 				</view>
+				<view class="tishi" v-if="showWarn" @click.stop="$emit('showTishi')">
+				  <image src="/static/img/tishi-red.png" style="width: 40rpx; height: 40rpx;"></image>
+				</view>
 			</view>
-      <view class="tishi" v-if="showWarn" @click.stop="$emit('showTishi')">
-        <image src="/static/img/tishi-red.png" style="width: 40rpx; height: 40rpx;"></image>
-      </view>
+
 			<view class="right">
 				<slot name="right"></slot>
 			</view>
@@ -53,10 +54,11 @@ export default {
 
 <style lang="scss" scoped>
   .tishi {
-    flex: 1;
+    // flex: 1;
     display: flex;
     align-items: center;
-    justify-content: center;
+    // justify-content: center;
+		margin-left: 20rpx;
   }
 	.TokenVolumn {
 		.item {
@@ -73,6 +75,8 @@ export default {
 
 			.center {
 				flex: 1;
+				display: flex;
+				align-items: center;
 
 				.title {
 					font-weight: 600;

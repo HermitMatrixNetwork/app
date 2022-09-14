@@ -410,9 +410,9 @@ export default {
       const int = (val + '').split('.')[0]
       let float = (val + '').split('.')[1]
       if (float) {
-        float = float.substr(0, 2)
+        float = float.substr(0, 6)
       }
-      return int + '.' + (float || '00')
+      return int + '.' + (float || '000000')
     }
   }
 }

@@ -52,7 +52,7 @@ export default {
     return {
       language: language[this.$cache.get('_language')],
       editError: false,
-      inputValue: this.value.toFixed(2) == 0 ? '' : this.value.toFixed(2)
+      inputValue: Number(this.value) == 0 ? '' : this.value
     }
   },
   methods: {

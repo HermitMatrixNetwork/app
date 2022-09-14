@@ -23,7 +23,7 @@
               <text>{{ language.text59 }}</text>
             </view>
             <view class="value">
-              <u--input type="number" :placeholder="language.text60" v-model="formData.amount.amount" @input="sendAmountChange"></u--input>
+              <u--input type="number" :placeholder="language.text60" v-model="formData.amount.amount" @input="sendAmountChange" :formatter="formatter"></u--input>
             </view>
           </view>
           <view class="other">
@@ -88,7 +88,7 @@
           <view class="miners_fee">
             <text>{{ language.text29 }}</text>
             <view>
-              <view>26000 GWEI * {{ formData.gas }} GasPrice</view>
+              <view>26000 * {{ formData.gas }} GHM</view>
               <view class="price">{{ formData.gas * 26000 }} GHM</view>
             </view>
           </view>
@@ -236,11 +236,11 @@ export default {
       }
     },
     sendAmountChange(val) {
-      if (val.startsWith('-')) {
-        this.formData.amount.amount = val.slice(1)
-      }
       this.showAmountError = this.balance < this.formData.amount.amount ? true : false
     },
+		formatter(val) {
+			return val.replace(/[^\d.]/g,'')
+		},
     hideModel() {
       this.modalPasswordIsShow = false
     },

@@ -62,7 +62,7 @@ export default {
   methods: {
     toSearch() {
       uni.navigateTo({
-        url: './search'
+        url: `./search?selectIndex=${this.selectIndex}&redirectURL=/pages/delegate/cancel`
       })
     }
   }

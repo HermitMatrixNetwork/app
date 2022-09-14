@@ -7,7 +7,7 @@
         :actionStyle="searchStyle" @search="searchCoin" @custom="goBack" searchIcon="/static/img/delegate/search2.png"></u-search>
     </view>
     <view class="list" v-if="list.length > 0">
-      <List :list="list" />
+      <List :list="list" :redirectURL="'/pages/delegate/cancel'" :selectIndex="selectIndex" />
     </view>
     <view v-else class="noData">
       <image v-if="reAddress!=''" class="data" src="/static/img/account/nodata.png" alt="" />
@@ -29,16 +29,23 @@ export default {
       reAddress: '', //renderjs调用
       address: '', //查询地址
       list: [], //查询结果
+			delegateList: [], // 正在质押的验证人节点信息
       searchStyle: {
         fontSize: '28rpx',
         color: '#275EF1'
-      }
+      },
+			selectIndex: -1,
+			selectValidator: {}
     }
   },
   components: {
     List
   },
   onLoad(options) {
+		this.delegateList = this.$cache.get('_delegateInfo')
+		if (options.selectIndex > -1) {
+			this.selectValidator = this.delegateList.list[options.selectIndex]
+		}
     // if(options.address){
     //   this.address =options.address
     //   this.reAddress = options.address
@@ -47,6 +54,10 @@ export default {
   methods: {
     //查询合约
     searchCoin() {
+			this.list = this.delegateList.list.filter(item => item.validator.operatorAddress == this.address || this.address == item.validator.description.moniker)
+			if (this.selectValidator.validator) {
+				this.selectIndex = this.list.findIndex(item => item.validator.operatorAddress == this.selectValidator.validator.operatorAddress)
+			}
       this.reAddress = this.address
     },
     goBack() {
@@ -77,10 +88,8 @@ export default {
   export default {
     methods: {
       async search(address) {
-        console.log('address', address)
         if (address == '') return
-        let data = await getContractInfo(address)
-        console.log('111111111111', data);
+        // let data = await getContractInfo(address)
         // if(data){
         // 	data = {
         // 		...data,
@@ -134,4 +143,8 @@ export default {
       color: #8397B1;
     }
   }
+	
+	.list {
+		padding: 0 32rpx;
+	}
 </style>

@@ -16,13 +16,13 @@
         <view class="input-item">
           <u--input class="left" :placeholder="language.text24" disabled></u--input>
           <view class="right">
-            <text class="quota-amount">{{ wallet.quota[0].amount | amountFormat }}</text>
-            <text class="quota-denom">{{ wallet.quota[0].denom }}</text>
+            <text class="quota-amount">{{ quota.amount  }}</text>
+            <text class="quota-denom">{{ quota.denom }}</text>
           </view>
         </view>
       </view>
     </view>
-    <EditModal :title="language.text26" :showModal="showModal" :placeholder="language.text27" :value="wallet.quota[0].amount" @cancel="cancel"
+    <EditModal :title="language.text26" :showModal="showModal" :placeholder="language.text27" :value="quota.amount" @cancel="cancel"
       @confirm="confirm" :errorTip="language.text119" />
       
       <custom-notify ref="notify"></custom-notify>
@@ -42,18 +42,15 @@ export default {
     return {
       language: language[this.$cache.get('_language')],
       wallet: this.$cache.get('_currentWallet'),
-      showModal: false
+      showModal: false,
+			quota: {}
     }
   },
   created() {
-    if (!this.wallet.quota) {
-      this.wallet.quota = [{
-        amount: 0,
-        denom: 'GHM'
-      }]
-      this.updateCurrentWallet(this.wallet)
-      this.updateWalletList(this.wallet)
-    }
+		this.quota = this.$cache.get('_quota') || {
+				amount: '0.00',
+				denom: 'GHM'
+			}
   },
   filters: {
     amountFormat(val) {
@@ -66,9 +63,8 @@ export default {
     },
     confirm(val) {
       if (val < 0) return
-      this.wallet.quota[0].amount = val * 1
-      this.updateCurrentWallet(this.wallet)
-      this.updateWalletList(this.wallet)
+      this.quota.amount = val * 1
+			this.$cache.set('_quota', this.quota, 0)
       this.showModal = false
       this.$refs.notify.show('', this.language.text30, { bgColor: ' #275EF1' })
     }

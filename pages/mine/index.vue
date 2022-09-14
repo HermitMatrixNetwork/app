@@ -123,13 +123,19 @@ export default {
   onShow () {
     this.notices = this.$cache.get('_alreadyRead') ? this.$cache.get('_alreadyRead').length : 0
     this.getNoticenum()
-		this.$forceUpdate()
   },
   methods: {
     toPage (position, index) {
-      uni.navigateTo({
-        url: this[position][index].page,
-      })
+			if (this[position][index].page == './yuyan/index') {
+				uni.redirectTo({
+					url: './yuyan/index'
+				})
+			} else {
+				uni.navigateTo({
+				  url: this[position][index].page,
+				})
+			}
+
     },
     toMessage () {
       uni.navigateTo({

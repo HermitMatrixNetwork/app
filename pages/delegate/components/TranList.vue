@@ -14,8 +14,8 @@
             {{ item.timestamp }} +UTC
           </view>
         </view>
-        <div class="right">
-          <text class="num">{{ item.amount }} {{ mainCoin.alias_name }}</text>
+        <div class="right" >
+          <text class="num" :class="[item.type == 'withdraw' ? item.reciver_address == wallet.address ? 'plus' : 'minus' : '']">{{ item.type == "withdraw" ? item.reciver_address == wallet.address ? '+' : '-' : '' }} {{ item.amount }} {{ mainCoin.alias_name }}</text>
         </div>
       </view>
     </template>
@@ -104,11 +104,15 @@
           const type = item.tx.body.messages[0]['@type']
           item.validator_address = item.tx.body.messages[0].validator_address
           item.delegator_address = item.tx.body.messages[0].delegator_address
+					item.type = 'withdraw'
           item.raw_log.replace(
             /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
             p1) => {
               item.amount = p1 / mainCoin.decimals
             })
+					item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
+							item.reciver_address = p1
+					})
           if (type.includes('MsgWithdrawDelegatorReward')) {
             item.icon = '/static/img/delegate/shoukuan2.png'
             this.list['withdraw'].push(item)
@@ -180,5 +184,13 @@
 		flex-direction: column;
 		justify-content: center;
 		transform: translateY(-112rpx);
+	}
+	
+	.plus {
+		color: #17C499 !important;
+	}
+	
+	.minus {
+		color: #275EF1 !important;
 	}
 </style>

@@ -50,8 +50,16 @@ export default {
       // updateLanguage()
       this.$refs.notify.show('', language[this.$cache.get('_language')].text60, { bgColor: '#275EF1' })
 			this.language = language[this.$cache.get('_language')]
-    }
-  }
+    },
+  },
+	onBackPress(event) {
+		if (event.from == 'backbutton') {
+			uni.reLaunch({
+				url: '/pages/mine/index'
+			})
+			return true
+		}
+	}
 }
 </script>
 

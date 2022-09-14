@@ -2,7 +2,7 @@
   <view class="sendPage">
     <view class="mask" v-show="loading"></view>
     <view :updataDelegate="updataDelegate" :change:updataDelegate="render.unDelegate"></view>
-    <custom-header :title="language.text06" :style="titleStyle">
+    <custom-header tabUrl="/pages/delegate/index" :title="language.text06" :style="titleStyle">
     </custom-header>
     <view class="main-top">
       <!-- 选择取消委托节点 -->
@@ -41,7 +41,7 @@
             </view>
             <view class="value">
               <u--input :placeholder="language.text17" type="number" v-model="formData.amount.amount"
-                @change="sendAmountChange">
+                @change="sendAmountChange" :formatter="formatter">
               </u--input>
               <text @click="testAmount">{{ language.text18 }}</text>
             </view>
@@ -109,7 +109,7 @@
           <view class="miners_fee">
             <text>{{ language.text29 }}</text>
             <view>
-              <view>30000 GWEI * {{ formData.gas }} GasPrice</view>
+              <view>30000 * {{ formData.gas }} GHM</view>
               <view class="price">{{ formData.gas * 30000 }} GHM</view>
             </view>
           </view>
@@ -259,11 +259,11 @@ export default {
       }
     },
     sendAmountChange(val) {
-      if (val.startsWith('-')) {
-        this.formData.amount.amount = val.slice(1)
-      }
       this.showAmountError = this.balance < this.formData.amount.amount ? true : false
     },
+		formatter(val) {
+			return val.replace(/[^\d.]/g,'')
+		},
     chooseAddress() {
       uni.navigateTo({
         url: './adres_book'

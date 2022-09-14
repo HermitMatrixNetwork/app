@@ -108,7 +108,8 @@ const languages = {
     text100: '未搜索到相关节点',
     text101: '暂无数据',
     text102: '输入金额超过选中节点委托数量，请重新输入',
-		text103: '复制成功'
+		text103: '复制成功',
+		text104: '节点名称'
 
   },
   'CT': {
@@ -219,7 +220,8 @@ const languages = {
     text100: 'No related nodes found.',
     text101: 'No data yet',
     text102: 'The input amount exceeds the number of selected nodes, please re-enter',
-		text103: 'Copy successfully!'
+		text103: 'Copy successfully!',
+		text104: 'Node Name'
   }
 }
 export default languages
