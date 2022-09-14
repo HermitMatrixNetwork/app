@@ -17,7 +17,7 @@
 
 			<view class="qrcode">
 				<tki-qrcode ref="qrcode" :val="code.val" :size="code.size" :unit="code.upx" :onval="code.onval"
-					:loadMake="code.loadMake" @result="qrR" />
+					:loadMake="code.loadMake" @result="qrR" :loadingText="language.text222" />
 			</view>
 
 			<text>{{ language.text54 }}</text>
@@ -86,6 +86,7 @@ export default {
       var currentWebview = page.$getAppWebview()
       bitmap = new plus.nativeObj.Bitmap('amway_img')
       // 将webview内容绘制到Bitmap对象中
+      let _this = this
       currentWebview.draw(bitmap, function() {
         // console.log('截屏绘制图片成功');
         //这里我将文件名用四位随机数拼接了，不然会出现当前图片替换上一张图片只能保存一张图片的问题
@@ -99,6 +100,9 @@ export default {
 					  type: 2,
 					  imageUrl:saveUrl,
 					  complete(){
+              uni.showToast({
+                title:_this.language.text223
+              })
               uni.saveImageToPhotosAlbum({
 							  filePath: i.target,
 							  success: function() {
