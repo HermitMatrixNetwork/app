@@ -20,16 +20,16 @@
 				}
 			}
 		},
-		// async onLaunch() {
+		async onLaunch() {
 		// 	uni.hideTabBar()
 		// 	if (!this.isTor && this.$cache.get('_currentWallet') == null) {
 		// 		uni.clearStorageSync()
 		// 	}
-		// 	this.$cache.get('_language') || this.$cache.set('_language', 'CN', 0)
-		// 	this.$cache.get('_addressBook') || this.$cache.set('_addressBook', [], 0)
-		// 	this.$cache.get('_touchId') || this.$cache.set('_touchId', 0, 0)
-		// 	this.$cache.get('_MINERS_GAS') || this.$cache.set('_MINERS_GAS', MINERS_GAS, 0)
-		// 	this.$cache.get('_currentRpc') || this.$cache.set('_currentRpc', DEFAULT_RPC.link, 0)
+			this.$cache.get('_language') || this.$cache.set('_language', 'CN', 0)
+			this.$cache.get('_addressBook') || this.$cache.set('_addressBook', [], 0)
+			this.$cache.get('_touchId') || this.$cache.set('_touchId', 0, 0)
+			this.$cache.get('_MINERS_GAS') || this.$cache.set('_MINERS_GAS', MINERS_GAS, 0)
+			this.$cache.get('_currentRpc') || this.$cache.set('_currentRpc', DEFAULT_RPC.link, 0)
 		// 	// 0 表示第一次进入
 		// 	this.$cache.get('_appInit') || this.$cache.set('_appInit', 0, 0)
 		// 	let _appInit = this.$cache.get('_appInit')
@@ -83,7 +83,7 @@
 		// 	}
 		// 	// #endif
 
-		// },
+		},
 		// async onShow() {
 		// 	var pages = getCurrentPages();
 		// 	var page = pages[pages.length - 1];

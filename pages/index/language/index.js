@@ -83,9 +83,10 @@ const languages = {
     text80: '密码长度不能少于8位',
     text81: '私钥不能为空',
     text82: '导入',
-		text83: '输入Keystore原对应资金密码',
-		text84: '密码输入不一致，请重新输入',
-		text85: '钱包名称不能超过10个字符'
+    text83: '输入Keystore原对应资金密码',
+    text84: '密码输入不一致，请重新输入',
+    text85: '钱包名称不能超过10个字符',
+    text86: '钱包已存在，请勿导入相同的钱包'
   },
   'CT': {
     myDelegate: '我的委托',
@@ -174,9 +175,10 @@ const languages = {
     text80: 'password is not less than 8 digits',
     text81: 'Private key cannot be empty!',
     text82: 'Import',
-		text83: 'Enter the original corresponding fund password of Keystore',
-		text84: 'The password input is inconsistent, please re-enter',
-		text85: 'Wallet name cannot exceed 10 characters'
+    text83: 'Enter the original corresponding fund password of Keystore',
+    text84: 'The password input is inconsistent, please re-enter',
+    text85: 'Wallet name cannot exceed 10 characters',
+    text86: 'Wallet already exists, please do not import the same wallet'
   }
 }
 export default languages

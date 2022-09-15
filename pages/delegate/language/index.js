@@ -68,13 +68,13 @@ const languages = {
     'text60': '请输入委托数量',
     'text61': '可用余额',
     'text62': '（选填）',
-    'text63': '提示：委托交易成功发起！',
+    'text63': '委托交易成功发起！',
     'text64': '参与委托',
     'text65': '请输入Memo （选填）',
     'text66': '资金密码',
     'text67': '请输入资金密码',
     'text68': '确认',
-    'text69': '提示：资金密码错误，请重新输入!',
+    'text69': '资金密码错误，请重新输入!',
     'text70': '全部',
     'text71': '委托',
     'text72': '取消委托',
@@ -108,8 +108,10 @@ const languages = {
     text100: '未搜索到相关节点',
     text101: '暂无数据',
     text102: '输入金额超过选中节点委托数量，请重新输入',
-		text103: '复制成功',
-		text104: '节点名称'
+    text103: '复制成功',
+    text104: '节点名称',
+    text105: '委托数量不能为空',
+    text106: '委托节点不能为空'
 
   },
   'CT': {
@@ -220,8 +222,10 @@ const languages = {
     text100: 'No related nodes found.',
     text101: 'No data yet',
     text102: 'The input amount exceeds the number of selected nodes, please re-enter',
-		text103: 'Copy successfully!',
-		text104: 'Node Name'
+    text103: 'Copy successfully!',
+    text104: 'Node Name',
+    text105: 'Entrusted quantity cannot be empty',
+    text106: 'The delegation node cannot be empty'
   }
 }
 export default languages

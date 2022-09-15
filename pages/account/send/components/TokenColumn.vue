@@ -27,7 +27,7 @@ export default {
   props: {
     tokenName: {
       type: String,
-      default: 'uGHM'
+      default: 'ughm'
     },
     tokenAddress: {
       type: String,

@@ -185,7 +185,7 @@ export default {
       formData: {
         amount: {
           amount: '',
-          denom: 'uGHM'
+          denom: 'ughm'
         }, //发送金额
         memo: '',
         gas: '',

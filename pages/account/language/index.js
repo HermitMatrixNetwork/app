@@ -237,17 +237,18 @@ const languages = {
     text210: 'viewkey 不能为空！',
     text211: '提示：钱包移除成功！',
     text212: '暂无热门代币',
-		text213: '助记词',
+    text213: '助记词',
     text214:'保存分享',
     text215: '请勿截屏分享和存储，这将可能被第三方恶意软件收集，造成资产损失。',
-		text216: '取消委托金额',
-		text217: '被取消验证人',
-		text218: '完成备份，点击验证',
-		text219: '当前转账额度达到所设置的交易提示额度，为高额转账，请确认本次转账是安全的，才可继续完成转账操作。',
-		text220: '输入地址有误，请检查后重新输入',
-		text221: '钱包密码不能少于8位',
+    text216: '取消委托金额',
+    text217: '被取消验证人',
+    text218: '完成备份，点击验证',
+    text219: '当前转账额度达到所设置的交易提示额度，为高额转账，请确认本次转账是安全的，才可继续完成转账操作。',
+    text220: '输入地址有误，请检查后重新输入',
+    text221: '钱包密码不能少于8位',
     text222:'二维码生成中',
-    text223:'图片已保存'
+    text223:'图片已保存',
+    text224: '明文私钥'
 		
   },
   CT: {
@@ -466,7 +467,7 @@ const languages = {
     'text166': 'Popular assets',
     'text167': ':Successfully added!',
     'text168': 'Support all Hermit Matix network tokens',
-    'text169': 'Please enter the token contract address to search.',
+    'text169': 'Enter the contract address query',
     'text170': 'Cancel',
     'text171': 'Successful deletion!',
     'text172': 'Warning',
@@ -510,17 +511,18 @@ const languages = {
     text210: 'viewkey cannot be empty!',
     text211: 'The wallet was removed successfully!',
     text212: 'No popular tokens yet',
-		text213: 'Mnemonics',
+    text213: 'Mnemonics',
     text214:'Save and share',
     text215: 'Do not share and store screenshots, which may be collected by third-party malware, resulting in asset loss.',
-		text216: 'Cancellation of commission amount',
-		text217: 'Cancelled verifier',
-		text218: 'Complete the backup, click Verify',
-		text219: 'The current transfer limit reaches the set transaction reminder limit, which is a high-value transfer. Please confirm that the transfer is safe before continuing to complete the transfer operation.',
-		text220: 'The input address is incorrect, please check and re-enter',
-		text221: 'The wallet password cannot be less than 8 digits',
+    text216: 'Cancellation of commission amount',
+    text217: 'Cancelled verifier',
+    text218: 'Complete the backup, click Verify',
+    text219: 'The current transfer limit reaches the set transaction reminder limit, which is a high-value transfer. Please confirm that the transfer is safe before continuing to complete the transfer operation.',
+    text220: 'The input address is incorrect, please check and re-enter',
+    text221: 'The wallet password cannot be less than 8 digits',
     text222:'Generating QR code',
-    text223:'Saved'
+    text223:'Saved',
+    text224: 'public key'
   }
 }
 export default languages

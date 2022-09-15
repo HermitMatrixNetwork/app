@@ -16,7 +16,7 @@
           </template>
         </InputTitle>
       </view>
-      <text class="errorTip" :style="{ opacity: (showAddressErrorTipEmpty || showAddressErrorTipDuplicate) ? 1 : 0 }" v-text="showAddressErrorTipEmpty ? language.text100 : showAddressErrorTipDuplicate ? language.text104 : '1' "> </text>
+      <text class="errorTip" :style="{ opacity: showAddressError ? 1 : 0 }" v-text="language[addressError]"> </text>
       <!-- <InputTitle @textareaFocus="textareaFocus" @textareaBlur="textareaBlur" ref="walletNameTextarea" :title="language.text88" :inputVal.sync="walletName" isTextarea :class="{ 'wallet-name-input': walletName == language.text07 }"></InputTitle> -->
       <view class="label-title">{{ language.text88 }}</view>
 			<u--textarea v-model="walletName" :placeholder="language.text07" maxlength="60" class="textarea" :autoHeight="$cache.get('_language') == 'CN'"></u--textarea>
@@ -32,6 +32,7 @@
 <script>
 import InputTitle from './send/components/Input-title.vue'
 import language from '@/pages/mine/language/index.js'
+import { checkAddress } from '@/utils/index.js'
 export default {
   components: {
     InputTitle
@@ -44,25 +45,25 @@ export default {
       headerStyle: {
         background: '#FFFFFF'
       },
-      showAddressErrorTipEmpty: false,
-      showAddressErrorTipDuplicate: false,
+      showAddressError: false,
       showWalletNameErrorTip: false,
       showWalletDescribeErrorTip: false,
       language: language[this.$cache.get('_language')],
+      addressError: 'text104',
       walletNamerError: 'text101', // text101, text116 '钱包名字不能为空', '钱包名称不能超过10个字符'
     }
   },
   methods: {
-		textareaFocus() {
-			// if (this.$refs.walletNameTextarea.childValue == this.language.text07) {
-			// 	this.$refs.walletNameTextarea.childValue = ''
-			// }
-		},
-		textareaBlur() {
-			// if (this.$refs.walletNameTextarea.childValue.trim() == '') {
-			// 	this.$refs.walletNameTextarea.childValue = this.language.text07
-			// }
-		},
+    textareaFocus() {
+      // if (this.$refs.walletNameTextarea.childValue == this.language.text07) {
+      // 	this.$refs.walletNameTextarea.childValue = ''
+      // }
+    },
+    textareaBlur() {
+      // if (this.$refs.walletNameTextarea.childValue.trim() == '') {
+      // 	this.$refs.walletNameTextarea.childValue = this.language.text07
+      // }
+    },
     saveAddress() {
       const addressBook = this.$cache.get('_addressBook')
 
@@ -77,15 +78,16 @@ export default {
       }
 
       if (this.walletAddress.trim() == '') {
-        this.showAddressErrorTipEmpty = true
+        this.showAddressError = true
+        this.addressError = 'text100' // '钱包地址不能为空'
+      } else if (addressBook.find(item => item.walletAddress == this.walletAddress)){
+        this.showAddressError = true
+        this.addressError = 'text104' // '钱包地址已存在，请勿重复添加'
+      } else if (!checkAddress(this.walletAddress)) {
+        this.showAddressError = true
+        this.addressError = 'text120' // '地址无效，请检查后重新输入',
       } else {
-        this.showAddressErrorTipEmpty = false
-      }
-
-      if (addressBook.find(item => item.walletAddress == this.walletAddress)) {
-        this.showAddressErrorTipDuplicate = true
-      } else {
-        this.showAddressErrorTipDuplicate = false
+        this.showAddressError = false
       }
       
       if (this.walletDescribe.trim().length > 20) {

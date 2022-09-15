@@ -32,7 +32,7 @@ class NetworkClient {
   async QueryBankBalanlce(address) {
     const result = await this.secretjs.query.bank.balance({
       address,
-      denom: 'uGHM'
+      denom: 'ughm'
     })
     // result.balance.amount = result.balance.amount / 1e6
     return result

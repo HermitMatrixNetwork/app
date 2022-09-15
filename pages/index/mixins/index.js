@@ -74,7 +74,7 @@ export default {
 
       if (from == 'walletManager' && this.checkExist(wallet)) {
         // 校验是否已经存在该钱包
-        return this.$refs.notify.show('error', '钱包已存在，请勿导入相同的钱包')
+        return this.$refs.notify.show('error', this.language.text86) // '钱包已存在，请勿导入相同的钱包'
       }
       
       // 助记词校验成功后再同步到本地数据，否则不会同步到本地

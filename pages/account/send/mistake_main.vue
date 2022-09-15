@@ -65,7 +65,7 @@ export default {
   },
   data() {
     return {
-      tokenName: 'uGHM',
+      tokenName: 'ughm',
       address: 'adf41654adfs65sd4fa61',
       viewkey:'0',
       transactionRecord:'',

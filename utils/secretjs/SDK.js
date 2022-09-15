@@ -33,7 +33,7 @@ export async function getSecret() {
   return Secret
 }
 //查询余额
-export async function getBalance(address, denom = 'uGHM') {
+export async function getBalance(address, denom = 'ughm') {
   let Secret = await getSecret()
 
   const result = await Secret.query.bank.balance({
@@ -72,12 +72,12 @@ export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo
     fromAddress: myaddress,
     toAddress: toaddress,
     amount: [{
-      denom: 'uGHM',
+      denom: 'ughm',
       amount: amount + ''
     }]
   }, {
     gasPriceInFeeDenom: gas,
-    feeDenom: 'uGHM',
+    feeDenom: 'ughm',
     memo
   })
   return result
@@ -127,7 +127,7 @@ export async function toDelegate(data, memo = '', gas) {
   let Secret = await getSecret()
   const result = await Secret.tx.staking.delegate(data, {
     gasPriceInFeeDenom: gas,
-    feeDenom: 'uGHM',
+    feeDenom: 'ughm',
     gasLimit: 26000,
     memo
   })
@@ -157,7 +157,7 @@ export async function unDelegate(data, memo = '', gas) {
   let Secret = await getSecret()
   const result = await Secret.tx.staking.undelegate(data, {
     gasPriceInFeeDenom: gas,
-    feeDenom: 'uGHM',
+    feeDenom: 'ughm',
     gasLimit: 30000,
     memo
   })
@@ -213,7 +213,7 @@ export async function setViewKey(data, gas) {
     }
     , {
       gasPriceInFeeDenom: gas,
-      feeDenom: 'uGHM'
+      feeDenom: 'ughm'
     })
   return result
 }
@@ -264,7 +264,7 @@ export const transferOtherToken = async (data, memo = '', gas) => {
   let Secret = await getSecret()
   const result = await Secret.tx.snip20.transfer(data, {
     gasPriceInFeeDenom: gas,
-    feeDenom: 'uGHM',
+    feeDenom: 'ughm',
     memo,
     gasLimit: 40000
   })
@@ -297,7 +297,7 @@ export const withdrawDelegatorReward = async (data, gas) => {
   let Secret = await getSecret()
   const result = await Secret.tx.distribution.withdrawDelegatorReward(data, {
     gasPriceInFeeDenom: gas,
-    feeDenom: 'uGHM',
+    feeDenom: 'ughm',
     // gasLimit: 20000
   })
   return result
@@ -307,7 +307,7 @@ export const setWithdrawAddress = async (data, gas) => {
   let Secret = await getSecret()
   const result = await Secret.tx.distribution.setWithdrawAddress(data, {
     gasPriceInFeeDenom: gas,
-    feeDenom: 'uGHM',
+    feeDenom: 'ughm',
     // gasLimit: 20000
   })
   return result
