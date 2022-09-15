@@ -131,6 +131,7 @@ export default {
 			font-size: 28rpx;
 			color: #2C365A;
 			letter-spacing: 0;
+			word-break: break-all;
 		}
 
 		.content {

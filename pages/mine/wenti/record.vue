@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<custom-header class="header" title="历史反馈" :customStyle="{ 'background-color': '#fff' }"></custom-header>
+		<custom-header class="header" :title="language.text122" :customStyle="{ 'background-color': '#fff' }"></custom-header>
 
 		<view class="message">
 			<view class="message-item" v-for="(item, index) in noticeList" :key="index" @click="toDetail(item)">
@@ -13,10 +13,12 @@
 </template>
 
 <script>
+import language from '../language/index.js'
 export default {
   data() {
     return {
-      noticeList:[]
+      noticeList:[],
+      language: language[this.$cache.get('_language')],
     }
   },
   methods: {
@@ -41,7 +43,7 @@ export default {
     let _this = this
     eventChannel.on('acceptDataFromOpenerPage', function(data) {
 			    console.log('接收到的数据',data)			
-			  _this.noticeList = data.data.data.notices
+			  _this.noticeList = data.data.data.notices.reverse()
       console.log(_this.noticeList)
     })
   },

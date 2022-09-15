@@ -82,6 +82,8 @@ export default {
 			font-size: 36rpx;
 			color: #32475F;
 			margin-bottom: 24rpx;
+			white-space: normal;
+			word-break: break-all;
 		}
 
 		.meta {

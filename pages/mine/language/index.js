@@ -122,9 +122,11 @@ export default {
     text116: '钱包名称不能超过10个字符',
     text117: '不能超过20个字符',
     text118: '消息详情',
-    text119: '额度不能为负数',
+    text119: '额度不能为负数',    
     text120: '地址无效，请检查后重新输入',
-    text121: '描述信息不能超过20个字符'
+    text121: '描述信息不能超过20个字符',
+    text122: '历史反馈',
+    text123: '反馈详情'
   },
   EN: {
     addressErrorTipDuplicate: '钱包地址已存在，请勿重复添加',
@@ -251,8 +253,9 @@ export default {
     text118: 'Message Details',
     text119: 'Limit cannot be negative',
     text120: 'The address is invalid. Please check and re-enter',
-    text121: 'The description information cannot exceed 20 characters'
-    
+    text121: 'The description information cannot exceed 20 characters',
+    text122: 'Historical feedback',
+    text123: 'Feedback details'
   },
   CT: {}
 }
