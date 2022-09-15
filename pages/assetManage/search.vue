@@ -31,8 +31,8 @@
       </view>
     </view>
     <view v-else class="noData">
-      <img v-if="reAddress!=''" class="data" src="@/static/img/account/nodata.png" alt="">
-      <img v-else class="searchbg" src="@/static/img/account/searchbg.png" alt="">
+      <image v-if="reAddress!=''" class="data" src="/static/img/account/nodata.png" alt="" />
+      <image v-else class="searchbg" src="/static/img/account/searchbg.png" alt="" />
       <view class="tip">
         {{address !== ''?'未搜索到相关代币':'支持所有 Hermit Matrix Network 代币请输入代币合约地址进行搜索'}}
       </view>

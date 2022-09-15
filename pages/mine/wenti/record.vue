@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<custom-header class="header" :title="language.text120" :customStyle="{ 'background-color': '#fff' }"></custom-header>
+		<custom-header class="header" :title="language.text122" :customStyle="{ 'background-color': '#fff' }"></custom-header>
 
 		<view class="message">
 			<view class="message-item" v-for="(item, index) in noticeList" :key="index" @click="toDetail(item)">

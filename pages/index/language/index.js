@@ -59,8 +59,8 @@ const languages = {
     text56: '输入Keystore原对应钱包密码',
     text57: '输入钱包名称',
     text58: '导入',
-    text59: 'Keystore错误提示：不正确的Keystore内容，请检查！',
-    text60: '钱包密码错误提示：Keystore原对应钱包密码错误，请确认！',
+    text59: '不正确的Keystore内容，请检查！',
+    text60: 'Keystore原对应钱包密码错误，请确认！',
     text61: '成功提示：导入成功！',
     text62: '选择导入类型',
     text63: 'Keystore 不能为空',
@@ -79,13 +79,14 @@ const languages = {
     text76: '设置钱包名称',
     text77: '助记词由英文单词组成，请抄写并妥善保管。',
     text78: '助记词丢失，无法找回，请务必备份助记词。',
-    text79: '钱包密码不能位空！',
+    text79: '钱包密码不能为空！',
     text80: '密码长度不能少于8位',
     text81: '私钥不能为空',
     text82: '导入',
-		text83: '输入Keystore原对应资金密码',
-		text84: '密码输入不一致，请重新输入',
-		text85: '钱包名称不能超过10个字符'
+    text83: '输入Keystore原对应资金密码',
+    text84: '密码输入不一致，请重新输入',
+    text85: '钱包名称不能超过10个字符',
+    text86: '钱包已存在，请勿导入相同的钱包'
   },
   'CT': {
     myDelegate: '我的委托',
@@ -174,9 +175,10 @@ const languages = {
     text80: 'password is not less than 8 digits',
     text81: 'Private key cannot be empty!',
     text82: 'Import',
-		text83: 'Enter the original corresponding fund password of Keystore',
-		text84: 'The password input is inconsistent, please re-enter',
-		text85: 'Wallet name cannot exceed 10 characters'
+    text83: 'Enter the original corresponding fund password of Keystore',
+    text84: 'The password input is inconsistent, please re-enter',
+    text85: 'Wallet name cannot exceed 10 characters',
+    text86: 'Wallet already exists, please do not import the same wallet'
   }
 }
 export default languages

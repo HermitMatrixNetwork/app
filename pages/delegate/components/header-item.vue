@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     valueFormat(val) {
-      return this.needFormat ? Number(val).toFixed(2) : val
+      return this.needFormat ? Number(val).toFixed(6) : val
     }
   }
 }

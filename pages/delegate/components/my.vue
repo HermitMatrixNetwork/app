@@ -44,7 +44,7 @@
               <view class="other">{{item.validator.operatorAddress|sliceAddress(7, -8)}}</view>
             </view>
             <view class="center">
-              {{ (item.rewards.amount / mainCoin.delegateDecimals).toFixed(5) }} {{ mainCoin.alias_name }}
+              {{ (item.rewards.amount / mainCoin.delegateDecimals).toFixed(6) }} {{ mainCoin.alias_name }}
             </view>
             <view class="right">
               <view class="name">{{item.balance.amount / mainCoin.decimals }}</view>
@@ -134,9 +134,9 @@ export default {
   },
   computed: {
     totalReward() {
-      let reward = this.allData.totalReward ? (this.allData.totalReward).toFixed(5) + '' : '0.00'
+      let reward = this.allData.totalReward ? (this.allData.totalReward).toFixed(6) + '' : '0.000000'
       if (reward.length > 13) {
-        reward = reward.substr(0, 4) + '...' + reward.substr(-4)
+        reward = reward.substr(0, 6) + '...' + reward.substr(-6)
       }
       return reward
     }

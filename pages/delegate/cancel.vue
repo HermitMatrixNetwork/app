@@ -2,167 +2,170 @@
   <view class="sendPage">
     <view class="mask" v-show="loading"></view>
     <view :updataDelegate="updataDelegate" :change:updataDelegate="render.unDelegate"></view>
-    <custom-header :title="language.text06" :style="titleStyle">
+    <custom-header tabUrl="/pages/delegate/index" :title="language.text06" :style="titleStyle">
     </custom-header>
-    <view class="main-top">
-      <!-- 选择取消委托节点 -->
-      <view class="content">
-        <view class="content-top">
-          <view class="title">
-            {{ language.text13 }}
-          </view>
-          <view class="change-token"
-            @click="selectNode(`/pages/delegate/selectNode?selectIndex=${selectIndex}&redirectURL=/pages/delegate/cancel`)">
-
-            <view v-if="selData">
-              <view class="name">{{selData.validator.description.moniker}}</view>
-              <view class="address">{{selData.validator.operatorAddress| sliceAddress(10, -10)}}</view>
+    <view class="scroll-view">
+      <view class="main-top">
+        <!-- 选择取消委托节点 -->
+        <view class="content">
+          <view class="content-top">
+            <view class="title">
+              {{ language.text13 }}
             </view>
-            <text v-else>{{ language.text14 }}</text>
-            <view class="icon-right">
-              <image src="/static/img/ic-arrow1.png"></image>
+            <view class="change-token"
+              @click="selectNode(`/pages/delegate/selectNode?selectIndex=${selectIndex}&redirectURL=/pages/delegate/cancel`)">
+      
+              <view v-if="selData">
+                <view class="name">{{selData.validator.description.moniker}}</view>
+                <view class="address">{{selData.validator.operatorAddress| sliceAddress(10, -10)}}</view>
+              </view>
+              <text v-else>{{ language.text14 }}</text>
+              <view class="icon-right">
+                <image src="/static/img/ic-arrow1.png"></image>
+              </view>
             </view>
-          </view>
-          <view class="tip">
-            {{ language.text15 }}
+            <view class="tip">
+              {{ language.text15 }}
+            </view>
           </view>
         </view>
-      </view>
-      <view class="line">
-
-      </view>
-
-      <view class="content">
-        <!-- 输入取消委托数量 -->
-        <view class="send-amount">
-          <view class="amount">
+        <view class="line">
+      
+        </view>
+      
+        <view class="content">
+          <!-- 输入取消委托数量 -->
+          <view class="send-amount">
+            <view class="amount">
+              <view class="label">
+                <text>{{ language.text16 }}</text>
+              </view>
+              <view class="value">
+                <u--input :placeholder="language.text17" type="number" v-model="formData.amount.amount"
+                  @change="sendAmountChange" :formatter="formatter">
+                </u--input>
+                <text @click="testAmount">{{ language.text18 }}</text>
+              </view>
+            </view>
+            <!-- 输入金额超过选中节点委托数量，请重新输入 -->
+              <text class="waringPrompt" :style="{ opacity: showAmountError ? 1 : 0 }">{{ language.text102 }}</text>
+            <view class="other">
+              <div class="title">{{ language.text19 }}：</div>
+              <div class="num" v-if="selData">{{selData.balance.amount / mainCoin.decimals }} GHM</div>
+              <div class="num" v-else>0 GHM</div>
+            </view>
+          </view>
+      
+          <view class="amount memo">
             <view class="label">
-              <text>{{ language.text16 }}</text>
+              <text>Memo</text>
             </view>
             <view class="value">
-              <u--input :placeholder="language.text17" type="number" v-model="formData.amount.amount"
-                @change="sendAmountChange">
-              </u--input>
-              <text @click="testAmount">{{ language.text18 }}</text>
-            </view>
-          </view>
-          <!-- 输入金额超过选中节点委托数量，请重新输入 -->
-            <text class="waringPrompt" :style="{ opacity: showAmountError ? 1 : 0 }">{{ language.text102 }}</text>
-          <view class="other">
-            <div class="title">{{ language.text19 }}：</div>
-            <div class="num" v-if="selData">{{selData.balance.amount / mainCoin.decimals }} GHM</div>
-            <div class="num" v-else>0 GHM</div>
-          </view>
-        </view>
-
-        <view class="amount memo">
-          <view class="label">
-            <text>Memo</text>
-          </view>
-          <view class="value">
-            <u--input :placeholder="language.text65" v-model="formData.memo"></u--input>
-          </view>
-        </view>
-      </view>
-    </view>
-    <miners-column @getMinersCost="getMinersCost"></miners-column>
-    <view class="main-bottom">
-      <view class="btn" @click="transferConfirm">
-        {{ language.text20 }}
-      </view>
-    </view>
-
-    <u-popup :show="submitPopupIsShow" @close="submitPopupIsShow=false" mode="bottom" :safeAreaInsetBottom="true">
-      <view class="submitPopup">
-        <view class="main">
-          <view class="popup-title">
-            {{ language.text25 }}
-            <image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
-              @click="submitPopupIsShow=false"></image>
-          </view>
-
-          <!-- 发送账户 -->
-          <view class="send-address">
-            <text>{{ language.text26 }}</text>
-            <text>{{ formData.delegatorAddress }}</text>
-          </view>
-
-          <!-- 接收账户 -->
-          <view class="receive_address">
-            <text>{{ language.text27 }}</text>
-            <text>{{ formData.delegatorAddress }}</text>
-          </view>
-
-          <!-- 取消委托数量 -->
-          <view class="transfer_amount">
-            <text>{{ language.text28 }}</text>
-            <text>{{formData.amount.amount ? formData.amount.amount : '0' }}{{tokenName}}</text>
-          </view>
-
-          <!--Memo-->
-          <view class="memo_type">
-            <text>Meno</text>
-            <text>{{ formData.memo }}</text>
-          </view>
-
-          <!--矿工费-->
-          <view class="miners_fee">
-            <text>{{ language.text29 }}</text>
-            <view>
-              <view>30000 GWEI * {{ formData.gas }} GasPrice</view>
-              <view class="price">{{ formData.gas * 30000 }} GHM</view>
+              <u--input :placeholder="language.text65" v-model="formData.memo"></u--input>
             </view>
           </view>
         </view>
-        <view class="submit-btn" @click="submitAgain">
+      </view>
+      <miners-column @getMinersCost="getMinersCost"></miners-column>
+      <view class="main-bottom">
+        <view class="btn" @click="transferConfirm">
           {{ language.text20 }}
         </view>
       </view>
-    </u-popup>
-
-    <u-modal :show="modalPasswordIsShow" :showConfirmButton="false">
-      <view class="modal_main">
-        <view class="modal_title">
-          <view>
-            {{ verifyMethod == 'touchID' ? language.text83 : language.text66 }}
-            <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
-              class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
-          </view>
-          <image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
-            @click="closeModalPasswordIsShow"></image>
-        </view>
-        <view v-if="verifyMethod == 'password'">
-          <view class="item">
-            <view class="item-input item-input-password">
-              <u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text67">
-              </u-input>
-              <image :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
-                @click="passwordEye = !passwordEye"
-                style="width: 32rpx; height: 32rpx; margin-right: 36rpx; border-radius: 0 16rpx 16rpx 0;"></image>
+      
+      <u-popup :show="submitPopupIsShow" @close="submitPopupIsShow=false" mode="bottom" :safeAreaInsetBottom="true">
+        <view class="submitPopup">
+          <view class="main">
+            <view class="popup-title">
+              {{ language.text25 }}
+              <image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
+                @click="submitPopupIsShow=false"></image>
+            </view>
+      
+            <!-- 发送账户 -->
+            <view class="send-address">
+              <text>{{ language.text26 }}</text>
+              <text>{{ formData.delegatorAddress }}</text>
+            </view>
+      
+            <!-- 接收账户 -->
+            <view class="receive_address">
+              <text>{{ language.text27 }}</text>
+              <text>{{ formData.delegatorAddress }}</text>
+            </view>
+      
+            <!-- 取消委托数量 -->
+            <view class="transfer_amount">
+              <text>{{ language.text28 }}</text>
+              <text>{{formData.amount.amount ? formData.amount.amount : '0' }}{{tokenName}}</text>
+            </view>
+      
+            <!--Memo-->
+            <view class="memo_type">
+              <text>Meno</text>
+              <text>{{ formData.memo }}</text>
+            </view>
+      
+            <!--矿工费-->
+            <view class="miners_fee">
+              <text>{{ language.text29 }}</text>
+              <view>
+                <view>30000 * {{ formData.gas }} GHM</view>
+                <view class="price">{{ formData.gas * 30000 }} GHM</view>
+              </view>
             </view>
           </view>
-          <text :style="{opacity: passwordCheck ? 1 : 0 }" class="waringPrompt">{{ language.text69 }}</text>
-          <u-button @click="passwordButton" class="pass_confirm">{{ language.text68 }}</u-button>
-        </view>
-        <view v-else class="touch-verify">
-          <view class="logo">
-            <image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
+          <view class="submit-btn" @click="submitAgain">
+            {{ language.text20 }}
           </view>
         </view>
-        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">{{ language.text82 }}</view>
-      </view>
-    </u-modal>
-
-    <custom-notify ref="notify"></custom-notify>
-    <!-- 指纹验证 -->
-    <view class="toast" v-show="showToast">
-      <view class="toast-icon">
-        <image :src="toast.icon"></image>
-      </view>
-      <view class="toast-content">
-        <text>{{ toast.msg }}</text>
+      </u-popup>
+      
+      <u-modal :show="modalPasswordIsShow" :showConfirmButton="false">
+        <view class="modal_main">
+          <view class="modal_title">
+            <view>
+              {{ verifyMethod == 'touchID' ? language.text83 : language.text66 }}
+              <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
+                class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
+            </view>
+            <image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
+              @click="closeModalPasswordIsShow"></image>
+          </view>
+          <view v-if="verifyMethod == 'password'">
+            <view class="item">
+              <view class="item-input item-input-password">
+                <u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text67">
+                </u-input>
+                <image :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
+                  @click="passwordEye = !passwordEye"
+                  style="width: 32rpx; height: 32rpx; margin-right: 36rpx; border-radius: 0 16rpx 16rpx 0;"></image>
+              </view>
+            </view>
+            <text :style="{opacity: passwordCheck ? 1 : 0 }" class="waringPrompt">{{ language.text69 }}</text>
+            <u-button @click="passwordButton" class="pass_confirm">{{ language.text68 }}</u-button>
+          </view>
+          <view v-else class="touch-verify">
+            <view class="logo">
+              <image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
+            </view>
+          </view>
+          <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">{{ language.text82 }}</view>
+        </view>
+      </u-modal>
+      
+      <custom-notify ref="notify"></custom-notify>
+      <!-- 指纹验证 -->
+      <view class="toast" v-show="showToast">
+        <view class="toast-icon">
+          <image :src="toast.icon"></image>
+        </view>
+        <view class="toast-content">
+          <text>{{ toast.msg }}</text>
+        </view>
       </view>
     </view>
+
   </view>
 </template>
 
@@ -208,7 +211,7 @@ export default {
       formData: {
         amount: {
           amount: '',
-          denom: 'uGHM'
+          denom: 'ughm'
         }, //发送金额
         memo: '', //Memo
         delegatorAddress: this.$cache.get('_currentWallet').address,
@@ -259,10 +262,10 @@ export default {
       }
     },
     sendAmountChange(val) {
-      if (val.startsWith('-')) {
-        this.formData.amount.amount = val.slice(1)
-      }
       this.showAmountError = this.balance < this.formData.amount.amount ? true : false
+    },
+    formatter(val) {
+      return val.replace(/[^\d.]/g,'')
     },
     chooseAddress() {
       uni.navigateTo({
@@ -319,12 +322,12 @@ export default {
 
       if (this.formData.amount.amount == '' || this.formData.amount.amount == 0) {
         verify = false
-        this.$refs.notify.show('error', '委托数量不能为空')
+        this.$refs.notify.show('error', this.language.text105)
       }
 
       if (!this.selData) {
         verify = false
-        this.$refs.notify.show('error', '委托节点不能为空')
+        this.$refs.notify.show('error', this.language.text106)
       }
 
       if (verify) {
@@ -458,6 +461,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .scroll-view {
+    height: calc(100vh - 112rpx - var(--status-bar-height));
+    overflow-y: scroll;
+  }
+  
   .mask {
     position: absolute;
     top: 0;
@@ -815,10 +823,11 @@ export default {
   }
 
   .btn {
-    position: absolute;
-    bottom: 64rpx;
-    left: 50%;
-    transform: translateX(-50%);
+    // position: absolute;
+    // bottom: 64rpx;
+    // left: 50%;
+    // transform: translateX(-50%);
+    margin: 48rpx auto 0;
     width: 622rpx;
     height: 96rpx;
     border-radius: 16rpx;

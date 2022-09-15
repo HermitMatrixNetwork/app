@@ -70,17 +70,17 @@ export default {
           rule: 'required',
           errMessage: language[this.$cache.get('_language')].text65
         },{
-					rule: 'max',
-					len: 10,
-					errMessage: language[this.$cache.get('_language')].text85
-				}],
+          rule: 'max',
+          len: 10,
+          errMessage: language[this.$cache.get('_language')].text85
+        }],
         password: [{
           rule: 'required',
           errMessage: language[this.$cache.get('_language')].text64
         }, {
           rule: 'min',
           len: 8,
-          errMessage: '密码长度不能少于8位'
+          errMessage: language[this.$cache.get('_language')].text80
         }, {
           rule: 'max',
           len: 48,

@@ -74,6 +74,8 @@ export default {
 	}
 
 	.address-list {
+		height: calc(100vh - 112rpx - var(--status-bar-height));
+		overflow-y: scroll;
 		margin: 0 32rpx;
 
 		.address-item {

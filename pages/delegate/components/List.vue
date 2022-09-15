@@ -1,6 +1,6 @@
 <template>
 	<view class="list">
-		<view class="item" v-for="(item,index) in list" :key="index" @click="clickItem(index)">
+		<view class="item" v-for="(item,index) in list" :key="index" @click="clickItem(item)">
 			<view class="left">
 				<view class="name">
 					{{item.validator.description.moniker}}
@@ -49,7 +49,9 @@ export default {
 	 selRadio(index){
       console.log(index)
 	 },
-    clickItem(i) {
+    clickItem(val) {
+			const delegateList = this.$cache.get('_delegateInfo')
+			const i = delegateList.list.findIndex(item => item.validator.operatorAddress == val.validator.operatorAddress)
       uni.redirectTo({
         url: `${this.redirectURL}?selectIndex=${i}`
       })

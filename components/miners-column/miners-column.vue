@@ -65,8 +65,27 @@ export default {
   },
   methods: {
     costChoose(item, index) {
-      this.$emit('getMinersCost', item)
-      this.selectedMiners = index
+			if (index == 3 && this.selectedMiners == 3) {
+					uni.navigateTo({
+						url: `/pages/account/send/custom_cost?data=${JSON.stringify(this.minersList[3])}`,
+						events: {
+							someEvent: data => {
+								data = Object.assign({
+									price: '0.00',
+									demon: 'GHM',
+									speed: this.language.text27,
+									time: '约3分钟'
+								}, data)
+								this.minersList.splice(3, 1, data)
+								this.$emit('getMinersCost', data)
+							}
+						}
+				})
+			} else {
+				this.selectedMiners = index
+				this.$emit('getMinersCost', item)
+				
+			}
     },
     addCustom() {
       uni.navigateTo({
@@ -77,7 +96,7 @@ export default {
             data = Object.assign({
               price: '0.00',
               demon: 'GHM',
-              speed: '自定义',
+              speed: this.language.text27,
               time: '约3分钟'
             }, data)
             this.minersList.push(data)

@@ -89,4 +89,8 @@ export default {
 			}
 		}
 	}
+  
+  /deep/ .uni-input-placeholder {
+    overflow: visible !important;
+  }
 </style>

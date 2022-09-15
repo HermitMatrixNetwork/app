@@ -32,7 +32,7 @@
         <view class="content-top">
           <!-- 收款地址 -->
           <view class="collection-adres">
-            <InputTitle :title="language.text32" :type="'text'" :placeholder="language.text93" ref="addressInptval"
+            <InputTitle :title="language.text32" :type="'text'" ref="addressInptval"
               disabled :inputVal.sync="receiveAddress">
               <template slot="title-icon">
                 <view style="font-size: 24rpx; color: #1E5EFF;" @click="toSetAddress">
@@ -117,7 +117,7 @@
           <view class="miners_fee">
             <text>{{ language.text29 }}</text>
             <view>
-              <view>25000 GWEI * {{ formData.gas }} GasPrice</view>
+              <view>25000 * {{ formData.gas }} GHM</view>
               <view class="price">{{ formData.gas * 25000 }} GHM</view>
             </view>
           </view>

@@ -19,7 +19,7 @@
       </view>
     </view>
     
-    <uni-button class="validate-mnemonic-btn" @click="toVerify">{{ language.completeBackupToVerify }}</uni-button>
+    <uni-button class="validate-mnemonic-btn" @click="toVerify">{{ language.text218 }}</uni-button>
     <Tooltip></Tooltip>
     <Notify ref="notify"></Notify>
   </view>

@@ -12,12 +12,13 @@
         <template v-for="(item,key) in transactionMessage" >
           <view v-if="item" class="main_message_column" :key="key">
               <view>{{key}}</view>
-              <view>{{item}}</view>
+              <view @click="copy(item, key)">{{item}}</view>
           </view>
         </template>
       </view>
     </view>
     <view :transactionHash="transactionHash"  :change:transactionHash="render.getTransationInfo"></view>
+		<custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
@@ -238,7 +239,23 @@ export default {
         break
       }
       this.loading = false
-    }
+    },
+		copy(item ,key) {
+			const copyList = ['Memo', this.language.text84, this.language.text111] // Memo, Amount, Fee
+			if (copyList.includes(key)) return;
+			uni.setClipboardData({
+				data: item,
+				showToast: false,
+				success: () => {
+					this.$refs.notify.show('error', this.language.text103, {
+						bgColor: '#275EF1'
+					})
+				},
+				fail: () => {
+					this.$refs.notify.show('error', '复制失败')
+				}
+			})
+		}
   }
 }
 </script>

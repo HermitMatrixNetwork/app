@@ -16,11 +16,12 @@
           </template>
         </InputTitle>
       </view>
-      <text class="errorTip" :style="{ opacity: (showAddressErrorTipEmpty || showAddressErrorTipDuplicate) ? 1 : 0 }" v-text="showAddressErrorTipEmpty ? language.text100 : showAddressErrorTipDuplicate ? language.text104 : '1' "> </text>
+      <text class="errorTip" :style="{ opacity: showAddressError ? 1 : 0 }" v-text="language[addressError]"> </text>
 
-      <InputTitle :title="language.text88" :placeholder="language.text07" :inputVal.sync="book.walletName"></InputTitle>
+      <InputTitle :title="language.text88"  isTextarea :isAutoHeight="$cache.get('_language') == 'CN'" :placeholder="language.text07" :inputVal.sync="book.walletName"></InputTitle>
       <text class="errorTip" :style="{ opacity: showWalletNameErrorTip ? 1 : 0 }">{{ language[walletNamerError] }}</text>
-      <InputTitle style="margin-top: 32rpx;" :title="language.text87" :placeholder="language.text08" :inputVal.sync="book.walletDescribe"></InputTitle>
+      <InputTitle style="margin-top: 32rpx;" isTextarea :isAutoHeight="$cache.get('_language') == 'CN'" :title="language.text87" :placeholder="language.text08" :inputVal.sync="book.walletDescribe"></InputTitle>
+      <text class="errorTip" :style="{ opacity: walletDescribeError ? 1 : 0 }">{{ language.text121 }}</text>
     </view>
     <u-button class="btn" @click="deleteBook">{{ language.text15 }}</u-button>
     
@@ -42,6 +43,7 @@
 <script>
 import InputTitle from './send/components/Input-title.vue'
 import language from '@/pages/mine/language/index.js'
+import { checkAddress } from '@/utils/index.js'
 export default {
   components: {
     InputTitle
@@ -58,31 +60,36 @@ export default {
       headerStyle: {
         background: '#FFFFFF'
       },
-      showAddressErrorTipEmpty: false,
-      showAddressErrorTipDuplicate: false,
+      showAddressError: false,
       showWalletNameErrorTip: false,
+      walletDescribeError: false,
       language: language[this.$cache.get('_language')],
       aa: false,
       walletNamerError: 'text101', // text101, text116 '钱包地址不能为空', '钱包名称不能超过10个字符'
+      addressError: 'text100' // 钱包地址不能为空
     }
   },
   methods: {
     saveAddress() {
       const addressBook = this.$cache.get('_addressBook')
-
+      
       if (this.book.walletAddress.trim() == '') {
-        this.showAddressErrorTipEmpty = true
+        this.showAddressError = true
+        this.addressError = 'text100'
+      } else if (!checkAddress(this.book.walletAddress)) {
+        this.showAddressError = true
+        this.addressError = 'text120'
       } else {
-        this.showAddressErrorTipEmpty = false
+        const bookIndex = addressBook.findIndex(item => item.walletAddress == this.book.walletAddress)
+        if (addressBook.find((item, index) => bookIndex !== index && item.walletAddress == this.book.walletAddress)) {
+          this.showAddressError = true
+          this.addressError = 'text104'
+        } else {
+          this.showAddressError = false
+        }
       }
       
-      const bookIndex = addressBook.findIndex(item => item.walletAddress == this.book.walletAddress)
-      
-      if (addressBook.find((item, index) => bookIndex !== index && item.walletAddress == this.book.walletAddress)) {
-        this.showAddressErrorTipDuplicate = true
-      } else {
-        this.showAddressErrorTipDuplicate = false
-      }
+
 
       if (this.book.walletName.trim() == '') {
         this.showWalletNameErrorTip = true
@@ -94,7 +101,13 @@ export default {
         this.showWalletNameErrorTip = false
       }
       
-      if (!this.showWalletNameErrorTip && !this.showAddressErrorTipEmpty && !this.showAddressErrorTipDuplicate) {
+      if (this.book.walletDescribe.trim().length > 20) {
+        this.walletDescribeError = true
+      } else {
+        this.walletDescribeError = false
+      }
+      
+      if (!this.showWalletNameErrorTip && !this.showAddressError && !this.walletDescribeError) {
         const index = addressBook.findIndex(item => item.walletAddress == this.book.walletAddress)
 
         addressBook.splice(index, 1, this.book)

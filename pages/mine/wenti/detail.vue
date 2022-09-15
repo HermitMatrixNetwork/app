@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<custom-header class="header" :title="language.text121"></custom-header>
+		<custom-header class="header" :title="language.text123"></custom-header>
 
 		<view class="message">
 			<view class="title">{{msg.title}}</view>

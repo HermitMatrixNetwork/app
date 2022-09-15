@@ -40,6 +40,16 @@ export default {
       language: language[this.$cache.get('_language')]
     }
   },
+	onLoad(options) {
+		if (options.data) {
+			const data = JSON.parse(options.data)
+			this.amount = data.amount
+			this.minersGas = data.minersGas
+		} else {
+			// this.minersGas = this.$cache.get('_MINERS_GAS')
+			this.minersGas = 20000
+		}
+	},
   watch: {
     amount(val) {
       if (val && Number(val) < this.leastGas) {
@@ -48,9 +58,6 @@ export default {
         this.waringIsShow = false
       }
     }
-  },
-  created() {
-    this.minersGas = this.$cache.get('_MINERS_GAS')
   },
   methods: {
     submitCustom() {

@@ -174,4 +174,8 @@ export default {
       color: #8397B1;
     }
   }
+  
+  /deep/ .uni-input-placeholder {
+    overflow: visible !important;
+  }
 </style>

@@ -141,7 +141,7 @@ export default {
         try {
           res = await client.query.bank.balance({
             address: wallet.address,
-            denom: 'uGHM'
+            denom: 'ughm'
           })
         } catch (e) {
           res.code = 7
