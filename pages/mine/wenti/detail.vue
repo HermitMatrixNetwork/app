@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<custom-header class="header" title="反馈详情"></custom-header>
+		<custom-header class="header" :title="language.text121"></custom-header>
 
 		<view class="message">
 			<view class="title">{{msg.title}}</view>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  import language from '../language/index.js'
+import language from '../language/index.js'
 export default {
   data() {
     return {
