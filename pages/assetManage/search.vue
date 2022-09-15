@@ -34,7 +34,7 @@
       <image v-if="reAddress!=''" class="data" src="/static/img/account/nodata.png" alt="" />
       <image v-else class="searchbg" src="/static/img/account/searchbg.png" alt="" />
       <view class="tip">
-        {{address !== ''?'未搜索到相关代币':'支持所有 Hermit Matrix Network 代币请输入代币合约地址进行搜索'}}
+        {{address !== ''? language.text01 : language.text02 }}
       </view>
     </view>
   </view>

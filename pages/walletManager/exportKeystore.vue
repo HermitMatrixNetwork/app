@@ -6,7 +6,7 @@
     <view class="border"></view>
     <view class="container">
       <view class="label">
-        <text>{{ language.text140 }}</text>
+        <text>{{ language.text225 }}</text>
         <text class="label-tip">({{ language.text176 }})</text>
       </view>
       <view class="item" @click="copy">

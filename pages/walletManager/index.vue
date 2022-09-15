@@ -62,8 +62,8 @@
           <view class="title">
             <text>{{ language.text123 }}</text>
           </view>
-          <u--textarea :placeholder="language.text124" border="surround" v-model="name" maxlength="60" :autoHeight="$cache.get('_language') == 'CN'"
-            :class="{ 'error-edit-name': editNameError }" clearable class="textarea">
+          <u--textarea :placeholder="language.text124"  border="surround" v-model="name" maxlength="60" :autoHeight="$cache.get('_language') == 'CN'"
+            :class="{ 'error-edit-name': editNameError }" clearable class="textarea"  :placeholderStyle="placeholderStyle">
           </u--textarea>
           <view class="error-tip" :style="{ opacity: editNameError ? 1 : 0 }">
             {{ language.text124 }}
@@ -87,12 +87,14 @@
             <text>{{ language.text48 }}</text>
             <image src="@/static/img/ic-close.png" @click="cancel('password')"></image>
           </view>
-          <u-input :type="showPassword ? 'text' : 'password'" :placeholder="language.text49"
-            border="surround" v-model="password" class="edit-name-input" :class="{ 'error-edit-name': editNameError }">
-            <template slot="suffix">
-              <image :src="showPassword? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="showPassword = !showPassword" style="width: 32rpx; height: 32rpx;"></image>
-            </template>
-          </u-input>
+          <view class="input-view">
+            <u-input :type="showPassword ? 'text' : 'password'" :placeholder="language.text49"
+              border="surround" v-model="password" class="edit-name-input" :class="{ 'error-edit-name': editNameError }">
+              <template slot="suffix">
+                <image :src="showPassword? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="showPassword = !showPassword" style="width: 32rpx; height: 32rpx;"></image>
+              </template>
+            </u-input>
+          </view>
           <view class="error-tip" :style="{ opacity: confirmPasswordError ? 1 : 0 }">
             {{ language.text150 }}
           </view>
@@ -136,7 +138,11 @@ export default {
       confirmPasswordError: false, // 校验资金密码是否失败
       password: '', // 资金密码
       showPassword: false, // 是否明文显示密码
-      aa: false
+      aa: false,
+      placeholderStyle: {
+        color: 'red',
+        'font-size': '100rpx'
+      }
     }
   },
   methods: {
@@ -533,10 +539,20 @@ export default {
 	  .uni-textarea-placeholder {
 	    color: #8397B1 !important;
 	    font-size: 28rpx !important;
+      word-break: break-word;
 	  }
 	}
 	
 	.u-textarea--radius {
 	  border-radius: 16rpx;
 	}
+  
+  .input-view {
+    background-color: #F2F4F8;
+    height: 96rpx;
+    display: flex;
+    align-items: center;
+    border-radius: 16rpx;
+  }
+  
 </style>

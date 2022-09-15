@@ -248,7 +248,8 @@ const languages = {
     text221: '钱包密码不能少于8位',
     text222:'二维码生成中',
     text223:'图片已保存',
-    text224: '明文私钥'
+    text224: '明文私钥',
+    text225: 'Keystore'
 		
   },
   CT: {
@@ -522,7 +523,8 @@ const languages = {
     text221: 'The wallet password cannot be less than 8 digits',
     text222:'Generating QR code',
     text223:'Saved',
-    text224: 'public key'
+    text224: 'public key',
+    text225: 'Keystore'
   }
 }
 export default languages
