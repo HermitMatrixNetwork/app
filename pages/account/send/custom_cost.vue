@@ -70,7 +70,7 @@ export default {
       this.redirectUrl = this.originRedirectUrl + `&minusIndex=3&minusData=${JSON.stringify({
         price: '0.00',
         demon: 'ughm',
-        time: '约3秒',
+        time: `约 3 秒`,
         amount: this.amount,
         minersGas: this.minersGas,
         speed: this.language.text27,
@@ -91,7 +91,7 @@ export default {
         this.redirectUrl = this.originRedirectUrl + `&minusIndex=3&minusData=${JSON.stringify({
           price: '0.00',
           demon: 'ughm',
-          time: '约3秒',
+          time: `约 3 秒`,
           amount: this.amount,
           minersGas: this.minersGas,
           speed: this.language.text27,

@@ -113,7 +113,8 @@ const languages = {
     text105: '委托数量不能为空',
     text106: '委托节点不能为空',
     text107: '收益领取地址不能为空',
-    text108: '自定义'
+    text108: '自定义',
+    text109: '地址有误，请重新输入'
 
   },
   'CT': {
@@ -229,7 +230,8 @@ const languages = {
     text105: 'Entrusted quantity cannot be empty',
     text106: 'The delegation node cannot be empty',
     text107: 'The income receiving address cannot be blank',
-    text108: 'customize'
+    text108: 'customize',
+    text109: 'The address is incorrect, please re-enter'
   }
 }
 export default languages

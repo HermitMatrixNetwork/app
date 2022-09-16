@@ -1,10 +1,11 @@
 <template>
   <view class="container">
+    <view :callSimulate="callSimulate" :change:callSimulate="render.simulateFee"></view>
     <view class="mask" v-show="loading"></view>
     <custom-header :title="language.text96" style="background-color: #fff;"></custom-header>
     <view class="address-main" style="position: relative;">
       <InputTitle :title="language.text97" :type="'text'" :placeholder="language.text98" ref="addressInptval"
-        :inputVal.sync="formData.withdrawAddress" :inputContainerStyle="inputContainerStyle"
+        :inputVal.sync="formData.withdrawAddress" :inputContainerStyle="inputContainerStyle" :isTextarea="true"
         :inputOtherStyle="{ 'padding-right': '80rpx' }">
         <template #inputRight>
           <view class="scan">
@@ -12,6 +13,8 @@
           </view>
         </template>
       </InputTitle>
+      <text :style="{ opacity: showAddressErrorTip ? 1 : 0 }"
+      	class="waringPrompt">{{ language.text109 }}</text>
     </view>
 
 
@@ -40,10 +43,12 @@
 
           <!--矿工费-->
     		    <view class="miners_fee">
-            <text>{{ language.text29 }}</text>
-    		      <view>
-              <view>25000 * {{ formData.gas }} GHM</view>
-              <view class="price">{{ 25000 * formData.gas }} GHM</view>
+            
+            <text >{{ language.text29 }}</text>
+            <custom-loading v-if="feeLoading"></custom-loading>
+    		      <view v-else>
+              <view>{{ formData.gas }} * {{ formData.gasPrice }} ughm</view>
+              <view class="price">{{ totalGas }} GHM</view>
     		      </view>
     	     </view>
         </view>
@@ -87,7 +92,7 @@
     </u-modal>
 
     <view class="btn" :class="{ complete: formData.withdrawAddress !== '' }">
-      <u-button @click="confirmProtocol">{{ language.text68 }}</u-button>
+      <u-button :disabled="formData.withdrawAddress == ''" @click="confirmProtocol">{{ language.text68 }}</u-button>
     </view>
 
     <view :callRender="callRender" :change:callRender="render.withdraw"></view>
@@ -105,206 +110,238 @@
 </template>
 
 <script>
-  import InputTitle from '@/pages/account/send/components/Input-title.vue'
-  import WalletCrypto from '@/utils/walletCrypto.js'
-  import verifyTouchID from './mixins/verifyTouchID.js'
-  import language from './language/index.js'
-  export default {
-    mixins: [verifyTouchID],
-    components: {
-      InputTitle
+import InputTitle from '@/pages/account/send/components/Input-title.vue'
+import WalletCrypto from '@/utils/walletCrypto.js'
+import verifyTouchID from './mixins/verifyTouchID.js'
+import language from './language/index.js'
+import { checkAddress } from '@/utils/index.js'
+import decimal from 'decimal'
+import mainCoin from '@/config/index.js'
+export default {
+  mixins: [verifyTouchID],
+  components: {
+    InputTitle
+  },
+  data() {
+    return {
+      inputContainerStyle: 'input-style',
+      minersMsg: '',
+      callRender: 0,
+      payPassword: '',
+      submitPopupIsShow: false,
+      passwordCheck: false,
+      passwordEye: false,
+      modalPasswordIsShow: false,
+      formData: {
+        delegatorAddress: this.$cache.get('_currentWallet').address,
+        withdrawAddress: '',
+        gas: '',
+        gasPrice: ''
+      },
+      loading: false,
+      // 指纹验证
+      touchId: this.$cache.get('_touchId'),
+      showToast: false,
+      toast: {
+        icon: '/static/img/mine/loading.gif',
+        // msg: '失败次数超出限制，请稍后再设置',
+        msg: '失败次数超出限制，请切换其它方式验证'
+      },
+      verifyMethod: 'password',
+      verifyTouchErrorTip: '',
+      language: language[this.$cache.get('_language')],
+      showAddressErrorTip: false,
+      callSimulate: {},
+      feeLoading: true,
+    }
+  },
+  onLoad() {
+    if (this.touchId) this.verifyMethod = 'touchID'
+  },
+  methods: {
+    verifyTouchIDOverTime() {
+      this.showToast = false
     },
-    data() {
-      return {
-        inputContainerStyle: 'input-style',
-        minersMsg: '',
-        callRender: 0,
-        payPassword: '',
-        submitPopupIsShow: false,
-        passwordCheck: false,
-        passwordEye: false,
-        modalPasswordIsShow: false,
-        formData: {
-          delegatorAddress: this.$cache.get('_currentWallet').address,
-          withdrawAddress: '',
-          gas: ''
-        },
-        loading: false,
-        // 指纹验证
-        touchId: this.$cache.get('_touchId'),
-        showToast: false,
-        toast: {
-          icon: '/static/img/mine/loading.gif',
-          // msg: '失败次数超出限制，请稍后再设置',
-          msg: '失败次数超出限制，请切换其它方式验证'
-        },
-        verifyMethod: 'password',
-        verifyTouchErrorTip: '',
-        language: language[this.$cache.get('_language')]
+    verifyTouchIDFail() {
+      this.showToast = false
+    },
+    closeModalPasswordIsShow() {
+      this.modalPasswordIsShow = false
+      if (this.touchId) {
+        plus.fingerprint.cancel()
       }
     },
-    onLoad() {
-      if (this.touchId) this.verifyMethod = 'touchID'
+    changeVerifyMethod() {
+      this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password'
+      if (this.verifyMethod == 'touchID') {
+        this.verify()
+      } else {
+        plus.fingerprint.cancel()
+      }
     },
-    methods: {
-      verifyTouchIDOverTime() {
-        this.showToast = false
-      },
-      verifyTouchIDFail() {
-        this.showToast = false
-      },
-      closeModalPasswordIsShow() {
-        this.modalPasswordIsShow = false
-        if (this.touchId) {
-          plus.fingerprint.cancel()
-        }
-      },
-      changeVerifyMethod() {
-        this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password'
-        if (this.verifyMethod == 'touchID') {
-          this.verify()
-        } else {
-          plus.fingerprint.cancel()
-        }
-      },
-      hideModel() {
-        this.modalPasswordIsShow = false
-      },
-      verifyTouchIDSuccess() {
-        this.$nextTick(() => {
-          this.passwordCheck = false
-          this.callRender = this.formData // 调用render.sendToken
-          this.loading = true
-          this.verifyTouchID = 3
-          this.showToast = true
-          this.toast.msg = this.language.text77 + '...'
-          this.toast.icon = '/static/img/mine/loading.gif'
-          // this.$nextTick(() => {
-          //   uni.showToast({
-          //     title: `${this.language.text77}...`,
-          //     icon: 'loading',
-          //     duration: 999999999
-          //   })
-          // })
-        })
-      },
-      submitAgain() {
-        this.modalPasswordIsShow = true
-        // #ifdef APP-PLUS
-        if (this.touchId) {
-          this.verify()
-        }
-        // #endif
+    hideModel() {
+      this.modalPasswordIsShow = false
+    },
+    verifyTouchIDSuccess() {
+      this.$nextTick(() => {
+        this.passwordCheck = false
+        this.callRender = this.formData // 调用render.sendToken
+        this.loading = true
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text77 + '...'
+        this.toast.icon = '/static/img/mine/loading.gif'
+        // this.$nextTick(() => {
+        //   uni.showToast({
+        //     title: `${this.language.text77}...`,
+        //     icon: 'loading',
+        //     duration: 999999999
+        //   })
+        // })
+      })
+    },
+    submitAgain() {
+      this.modalPasswordIsShow = true
+      // #ifdef APP-PLUS
+      if (this.touchId) {
+        this.verify()
+      }
+      // #endif
 
-        // #ifndef APP-PLUS
-        this.touchId = 0
-        // #endif
+      // #ifndef APP-PLUS
+      this.touchId = 0
+      // #endif
 
-        this.submitPopupIsShow = false
-      },
-      scanCode() { //扫码
-        uni.scanCode({
-          onlyFromCamera: false,
-          scanType: ['qrCode'],
-          success: (res) => {
-						console.log(res);
-            this.$refs.addressInptval.childValue = res.result
-          },
-        })
-      },
-      getMinersCost(val) {
-        this.formData.gas = val.amount
-      },
-      confirmProtocol() {
-        this.submitPopupIsShow = true
-      },
-      passwordButton() {
-        const decode = WalletCrypto.decode(this.$cache.get('_currentWallet').password)
-        if (this.payPassword != decode) {
-          this.passwordCheck = true
-        } else {
-          this.passwordCheck = false
-          this.callRender = this.formData // 调用render.sendToken
-          this.loading = true
-          this.modalPasswordIsShow = false
-          this.verifyTouchID = 3
-          this.showToast = true
-          this.toast.msg = this.language.text77 + '...'
-          this.toast.icon = '/static/img/mine/loading.gif'
-          // uni.showToast({
-          //   title: `${this.language.text77}...`,
-          //   icon: 'loading',
-          //   mask: true,
-          //   duration: 999999999
-          // })
-        }
-      },
-      handlerResult(res) {
-        this.callRender = 0
-        this.loading = false
-        console.log(res)
-        if (res.code == 0) {
-          this.$cache.set('_updateDelegateInfo', true, 0)
-          const wallet = this.$cache.get('_currentWallet')
-          wallet.withdrawAddress = this.formData.withdrawAddress
-          this.$cache.set('_currentWallet', wallet, 0)
-          this.updateWalletList(wallet)
-          this.verifyTouchID = 3
-          this.showToast = true
-          this.toast.msg = this.language.text78
-          this.toast.icon = '/static/img/mine/success.png'
-          setTimeout(() => {
-            uni.navigateBack()
-          }, 1500)
-          // uni.showToast({
-          //   title: this.language.text78,
-          //   image: '/static/img/mine/success.png',
-          //   mask: true,
-          //   duration: 3000,
-          //   complete: () => {
-          //     setTimeout(() => {
-          //       uni.navigateBack()
-          //     }, 1500)
-          //   }
-          // })
-        } else {
-          this.verifyTouchID = 3
-          this.showToast = true
-          this.toast.msg = this.language.text79
-          this.toast.icon = '/static/img/mine/fail.png'
-          setTimeout(() => {
-            this.showToast = false
-          }, 3000)
-          // uni.showToast({
-          //   title: this.language.text79,
-          //   image: '/static/img/mine/fail.png',
-          //   mask: true,
-          //   duration: 3000,
-          // })
+      this.submitPopupIsShow = false
+    },
+    scanCode() { //扫码
+      uni.scanCode({
+        onlyFromCamera: false,
+        scanType: ['qrCode'],
+        success: (res) => {
           console.log(res)
-        }
-      },
-      updateWalletList(wallet) {
-        const walletList = this.$cache.get('_walletList') || []
-        if (!wallet) return false
-        const walletIndex = walletList.findIndex(item => item.address === wallet.address)
-        if (walletIndex > -1) {
-          walletList.splice(walletIndex, 1)
-        }
-        walletList.unshift(wallet)
-        this.$cache.set('_walletList', walletList, 0)
-        return true
+          this.$refs.addressInptval.childValue = res.result
+        },
+      })
+    },
+    getMinersCost(val) {
+      if (val.speed == this.language.text108) {
+        // this.sendFormData.gas = val.
+        this.formData.gas = val.minersGas
+        this.isCustomFess = true
+      } else {
+        this.isCustomFess = false
       }
+      this.formData.gasPrice = val.amount
+    },
+    confirmProtocol() {
+      if (!checkAddress(this.formData.withdrawAddress)) {
+        this.showAddressErrorTip = true
+      } else {
+        this.callSimulate = this.formData
+        this.showAddressErrorTip = false
+        this.submitPopupIsShow = true
+      }
+    },
+    passwordButton() {
+      const decode = WalletCrypto.decode(this.$cache.get('_currentWallet').password)
+      if (this.payPassword != decode) {
+        this.passwordCheck = true
+      } else {
+        this.passwordCheck = false
+        this.callRender = this.formData // 调用render.sendToken
+        this.loading = true
+        this.modalPasswordIsShow = false
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text77 + '...'
+        this.toast.icon = '/static/img/mine/loading.gif'
+        // uni.showToast({
+        //   title: `${this.language.text77}...`,
+        //   icon: 'loading',
+        //   mask: true,
+        //   duration: 999999999
+        // })
+      }
+    },
+    handlerResult(res) {
+      this.callRender = 0
+      this.loading = false
+      console.log(res)
+      if (res.code == 0) {
+        this.$cache.set('_updateDelegateInfo', true, 0)
+        const wallet = this.$cache.get('_currentWallet')
+        wallet.withdrawAddress = this.formData.withdrawAddress
+        this.$cache.set('_currentWallet', wallet, 0)
+        this.updateWalletList(wallet)
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text78
+        this.toast.icon = '/static/img/mine/success.png'
+        setTimeout(() => {
+          uni.navigateBack()
+        }, 1500)
+        // uni.showToast({
+        //   title: this.language.text78,
+        //   image: '/static/img/mine/success.png',
+        //   mask: true,
+        //   duration: 3000,
+        //   complete: () => {
+        //     setTimeout(() => {
+        //       uni.navigateBack()
+        //     }, 1500)
+        //   }
+        // })
+      } else {
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text79
+        this.toast.icon = '/static/img/mine/fail.png'
+        setTimeout(() => {
+          this.showToast = false
+        }, 3000)
+        // uni.showToast({
+        //   title: this.language.text79,
+        //   image: '/static/img/mine/fail.png',
+        //   mask: true,
+        //   duration: 3000,
+        // })
+        console.log(res)
+      }
+    },
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.unshift(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
+    },
+    handlerGas(res) {
+      this.feeLoading = false
+      if (res.code || this.isCustomFess) return
+      this.formData.gas = res
+    },
+  },
+  computed: {
+    totalGas() {
+      return new decimal(this.formData.gas + '').mul(new decimal(this.formData.gasPrice)).div(new decimal(mainCoin.decimals)).toString()
     }
   }
+}
 </script>
 
 <script lang="renderjs" module="render">
   import {
-    setWithdrawAddress
+    setWithdrawAddress,
+    getSecret
   } from '@/utils/secretjs/SDK.js'
   import renderUtils from '@/utils/render.base.js'
   import mainCoin from '@/config/index.js'
+  import secretjs from '@/utils/secretjs/index.js'
   export default {
     methods: {
       async withdraw(val) {
@@ -313,14 +350,29 @@
         console.log(val);
         let res = {}
         try {
-          let gas = val.gas * mainCoin.decimals
-          res = await setWithdrawAddress(val, gas)
+          res = await setWithdrawAddress(val, val.gas, val.gasPrice)
         } catch (e) {
           console.log(e)
           res.code = 7
         }
         renderUtils.runMethod(this._$id, 'handlerResult', res, this)
 
+      },
+      async simulateFee(val) {
+        if (!val.delegatorAddress) return
+        let res = {}
+        const Secret = await getSecret()
+        try {
+          const msgSetWithdrawAddress = new secretjs.MsgSetWithdrawAddress(val, val.gas, val.gasPrice)
+          res = await Secret.tx.simulate([msgSetWithdrawAddress], {
+            feeDenom: 'ughm',
+          })
+          let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
+          renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
+        } catch (e) {
+          console.log(e);
+          res.code = 7
+        }
       }
     }
   }
@@ -615,5 +667,14 @@
   .verifyTouchErrorTip {
     color: red;
     font-size: 24rpx;
+  }
+  
+  .waringPrompt {
+  	margin-top: 8rpx;
+  	font-weight: 400;
+  	font-size: 24rpx;
+  	color: #EC2828;
+  	letter-spacing: 0;
+  	position: absolute;
   }
 </style>
