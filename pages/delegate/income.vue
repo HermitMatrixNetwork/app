@@ -1,5 +1,7 @@
 <template>
   <view class="sendPage">
+    <view :callSimulate="callSimulate" :change:callSimulate="render.simulateFee"></view>
+    <view :callRenderGetBanlance="callRenderGetBanlance" :change:callRenderGetBanlance="render.getBalance"></view>
     <view class="mask" v-show="loading"></view>
     <view :callWithdraw="callWithdraw" :change:callWithdraw="render.withdraw"></view>
     <custom-header :title="language.text31" :style="titleStyle">
@@ -116,9 +118,10 @@
           <!--矿工费-->
           <view class="miners_fee">
             <text>{{ language.text29 }}</text>
-            <view>
-              <view>25000 * {{ formData.gas }} GHM</view>
-              <view class="price">{{ formData.gas * 25000 }} GHM</view>
+            <custom-loading v-if="feeLoading"></custom-loading>
+            <view v-else>
+              <view>{{ formData.gas }} * {{ formData.gasPrice }} ughm</view>
+              <view class="price">{{ totalGas }} GHM</view>
             </view>
           </view>
         </view>
@@ -187,6 +190,7 @@ import mainCoin from '@/config/index.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
 import verifyTouchID from './mixins/verifyTouchID.js'
 import language from './language/index.js'
+import decimal from 'decimal'
 export default {
   mixins: [verifyTouchID],
   components: {
@@ -221,7 +225,8 @@ export default {
       formData: {
         delegatorAddress: this.$cache.get('_currentWallet').address,
         validatorAddress: '',
-        gas: ''
+        gas: '',
+        gasPrice: ''
       },
       amount: '100',
       selData: '',
@@ -240,6 +245,9 @@ export default {
       },
       verifyMethod: 'password',
       verifyTouchErrorTip: '',
+      callRenderGetBanlance: 0,
+      callSimulate: {},
+      feeLoading: true
     }
   },
   onLoad(options) {
@@ -358,6 +366,8 @@ export default {
       }
 
       if (verify) {
+        this.formData.validatorAddress = this.selData.delegation.validatorAddress
+        this.callSimulate = this.formData // 调用render.sendToken
         this.submitPopupIsShow = true
       }
     },
@@ -400,19 +410,6 @@ export default {
             url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
           })
         }, 1500)
-        // uni.showToast({
-        //   title: `${language.text78}`,
-        //   image: '/static/img/mine/success.png',
-        //   mask: true,
-        //   duration: 3000,
-        //   complete: () => {
-        //     setTimeout(() => {
-        //       uni.redirectTo({
-        //         url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
-        //       })
-        //     }, 1500)
-        //   }
-        // })
       } else {
         this.verifyTouchID = 3
         this.showToast = true
@@ -422,13 +419,8 @@ export default {
         setTimeout(() => {
           this.showToast = false
         }, 3000)
-        // uni.showToast({
-        //   title: `${language.text79}`,
-        //   image: '/static/img/mine/fail.png',
-        //   mask: true,
-        //   duration: 3000,
-        // })
       }
+      this.callRenderGetBanlance++
     },
     handlerWithdrawAddress(res) {
       this.callWithdrawAddress = 0
@@ -445,7 +437,14 @@ export default {
       }
     },
     getMinersCost(val) {
-      this.formData.gas = val.amount
+      if (val.speed == this.language.text108) {
+        // this.sendFormData.gas = val.
+        this.formData.gas = val.minersGas
+        this.isCustomFess = true
+      } else {
+        this.isCustomFess = false
+      }
+      this.formData.gasPrice = val.amount
     },
     toAddressBook() {
       uni.navigateTo({
@@ -462,6 +461,25 @@ export default {
         url
       })
     },
+    handlerBalance(res) {
+      const wallet = this.$cache.get('_currentWallet')
+      
+      const tokenList = wallet.coinList
+      
+      const tokenIndex = tokenList.findIndex(item => item.alias_name == mainCoin.alias_name)
+      
+      const token = tokenList.find(item => item.alias_name == mainCoin.alias_name)
+      
+      token.balance = res.balance.amount / mainCoin.decimals
+      
+      tokenList.splice(tokenIndex, 1, token)
+      
+      wallet.coinList = tokenList
+      
+      this.$cache.set('_currentWallet', wallet, 0)
+      
+      this.updateWalletList(wallet)
+    },
     updateWalletList(wallet) {
       const walletList = this.$cache.get('_walletList') || []
       if (!wallet) return false
@@ -472,27 +490,40 @@ export default {
       walletList.unshift(wallet)
       this.$cache.set('_walletList', walletList, 0)
       return true
-    }
+    },
+    handlerGas(res) {
+      this.feeLoading = false
+      if (res.code || this.isCustomFess) return
+      this.formData.gas = res
+    },
   },
+  computed: {
+    totalGas() {
+      return new decimal(this.formData.gas + '').mul(new decimal(this.formData.gasPrice)).div(new decimal(mainCoin.decimals)).toString()
+    }
+  }
 }
 </script>
 
 <script lang="renderjs" module="render">
   import {
     withdrawDelegatorReward,
-    getWithdrawAddress
+    getWithdrawAddress,
+    getBalance,
+    getSecret
   } from '@/utils/secretjs/SDK.js'
   import renderUtils from '@/utils/render.base.js'
   import mainCoin from '@/config/index.js'
+  import secretjs from '@/utils/secretjs/index.js'
   export default {
     methods: {
       async withdraw(val) {
         if (val == 0) return
         let res = {}
         try {
-          let gas = val.gas * mainCoin.decimals
-          console.log(val)
-          res = await withdrawDelegatorReward(val, gas)
+          // let gas = val.gas * mainCoin.decimals
+          // console.log(val)
+          res = await withdrawDelegatorReward(val, val.gas, val.gasPrice)
         } catch (e) {
           console.log(e)
           res.code = 7
@@ -510,6 +541,36 @@ export default {
           res.code = 7
         }
         renderUtils.runMethod(this._$id, 'handlerWithdrawAddress', res, this)
+      },
+      async getBalance(val) {
+        if (val == 0) return;
+        let wallet;
+        //#ifdef APP-PLUS
+        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+        //#endif
+        
+        //#ifndef APP-PLUS 
+        wallet = uni.getStorageSync('_currentWallet').data
+        //#endif
+        let res = await getBalance(wallet.address)
+        
+        renderUtils.runMethod(this._$id, 'handlerBalance', res, this)
+      },
+      async simulateFee(val) {
+        if (!val.validatorAddress) return
+        let res = {}
+        const Secret = await getSecret()
+        try {
+          const msgWithdrawDelegationReward = new secretjs.MsgWithdrawDelegationReward(val)
+          res = await Secret.tx.simulate([msgWithdrawDelegationReward], {
+            feeDenom: 'ughm',
+          })
+          let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
+          renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
+        } catch (e) {
+          console.log(e);
+          res.code = 7
+        }
       }
     }
   }

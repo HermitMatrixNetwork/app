@@ -127,7 +127,6 @@ export default {
     }
   },
   created() {
-    console.log('created')
     // this.address = this.currentWallet.address
     this.ValidatorsData()
   },
@@ -166,6 +165,7 @@ export default {
           item.rate = item.commission_rate * 100 + '%'
           return item
         })
+        this.$cache.set('_validators', this.validators, 0)
       } catch (e) {
         console.log('request errpr', e)
       } finally {

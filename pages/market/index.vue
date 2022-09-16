@@ -102,7 +102,7 @@ export default {
     },
     toWebView(item) {
       uni.navigateTo({
-        url: `./webview?jumpUrl=${'http://localhost:8082/'}`
+        url: `./webview?jumpUrl=${'http://192.168.0.171:8888/'}`
       })
     },
     jump(link) {

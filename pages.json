@@ -387,6 +387,12 @@
       }
 
     }, {
+     "path": "pages/mine/anquan/touchIdCheck",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    }, {
       "path": "pages/market/recently",
       "style": {
         "navigationBarTitleText": "",

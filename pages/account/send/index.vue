@@ -116,12 +116,13 @@
 					<!--矿工费-->
 					<view class="miners_fee">
 						<text>{{language.text46}}</text>
-						<view>
-							<view>{{ token.alias_name == mainCoin.alias_name ? 25000 : 40000 }} * {{ sendFormData.gas }}
-								GHM
+            <custom-loading v-if="feeLoading"></custom-loading>
+						<view v-else>
+							<view>{{ sendFormData.gas }} * {{ sendFormData.gasPrice }}
+								ughm
 							</view>
 							<view class="price">
-								{{ token.alias_name == mainCoin.alias_name ? 25000 * sendFormData.gas : 40000 * sendFormData.gas }}
+								{{ totalGas }}
 								GHM
 							</view>
 						</view>
@@ -169,6 +170,7 @@
 			</view>
 		</u-modal>
 		<view :check="checkSuccess" :change:check="render.sendToken"></view>
+    <view :callSimulate="callSimulate" :change:callSimulate="render.simulateFee"></view>
 
 		<!-- 指纹验证 -->
 		<view class="toast" v-show="showToast">
@@ -188,12 +190,10 @@
 				<text class="modal-content">{{ language.text219 }}</text>
 				<view class="confirm-button">
 					<uni-button @click="aa = false" class="cancel">{{ language.text170 }}</uni-button>
-					<uni-button @click="submitPopupIsShow = true; aa = false" class="confirm">{{ language.text09 }}</uni-button>
+					<uni-button @click="aaConfirm" class="confirm">{{ language.text09 }}</uni-button>
 				</view>
 			</view>
 		</u-modal>
-		
-		<cu-keyboard ref="cukeyboard"></cu-keyboard>
 	</view>
 </template>
 
@@ -201,6 +201,7 @@
 import InputTitle from './components/Input-title.vue'
 import languages from '../language/index.js'
 import Submitbtn from './components/submit-btn.vue'
+import decimal from 'decimal'
 import {
   SendTokentoOtherAddress,
   getBalance
@@ -235,6 +236,7 @@ export default {
       submitPopupIsShow: false,
       modalPasswordIsShow: false,
       checkSuccess: 0,
+      callSimulate: {},
       sendFormData: {
         userAddress: this.$cache.get('_currentWallet').address,
         receiveAddress: '', //接收地址
@@ -242,6 +244,7 @@ export default {
         memo: '',
         token: {},
         gas: '',
+        gasPrice: '',
         decimals: null
       },
       titleStyle: {
@@ -270,7 +273,9 @@ export default {
       },
       mainCoin,
       aa: false,
-      addressError: 'text188' // text188:收款地址不能为空 ; text220: 输入地址有误，请检查后重新输入
+      addressError: 'text188', // text188:收款地址不能为空 ; text220: 输入地址有误，请检查后重新输入
+      isCustomFess: false,
+      feeLoading: true
     }
   },
   onLoad(options) {
@@ -302,6 +307,11 @@ export default {
     }
   },
   methods: {
+    aaConfirm() {
+      this.callSimulate = this.sendFormData
+      this.submitPopupIsShow = true 
+      this.aa = false
+    },
     formatBalance(val) {
       return val && val.toFixed(6)
     },
@@ -410,10 +420,12 @@ export default {
         .balance) {
         const quota = this.$cache.get('_quota')
         if (quota == null) {
+          this.callSimulate = this.sendFormData
           this.submitPopupIsShow = true
         } else if (Number(this.sendFormData.sendAmount) > Number(quota.amount)) {
           this.aa = true
         } else {
+          this.callSimulate = this.sendFormData
           this.submitPopupIsShow = true
         }
       }
@@ -443,7 +455,14 @@ export default {
       this.sendFormData.sendAmount = this.token.balance
     },
     getMinersCost(val) {
-      this.sendFormData.gas = val.amount
+      if (val.speed == this.language.text27) {
+        // this.sendFormData.gas = val.
+        this.sendFormData.gas = val.minersGas
+        this.isCustomFess = true
+      } else {
+        this.isCustomFess = false
+      }
+      this.sendFormData.gasPrice = val.amount
     },
     scanCode() { //扫码
       uni.scanCode({
@@ -504,20 +523,6 @@ export default {
           })
           eventChannel.emit('addRecordToSendList', result)
         }, 1500)
-        // uni.showToast({
-        //   title: this.language.text185,
-        //   image: '/static/img/mine/success.png',
-        //   mask: true,
-        //   duration: 3000,
-        //   complete: () => {
-        //     setTimeout(() => {
-        //       uni.redirectTo({
-        //         url: `./transactionDetails?data=${JSON.stringify(result)}`
-        //       })
-        //       eventChannel.emit('addRecordToSendList', result)
-        //     }, 1500)
-        //   }
-        // })
 
         !otherToken && fee && (this.token.balance = this.token.balance - fee - usedAmount)
       } else {
@@ -564,6 +569,16 @@ export default {
       this.$cache.set('_walletList', walletList, 0)
       return true
     },
+    handlerGas(res) {
+      this.feeLoading = false
+      if (res.code || this.isCustomFess) return
+      this.sendFormData.gas = res
+    },
+  },
+  computed: {
+    totalGas() {
+      return new decimal(this.sendFormData.gas + '').mul(new decimal(this.sendFormData.gasPrice)).div(new decimal(this.mainCoin.decimals)).toString()
+    }
   },
   watch: {
     modalPasswordIsShow: {
@@ -582,8 +597,11 @@ export default {
 		SendTokentoOtherAddress,
 		getBalance,
 		transferOtherToken,
-		getOtherTransationHistory
+		getOtherTransationHistory,
+    getSecret
 	} from '@/utils/secretjs/SDK.js'
+  import decimal from 'decimal'
+  import secretjs from '@/utils/secretjs/index.js'
 	import WalletCrypto from '@/utils/walletCrypto.js'
 	import renderUtils from '@/utils/render.base.js'
 	import mainCoin from '@/config/index.js'
@@ -599,13 +617,14 @@ export default {
 					sendAmount,
 					memo,
 					gas,
+          gasPrice,
 					decimals
 				} = newValue
-				gas = gas * mainCoin.decimals
+				// let totalGas = new decimal(gas + '').mul(new decimal(gasPrice)).toString()
 				if (newValue.token.alias_name == mainCoin.alias_name) {
 					sendAmount = sendAmount * mainCoin.decimals
 					try {
-						res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas)
+						res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas, gasPrice)
 					} catch (e) {
 						console.log(e);
 						res.code = 7
@@ -623,7 +642,7 @@ export default {
 									amount: sendAmount * newValue.token.decimals + ''
 								}
 							}
-						}, newValue.memo, gas)
+						}, newValue.memo, gas, gasPrice)
 						if (result.code !== 0) throw result
 						res = (await getOtherTransationHistory({
 							contract: {
@@ -659,7 +678,38 @@ export default {
 					otherToken
 				}, this)
 
-			}
+			},
+      async simulateFee(val) {
+        if (!val.sendAmount || Number(val.sendAmount) == '') return
+        const Secret = await getSecret()
+        let res = {}
+        let {
+        	receiveAddress,
+        	userAddress,
+        	sendAmount,
+        	memo,
+        	gas,
+        	decimals
+        } = val
+        try {
+          const msgSend = new secretjs.MsgSend({
+            amount: [{
+              amount: sendAmount * val.token.decimals + '',
+              denom: 'ughm'
+            }],
+            fromAddress: userAddress,
+            toAddress: receiveAddress
+          })
+          res = await Secret.tx.simulate([msgSend], {
+            feeDenom: 'ughm',
+          })
+          let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
+          renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
+        } catch (e) {
+          console.log(e);
+          res.code = 7
+        }
+      }
 		}
 	}
 </script>

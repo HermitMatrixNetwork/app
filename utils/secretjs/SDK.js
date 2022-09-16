@@ -66,7 +66,7 @@ export async function QueryStakingValidators(status) {
 }
 
 //发送其他地址
-export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo = '', gas) {
+export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo = '', gas, gasPrice) {
   let Secret = await getSecret()
   const result = await Secret.tx.bank.send({
     fromAddress: myaddress,
@@ -76,8 +76,9 @@ export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo
       amount: amount + ''
     }]
   }, {
-    gasPriceInFeeDenom: gas,
+    gasPriceInFeeDenom: gasPrice,
     feeDenom: 'ughm',
+    gasLimit: gas,
     memo
   })
   return result
@@ -123,12 +124,12 @@ export async function getSigningInfo(consAddress) {
   return result
 }
 //去委托
-export async function toDelegate(data, memo = '', gas) {
+export async function toDelegate(data, memo = '', gas, gasPrice) {
   let Secret = await getSecret()
   const result = await Secret.tx.staking.delegate(data, {
-    gasPriceInFeeDenom: gas,
+    gasPriceInFeeDenom: gasPrice,
     feeDenom: 'ughm',
-    gasLimit: 26000,
+    gasLimit: gas,
     memo
   })
   return result
@@ -153,12 +154,12 @@ export async function getDelegationRewards(delegatorAddr, validatorAddr) {
   return result
 }
 
-export async function unDelegate(data, memo = '', gas) {
+export async function unDelegate(data, memo = '', gas, gasPrice) {
   let Secret = await getSecret()
   const result = await Secret.tx.staking.undelegate(data, {
-    gasPriceInFeeDenom: gas,
+    gasPriceInFeeDenom: gasPrice,
     feeDenom: 'ughm',
-    gasLimit: 30000,
+    gasLimit: gas,
     memo
   })
   return result
@@ -260,13 +261,13 @@ export const getTokenDecimals = async (data) => {
   return result
 }
 
-export const transferOtherToken = async (data, memo = '', gas) => {
+export const transferOtherToken = async (data, memo = '', gas, gasPrice) => {
   let Secret = await getSecret()
   const result = await Secret.tx.snip20.transfer(data, {
-    gasPriceInFeeDenom: gas,
+    gasPriceInFeeDenom: gasPrice,
     feeDenom: 'ughm',
     memo,
-    gasLimit: 40000
+    gasLimit: gas
   })
   return result
 }
@@ -293,12 +294,12 @@ export const getRewards = async (delegatorAddress, validatorAddress) => {
   return result
 }
 
-export const withdrawDelegatorReward = async (data, gas) => {
+export const withdrawDelegatorReward = async (data, gas, gasPrice) => {
   let Secret = await getSecret()
   const result = await Secret.tx.distribution.withdrawDelegatorReward(data, {
-    gasPriceInFeeDenom: gas,
+    gasPriceInFeeDenom: gasPrice,
     feeDenom: 'ughm',
-    // gasLimit: 20000
+    gasLimit: gas
   })
   return result
 }

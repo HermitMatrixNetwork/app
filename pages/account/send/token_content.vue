@@ -315,7 +315,6 @@ export default {
           // #endif
         }
 
-
         // 处理 发送、接受、质押交易记录
         res.forEach((result, type) => {
           if (type == 4) return
@@ -355,8 +354,12 @@ export default {
               item.plus = true
               break
             case 2:
-              item.icon = require(
-                '@/static/img/account/weituo2.png')
+              if (item.tx.body.messages[0]['@type'].includes('MsgDelegate')) {
+                item.icon = require(
+                  '@/static/img/account/weituo2.png')                
+              } else if (item.tx.body.messages[0]['@type'].includes('MsgUndelegate')) {
+                item.icon = require('@/static/img/delegate/fasong2.png')
+              }
               item.type = 'delegate'
               break
             case 3:
@@ -523,8 +526,12 @@ export default {
               item.plus = item.to_address == this.address ? true : false
               break
             case 'delegate':
-              item.icon = require(
-                '@/static/img/account/weituo2.png')
+              if (item.tx.body.messages[0]['@type'].includes('MsgDelegate')) {
+                item.icon = require(
+                  '@/static/img/account/weituo2.png')                
+              } else if (item.tx.body.messages[0]['@type'].includes('MsgUndelegate')) {
+                item.icon = require('@/static/img/delegate/fasong2.png')
+              }
               item.type = 'delegate'
               break
             case 'withdraw':

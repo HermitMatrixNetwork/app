@@ -23,27 +23,41 @@ import mainCoin from '@/config/index.js'
 import language from './language/index.js'
 export default {
   name: 'miners-column',
+  props: {
+    redirectUrl: {
+      type : String,
+      default: ''
+    },
+    minusIndex: {
+      type: Number,
+      default: 0
+    },
+    customData: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data() {
     return {
       selectedMiners: 1,
       minersList: [{
-        amount: '0.000000215',
-        demon: 'GHM',
+        amount: '0.0125',
+        demon: 'ughm',
         price: '0.00',
         speed: language[this.$cache.get('_language')].text25,
         time: `${language[this.$cache.get('_language')].text28} 15 ${language[this.$cache.get('_language')].text26}`
       },
 
       {
-        amount: '0.000000215',
-        demon: 'GHM',
+        amount: '0.015',
+        demon: 'ughm',
         price: '0.00',
         speed: language[this.$cache.get('_language')].text24,
         time: `${language[this.$cache.get('_language')].text28} 5 ${language[this.$cache.get('_language')].text26}`
       },
       {
-        amount: '0.000000215',
-        demon: 'GHM',
+        amount: '0.02',
+        demon: 'ughm',
         price: '0.00',
         speed: language[this.$cache.get('_language')].text23,
         time: `${language[this.$cache.get('_language')].text28} 3 ${language[this.$cache.get('_language')].text26}`
@@ -62,42 +76,49 @@ export default {
   },
   created() {
     this.$emit('getMinersCost', this.minersList[this.selectedMiners])
+    if (this.minusIndex !== 0) {
+      this.selectedMiners = this.minusIndex
+    }
+    
+    if (this.customData.amount) {
+      this.minersList.push(this.customData)
+    }
   },
   methods: {
     costChoose(item, index) {
-			if (index == 3 && this.selectedMiners == 3) {
-					uni.navigateTo({
-						url: `/pages/account/send/custom_cost?data=${JSON.stringify(this.minersList[3])}`,
-						events: {
-							someEvent: data => {
-								data = Object.assign({
-									price: '0.00',
-									demon: 'GHM',
-									speed: this.language.text27,
-									time: '约3分钟'
-								}, data)
-								this.minersList.splice(3, 1, data)
-								this.$emit('getMinersCost', data)
-							}
-						}
-				})
-			} else {
-				this.selectedMiners = index
-				this.$emit('getMinersCost', item)
+      if (index == 3 && this.selectedMiners == 3) {
+        uni.navigateTo({
+          url: `/pages/account/send/custom_cost?data=${JSON.stringify(this.minersList[3])}&redirectUrl=${this.redirectUrl}`,
+          events: {
+            someEvent: data => {
+              data = Object.assign({
+                price: '0.00',
+                demon: 'ughm',
+                speed: this.language.text27,
+                time: '约3秒'
+              }, data)
+              this.minersList.splice(3, 1, data)
+              this.$emit('getMinersCost', data)
+            }
+          }
+        })
+      } else {
+        this.selectedMiners = index
+        this.$emit('getMinersCost', item)
 				
-			}
+      }
     },
     addCustom() {
       uni.navigateTo({
-        url: '/pages/account/send/custom_cost',
+        url: `/pages/account/send/custom_cost?redirectUrl=${this.redirectUrl}`,
         events: {
           // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
           someEvent: data => {
             data = Object.assign({
               price: '0.00',
-              demon: 'GHM',
+              demon: 'ughm',
               speed: this.language.text27,
-              time: '约3分钟'
+              time: '约3秒'
             }, data)
             this.minersList.push(data)
             this.$emit('getMinersCost', data)

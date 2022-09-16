@@ -60,7 +60,7 @@ const languages = {
     'text52': '受托总数',
     'text53': '自委托数',
     'text54': '委托说明',
-    'text55': '委托的GHM需要XXX区块高度（约xx天）赎回。',
+    'text55': '委托的GHM需要43200区块高度（约1天）赎回。',
     'text56': '收益说明',
     'text57': '当您委托交易成功后，被委托的验证人参与了出块或者确认区块可获得收益，这意味着您需要斟酌对于验证节点的投票委托，委托收益根据个人委托量占节点总委托数的比例进行计算，委托收益领取后立即到账。',
     'text58': '确认委托',
@@ -112,7 +112,8 @@ const languages = {
     text104: '节点名称',
     text105: '委托数量不能为空',
     text106: '委托节点不能为空',
-    text107: '收益领取地址不能为空'
+    text107: '收益领取地址不能为空',
+    text108: '自定义'
 
   },
   'CT': {
@@ -175,7 +176,7 @@ const languages = {
     'text52': 'Stakes',
     'text53': 'self-bond',
     'text54': 'Statement of delegation',
-    'text55': 'The entrusted GHM needs to be redeemed at XXX block height (about xx days).',
+    'text55': 'The entrusted GHM needs to be redeemed at 43200 block height (about 1 days).',
     'text56': 'Statement of rewards',
     'text57': 'When you successfully entrust the transaction, the entrusted verifier participates in the block or confirms that the block can obtain income, which means that you need to consider the voting entrustment of the verification node. The entrusted income is calculated according to the proportion of the individual entrustment to the total number of entrustments of the node, and the entrusted income will arrive immediately after receiving it.',
     'text58': 'confirm delegation',
@@ -227,7 +228,8 @@ const languages = {
     text104: 'Node Name',
     text105: 'Entrusted quantity cannot be empty',
     text106: 'The delegation node cannot be empty',
-    text107: 'The income receiving address cannot be blank'
+    text107: 'The income receiving address cannot be blank',
+    text108: 'customize'
   }
 }
 export default languages

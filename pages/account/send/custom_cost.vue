@@ -1,6 +1,6 @@
 <template>
 	<view class="custom_cost">
-		<custom-header :title="language.text173" />
+		<custom-header :redirUrl="redirectUrl" :title="language.text173" />
 		<view class="custom_main">
 			<!-- Gas price -->
 			<view class="gas_price">
@@ -12,7 +12,7 @@
 			<view :style="{ opacity : waringIsShow ?  1 : 0}" class="waringPrompt">{{ language.text34 }}</view>
 			<!-- Gas -->
 			<view class="Gas_num">
-				<InputTitle :title="'Gas'" :type="'number'" :placeholder="'Gas'" :inputVal.sync="minersGas">
+				<InputTitle :title="'Gas Limit'" :type="'number'" :placeholder="'Gas'" :inputVal.sync="minersGas">
 				</InputTitle>
 			</view>
 		</view>
@@ -37,19 +37,24 @@ export default {
       minersGas: '',
       leastGas: 0.000000215,
       waringIsShow: false,
-      language: language[this.$cache.get('_language')]
+      language: language[this.$cache.get('_language')],
+      redirectUrl: ''
     }
   },
-	onLoad(options) {
-		if (options.data) {
-			const data = JSON.parse(options.data)
-			this.amount = data.amount
-			this.minersGas = data.minersGas
-		} else {
-			// this.minersGas = this.$cache.get('_MINERS_GAS')
-			this.minersGas = 20000
-		}
-	},
+  onLoad(options) {
+    if (options.data) {
+      const data = JSON.parse(options.data)
+      this.amount = data.amount
+      this.minersGas = data.minersGas
+    } else {
+      // this.minersGas = this.$cache.get('_MINERS_GAS')
+      this.minersGas = 20000
+    }
+    
+    if (options.redirectUrl) {
+      this.redirectUrl = options.redirectUrl
+    }
+  },
   watch: {
     amount(val) {
       if (val && Number(val) < this.leastGas) {
@@ -57,6 +62,20 @@ export default {
       } else {
         this.waringIsShow = false
       }
+    }
+  },
+  onShow() {
+    if (this.redirectUrl) {
+      this.originRedirectUrl = this.redirectUrl
+      this.redirectUrl = this.originRedirectUrl + `&minusIndex=3&minusData=${JSON.stringify({
+        price: '0.00',
+        demon: 'ughm',
+        time: '约3秒',
+        amount: this.amount,
+        minersGas: this.minersGas,
+        speed: this.language.text27,
+      })
+      }`
     }
   },
   methods: {
@@ -68,7 +87,22 @@ export default {
         amount: this.amount,
         minersGas: this.minersGas
       })
-      uni.navigateBack()
+      if (this.redirectUrl) {
+        this.redirectUrl = this.originRedirectUrl + `&minusIndex=3&minusData=${JSON.stringify({
+          price: '0.00',
+          demon: 'ughm',
+          time: '约3秒',
+          amount: this.amount,
+          minersGas: this.minersGas,
+          speed: this.language.text27,
+        })
+        }`
+        uni.redirectTo({
+          url: this.redirectUrl
+        })
+      } else {
+        uni.navigateBack()
+      }
     },
   }
 }

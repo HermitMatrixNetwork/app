@@ -36,9 +36,16 @@ export default {
       this.$emit('close')
     },
     toCreateWallet() {
-      uni.navigateTo({
-        url: '/pages/index/createWallet?from=walletManager',
-      })
+      const touchId = this.$cache.get('_touchId')
+      if (touchId == 0) {
+        uni.navigateTo({
+          url: '/pages/index/createWallet?from=walletManager',
+        })
+      } else {
+        uni.navigateTo({
+          url: '/pages/mine/anquan/touchIdCheck?redirectUrl=/pages/index/createWallet?from=walletManager&redirectType=redirect'
+        })
+      }
     },
     toImportWallet() {
       uni.navigateTo({

@@ -30,7 +30,7 @@
 				</view>
 				<view class="arrow tag-info">
 					<text v-if="latestVersion == version">{{ language.text81 }}</text>
-					<image v-if="!checking" src="/static/img/ic-arrow1.png"></image>
+					<image v-else-if="!checking" src="/static/img/ic-arrow1.png"></image>
           <u-loading-icon v-else :text="language.text114" textSize="14"></u-loading-icon>
 				</view>
 			</view>
@@ -123,6 +123,7 @@ export default {
 		justify-content: space-between;
 		padding: 38rpx 34rpx 38rpx 32rpx;
 		background-color: #fff;
+    height: 130rpx;
 
 		&:not(:last-child) {
 			border-top: 2rpx solid #F4F6F9;

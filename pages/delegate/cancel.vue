@@ -1,5 +1,7 @@
 <template>
   <view class="sendPage">
+    <view :callRenderGetBanlance="callRenderGetBanlance" :change:callRenderGetBanlance="render.getBalance"></view>
+    <view :callSimulate="callSimulate" :change:callSimulate="render.simulateFee"></view>
     <view class="mask" v-show="loading"></view>
     <view :updataDelegate="updataDelegate" :change:updataDelegate="render.unDelegate"></view>
     <custom-header tabUrl="/pages/delegate/index" :title="language.text06" :style="titleStyle">
@@ -109,9 +111,10 @@
             <!--矿工费-->
             <view class="miners_fee">
               <text>{{ language.text29 }}</text>
-              <view>
-                <view>30000 * {{ formData.gas }} GHM</view>
-                <view class="price">{{ formData.gas * 30000 }} GHM</view>
+              <custom-loading v-if="feeLoading"></custom-loading>
+              <view v-else>
+                <view>{{ formData.gas }} * {{ formData.gasPrice }} ughm</view>
+                <view class="price">{{ totalGas }} GHM</view>
               </view>
             </view>
           </view>
@@ -176,6 +179,7 @@ import mainCoin from '@/config/index.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
 import verifyTouchID from './mixins/verifyTouchID.js'
 import language from './language/index.js'
+import decimal from 'decimal'
 export default {
   mixins: [mixin, verifyTouchID],
   components: {
@@ -216,7 +220,8 @@ export default {
         memo: '', //Memo
         delegatorAddress: this.$cache.get('_currentWallet').address,
         validatorAddress: '',
-        gas: ''
+        gas: '',
+        gasPrice: ''
       },
       loading: false,
       // 指纹验证
@@ -229,6 +234,9 @@ export default {
       },
       verifyMethod: 'password',
       verifyTouchErrorTip: '',
+      callRenderGetBanlance: 0,
+      callSimulate: {},
+      feeLoading: true
     }
   },
   onLoad(options) {
@@ -265,7 +273,13 @@ export default {
       this.showAmountError = this.balance < this.formData.amount.amount ? true : false
     },
     formatter(val) {
-      return val.replace(/[^\d.]/g,'')
+      let num = val.replace(/[^\d.]/g,'')
+      	
+      if (num.split('.')[1] && num.split('.')[1].length > 6) {
+        return `${num.split('.')[0]}.${num.split('.')[1].substr(0, 6)}`
+      } else {
+        return num
+      }
     },
     chooseAddress() {
       uni.navigateTo({
@@ -331,6 +345,8 @@ export default {
       }
 
       if (verify) {
+        this.formData.validatorAddress = this.selData.delegation.validatorAddress
+        this.callSimulate = this.formData
         this.submitPopupIsShow = true
       }
 
@@ -371,19 +387,6 @@ export default {
             url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
           })
         }, 1500)
-        // uni.showToast({
-        //   title: this.language.text78,
-        //   image: '/static/img/mine/success.png',
-        //   mask: true,
-        //   duration: 3000,
-        //   complete: () => {
-        //     setTimeout(() => {
-        //       uni.redirectTo({
-        //         url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
-        //       })
-        //     }, 1500)
-        //   }
-        // })
       } else {
         this.verifyTouchID = 3
         this.showToast = true
@@ -392,26 +395,68 @@ export default {
         setTimeout(() => {
           this.showToast = false
         }, 3000)
-        // uni.showToast({
-        //   title: this.language.text79,
-        //   image: '/static/img/mine/fail.png',
-        //   mask: true,
-        //   duration: 3000,
-        // })
         console.log(res)
       }
+      this.callRenderGetBanlance++
     },
     testAmount() {
       this.showAmountError = false
       this.formData.amount.amount = this.balance
     },
     getMinersCost(val) {
-      this.formData.gas = val.amount
+      if (val.speed == this.language.text108) {
+        // this.sendFormData.gas = val.
+        this.formData.gas = val.minersGas
+        this.isCustomFess = true
+      } else {
+        this.isCustomFess = false
+      }
+      this.formData.gasPrice = val.amount
     },
     selectNode(url) {
       uni.redirectTo({
         url
       })
+    },
+    handlerBalance(res) {
+      const wallet = this.$cache.get('_currentWallet')
+      
+      const tokenList = wallet.coinList
+      
+      const tokenIndex = tokenList.findIndex(item => item.alias_name == mainCoin.alias_name)
+      
+      const token = tokenList.find(item => item.alias_name == mainCoin.alias_name)
+      
+      token.balance = res.balance.amount / mainCoin.decimals
+      
+      tokenList.splice(tokenIndex, 1, token)
+      
+      wallet.coinList = tokenList
+      
+      this.$cache.set('_currentWallet', wallet, 0)
+      
+      this.updateWalletList(wallet)
+    },
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.unshift(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
+    },
+    handlerGas(res) {
+      this.feeLoading = false
+      if (res.code || this.isCustomFess) return
+      this.formData.gas = res
+    },
+  },
+  computed: {
+    totalGas() {
+      return new decimal(this.formData.gas + '').mul(new decimal(this.formData.gasPrice)).div(new decimal(mainCoin.decimals)).toString()
     }
   },
   watch: {
@@ -429,10 +474,13 @@ export default {
 
 <script lang="renderjs" module="render">
   import {
-    unDelegate
+    unDelegate,
+    getBalance,
+    getSecret
   } from '@/utils/secretjs/SDK'
   import mainCoin from '@/config/index.js'
   import renderUtils from '@/utils/render.base.js'
+  import secretjs from '@/utils/secretjs/index.js'
   export default {
     methods: {
       async unDelegate(val) {
@@ -443,18 +491,48 @@ export default {
         } = JSON.parse(JSON.stringify(val))
         let res = {}
         data.amount.amount = data.amount.amount * mainCoin.decimals + ''
-        console.log({
-          data,
-          memo
-        });
         try {
-          let gas = data.gas * mainCoin.decimals
-          res = await unDelegate(data, memo, gas)
+          res = await unDelegate(data, memo, data.gas, data.gasPrice)
         } catch (e) {
           console.log(e)
           res.code = 7
         }
         renderUtils.runMethod(this._$id, 'handlerResult', res, this)
+      },
+      async getBalance(val) {
+        if (val == 0) return;
+        let wallet;
+        //#ifdef APP-PLUS
+        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+        //#endif
+        
+        //#ifndef APP-PLUS 
+        wallet = uni.getStorageSync('_currentWallet').data
+        //#endif
+        let res = await getBalance(wallet.address)
+        
+        renderUtils.runMethod(this._$id, 'handlerBalance', res, this)
+      },
+      async simulateFee(val) {
+        if (!val.validatorAddress) return
+        let {
+          memo,
+          ...data
+        } = JSON.parse(JSON.stringify(val))
+        let res = {}
+        data.amount.amount = data.amount.amount * mainCoin.decimals + ''
+        const Secret = await getSecret()
+        try {
+          const msgUndelegate = new secretjs.MsgUndelegate(data, )
+          res = await Secret.tx.simulate([msgUndelegate], {
+            feeDenom: 'ughm',
+          })
+          let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
+          renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
+        } catch (e) {
+          console.log(e);
+          res.code = 7
+        }
       }
     },
   }

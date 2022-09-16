@@ -68,7 +68,7 @@ export default {
           versionCode, 
           version
         } = inf
-        // res.version = '100'
+        // res.version = '100' @latest
         if (Number(versionCode) >= Number(res.version)) {
           if (this.tip) {
             this.$emit('update:latestVersion', version)
@@ -83,7 +83,7 @@ export default {
           versionCode, 
           version
         } = inf
-        // res.version = '100'
+        // res.version = '100'  @latest
         if (Number(versionCode) >= Number(res.version)) {
           if (this.tip) {
             this.$emit('update:latestVersion', version)

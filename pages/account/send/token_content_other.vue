@@ -435,7 +435,7 @@ export default {
       if (float) {
         float = float.substr(0, 6)
       }
-      return int + '.' + (float || '000000')
+      return (int + '.' + (float || '000000')) || '0.000000'
     }
   },
   computed: {

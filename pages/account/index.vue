@@ -174,21 +174,21 @@ export default {
       this.coinList = [{
         name: this.languages.text07
       },
-      {
-        name: 'NFT',
-				disabled: true
-      }
+      // {
+      //   name: 'NFT',
+      //   disabled: true
+      // }
       ]
-      coinList.forEach(item => item.apply_type && (tokenType.add(item.apply_type)))
-      Array.from(tokenType).forEach(item => {
-        switch (item) {
-        case 'token':
-          this.coinList.push({
-            name: 'SNIP20'
-          })
-          break
-        }
-      })
+      // coinList.forEach(item => item.apply_type && (tokenType.add(item.apply_type)))
+      // Array.from(tokenType).forEach(item => {
+      //   switch (item) {
+      //   case 'token':
+      //     this.coinList.push({
+      //       name: 'SNIP20'
+      //     })
+      //     break
+      //   }
+      // })
     },
     toDelegate() {
       uni.switchTab({

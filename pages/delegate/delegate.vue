@@ -1,5 +1,7 @@
 <template>
   <view class="sendPage">
+    <view :callSimulate="callSimulate" :change:callSimulate="render.simulateFee"></view>
+    <view :callRenderGetBanlance="callRenderGetBanlance" :change:callRenderGetBanlance="render.getBalance"></view>
     <view class="mask" v-show="loading"></view>
     <view :updataDelegate="updataDelegate" :change:updataDelegate="render.delegate"></view>
     <custom-header :backUrl="`/pages/delegate/validatorDetail?validatorInfo=${JSON.stringify(delegatorInfo)}`" :title="language.text58" :style="titleStyle">
@@ -43,7 +45,7 @@
         </view>
       </view>
     </view>
-    <miners-column @getMinersCost="getMinersCost"></miners-column>
+    <miners-column @getMinersCost="getMinersCost" :redirectUrl="redirectUrl" :minusIndex="minusIndex" :customData="minusData"></miners-column>
     <view class="main-bottom">
       <view class="btn" @click="transferConfirm">
         {{ language.text68 }}
@@ -87,9 +89,10 @@
           <!--矿工费-->
           <view class="miners_fee">
             <text>{{ language.text29 }}</text>
-            <view>
-              <view>26000 * {{ formData.gas }} GHM</view>
-              <view class="price">{{ formData.gas * 26000 }} GHM</view>
+            <custom-loading v-if="feeLoading"></custom-loading>
+            <view v-else>
+              <view>{{ formData.gas }} * {{ formData.gasPrice }} ughm</view>
+              <view class="price">{{ totalGas }} GHM</view>
             </view>
           </view>
         </view>
@@ -150,6 +153,7 @@ import mainCoin from '@/config/index.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
 import verifyTouchID from './mixins/verifyTouchID.js'
 import language from './language/index.js'
+import decimal from 'decimal'
 export default {
   mixins: [verifyTouchID],
   components: {
@@ -204,6 +208,11 @@ export default {
       },
       verifyMethod: 'password',
       verifyTouchErrorTip: '',
+      callRenderGetBanlance: 0,
+      callSimulate: {},
+      feeLoading: true,
+      minusIndex: 1,
+      minusData: {}
     }
   },
   onLoad(value) {
@@ -212,6 +221,15 @@ export default {
     this.delegatorInfo = JSON.parse(value.data)
     this.formData.validatorAddress = this.delegatorInfo.operator_address
     this.formData.delegatorAddress = this.userAddress
+    this.redirectUrl = `/pages/delegate/delegate?data=${value.data}`
+    if (value.minusIndex) {
+      this.minusIndex = Number(value.minusIndex)
+    }
+    
+    if (value.minusData) {
+      this.minusData = JSON.parse(value.minusData)
+      this.redirectUrl = `/pages/delegate/delegate?data=${value.data}&minusIndex=${value.minusIndex}&minusData=${value.minusData}`
+    }
   },
   methods: {
     verifyTouchIDOverTime() {
@@ -239,7 +257,13 @@ export default {
       this.showAmountError = this.balance < this.formData.amount.amount ? true : false
     },
     formatter(val) {
-      return val.replace(/[^\d.]/g,'')
+      let num = val.replace(/[^\d.]/g,'')
+      	
+      if (num.split('.')[1] && num.split('.')[1].length > 6) {
+        return `${num.split('.')[0]}.${num.split('.')[1].substr(0, 6)}`
+      } else {
+        return num
+      }
     },
     hideModel() {
       this.modalPasswordIsShow = false
@@ -320,15 +344,31 @@ export default {
         this.$refs.notify.close()
       }
 
-      if (verify) this.submitPopupIsShow = true
+      if (verify) {
+        this.callSimulate = this.formData
+        this.submitPopupIsShow = true
+      }
     },
     testAmount() {
       this.formData.amount.amount = this.balance
     },
     getMinersCost(val) {
-      this.formData.gas = val.amount
+      this.formData.gasPrice = val.amount
+      if(this.minusData.amount) {
+        this.formData.gas = this.minusData.minersGas
+        this.formData.gasPrice = this.minusData.amount
+        this.isCustomFess = true
+      } else if (val.speed == this.language.text108) {
+        // this.sendFormData.gas = val.
+        this.formData.gas = val.minersGas
+        this.isCustomFess = true
+      } else {
+        this.isCustomFess = false
+      }
+     
     },
     handlerResult(res) {
+      console.log(res)
       this.loading = false
       this.updataDelegate = 0
       if (res.code == 0) {
@@ -337,20 +377,7 @@ export default {
         this.toast.msg = this.language.text78
         this.toast.icon = '/static/img/mine/success.png'
         this.$cache.set('_updateDelegateInfo', true, 0)
-        // uni.showToast({
-        //   title: this.language.text78,
-        //   image: '/static/img/mine/success.png',
-        //   mask: true,
-        //   duration: 3000,
-        //   complete: () => {
-        //     this.$cache.set('_updateDelegateInfo', true, 0)
-        //     setTimeout(() => {
-        //       uni.redirectTo({
-        //         url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
-        //       })
-        //     }, 1500)
-        //   }
-        // })
+
         setTimeout(() => {
           uni.redirectTo({
             url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}&redirectUrl=/pages/delegate/index`
@@ -370,19 +397,62 @@ export default {
         setTimeout(() => {
           this.showToast = false
         }, 3000)
-        console.log(res)
       }
+      this.callRenderGetBanlance++
+    },
+    handlerBalance(res) {
+      const wallet = this.$cache.get('_currentWallet')
+      
+      const tokenList = wallet.coinList
+      
+      const tokenIndex = tokenList.findIndex(item => item.alias_name == mainCoin.alias_name)
+      
+      const token = tokenList.find(item => item.alias_name == mainCoin.alias_name)
+      
+      token.balance = res.balance.amount / mainCoin.decimals
+      
+      tokenList.splice(tokenIndex, 1, token)
+      
+      wallet.coinList = tokenList
+      
+      this.$cache.set('_currentWallet', wallet, 0)
+      
+      this.updateWalletList(wallet)
+    },
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.unshift(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
+    },
+    handlerGas(res) {
+      this.feeLoading = false
+      if (res.code || this.isCustomFess) return
+      this.formData.gas = res
     }
   },
+  computed: {
+    totalGas() {
+      return new decimal(this.formData.gas + '').mul(new decimal(this.formData.gasPrice)).div(new decimal(mainCoin.decimals)).toString()
+    }
+  }
 }
 </script>
 
 <script lang="renderjs" module="render">
   import {
-    toDelegate
+    toDelegate,
+    getBalance,
+    getSecret
   } from '@/utils/secretjs/SDK'
   import mainCoin from '@/config/index.js'
   import renderUtils from '@/utils/render.base.js'
+  import secretjs from '@/utils/secretjs/index.js'
   export default {
     methods: {
       async delegate(val) {
@@ -394,13 +464,47 @@ export default {
         let res = {}
         data.amount.amount = data.amount.amount * mainCoin.decimals + ''
         try {
-          let gas = data.gas * mainCoin.decimals
-          res = await toDelegate(data, memo, gas)
+          res = await toDelegate(data, memo, data.gas, data.gasPrice)
         } catch (e) {
           console.log(e)
           res.code = 7
         }
         renderUtils.runMethod(this._$id, 'handlerResult', res, this)
+      },
+      async getBalance(val) {
+        if (val == 0) return
+        let wallet;
+        //#ifdef APP-PLUS
+        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+        //#endif
+        
+        //#ifndef APP-PLUS 
+        wallet = uni.getStorageSync('_currentWallet').data
+        //#endif
+        let res = await getBalance(wallet.address)
+        
+        renderUtils.runMethod(this._$id, 'handlerBalance', res, this)
+      },
+      async simulateFee(val) {
+        if (!val.validatorAddress) return
+        let {
+          memo,
+          ...data
+        } = JSON.parse(JSON.stringify(val))
+        let res = {}
+        data.amount.amount = data.amount.amount * mainCoin.decimals + ''
+        const Secret = await getSecret()
+        try {
+          const msgDelegate = new secretjs.MsgDelegate(data)
+          res = await Secret.tx.simulate([msgDelegate], {
+            feeDenom: 'ughm',
+          })
+          let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
+          renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
+        } catch (e) {
+          console.log(e);
+          res.code = 7
+        }
       }
     },
   }
