@@ -495,6 +495,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/mine/guanyu/userAgreement",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
   "globalStyle": {
     "navigationStyle": "custom",

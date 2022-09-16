@@ -36,6 +36,9 @@
 			</view>
 		</view>
     <custom-updateApp tip :updating.sync="updating" :checking.sync="checking" :latestVersion.sync="latestVersion" ref="updateApp" />
+		<view class="Agreement">
+			<text style="color: #1e42ed;" @click="jump">《服务协议》</text>版权归 Hermit Wallet所有
+		</view>
 	</view>
 </template>
 
@@ -68,6 +71,11 @@ export default {
     getAppVersion() {
       plus.runtime.getProperty(plus.runtime.appid, res => {
         this.version = res.version
+      })
+    },
+    jump(){
+      uni.navigateTo({
+        url:'./userAgreement'
       })
     }
   }
@@ -174,5 +182,12 @@ export default {
 				padding-right: 12rpx;
 			}
 		}
+	}
+	.Agreement{
+		width: 100%;
+		position: absolute;
+		bottom: 32rpx;
+		text-align: center;
+		font-size: 28rpx;
 	}
 </style>

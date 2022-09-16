@@ -74,7 +74,7 @@ export default {
     'text68': '微信号',
     'text69': '复制成功！',
     'text70': '请输入您的问题',
-    'text71': '请准确填写您的邮箱地址，邮箱错误将无法收到回复',
+    'text71': '请准确填写您的邮箱地址，邮箱错误将无法查看记录',
     'text72': '请具体描述您的问题',
     'text73': '点击上传截图',
     'text74': '提交',
@@ -126,7 +126,9 @@ export default {
     text120: '地址无效，请检查后重新输入',
     text121: '描述信息不能超过20个字符',
     text122: '历史反馈',
-    text123: '反馈详情'
+    text123: '反馈详情',
+    text124: '暂无反馈历史',
+    text125: '服务协议'
   },
   EN: {
     addressErrorTipDuplicate: '钱包地址已存在，请勿重复添加',
@@ -255,7 +257,9 @@ export default {
     text120: 'The address is invalid. Please check and re-enter',
     text121: 'The description information cannot exceed 20 characters',
     text122: 'Historical feedback',
-    text123: 'Feedback details'
+    text123: 'Feedback details',
+    text124: 'There is no feedback history.',
+    text125: 'Service agreement'
   },
   CT: {}
 }

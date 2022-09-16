@@ -153,7 +153,7 @@ export default {
         } else {
 				  
 				  this.showEditWalletNameModal = false
-				  this.$refs.notify.show('success', '暂无反馈历史')
+				  this.$refs.notify.show('success', this.language.text124)
         }
         this.btnswitch = true
       }
