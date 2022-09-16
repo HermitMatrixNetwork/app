@@ -6,52 +6,79 @@
     <view class="header">
       <u-search :showAction="false" :placeholder="language.text02" shape="round" :clearabled="true" v-model="searchVal" @search="search" searchIcon="/static/img/delegate/search2.png"></u-search>
     </view>
-
-    <view class="banner-wrap">
-      <view class="uni-margin-wrap">
-        <swiper class="swiper" circular :indicator-dots="indicatorDots" :indicator-color="'rgba(255,255,255,0.55)'" :indicator-active-color="'#fff'" :autoplay="autoplay" :interval="interval"
-          :duration="duration">
-          <swiper-item v-for="(item, index) in bannerList" :key="index" @click="jump(item.link)">
-            <image class="swiper-item" :src="item.url" style="width: 100%"/>
-          </swiper-item>
-        </swiper>
+    <view class="container">
+      <view class="banner-wrap">
+        <view class="uni-margin-wrap">
+          <swiper class="swiper" circular :indicator-dots="indicatorDots" :indicator-color="'rgba(255,255,255,0.55)'" :indicator-active-color="'#fff'" :autoplay="autoplay" :interval="interval"
+            :duration="duration">
+            <swiper-item v-for="(item, index) in bannerList" :key="index" @click="jump(item.link)">
+              <image class="swiper-item" :src="item.url" style="width: 100%"/>
+            </swiper-item>
+          </swiper>
+        </view>
       </view>
+      
+      <view class="recently">
+        <view class="heade">
+          <view class="left">{{ language.text03 }}</view>
+          <view class="right" @click="toRecently">
+            <text>{{ language.text04 }}</text>
+            <image src="/static/img/ic-arrow1.png"></image>
+          </view>
+        </view>
+        <view class="content">
+          <view class="item" v-for="(item, index) in recently.slice(0, 2)" :key="index" @click="toWebView(item)">
+            <image :src="item.logo"></image>
+            <text>{{ item.name }}</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="tools">
+        <view class="heade">
+          <view class="left">Tools</view>
+          <view class="right">
+            <text>{{ language.text04 }}</text>
+            <image src="/static/img/ic-arrow1.png"></image>
+          </view>
+        </view>
+        <view class="content" v-for="(item, index) in list" :key="index" @click="toWebView(item)">
+          <view class="logo">
+            <image :src="item.logo"></image>
+          </view>
+          <view class="article">
+            <view class="title">{{ item.name }}</view>
+            <view class="describe">{{ item.des }}</view>
+          </view>
+        </view>
+      </view>
+      <view class="tools">
+        <view class="heade">
+          <view class="left">PriFi</view>
+        </view>
+        <view class="content">
+          <image src="/static/img/prifi.png" style="width: 686rpx;height: 240rpx;;"></image>
+        </view>
+      </view>
+      <view class="tools">
+        <view class="heade">
+          <view class="left">NFTs</view>
+        </view>
+        <view class="content">
+          <image src="/static/img/nfts.png" style="width: 686rpx;height: 240rpx;;"></image>
+        </view>
+      </view>
+      <view class="tools">
+        <view class="heade">
+          <view class="left">GameFi</view>
+        </view>
+        <view class="content">
+          <image src="/static/img/gamefi.png" style="width: 686rpx;height: 240rpx;;"></image>
+        </view>
+      </view>
+      
     </view>
 
-    <view class="recently">
-      <view class="heade">
-        <view class="left">{{ language.text03 }}</view>
-        <view class="right" @click="toRecently">
-          <text>{{ language.text04 }}</text>
-          <image src="/static/img/ic-arrow1.png"></image>
-        </view>
-      </view>
-      <view class="content">
-        <view class="item" v-for="(item, index) in recently.slice(0, 2)" :key="index">
-          <image :src="item.logo"></image>
-          <text>{{ item.name }}</text>
-        </view>
-      </view>
-    </view>
-
-    <view class="tools">
-      <view class="heade">
-        <view class="left">Tools</view>
-        <view class="right">
-          <text>{{ language.text04 }}</text>
-          <image src="/static/img/ic-arrow1.png"></image>
-        </view>
-      </view>
-      <view class="content" v-for="(item, index) in list" :key="index" @click="toWebView(item)">
-        <view class="logo">
-          <image :src="item.logo"></image>
-        </view>
-        <view class="article">
-          <view class="title">{{ item.name }}</view>
-          <view class="describe">{{ item.des }}</view>
-        </view>
-      </view>
-    </view>
     <tab-bar :current-page="1" />
   </view>
 </template>
@@ -218,7 +245,6 @@ export default {
   }
 
   .tools {
-    height: 240rpx;
     padding: 32rpx;
     background-color: #fff;
     margin-top: 24rpx;
@@ -292,4 +318,9 @@ export default {
   		width: 550rpx;
   		padding: 0 100rpx;
   	}
+    
+    .container {
+      height: calc(100vh - 112rpx - var(--status-bar-height) - 120rpx - 56rpx);
+      overflow-y: scroll;
+    }
 </style>

@@ -304,12 +304,12 @@ export const withdrawDelegatorReward = async (data, gas, gasPrice) => {
   return result
 }
 
-export const setWithdrawAddress = async (data, gas) => {
+export const setWithdrawAddress = async (data, gas, gasPrice) => {
   let Secret = await getSecret()
   const result = await Secret.tx.distribution.setWithdrawAddress(data, {
-    gasPriceInFeeDenom: gas,
+    gasPriceInFeeDenom: gasPrice,
     feeDenom: 'ughm',
-    // gasLimit: 20000
+    gasLimit: gas
   })
   return result
 }

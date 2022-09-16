@@ -7,193 +7,196 @@
 				</image>
 			</template>
 		</custom-header>
-		<view class="main-top">
-
-			<view class="content">
-
-				<!-- 代币选择 -->
-				<view class="change-token" @click="jumpTokenlist">
-					<image :src="token.logo"></image>
-					<text>{{ token.alias_name }}</text>
-					<view class="icon-right">
-						<image src="/static/img/ic-arrow1.png" style="width:32rpx; height: 32rpx;"></image>
-					</view>
-				</view>
-
-				<!-- 收款地址 -->
-				<view class="collection-adres">
-					<InputTitle :title="language.text16" :type="'text'" :placeholder="language.text17"
-						:isTextarea="true" ref="addressInptval" :inputVal.sync="sendFormData.receiveAddress">
-						<template #title-icon>
-							<image src="/static/img/account/addressbook.png" @click="toAddressBook"
-								style="width:44rpx; height: 44rpx;"></image>
-						</template>
-					</InputTitle>
-					<text :style="{ opacity: showAddressErrorTip ? 1 : 0 }"
-						class="waringPrompt">{{ language[addressError] }}</text>
-				</view>
-
-				<!-- 发送金额 -->
-				<view class="send-amount">
-					<view class="send-amount">
-						<view class="amount">
-							<view class="label">
-								<text>{{ language.text18 }}</text>
-								<view class="can-be-use">
-									{{ language.text193 }}：
-									<custom-loading v-if="loading"></custom-loading>
-									<text v-else>{{  formatBalance(token.balance) || '0.000000' }} {{ token.alias_name }}</text>
-								</view>
-							</view>
-							<view class="value"
-								:class="{ valueError : (Number(sendFormData.sendAmount) > Number(token.balance) || showAmountErrorTip)}">
-								<!-- @input="sendAmountInput" -->
-								<u--input :placeholder="language.text19" type="digit" v-model="sendFormData.sendAmount" :formatter="formatter"
-									></u--input>
-								<view class="value-info">
-									<text class="denom">{{ token.alias_name }}</text>
-									<view class="border"></view>
-									<text class="all" @click="testAmount">{{ language.text21 }}</text>
-								</view>
-							</view>
-						</view>
-					</view>
-					<text v-if="Number(sendFormData.sendAmount) > Number(token.balance)"
-						class="waringPrompt">{{ language.text194 }}</text>
-					<text v-else-if="showAmountErrorTip" class="waringPrompt">{{ language.text195 }}</text>
-				</view>
-
-				<view class="send-memo">
-					<InputTitle :title="'Memo'" :type="'text'" :placeholder="language.text106"
-						:inputVal.sync="sendFormData.memo">
-					</InputTitle>
-				</view>
-			</view>
-		</view>
-
-		<view class="main-bottom">
-			<miners-column @getMinersCost="getMinersCost"></miners-column>
-
-			<view class="submit-btn" @click="transferConfirm">
-				<Submitbtn>{{ language.text144 }}</Submitbtn>
-			</view>
-		</view>
-
-		<u-popup :show="submitPopupIsShow" @close="submitPopupIsShow=false" mode="bottom" class="double-check-popup"
-			:safeAreaInsetBottom="true">
-			<view class="submitPopup">
-				<view class="main">
-					<view class="popup-title">
-						{{ language.text42 }}
-						<image src="/static/img/account/close.png" style="width: 32rpx; height: 32rpx;"
-							@click="submitPopupIsShow=false"></image>
-					</view>
-
-					<!-- 发送账户 -->
-					<view class="send-address">
-						<text>{{language.text43}}</text>
-						<text>{{sendFormData.userAddress}}</text>
-					</view>
-
-					<!-- 接收账户 -->
-					<view class="receive_address">
-						<text>{{ language.text174 }}</text>
-						<text>{{sendFormData.receiveAddress}}</text>
-					</view>
-
-					<!-- 转账金额 -->
-					<view class="transfer_amount">
-						<text>{{ language.text45 }}</text>
-						<text>{{sendFormData.sendAmount?sendFormData.sendAmount:'0'}} {{ token.alias_name }}</text>
-					</view>
-
-					<!--Memo-->
-					<view class="memo_type">
-						<text>Memo</text>
-						<text>{{ sendFormData.memo }}</text>
-					</view>
-
-					<!--矿工费-->
-					<view class="miners_fee">
-						<text>{{language.text46}}</text>
-            <custom-loading v-if="feeLoading"></custom-loading>
-						<view v-else>
-							<view>{{ sendFormData.gas }} * {{ sendFormData.gasPrice }}
-								ughm
-							</view>
-							<view class="price">
-								{{ totalGas }}
-								GHM
-							</view>
-						</view>
-					</view>
-				</view>
-				<view class="submit-btn" @click="submitAgain" style="position: absolute; bottom: 64rpx; width: 622rpx;">
-					<Submitbtn>{{ language.text47 }}</Submitbtn>
-				</view>
-			</view>
-		</u-popup>
-
-		<u-modal :show="modalPasswordIsShow" :showConfirmButton="false">
-			<view class="modal_main">
-				<view class="modal_title">
-					<view>
-						{{ verifyMethod == 'touchID' ? language.text196 : language.text48 }}
-						<text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
-							class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
-					</view>
-					<image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
-						@click="closeModalPasswordIsShow"></image>
-				</view>
-				<!--  -->
-				<view v-if="verifyMethod == 'password'">
-					<view class="item">
-						<view class="item-input item-input-password">
-							<u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text49">
-							</u-input>
-							<image
-								:src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
-								@click="passwordEye = !passwordEye"
-								style="width: 32rpx; height: 32rpx; margin-right: 36rpx;"></image>
-						</view>
-					</view>
-					<text v-if="passwordCheck" class="waringPrompt">{{ language.text51 }}</text>
-					<u-button @click="passwordButton" class="btn">{{ language.text107 }}</u-button>
-				</view>
-				<view v-else class="touch-verify">
-					<view class="logo">
-						<image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
-					</view>
-				</view>
-				<view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">{{ language.text197 }}
-				</view>
-			</view>
-		</u-modal>
-		<view :check="checkSuccess" :change:check="render.sendToken"></view>
-    <view :callSimulate="callSimulate" :change:callSimulate="render.simulateFee"></view>
-
-		<!-- 指纹验证 -->
-		<view class="toast" v-show="showToast">
-			<view class="toast-icon">
-				<image :src="toast.icon"></image>
-			</view>
-			<view class="toast-content">
-				<text>{{ toast.msg }}</text>
-			</view>
-		</view>
-
-		<!-- 大额提醒 -->
-		<u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
-			<view class="modalContent">
-				<image src="/static/img/tishi2.png" style="width: 64rpx; height: 64rpx;"></image>
-				<view class="modal-title">{{ language.text172 }}</view>
-				<text class="modal-content">{{ language.text219 }}</text>
-				<view class="confirm-button">
-					<uni-button @click="aa = false" class="cancel">{{ language.text170 }}</uni-button>
-					<uni-button @click="aaConfirm" class="confirm">{{ language.text09 }}</uni-button>
-				</view>
-			</view>
-		</u-modal>
+		<view class="container">
+      <view class="main-top">
+      
+      	<view class="content">
+      
+      		<!-- 代币选择 -->
+      		<view class="change-token" @click="jumpTokenlist">
+      			<image :src="token.logo"></image>
+      			<text>{{ token.alias_name }}</text>
+      			<view class="icon-right">
+      				<image src="/static/img/ic-arrow1.png" style="width:32rpx; height: 32rpx;"></image>
+      			</view>
+      		</view>
+      
+      		<!-- 收款地址 -->
+      		<view class="collection-adres">
+      			<InputTitle :title="language.text16" :type="'text'" :placeholder="language.text17"
+      				:isTextarea="true" ref="addressInptval" :inputVal.sync="sendFormData.receiveAddress">
+      				<template #title-icon>
+      					<image src="/static/img/account/addressbook.png" @click="toAddressBook"
+      						style="width:44rpx; height: 44rpx;"></image>
+      				</template>
+      			</InputTitle>
+      			<text :style="{ opacity: showAddressErrorTip ? 1 : 0 }"
+      				class="waringPrompt">{{ language[addressError] }}</text>
+      		</view>
+      
+      		<!-- 发送金额 -->
+      		<view class="send-amount">
+      			<view class="send-amount">
+      				<view class="amount">
+      					<view class="label">
+      						<text>{{ language.text18 }}</text>
+      						<view class="can-be-use">
+      							{{ language.text193 }}：
+      							<custom-loading v-if="loading"></custom-loading>
+      							<text v-else>{{  formatBalance(token.balance) || '0.000000' }} {{ token.alias_name }}</text>
+      						</view>
+      					</view>
+      					<view class="value"
+      						:class="{ valueError : (Number(sendFormData.sendAmount) > Number(token.balance) || showAmountErrorTip)}">
+      						<!-- @input="sendAmountInput" -->
+      						<u--input :placeholder="language.text19" type="digit" v-model="sendFormData.sendAmount" :formatter="formatter"
+      							></u--input>
+      						<view class="value-info">
+      							<text class="denom">{{ token.alias_name }}</text>
+      							<view class="border"></view>
+      							<text class="all" @click="testAmount">{{ language.text21 }}</text>
+      						</view>
+      					</view>
+      				</view>
+      			</view>
+      			<text v-if="Number(sendFormData.sendAmount) > Number(token.balance)"
+      				class="waringPrompt">{{ language.text194 }}</text>
+      			<text v-else-if="showAmountErrorTip" class="waringPrompt">{{ language.text195 }}</text>
+      		</view>
+      
+      		<view class="send-memo">
+      			<InputTitle :title="'Memo'" :type="'text'" :placeholder="language.text106"
+      				:inputVal.sync="sendFormData.memo">
+      			</InputTitle>
+      		</view>
+      	</view>
+      </view>
+      
+      <view class="main-bottom">
+      	<miners-column @getMinersCost="getMinersCost"></miners-column>
+      
+      	<view class="submit-btn" @click="transferConfirm">
+      		<Submitbtn>{{ language.text144 }}</Submitbtn>
+      	</view>
+      </view>
+      
+      <u-popup :show="submitPopupIsShow" @close="submitPopupIsShow=false" mode="bottom" class="double-check-popup"
+      	:safeAreaInsetBottom="true">
+      	<view class="submitPopup">
+      		<view class="main">
+      			<view class="popup-title">
+      				{{ language.text42 }}
+      				<image src="/static/img/account/close.png" style="width: 32rpx; height: 32rpx;"
+      					@click="submitPopupIsShow=false"></image>
+      			</view>
+      
+      			<!-- 发送账户 -->
+      			<view class="send-address">
+      				<text>{{language.text43}}</text>
+      				<text>{{sendFormData.userAddress}}</text>
+      			</view>
+      
+      			<!-- 接收账户 -->
+      			<view class="receive_address">
+      				<text>{{ language.text174 }}</text>
+      				<text>{{sendFormData.receiveAddress}}</text>
+      			</view>
+      
+      			<!-- 转账金额 -->
+      			<view class="transfer_amount">
+      				<text>{{ language.text45 }}</text>
+      				<text>{{sendFormData.sendAmount?sendFormData.sendAmount:'0'}} {{ token.alias_name }}</text>
+      			</view>
+      
+      			<!--Memo-->
+      			<view class="memo_type">
+      				<text>Memo</text>
+      				<text>{{ sendFormData.memo }}</text>
+      			</view>
+      
+      			<!--矿工费-->
+      			<view class="miners_fee">
+      				<text>{{language.text46}}</text>
+              <custom-loading v-if="feeLoading"></custom-loading>
+      				<view v-else>
+      					<view>{{ sendFormData.gas }} * {{ sendFormData.gasPrice }}
+      						ughm
+      					</view>
+      					<view class="price">
+      						{{ totalGas }}
+      						GHM
+      					</view>
+      				</view>
+      			</view>
+      		</view>
+      		<view class="submit-btn" @click="submitAgain" style="position: absolute; bottom: 64rpx; width: 622rpx;">
+      			<Submitbtn>{{ language.text47 }}</Submitbtn>
+      		</view>
+      	</view>
+      </u-popup>
+      
+      <u-modal :show="modalPasswordIsShow" :showConfirmButton="false">
+      	<view class="modal_main">
+      		<view class="modal_title">
+      			<view>
+      				{{ verifyMethod == 'touchID' ? language.text196 : language.text48 }}
+      				<text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
+      					class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
+      			</view>
+      			<image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
+      				@click="closeModalPasswordIsShow"></image>
+      		</view>
+      		<!--  -->
+      		<view v-if="verifyMethod == 'password'">
+      			<view class="item">
+      				<view class="item-input item-input-password">
+      					<u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text49">
+      					</u-input>
+      					<image
+      						:src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
+      						@click="passwordEye = !passwordEye"
+      						style="width: 32rpx; height: 32rpx; margin-right: 36rpx;"></image>
+      				</view>
+      			</view>
+      			<text v-if="passwordCheck" class="waringPrompt">{{ language.text51 }}</text>
+      			<u-button @click="passwordButton" class="btn">{{ language.text107 }}</u-button>
+      		</view>
+      		<view v-else class="touch-verify">
+      			<view class="logo">
+      				<image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
+      			</view>
+      		</view>
+      		<view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">{{ language.text197 }}
+      		</view>
+      	</view>
+      </u-modal>
+      <view :check="checkSuccess" :change:check="render.sendToken"></view>
+      <view :callSimulate="callSimulate" :change:callSimulate="render.simulateFee"></view>
+      
+      <!-- 指纹验证 -->
+      <view class="toast" v-show="showToast">
+      	<view class="toast-icon">
+      		<image :src="toast.icon"></image>
+      	</view>
+      	<view class="toast-content">
+      		<text>{{ toast.msg }}</text>
+      	</view>
+      </view>
+      
+      <!-- 大额提醒 -->
+      <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
+      	<view class="modalContent">
+      		<image src="/static/img/tishi2.png" style="width: 64rpx; height: 64rpx;"></image>
+      		<view class="modal-title">{{ language.text172 }}</view>
+      		<text class="modal-content">{{ language.text219 }}</text>
+      		<view class="confirm-button">
+      			<uni-button @click="aa = false" class="cancel">{{ language.text170 }}</uni-button>
+      			<uni-button @click="aaConfirm" class="confirm">{{ language.text09 }}</uni-button>
+      		</view>
+      	</view>
+      </u-modal>
+    </view>
+   
 	</view>
 </template>
 
@@ -828,10 +831,10 @@ export default {
 		// bottom: 0;
 
 		.submit-btn {
-			margin: 0 64rpx;
-			position: fixed;
+			margin: 48rpx 64rpx 0;
+			// position: fixed;
 			// bottom: var(--window-bottom);
-			bottom: 30rpx;
+			// bottom: 30rpx;
 			width: 622rpx;
 			// top: 24rpx;
 		}
@@ -1245,4 +1248,9 @@ export default {
 			}
 		}
 	}
+  
+  .container {
+    // height: calc(100vh - 112rpx - var(--status-bar-height));
+    overflow-y: scroll;
+  }
 </style>
