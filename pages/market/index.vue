@@ -27,7 +27,7 @@
           </view>
         </view>
         <view class="content">
-          <view class="item" v-for="(item, index) in recently.slice(0, 2)" :key="index">
+          <view class="item" v-for="(item, index) in recently.slice(0, 2)" :key="index" @click="toWebView(item)">
             <image :src="item.logo"></image>
             <text>{{ item.name }}</text>
           </view>

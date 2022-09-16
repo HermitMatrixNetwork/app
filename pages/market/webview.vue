@@ -8,6 +8,7 @@ var wv
 export default {
   onLoad(options) {
     this.jumpUrl = options.jumpUrl
+    console.log(this.jumpUrl)
     // #ifdef APP-PLUS
     wv = plus.webview.create('', 'custom-webview', {
       plusrequire: 'none', //禁止远程网页使用plus的API，有些使用mui制作的网页可能会监听plus.key，造成关闭页面混乱，可以通过这种方式禁止
@@ -17,9 +18,9 @@ export default {
     wv.loadURL(options.jumpUrl)
     var currentWebview = this.$scope.$getAppWebview() //此对象相当于html5plus里的plus.webview.currentWebview()。在uni-app里vue页面直接使用plus.webview.currentWebview()无效
     currentWebview.append(wv) //一定要append到当前的页面里！！！才能跟随当前页面一起做动画，一起关闭
-    // setTimeout(function() {
-    //   console.log(wv.getStyle())
-    // }, 1000) //如果是首页的onload调用时需要延时一下，二级页面无需延时，可直接获取
+    setTimeout(function() {
+      console.log(wv.getStyle())
+    }, 1000) //如果是首页的onload调用时需要延时一下，二级页面无需延时，可直接获取
     // #endif
   },
 
