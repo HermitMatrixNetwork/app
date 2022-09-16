@@ -8,10 +8,7 @@
 				<image src="/static/img/delegate/theme2.png"></image>
 				<view class="name-info">
 					<view class="title">
-						{{ language.text104 }}
-					</view>
-					<view class="address" >
-						<text>{{ validatorInfo.validator_name }}</text>
+						{{ validatorInfo.validator_name }}
 					</view>
 					<view class="address" @click="copy">
 						<text>{{ validatorInfo.operator_address }}</text>
@@ -87,45 +84,45 @@
 </template>
 
 <script>
-	import language from './language/index.js'
-	import {
-		getValidatorInfo
-	} from '@/api/browers.js'
-	import mainCoin from '@/config/index.js'
-	export default {
-		data() {
-			return {
-				language: language[this.$cache.get('_language')],
-				validatorInfo: {},
-				mainCoin
-			}
-		},
-		async onLoad(options) {
-			this.validatorInfo = JSON.parse(options.validatorInfo)
-			console.log('验证人信息', this.validatorInfo)
-		},
-		methods: {
-			toDelegate() {
-				uni.navigateTo({
-					url: `./delegate?data=${JSON.stringify(this.validatorInfo)}`
-				})
-			},
-			copy() {
-				uni.setClipboardData({
-					data: this.validatorInfo.operator_address,
-					showToast: false,
-					success: () => {
-						this.$refs.notify.show('error', this.language.text103, {
-							bgColor: '#275EF1'
-						})
-					},
-					fail: () => {
-						this.$refs.notify.show('error', '复制失败')
-					}
-				})
-			}
-		}
-	}
+import language from './language/index.js'
+import {
+  getValidatorInfo
+} from '@/api/browers.js'
+import mainCoin from '@/config/index.js'
+export default {
+  data() {
+    return {
+      language: language[this.$cache.get('_language')],
+      validatorInfo: {},
+      mainCoin
+    }
+  },
+  async onLoad(options) {
+    this.validatorInfo = JSON.parse(options.validatorInfo)
+    console.log('验证人信息', this.validatorInfo)
+  },
+  methods: {
+    toDelegate() {
+      uni.navigateTo({
+        url: `./delegate?data=${JSON.stringify(this.validatorInfo)}`
+      })
+    },
+    copy() {
+      uni.setClipboardData({
+        data: this.validatorInfo.operator_address,
+        showToast: false,
+        success: () => {
+          this.$refs.notify.show('error', this.language.text103, {
+            bgColor: '#275EF1'
+          })
+        },
+        fail: () => {
+          this.$refs.notify.show('error', '复制失败')
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -261,7 +258,7 @@
 		// bottom: 16rpx;
 		// left: 50%;
 		// transform: translateX(-50%);
-		margin: 10rpx auto;
+		margin: 64rpx auto 0;
 		width: 622rpx;
 		height: 96rpx;
 		border-radius: 16rpx;

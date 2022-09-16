@@ -1,6 +1,6 @@
 <template>
   <view class="transacTionDestail">
-    <custom-header :title="language.text82"></custom-header>
+    <custom-header :tabUrl="redirectUrl" :title="language.text82"></custom-header>
     <view class="transacTionMain">
       <view class="main_status">
         <image :src="statusIcon" />
@@ -37,7 +37,8 @@ export default {
         timestamp: ''
       },
       loading: true,
-      language: language[this.$cache.get('_language')]
+      language: language[this.$cache.get('_language')],
+      redirectUrl: '',
     }
   },
   onLoad(options) {
@@ -51,6 +52,11 @@ export default {
     } else {
       this.formOtherToken(data)
     }
+    
+    if (options.redirectUrl) {
+      this.redirectUrl = options.redirectUrl
+    }
+    console.log(this.redirectUrl)
   },
   methods: {
     init(res) {
@@ -240,22 +246,22 @@ export default {
       }
       this.loading = false
     },
-		copy(item ,key) {
-			const copyList = ['Memo', this.language.text84, this.language.text111] // Memo, Amount, Fee
-			if (copyList.includes(key)) return;
-			uni.setClipboardData({
-				data: item,
-				showToast: false,
-				success: () => {
-					this.$refs.notify.show('error', this.language.text103, {
-						bgColor: '#275EF1'
-					})
-				},
-				fail: () => {
-					this.$refs.notify.show('error', '复制失败')
-				}
-			})
-		}
+    copy(item ,key) {
+      const copyList = ['Memo', this.language.text84, this.language.text111] // Memo, Amount, Fee
+      if (copyList.includes(key)) return
+      uni.setClipboardData({
+        data: item,
+        showToast: false,
+        success: () => {
+          this.$refs.notify.show('error', this.language.text103, {
+            bgColor: '#275EF1'
+          })
+        },
+        fail: () => {
+          this.$refs.notify.show('error', '复制失败')
+        }
+      })
+    }
   }
 }
 </script>

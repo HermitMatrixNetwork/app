@@ -47,7 +47,7 @@
       </view>
 
     </view>
-    <view style="height: 16rpx;background: #F4F6FA;margin-top: 32rpx;" />
+    <view style="height: 16rpx;background: #F4F6FA; margin-top: 32rpx;" />
     <view class="transaction_history">
       <view class="nav">
         <u-tabs :list="list" :is-scroll="false" @click="switchTabs" :current="listCurrentIndex">
@@ -55,10 +55,10 @@
       </view>
       <custom-loading v-if="loading" class="loading"></custom-loading>
       <swiper v-else class="transaction_history_item" :current="listCurrentIndex" @change="switchSwiper"
-        style="height: 670rpx">
+        :style="{ height: scrollHeight } ">
         <swiper-item v-for="(item,index) in list" :key="item.name" :item-id="index+''">
           <!-- @scrolltolower="loadMore(item.type)" -->
-          <scroll-view scroll-y class="scroll-container" style="height: 670rpx">
+          <scroll-view scroll-y class="scroll-container" :style="{ height: scrollHeight } ">
             <template v-if="accountTransfer[item.type].length">
               <view class="list-item" v-for="(record, index) in accountTransfer[item.type]" :key="index"
                 @click="toRecordDetail(record)">
@@ -92,7 +92,7 @@
                 </view>
                 <u-loading-icon v-else-if="pagination[item.type].loading" class="loading-more" mode="circle" text="加载中">
                 </u-loading-icon>
-                <view v-else-if="pagination[item.type].nodata" class="loading-more">已全部加载完毕</view>
+                <view v-else-if="pagination[item.type].nodata" class="loading-more">{{ language.text227 }}</view>
               </view>
             </template>
             <no-data v-else :tip="language.text113" />
@@ -220,7 +220,10 @@ export default {
       lockAmountLoading: true,
       callRenderDelegateRecord: '',
       lockAmount: 0,
-      mainCoin
+      mainCoin,
+      mainTokenHeight: '0rpx',
+      navHeight: '0rpx',
+      systemBarHeight: '0rpx'
     }
   },
   async onLoad(options) {
@@ -247,7 +250,30 @@ export default {
   created() {
     this.init()
   },
+  mounted() {
+    this.calculateHeight()
+    this.getSystemStatusHeight()
+  },
   methods: {
+    getSystemStatusHeight() {
+      uni.getSystemInfo({
+        success: res => {
+          this.systemBarHeight = res.statusBarHeight
+        }
+      })
+    },
+    calculateHeight() {
+      const query = uni.createSelectorQuery().in(this)
+      query.select('.main_token').boundingClientRect(data => {
+        this.mainTokenHeight = data.height + 'px'
+      })
+      
+      query.select('.nav').boundingClientRect(data => {
+        this.navHeight = data.height + 'px'
+      })
+      query.exec()
+
+    },
     async init() {
       await Promise.all([
         txsQuery([`events=message.module='${'bank'}'`, `events=transfer.sender='${this.address}'`,
@@ -358,7 +384,7 @@ export default {
           this.accountTransfer['fail'] = res[4].data.data.list.map(item => {
             item.icon = require('@/static/img/account/shibai.png')
             // item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
-						item.amount = '0.00'
+            item.amount = '0.00'
             item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
             item.type = 'fail'
             item.txhash = item._id
@@ -390,7 +416,7 @@ export default {
           ...this.accountTransfer['delegate'], ...this.accountTransfer['withdraw'], ...this.accountTransfer[
             'fail']
         ]
-				this.accountTransfer['fail'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        this.accountTransfer['fail'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
         this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
 
         // #ifndef APP-PLUS 
@@ -458,7 +484,7 @@ export default {
             const item = result[i]
             item.icon = require('@/static/img/account/shibai.png')
             // item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
-						item.amount = '0.00'
+            item.amount = '0.00'
             item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
             item.type = 'fail'
             item.txhash = item._id
@@ -518,9 +544,9 @@ export default {
           }
         }
 
-				if (type == 'fail') {
-					result.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-				}
+        if (type == 'fail') {
+          result.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        }
 				
         this.accountTransfer[type].push(...result)
         this.accountTransfer['all'].push(...result)
@@ -627,6 +653,13 @@ export default {
         float = float.substr(0, 6)
       }
       return int + '.' + (float || '000000')
+    }
+  },
+  computed: {
+    scrollHeight() {
+      const borderHeight = 16 + 32 + 'rpx'
+      const operation_btn = '180rpx'
+      return `calc(100vh - 112rpx - ${this.mainTokenHeight} - ${borderHeight} - ${operation_btn} - ${this.navHeight} - ${this.systemBarHeight + 'rpx'})`
     }
   }
 }

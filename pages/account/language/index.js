@@ -249,7 +249,9 @@ const languages = {
     text222:'二维码生成中',
     text223:'图片已保存',
     text224: '明文私钥',
-    text225: 'Keystore'
+    text225: 'Keystore',
+    text226: '不可转账给自己',
+    text227: '已全部加载完毕'
 		
   },
   CT: {
@@ -524,7 +526,9 @@ const languages = {
     text222:'Generating QR code',
     text223:'Saved',
     text224: 'public key',
-    text225: 'Keystore'
+    text225: 'Keystore',
+    text226: 'Cannot transfer to yourself',
+    text227: 'end'
   }
 }
 export default languages

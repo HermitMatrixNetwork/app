@@ -42,7 +42,7 @@
 								<view class="can-be-use">
 									{{ language.text193 }}：
 									<custom-loading v-if="loading"></custom-loading>
-									<text v-else>{{ token.balance || '0.00' }} {{ token.alias_name }}</text>
+									<text v-else>{{  formatBalance(token.balance) || '0.000000' }} {{ token.alias_name }}</text>
 								</view>
 							</view>
 							<view class="value"
@@ -127,7 +127,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="submit-btn" @click="submitAgain">
+				<view class="submit-btn" @click="submitAgain" style="position: absolute; bottom: 64rpx; width: 622rpx;">
 					<Submitbtn>{{ language.text47 }}</Submitbtn>
 				</view>
 			</view>
@@ -198,381 +198,384 @@
 </template>
 
 <script>
-	import InputTitle from './components/Input-title.vue'
-	import languages from '../language/index.js'
-	import Submitbtn from './components/submit-btn.vue'
-	import {
-		SendTokentoOtherAddress,
-		getBalance
-	} from '@/utils/secretjs/SDK.js'
-	import mixin from '../mixins/index.js'
-	import verifyTouchID from '../mixins/verifyTouchID.js'
-	import WalletCrypto from '@/utils/walletCrypto.js'
-	import mainCoin from '@/config/index.js'
-	import { checkAddress } from '@/utils/index.js'
-	import {
-		onlyPositiveNumber
-	} from '@/utils/directives.js'
-	export default {
-		mixins: [mixin, verifyTouchID],
-		components: {
-			InputTitle,
-			Submitbtn
-		},
-		directives: {
-			onlyPositiveNumber
-		},
-		data() {
-			return {
-				language: languages[this.$cache.get('_language')],
-				verifyMethod: 'password',
-				tokenUrl: '/static/img/account/uGHM.png',
-				tokenName: 'GHM',
-				inputVal: '',
-				payPassword: '', //资金密码
-				passwordCheck: false, //密码校验
-				verifyTouchErrorTip: '',
-				submitPopupIsShow: false,
-				modalPasswordIsShow: false,
-				checkSuccess: 0,
-				sendFormData: {
-					userAddress: this.$cache.get('_currentWallet').address,
-					receiveAddress: '', //接收地址
-					sendAmount: '', //发送金额
-					memo: '',
-					token: {},
-					gas: '',
-					decimals: null
-				},
-				titleStyle: {
-					background: '#FFFFFF'
-				},
-				//发送金额样式
-				sendAmountStyle: {
-					height: '144rpx',
-					fontSize: '40rpx',
-					color: '#2C365A',
-					fontWeight: '500'
-				},
-				token: {},
-				showAddressErrorTip: false,
-				showAmountErrorTip: false,
-				passwordEye: false,
-				loading: false,
-				transferLoading: false,
-				// 指纹验证
-				touchId: this.$cache.get('_touchId'),
-				showToast: false,
-				toast: {
-					icon: '/static/img/mine/loading.gif',
-					// msg: '失败次数超出限制，请稍后再设置',
-					msg: '失败次数超出限制，请切换其它方式验证'
-				},
-				mainCoin,
-				aa: false,
-				addressError: 'text188' // text188:收款地址不能为空 ; text220: 输入地址有误，请检查后重新输入
-			}
-		},
-		onLoad(options) {
-			if (options.receiveAddress) {
-				this.sendFormData.receiveAddress = options.receiveAddress
-			}
-			if (this.touchId) this.verifyMethod = 'touchID'
-			if (options.tokenID) {
-				this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
-			} else {
-				this.token = this.$cache.get('_currentWallet').coinList[0]
-			}
-			this.sendFormData.decimals = this.token.decimals || 1
+import InputTitle from './components/Input-title.vue'
+import languages from '../language/index.js'
+import Submitbtn from './components/submit-btn.vue'
+import {
+  SendTokentoOtherAddress,
+  getBalance
+} from '@/utils/secretjs/SDK.js'
+import mixin from '../mixins/index.js'
+import verifyTouchID from '../mixins/verifyTouchID.js'
+import WalletCrypto from '@/utils/walletCrypto.js'
+import mainCoin from '@/config/index.js'
+import { checkAddress } from '@/utils/index.js'
+import {
+  onlyPositiveNumber
+} from '@/utils/directives.js'
+export default {
+  mixins: [mixin, verifyTouchID],
+  components: {
+    InputTitle,
+    Submitbtn
+  },
+  directives: {
+    onlyPositiveNumber
+  },
+  data() {
+    return {
+      language: languages[this.$cache.get('_language')],
+      verifyMethod: 'password',
+      tokenUrl: '/static/img/account/uGHM.png',
+      tokenName: 'GHM',
+      inputVal: '',
+      payPassword: '', //资金密码
+      passwordCheck: false, //密码校验
+      verifyTouchErrorTip: '',
+      submitPopupIsShow: false,
+      modalPasswordIsShow: false,
+      checkSuccess: 0,
+      sendFormData: {
+        userAddress: this.$cache.get('_currentWallet').address,
+        receiveAddress: '', //接收地址
+        sendAmount: '', //发送金额
+        memo: '',
+        token: {},
+        gas: '',
+        decimals: null
+      },
+      titleStyle: {
+        background: '#FFFFFF'
+      },
+      //发送金额样式
+      sendAmountStyle: {
+        height: '144rpx',
+        fontSize: '40rpx',
+        color: '#2C365A',
+        fontWeight: '500'
+      },
+      token: {},
+      showAddressErrorTip: false,
+      showAmountErrorTip: false,
+      passwordEye: false,
+      loading: false,
+      transferLoading: false,
+      // 指纹验证
+      touchId: this.$cache.get('_touchId'),
+      showToast: false,
+      toast: {
+        icon: '/static/img/mine/loading.gif',
+        // msg: '失败次数超出限制，请稍后再设置',
+        msg: '失败次数超出限制，请切换其它方式验证'
+      },
+      mainCoin,
+      aa: false,
+      addressError: 'text188' // text188:收款地址不能为空 ; text220: 输入地址有误，请检查后重新输入
+    }
+  },
+  onLoad(options) {
+    if (options.receiveAddress) {
+      this.sendFormData.receiveAddress = options.receiveAddress
+    }
+    if (this.touchId) this.verifyMethod = 'touchID'
+    if (options.tokenID) {
+      this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
+    } else {
+      this.token = this.$cache.get('_currentWallet').coinList[0]
+    }
+    this.sendFormData.decimals = this.token.decimals || 1
 
-			this.sendFormData.token = this.token
+    this.sendFormData.token = this.token
 
-			clearInterval(this.timer)
-			if (this.token.loadingBalance) {
-				this.loading = true
-				this.timer = setInterval(() => {
-					const latestTokenInfo = this.$cache.get('_currentWallet').coinList.find(item => item.ID == this
-						.token.ID)
-					this.token.balance = latestTokenInfo.balance
-					if (!latestTokenInfo.loadingBalance) {
-						clearInterval(this.timer)
-						this.loading = false
-					}
-				}, 1000)
-			}
-		},
-		methods: {
-			formatter(val) {
-				// if (val.split('.'))
-				let num = val.replace(/[^\d.]/g,'')
+    clearInterval(this.timer)
+    if (this.token.loadingBalance) {
+      this.loading = true
+      this.timer = setInterval(() => {
+        const latestTokenInfo = this.$cache.get('_currentWallet').coinList.find(item => item.ID == this
+          .token.ID)
+        this.token.balance = latestTokenInfo.balance
+        if (!latestTokenInfo.loadingBalance) {
+          clearInterval(this.timer)
+          this.loading = false
+        }
+      }, 1000)
+    }
+  },
+  methods: {
+    formatBalance(val) {
+      return val && val.toFixed(6)
+    },
+    formatter(val) {
+      // if (val.split('.'))
+      let num = val.replace(/[^\d.]/g,'')
 				
-				if (num.split('.')[1] && num.split('.')[1].length > 6) {
-						return `${num.split('.')[0]}.${num.split('.')[1].substr(0, 6)}`
-				} else {
-					return num
-				}
-			},
-			closeModalPasswordIsShow() {
-				this.modalPasswordIsShow = false
-				if (this.touchId) {
-					plus.fingerprint.cancel()
-				}
-			},
-			changeVerifyMethod() {
-				this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password'
-				if (this.verifyMethod == 'touchID') {
-					this.verify()
-				} else {
-					plus.fingerprint.cancel()
-				}
-			},
-			toAddressBook() {
-				uni.navigateTo({
-					url: '/pages/account/send/adres_book',
-					events: {
-						reciveAddress: (address) => {
-							this.$refs.addressInptval.childValue = address
-						}
-					}
-				})
-			},
-			hideModel() {
-				this.modalPasswordIsShow = false
-			},
-			verifyTouchIDSuccess() {
-				this.$nextTick(() => {
-					this.checkSuccess = this.sendFormData
-					this.transferLoading = true
-					this.verifyTouchID = 3
-					this.showToast = true
-					this.toast.msg = `${this.language.text198}...`
-					this.toast.icon = '/static/img/mine/loading.gif'
-					// uni.showToast({
-					//   title: `${this.language.text198}...`,
-					//   icon: 'loading',
-					//   duration: 999999999
-					// })
-				})
-			},
-			verifyTouchIDFail() {
-				this.showToast = false
-			},
-			verifyTouchIDOverTime() {
-				this.showToast = false
-			},
-			async submitAgain() {
-				this.modalPasswordIsShow = true
-				// #ifdef APP-PLUS
-				if (this.touchId) {
-					this.verify()
-				}
-				// #endif
+      if (num.split('.')[1] && num.split('.')[1].length > 6) {
+        return `${num.split('.')[0]}.${num.split('.')[1].substr(0, 6)}`
+      } else {
+        return num
+      }
+    },
+    closeModalPasswordIsShow() {
+      this.modalPasswordIsShow = false
+      if (this.touchId) {
+        plus.fingerprint.cancel()
+      }
+    },
+    changeVerifyMethod() {
+      this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password'
+      if (this.verifyMethod == 'touchID') {
+        this.verify()
+      } else {
+        plus.fingerprint.cancel()
+      }
+    },
+    toAddressBook() {
+      uni.navigateTo({
+        url: '/pages/account/send/adres_book',
+        events: {
+          reciveAddress: (address) => {
+            this.$refs.addressInptval.childValue = address
+          }
+        }
+      })
+    },
+    hideModel() {
+      this.modalPasswordIsShow = false
+    },
+    verifyTouchIDSuccess() {
+      this.$nextTick(() => {
+        this.checkSuccess = this.sendFormData
+        this.transferLoading = true
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = `${this.language.text198}...`
+        this.toast.icon = '/static/img/mine/loading.gif'
+        // uni.showToast({
+        //   title: `${this.language.text198}...`,
+        //   icon: 'loading',
+        //   duration: 999999999
+        // })
+      })
+    },
+    verifyTouchIDFail() {
+      this.showToast = false
+    },
+    verifyTouchIDOverTime() {
+      this.showToast = false
+    },
+    async submitAgain() {
+      this.modalPasswordIsShow = true
+      // #ifdef APP-PLUS
+      if (this.touchId) {
+        this.verify()
+      }
+      // #endif
 
-				// #ifndef APP-PLUS
-				this.touchId = 0
-				// #endif
+      // #ifndef APP-PLUS
+      this.touchId = 0
+      // #endif
 
-				this.submitPopupIsShow = false
-			},
-			async transferConfirm() { //转账确认
-				const {
-					receiveAddress,
-					sendAmount,
-					memo
-				} = this.sendFormData
+      this.submitPopupIsShow = false
+    },
+    async transferConfirm() { //转账确认
+      const {
+        receiveAddress,
+        sendAmount,
+        memo
+      } = this.sendFormData
 
-				if (receiveAddress.trim() === '') {
-					this.addressError = 'text188'
-					this.showAddressErrorTip = true
-				} else {
-					this.showAddressErrorTip = false
-				}
+      if (receiveAddress.trim() === '') {
+        this.addressError = 'text188'
+        this.showAddressErrorTip = true
+      } else if (!checkAddress(receiveAddress)){
+        this.addressError = 'text220'
+        this.showAddressErrorTip = true
+      } else if (receiveAddress == this.sendFormData.userAddress) {
+        this.addressError = 'text226'
+        this.showAddressErrorTip = true
+      } else {
+        this.showAddressErrorTip = false          
+      }
 				
-				if (checkAddress(receiveAddress)) {
-					this.showAddressErrorTip = false
-				} else {
-					this.addressError = 'text220'
-					this.showAddressErrorTip = true
-				}
 
-				if (sendAmount == '' || sendAmount <= 0) {
-					this.showAmountErrorTip = true
-				} else {
-					this.showAmountErrorTip = false
-				}
+      if (sendAmount == '' || sendAmount <= 0) {
+        this.showAmountErrorTip = true
+      } else {
+        this.showAmountErrorTip = false
+      }
 
-				// && this.sendFormData.sendAmount < this.token.balance   
-				// console.log(this.showAddressErrorTip, this.showAmountErrorTip, this.sendFormData.sendAmount <= this.token.balance)
-				if (!this.showAddressErrorTip && !this.showAmountErrorTip && this.sendFormData.sendAmount <= this.token
-					.balance) {
-						const quota = this.$cache.get('_quota')
-						if (quota == null) {
-							this.submitPopupIsShow = true
-						} else if (Number(this.sendFormData.sendAmount) > Number(quota.amount)) {
-							this.aa = true
-						} else {
-							this.submitPopupIsShow = true
-						}
-				}
-			},
-			async passwordButton() {
-				const decode = WalletCrypto.decode(this.$cache.get('_currentWallet').password)
-				if (this.payPassword != decode) {
-					this.passwordCheck = true
-				} else {
-					this.passwordCheck = false
-					this.checkSuccess = this.sendFormData // 调用render.sendToken
-					this.modalPasswordIsShow = false
-					this.transferLoading = true
-					this.verifyTouchID = 3
-					this.showToast = true
-					this.toast.msg = `${this.language.text198}...`
-					this.toast.icon = '/static/img/mine/loading.gif'
-					// uni.showToast({
-					//   title: `${this.language.text198}...`,
-					//   icon: 'loading',
-					//   mask: true,
-					//   duration: 999999999
-					// })
-				}
-			},
-			testAmount() {
-				this.sendFormData.sendAmount = this.token.balance
-			},
-			getMinersCost(val) {
-				this.sendFormData.gas = val.amount
-			},
-			scanCode() { //扫码
-				uni.scanCode({
-					onlyFromCamera: false,
-					scanType: ['qrCode'],
-					success: (res) => {
-						this.receiveAddress = this.$refs.addressInptval.childValue = res.result
-					},
-				})
-			},
-			jumpTokenlist() { //代币选择
-				uni.navigateTo({
-					url: '/pages/account/send/token_list',
-					events: {
-						changeToken: (data) => {
-							this.token = data
-							this.sendFormData.token = this.token
-							clearInterval(this.timer)
-							if (this.token.loadingBalance) {
-								this.loading = true
-								this.timer = setInterval(() => {
-									const latestTokenInfo = this.$cache.get('_currentWallet').coinList
-										.find(item => item.ID ==
+      // && this.sendFormData.sendAmount < this.token.balance   
+      // console.log(this.showAddressErrorTip, this.showAmountErrorTip, this.sendFormData.sendAmount <= this.token.balance)
+      if (!this.showAddressErrorTip && !this.showAmountErrorTip && this.sendFormData.sendAmount <= this.token
+        .balance) {
+        const quota = this.$cache.get('_quota')
+        if (quota == null) {
+          this.submitPopupIsShow = true
+        } else if (Number(this.sendFormData.sendAmount) > Number(quota.amount)) {
+          this.aa = true
+        } else {
+          this.submitPopupIsShow = true
+        }
+      }
+    },
+    async passwordButton() {
+      const decode = WalletCrypto.decode(this.$cache.get('_currentWallet').password)
+      if (this.payPassword != decode) {
+        this.passwordCheck = true
+      } else {
+        this.passwordCheck = false
+        this.checkSuccess = this.sendFormData // 调用render.sendToken
+        this.modalPasswordIsShow = false
+        this.transferLoading = true
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = `${this.language.text198}...`
+        this.toast.icon = '/static/img/mine/loading.gif'
+        // uni.showToast({
+        //   title: `${this.language.text198}...`,
+        //   icon: 'loading',
+        //   mask: true,
+        //   duration: 999999999
+        // })
+      }
+    },
+    testAmount() {
+      this.sendFormData.sendAmount = this.token.balance
+    },
+    getMinersCost(val) {
+      this.sendFormData.gas = val.amount
+    },
+    scanCode() { //扫码
+      uni.scanCode({
+        onlyFromCamera: false,
+        scanType: ['qrCode'],
+        success: (res) => {
+          this.receiveAddress = this.$refs.addressInptval.childValue = res.result
+        },
+      })
+    },
+    jumpTokenlist() { //代币选择
+      uni.navigateTo({
+        url: '/pages/account/send/token_list',
+        events: {
+          changeToken: (data) => {
+            this.token = data
+            this.sendFormData.token = this.token
+            clearInterval(this.timer)
+            if (this.token.loadingBalance) {
+              this.loading = true
+              this.timer = setInterval(() => {
+                const latestTokenInfo = this.$cache.get('_currentWallet').coinList
+                  .find(item => item.ID ==
 											this.token.ID)
-									this.token.balance = latestTokenInfo.balance
-									if (!latestTokenInfo.loadingBalance) {
-										clearInterval(this.timer)
-										this.loading = false
-									}
-								}, 1000)
-							}
-						}
-					}
-				})
-			},
-			dealSuccessJump({
-				res: result,
-				otherToken
-			}) {
-				this.transferLoading = false
-				this.checkSuccess = 0
-				let fee, usedAmount
-				if (!otherToken && result.tx) {
-					fee = result.tx.authInfo.fee.amount[0].amount / (this.token.decimals || 1)
-					usedAmount = this.sendFormData.sendAmount
-				}
-				uni.hideToast()
-				const eventChannel = this.getOpenerEventChannel()
-				if (result.code == 0) {
-					this.verifyTouchID = 3
-					this.showToast = true
-					this.toast.msg = this.language.text185
-					this.toast.icon = '/static/img/mine/success.png'
-					setTimeout(() => {
-							this.showToast = false
-							uni.redirectTo({
-								url: `./transactionDetails?data=${JSON.stringify(result)}`
-							})
-							eventChannel.emit('addRecordToSendList', result)
-						}, 1500)
-						// uni.showToast({
-						//   title: this.language.text185,
-						//   image: '/static/img/mine/success.png',
-						//   mask: true,
-						//   duration: 3000,
-						//   complete: () => {
-						//     setTimeout(() => {
-						//       uni.redirectTo({
-						//         url: `./transactionDetails?data=${JSON.stringify(result)}`
-						//       })
-						//       eventChannel.emit('addRecordToSendList', result)
-						//     }, 1500)
-						//   }
-						// })
+                this.token.balance = latestTokenInfo.balance
+                if (!latestTokenInfo.loadingBalance) {
+                  clearInterval(this.timer)
+                  this.loading = false
+                }
+              }, 1000)
+            }
+          }
+        }
+      })
+    },
+    dealSuccessJump({
+      res: result,
+      otherToken
+    }) {
+      this.transferLoading = false
+      this.checkSuccess = 0
+      let fee, usedAmount
+      if (!otherToken && result.tx) {
+        fee = result.tx.authInfo.fee.amount[0].amount / (this.token.decimals || 1)
+        usedAmount = this.sendFormData.sendAmount
+      }
+      uni.hideToast()
+      const eventChannel = this.getOpenerEventChannel()
+      if (result.code == 0) {
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text185
+        this.toast.icon = '/static/img/mine/success.png'
+        setTimeout(() => {
+          this.showToast = false
+          uni.redirectTo({
+            url: `./transactionDetails?data=${JSON.stringify(result)}`
+          })
+          eventChannel.emit('addRecordToSendList', result)
+        }, 1500)
+        // uni.showToast({
+        //   title: this.language.text185,
+        //   image: '/static/img/mine/success.png',
+        //   mask: true,
+        //   duration: 3000,
+        //   complete: () => {
+        //     setTimeout(() => {
+        //       uni.redirectTo({
+        //         url: `./transactionDetails?data=${JSON.stringify(result)}`
+        //       })
+        //       eventChannel.emit('addRecordToSendList', result)
+        //     }, 1500)
+        //   }
+        // })
 
-						!otherToken && fee && (this.token.balance = this.token.balance - fee - usedAmount)
-				} else {
-					this.verifyTouchID = 3
-					this.showToast = true
-					this.toast.msg = this.language.text182
-					this.toast.icon = '/static/img/mine/fail.png'
-					setTimeout(() => {
-							this.showToast = false
-						}, 3000)
-						// uni.showToast({
-						//   title: this.language.text182,
-						//   image: '/static/img/mine/fail.png',
-						//   mask: true,
-						//   duration: 3000
-						// })
-						!otherToken && fee && (this.token.balance = this.token.balance - fee)
-				}
+        !otherToken && fee && (this.token.balance = this.token.balance - fee - usedAmount)
+      } else {
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text182
+        this.toast.icon = '/static/img/mine/fail.png'
+        setTimeout(() => {
+          this.showToast = false
+        }, 3000)
+        // uni.showToast({
+        //   title: this.language.text182,
+        //   image: '/static/img/mine/fail.png',
+        //   mask: true,
+        //   duration: 3000
+        // })
+        !otherToken && fee && (this.token.balance = this.token.balance - fee)
+      }
 
-				const wallet = this.$cache.get('_currentWallet')
+      const wallet = this.$cache.get('_currentWallet')
 
-				const tokenList = wallet.coinList
+      const tokenList = wallet.coinList
 
-				const tokenIndex = tokenList.findIndex(item => item.alias_name == this.token.alias_name)
+      const tokenIndex = tokenList.findIndex(item => item.alias_name == this.token.alias_name)
 
-				tokenList.splice(tokenIndex, 1, this.token)
+      tokenList.splice(tokenIndex, 1, this.token)
 
-				wallet.coinList = tokenList
+      wallet.coinList = tokenList
 
-				this.$cache.set('_currentWallet', wallet, 0)
+      this.$cache.set('_currentWallet', wallet, 0)
 
-				this.updateWalletList(wallet)
+      this.updateWalletList(wallet)
 
-				this.checkSuccess = 0
-			},
-			updateWalletList(wallet) {
-				const walletList = this.$cache.get('_walletList') || []
-				if (!wallet) return false
-				const walletIndex = walletList.findIndex(item => item.address === wallet.address)
-				if (walletIndex > -1) {
-					walletList.splice(walletIndex, 1)
-				}
-				walletList.unshift(wallet)
-				this.$cache.set('_walletList', walletList, 0)
-				return true
-			},
-		},
-		watch: {
-			modalPasswordIsShow: {
-				handler(val) {
-					if (!val) {
-						this.passwordCheck = false
-						this.payPassword = ''
-					}
-				}
-			}
-		}
-	}
+      this.checkSuccess = 0
+    },
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.unshift(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
+    },
+  },
+  watch: {
+    modalPasswordIsShow: {
+      handler(val) {
+        if (!val) {
+          this.passwordCheck = false
+          this.payPassword = ''
+        }
+      }
+    }
+  }
+}
 </script>
 <script lang="renderjs" module="render">
 	import {

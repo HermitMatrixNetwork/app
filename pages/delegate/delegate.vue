@@ -8,10 +8,10 @@
     <view class="main-top">
       <view class="validator">
         <view class="label">
-          <text>{{ language.text84 }}</text>
+          <text>{{ delegatorInfo.validator_name }}</text>
         </view>
         <view class="value">
-          <text>{{ delegatorInfo.validator_name }}</text>
+          <text>{{ delegatorInfo.operator_address }}</text>
         </view>
       </view>
       <view class="border"></view>
@@ -221,7 +221,7 @@ export default {
       this.showToast = false
     },
     closeModalPasswordIsShow() {
-			this.payPassword = ''
+      this.payPassword = ''
       this.modalPasswordIsShow = false
       if (this.touchId) {
         plus.fingerprint.cancel()
@@ -238,9 +238,9 @@ export default {
     sendAmountChange(val) {
       this.showAmountError = this.balance < this.formData.amount.amount ? true : false
     },
-		formatter(val) {
-			return val.replace(/[^\d.]/g,'')
-		},
+    formatter(val) {
+      return val.replace(/[^\d.]/g,'')
+    },
     hideModel() {
       this.modalPasswordIsShow = false
     },
@@ -353,7 +353,7 @@ export default {
         // })
         setTimeout(() => {
           uni.redirectTo({
-            url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
+            url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}&redirectUrl=/pages/delegate/index`
           })
         }, 1500)
       } else {

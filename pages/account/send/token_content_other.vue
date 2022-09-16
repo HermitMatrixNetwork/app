@@ -37,7 +37,7 @@
         <u-tabs :list="list" :is-scroll="false" @click="switchTabs" :current="listCurrentIndex">
         </u-tabs>
       </view>
-      <view v-if="token.showWarn || !token.view_key" class="no-data">
+      <view v-if="token.showWarn || !token.view_key" class="no-data" :style="{ height: scrollHeight }">
         <image class="no-img" src="@/static/img/noviewkey.png" />
         <view class="tip" style="text-align: center;">
           <text>{{ language.text114 }}</text>
@@ -46,10 +46,10 @@
 
       <custom-loading v-else-if="loading" class="loading"></custom-loading>
       <swiper v-else class="transaction_history_item" :current="listCurrentIndex" @change="switchSwiper"
-        style="height: 980rpx">
+        :style="{ height: scrollHeight }">
         <swiper-item v-for="(item,index) in list" :key="item.name" :item-id="index+''">
           <!-- @scrolltolower="loadMore(item.type)" -->
-          <scroll-view scroll-y class="scroll-container" style="height: 980rpx">
+          <scroll-view scroll-y class="scroll-container" :style="{ height: scrollHeight }">
             <template v-if="accountTransfer[item.type].length">
               <view class="list-item" v-for="(record, index) in accountTransfer[item.type]" :key="index"
                 @click="toRecordDetail(record)">
@@ -169,6 +169,9 @@ export default {
       callRenderTransationHistory: {},
       lockAmount: 0,
       callRenderLoadMore: 1,
+      mainTokenHeight: '0rpx',
+      navHeight: '0rpx',
+      systemBarHeight: '0rpx'
     }
   },
   async onLoad(options) {
@@ -191,8 +194,28 @@ export default {
       this.callRenderTransationHistory = this.token
       this.loading = true
     }
+    this.getSystemStatusHeight()
+    this.calculateHeight()
   },
   methods: {
+    getSystemStatusHeight() {
+      uni.getSystemInfo({
+        success: res => {
+          this.systemBarHeight = res.statusBarHeight
+        }
+      })
+    },
+    calculateHeight() {
+      const query = uni.createSelectorQuery().in(this)
+      query.select('.main_token').boundingClientRect(data => {
+        this.mainTokenHeight = data.height + 'px'
+      })
+      
+      query.select('.nav').boundingClientRect(data => {
+        this.navHeight = data.height + 'px'
+      })
+      query.exec()
+    },
     delayHandler() {
       this.callBalanceLoading++
     },
@@ -413,6 +436,13 @@ export default {
         float = float.substr(0, 6)
       }
       return int + '.' + (float || '000000')
+    }
+  },
+  computed: {
+    scrollHeight() {
+      const borderHeight = 16 + 32 + 'rpx'
+      const operation_btn = '180rpx'
+      return `calc(100vh - 112rpx - ${this.mainTokenHeight} - ${borderHeight} - ${operation_btn} - ${this.navHeight} - ${this.systemBarHeight + 'rpx'})`
     }
   }
 }
@@ -883,7 +913,7 @@ export default {
     align-items: center;
     font-size: 28rpx;
     color: #8397B1;
-		height: 740rpx;
+		// height: 740rpx;
 		padding: 0 64rpx;
 		
 

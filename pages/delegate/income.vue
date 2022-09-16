@@ -178,298 +178,303 @@
 </template>
 
 <script>
-  // https://secretjs.scrt.network/interfaces/MsgWithdrawDelegatorRewardParams
-  import InputTitle from '@/pages/account/send/components/Input-title.vue'
-  import {
+// https://secretjs.scrt.network/interfaces/MsgWithdrawDelegatorRewardParams
+import InputTitle from '@/pages/account/send/components/Input-title.vue'
+import {
+  sliceAddress
+} from '@/utils/filters.js'
+import mainCoin from '@/config/index.js'
+import WalletCrypto from '@/utils/walletCrypto.js'
+import verifyTouchID from './mixins/verifyTouchID.js'
+import language from './language/index.js'
+export default {
+  mixins: [verifyTouchID],
+  components: {
+    InputTitle
+  },
+  data() {
+    return {
+      language: language[this.$cache.get('_language')],
+      tokenUrl: '@/static/img/placeholder.jpeg',
+      currentWallet: this.$cache.get('_currentWallet'),
+      tokenName: 'GHM',
+      inputVal: '',
+      balance: 0,
+      receiveAddress: '', //接收地址
+      sendAmount: 123, //发送金额
+      payPassword: '', //资金密码
+      passwordCheck: false, //密码校验
+      submitPopupIsShow: false,
+      passwordEye: false,
+      modalPasswordIsShow: false,
+      userAddress: this.$cache.get('_currentWallet').address,
+      titleStyle: {
+        background: '#FFFFFF'
+      },
+      //发送金额样式
+      sendAmountStyle: {
+        height: '144rpx',
+        fontSize: '40rpx',
+        color: '#2C365A',
+        fontWeight: '500'
+      },
+      formData: {
+        delegatorAddress: this.$cache.get('_currentWallet').address,
+        validatorAddress: '',
+        gas: ''
+      },
+      amount: '100',
+      selData: '',
+      selectIndex: -1,
+      loading: false,
+      callWithdraw: 0,
+      callWithdrawAddress: 0,
+      mainCoin,
+      // 指纹验证
+      touchId: this.$cache.get('_touchId'),
+      showToast: false,
+      toast: {
+        icon: '/static/img/mine/loading.gif',
+        // msg: '失败次数超出限制，请稍后再设置',
+        msg: '失败次数超出限制，请切换其它方式验证'
+      },
+      verifyMethod: 'password',
+      verifyTouchErrorTip: '',
+    }
+  },
+  onLoad(options) {
+    if (this.touchId) this.verifyMethod = 'touchID'
+    const index = options.selectIndex
+
+    if (index > -1) {
+      this.selData = this.$cache.get('_delegateInfo').list[index]
+      this.balance = (this.selData.rewards.amount / mainCoin.delegateDecimals).toFixed(5)
+      this.selectIndex = index
+    }
+
+
+  },
+  onShow() {
+    const wallet = this.currentWallet
+    // if (!wallet.withdrawAddress) {
+    this.callWithdrawAddress = wallet.address
+    // } else {
+    //   this.$refs.addressInptval ? this.$refs.addressInptval.childValue = wallet.withdrawAddress : this.receiveAddress = wallet.withdrawAddress
+    // }
+  },
+  filters: {
     sliceAddress
-  } from '@/utils/filters.js'
-  import mainCoin from '@/config/index.js'
-  import WalletCrypto from '@/utils/walletCrypto.js'
-  import verifyTouchID from './mixins/verifyTouchID.js'
-  import language from './language/index.js'
-  export default {
-    mixins: [verifyTouchID],
-    components: {
-      InputTitle
+  },
+  methods: {
+    verifyTouchIDFail() {
+      this.showToast = false
     },
-    data() {
-      return {
-        language: language[this.$cache.get('_language')],
-        tokenUrl: '@/static/img/placeholder.jpeg',
-        currentWallet: this.$cache.get('_currentWallet'),
-        tokenName: 'GHM',
-        inputVal: '',
-        balance: 0,
-        receiveAddress: '', //接收地址
-        sendAmount: 123, //发送金额
-        payPassword: '', //资金密码
-        passwordCheck: false, //密码校验
-        submitPopupIsShow: false,
-        passwordEye: false,
-        modalPasswordIsShow: false,
-        userAddress: this.$cache.get('_currentWallet').address,
-        titleStyle: {
-          background: '#FFFFFF'
-        },
-        //发送金额样式
-        sendAmountStyle: {
-          height: '144rpx',
-          fontSize: '40rpx',
-          color: '#2C365A',
-          fontWeight: '500'
-        },
-        formData: {
-          delegatorAddress: this.$cache.get('_currentWallet').address,
-          validatorAddress: '',
-          gas: ''
-        },
-        amount: '100',
-        selData: '',
-        selectIndex: -1,
-        loading: false,
-        callWithdraw: 0,
-        callWithdrawAddress: 0,
-        mainCoin,
-        // 指纹验证
-        touchId: this.$cache.get('_touchId'),
-        showToast: false,
-        toast: {
-          icon: '/static/img/mine/loading.gif',
-          // msg: '失败次数超出限制，请稍后再设置',
-          msg: '失败次数超出限制，请切换其它方式验证'
-        },
-        verifyMethod: 'password',
-        verifyTouchErrorTip: '',
+    verifyTouchIDOverTime() {
+      this.showToast = false
+    },
+    closeModalPasswordIsShow() {
+      this.modalPasswordIsShow = false
+      if (this.touchId) {
+        plus.fingerprint.cancel()
       }
     },
-    onLoad(options) {
-      if (this.touchId) this.verifyMethod = 'touchID'
-      const index = options.selectIndex
+    changeVerifyMethod() {
+      this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password'
+      if (this.verifyMethod == 'touchID') {
+        this.verify()
+      } else {
+        plus.fingerprint.cancel()
+      }
+    },
+    hideModel() {
+      this.modalPasswordIsShow = false
+    },
+    verifyTouchIDSuccess() {
+      this.passwordCheck = false
+      this.formData.validatorAddress = this.selData.delegation.validatorAddress
+      this.callWithdraw = this.formData
+      this.loading = true
+      this.verifyTouchID = 3
+      this.showToast = true
+      this.toast.msg = `${this.language.text77}...`
+      this.toast.icon = '/static/img/mine/loading.gif'
+      // this.$nextTick(() => {
+      //   uni.showToast({
+      //     title: `${language.text77}...`,
+      //     icon: 'loading',
+      //     duration: 999999999
+      //   })          
+      // })
+    },
+    submitAgain() {
+      this.modalPasswordIsShow = true
+      // #ifdef APP-PLUS
+      if (this.touchId) {
+        this.verify()
+      }
+      // #endif
 
-      if (index > -1) {
-        this.selData = this.$cache.get('_delegateInfo').list[index]
-        this.balance = (this.selData.rewards.amount / mainCoin.delegateDecimals).toFixed(5)
-        this.selectIndex = index
+      // #ifndef APP-PLUS
+      this.touchId = 0
+      // #endif
+
+      this.submitPopupIsShow = false
+    },
+    toSetAddress() {
+      uni.navigateTo({
+        url: './setWithdrawAddress'
+      })
+    },
+    scanCode() { //扫码
+      uni.scanCode({
+        onlyFromCamera: false,
+        scanType: ['qrCode'],
+        success: (res) => {
+          this.receiveAddress = this.$refs.addressInptval.childValue = res.result
+        },
+      })
+    },
+    chooseAddress() {
+      uni.navigateTo({
+        url: './adres_book'
+      })
+    },
+    chooseToken() {
+      uni.navigateTo({
+        url: './token_list'
+      })
+    },
+    transferConfirm() { //转账确认
+      let verify = true
+
+      if (!this.selData) {
+        verify = false
+        this.$refs.notify.show('error', this.language.text106)
+      }
+      
+      if (!this.receiveAddress) {
+        verify = false
+        this.$refs.notify.show('error', this.language.text107)
       }
 
-
+      if (verify) {
+        this.submitPopupIsShow = true
+      }
     },
-    onShow() {
-      const wallet = this.currentWallet
-      // if (!wallet.withdrawAddress) {
-      this.callWithdrawAddress = wallet.address
-      // } else {
-      //   this.$refs.addressInptval ? this.$refs.addressInptval.childValue = wallet.withdrawAddress : this.receiveAddress = wallet.withdrawAddress
-      // }
-    },
-    filters: {
-      sliceAddress
-    },
-    methods: {
-      verifyTouchIDFail() {
-        this.showToast = false
-      },
-      verifyTouchIDOverTime() {
-        this.showToast = false
-      },
-      closeModalPasswordIsShow() {
-        this.modalPasswordIsShow = false
-        if (this.touchId) {
-          plus.fingerprint.cancel()
-        }
-      },
-      changeVerifyMethod() {
-        this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password'
-        if (this.verifyMethod == 'touchID') {
-          this.verify()
-        } else {
-          plus.fingerprint.cancel()
-        }
-      },
-      hideModel() {
-        this.modalPasswordIsShow = false
-      },
-      verifyTouchIDSuccess() {
+    passwordButton() {
+      const decode = WalletCrypto.decode(this.$cache.get('_currentWallet').password)
+      if (this.payPassword != decode) {
+        this.passwordCheck = true
+      } else {
         this.passwordCheck = false
         this.formData.validatorAddress = this.selData.delegation.validatorAddress
-        this.callWithdraw = this.formData
+        this.callWithdraw = this.formData // 调用render.sendToken
         this.loading = true
+        this.modalPasswordIsShow = false
         this.verifyTouchID = 3
         this.showToast = true
         this.toast.msg = `${this.language.text77}...`
         this.toast.icon = '/static/img/mine/loading.gif'
-        // this.$nextTick(() => {
-        //   uni.showToast({
-        //     title: `${language.text77}...`,
-        //     icon: 'loading',
-        //     duration: 999999999
-        //   })          
+        // uni.showToast({
+        //   title: `${language.text77}...`,
+        //   icon: 'loading',
+        //   mask: true,
+        //   duration: 999999999
         // })
-      },
-      submitAgain() {
-        this.modalPasswordIsShow = true
-        // #ifdef APP-PLUS
-        if (this.touchId) {
-          this.verify()
-        }
-        // #endif
-
-        // #ifndef APP-PLUS
-        this.touchId = 0
-        // #endif
-
-        this.submitPopupIsShow = false
-      },
-      toSetAddress() {
-        uni.navigateTo({
-          url: './setWithdrawAddress'
-        })
-      },
-      scanCode() { //扫码
-        uni.scanCode({
-          onlyFromCamera: false,
-          scanType: ['qrCode'],
-          success: (res) => {
-            this.receiveAddress = this.$refs.addressInptval.childValue = res.result
-          },
-        })
-      },
-      chooseAddress() {
-        uni.navigateTo({
-          url: './adres_book'
-        })
-      },
-      chooseToken() {
-        uni.navigateTo({
-          url: './token_list'
-        })
-      },
-      transferConfirm() { //转账确认
-        let verify = true
-
-        if (!this.selData) {
-          verify = false
-          this.$refs.notify.show('error', '委托节点不能为空')
-        }
-
-        if (verify) {
-          this.submitPopupIsShow = true
-        }
-      },
-      passwordButton() {
-        const decode = WalletCrypto.decode(this.$cache.get('_currentWallet').password)
-        if (this.payPassword != decode) {
-          this.passwordCheck = true
-        } else {
-          this.passwordCheck = false
-          this.formData.validatorAddress = this.selData.delegation.validatorAddress
-          this.callWithdraw = this.formData // 调用render.sendToken
-          this.loading = true
-          this.modalPasswordIsShow = false
-          this.verifyTouchID = 3
-          this.showToast = true
-          this.toast.msg = `${this.language.text77}...`
-          this.toast.icon = '/static/img/mine/loading.gif'
-          // uni.showToast({
-          //   title: `${language.text77}...`,
-          //   icon: 'loading',
-          //   mask: true,
-          //   duration: 999999999
-          // })
-        }
-      },
-      testAmount() {
-        // this.sendAmount = this.balance 
-      },
-      handlerWithdraw(res) {
-        this.callWithdraw = 0
-        this.loading = false
-        if (res.code == 0) {
-          this.$cache.set('_updateDelegateInfo', true, 0)
-          this.verifyTouchID = 3
-          this.showToast = true
-          this.toast.msg = `${this.language.text78}`
-          this.toast.icon = '/static/img/mine/success.png'
-          setTimeout(() => {
-            uni.redirectTo({
-              url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
-            })
-          }, 1500)
-          // uni.showToast({
-          //   title: `${language.text78}`,
-          //   image: '/static/img/mine/success.png',
-          //   mask: true,
-          //   duration: 3000,
-          //   complete: () => {
-          //     setTimeout(() => {
-          //       uni.redirectTo({
-          //         url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
-          //       })
-          //     }, 1500)
-          //   }
-          // })
-        } else {
-          this.verifyTouchID = 3
-          this.showToast = true
-          this.toast.msg = this.language.text79
-          this.toast.icon = '/static/img/mine/fail.png'
-          console.log(res)
-          setTimeout(() => {
-            this.showToast = false
-          }, 3000)
-          // uni.showToast({
-          //   title: `${language.text79}`,
-          //   image: '/static/img/mine/fail.png',
-          //   mask: true,
-          //   duration: 3000,
-          // })
-        }
-      },
-      handlerWithdrawAddress(res) {
-        this.callWithdrawAddress = 0
-        if (res.withdrawAddress) {
-          const wallet = this.currentWallet
-          wallet.withdrawAddress = res.withdrawAddress
-          // this.$refs.addressInptval.childValue = res.withdrawAddress
-          this.$refs.addressInptval ? this.$refs.addressInptval.childValue = res.withdrawAddress : this.receiveAddress =
-            res.withdrawAddress
-          this.$cache.set('_currentWallet', wallet, 0)
-          this.updateWalletList(wallet)
-        } else {
-          console.log('获取收益领取地址失败')
-        }
-      },
-      getMinersCost(val) {
-        this.formData.gas = val.amount
-      },
-      toAddressBook() {
-        uni.navigateTo({
-          url: '/pages/account/send/adres_book',
-          events: {
-            reciveAddress: (address) => {
-              this.$refs.addressInptval.childValue = address
-            }
-          }
-        })
-      },
-      selectNode(url) {
-        uni.redirectTo({
-          url
-        })
-      },
-      updateWalletList(wallet) {
-        const walletList = this.$cache.get('_walletList') || []
-        if (!wallet) return false
-        const walletIndex = walletList.findIndex(item => item.address === wallet.address)
-        if (walletIndex > -1) {
-          walletList.splice(walletIndex, 1)
-        }
-        walletList.unshift(wallet)
-        this.$cache.set('_walletList', walletList, 0)
-        return true
       }
     },
-  }
+    testAmount() {
+      // this.sendAmount = this.balance 
+    },
+    handlerWithdraw(res) {
+      this.callWithdraw = 0
+      this.loading = false
+      if (res.code == 0) {
+        this.$cache.set('_updateDelegateInfo', true, 0)
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = `${this.language.text78}`
+        this.toast.icon = '/static/img/mine/success.png'
+        setTimeout(() => {
+          uni.redirectTo({
+            url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
+          })
+        }, 1500)
+        // uni.showToast({
+        //   title: `${language.text78}`,
+        //   image: '/static/img/mine/success.png',
+        //   mask: true,
+        //   duration: 3000,
+        //   complete: () => {
+        //     setTimeout(() => {
+        //       uni.redirectTo({
+        //         url: `/pages/account/send/transactionDetails?data=${JSON.stringify(res)}`
+        //       })
+        //     }, 1500)
+        //   }
+        // })
+      } else {
+        this.verifyTouchID = 3
+        this.showToast = true
+        this.toast.msg = this.language.text79
+        this.toast.icon = '/static/img/mine/fail.png'
+        console.log(res)
+        setTimeout(() => {
+          this.showToast = false
+        }, 3000)
+        // uni.showToast({
+        //   title: `${language.text79}`,
+        //   image: '/static/img/mine/fail.png',
+        //   mask: true,
+        //   duration: 3000,
+        // })
+      }
+    },
+    handlerWithdrawAddress(res) {
+      this.callWithdrawAddress = 0
+      if (res.withdrawAddress) {
+        const wallet = this.currentWallet
+        wallet.withdrawAddress = res.withdrawAddress
+        // this.$refs.addressInptval.childValue = res.withdrawAddress
+        this.$refs.addressInptval ? this.$refs.addressInptval.childValue = res.withdrawAddress : this.receiveAddress =
+            res.withdrawAddress
+        this.$cache.set('_currentWallet', wallet, 0)
+        this.updateWalletList(wallet)
+      } else {
+        console.log('获取收益领取地址失败')
+      }
+    },
+    getMinersCost(val) {
+      this.formData.gas = val.amount
+    },
+    toAddressBook() {
+      uni.navigateTo({
+        url: '/pages/account/send/adres_book',
+        events: {
+          reciveAddress: (address) => {
+            this.$refs.addressInptval.childValue = address
+          }
+        }
+      })
+    },
+    selectNode(url) {
+      uni.redirectTo({
+        url
+      })
+    },
+    updateWalletList(wallet) {
+      const walletList = this.$cache.get('_walletList') || []
+      if (!wallet) return false
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
+      if (walletIndex > -1) {
+        walletList.splice(walletIndex, 1)
+      }
+      walletList.unshift(wallet)
+      this.$cache.set('_walletList', walletList, 0)
+      return true
+    }
+  },
+}
 </script>
 
 <script lang="renderjs" module="render">

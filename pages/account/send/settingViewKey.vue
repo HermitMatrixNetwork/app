@@ -126,6 +126,7 @@ import InputTitle from './components/Input-title.vue'
 import WalletCrypto from '@/utils/walletCrypto.js'
 import Submitbtn from './components/submit-btn.vue'
 import verifyTouchID from '../mixins/verifyTouchID.js'
+import { getRamNumber } from '@/utils/index.js'
 import language from '../language/index.js'
 export default {
   mixins: [verifyTouchID],
@@ -168,6 +169,9 @@ export default {
     if (this.touchId) this.verifyMethod = 'touchID'
     this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
     Object.assign(this.formData, this.token)
+    if (!this.token.view_key) {
+      this.formData.view_key = getRamNumber()
+    }
   },
   methods: {
     verifyTouchIDFail() {
@@ -178,7 +182,7 @@ export default {
     },
     closeModalPasswordIsShow() {
       this.modalPasswordIsShow = false
-			this.payPassword = ''
+      this.payPassword = ''
       if (this.touchId) {
         plus.fingerprint.cancel()
       }
@@ -254,7 +258,7 @@ export default {
       }
     },
     close() {
-			console.log('close');
+      console.log('close')
       this.passwordCheck = false
       this.payPassword = ''
     },

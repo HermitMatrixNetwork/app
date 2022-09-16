@@ -193,7 +193,6 @@ export default {
   computed: {
     showList() {
       let validatorsList = [] 
-      let descList = []
       let ascList = []
       switch(this.status) {
       case 0: 
@@ -231,9 +230,7 @@ export default {
         break
       }
       
-      descList = ascList.reverse()
-
-      return this.sortRule == 'asc' ? ascList : descList
+      return this.sortRule == 'asc' ? ascList : ascList.reverse()
     }
   }
 }

@@ -111,7 +111,8 @@ const languages = {
     text103: '复制成功',
     text104: '节点名称',
     text105: '委托数量不能为空',
-    text106: '委托节点不能为空'
+    text106: '委托节点不能为空',
+    text107: '收益领取地址不能为空'
 
   },
   'CT': {
@@ -225,7 +226,8 @@ const languages = {
     text103: 'Copy successfully!',
     text104: 'Node Name',
     text105: 'Entrusted quantity cannot be empty',
-    text106: 'The delegation node cannot be empty'
+    text106: 'The delegation node cannot be empty',
+    text107: 'The income receiving address cannot be blank'
   }
 }
 export default languages
