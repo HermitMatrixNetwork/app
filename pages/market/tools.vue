@@ -1,10 +1,10 @@
 <template>
   <view>
-    <custom-header :title="language.text08"></custom-header>
+    <custom-header :title="language.text09"></custom-header>
     <view class="border"></view>
 
     <view class="list">
-      <view class="content" v-for="(item, index) in recently" :key="index" @click="toWebView(item)">
+      <view class="content" v-for="(item, index) in tools" :key="index" @click="toWebView(item)">
         <view class="item">
           <view class="logo">
             <image src="/static/img/account/uGHM.png"></image>
@@ -31,16 +31,15 @@ import language from './language/index.js'
 export default {
   data() {
     return {
-      recently: [],
+      tools: [],
       language: language[this.$cache.get('_language')]
     }
   },
   created() {
-    this.recently = this.$cache.get('_recently')
+    this.tools = this.$cache.get('_tools')
   },
   methods: {
     toWebView(item) { // Tools
-      console.log('fire', item)
       uni.navigateTo({
         url: `./webview?jumpUrl=${item.url}`
       })

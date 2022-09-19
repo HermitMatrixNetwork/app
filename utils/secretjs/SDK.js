@@ -199,7 +199,7 @@ export async function getUnbondingDelegationRecord(address) {
   return result
 }
 
-export async function setViewKey(data, gas) {
+export async function setViewKey(data, gas, gasPrice) {
   let Secret = await getSecret()
   let codeHash = data.codeHash
   if (!data.codeHash) {
@@ -213,8 +213,9 @@ export async function setViewKey(data, gas) {
       msg: { set_viewing_key: { key: data.view_key } }
     }
     , {
-      gasPriceInFeeDenom: gas,
-      feeDenom: 'ughm'
+      gasPriceInFeeDenom: gasPrice,
+      feeDenom: 'ughm',
+      gasLimit: gas
     })
   return result
 }

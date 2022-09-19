@@ -37,7 +37,8 @@
 		</view>
     <custom-updateApp tip :updating.sync="updating" :checking.sync="checking" :latestVersion.sync="latestVersion" ref="updateApp" />
 		<view class="Agreement">
-			<text style="color: #1e42ed;" @click="jump">《服务协议》</text>版权归 Hermit Wallet所有
+			<view style="color: #1e42ed;" @click="jump">《{{ language.text125 }}》</view>
+      <view>{{ language.text126 }}</view>
 		</view>
 	</view>
 </template>

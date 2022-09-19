@@ -128,7 +128,9 @@ export default {
     text122: '历史反馈',
     text123: '反馈详情',
     text124: '暂无反馈历史',
-    text125: '服务协议'
+    text125: '服务协议',
+    text126: '版权归 Hermit Wallet 所有',
+    text127: '最近更新于'
   },
   EN: {
     addressErrorTipDuplicate: '钱包地址已存在，请勿重复添加',
@@ -259,7 +261,9 @@ export default {
     text122: 'Historical feedback',
     text123: 'Feedback details',
     text124: 'There is no feedback history.',
-    text125: 'Service agreement'
+    text125: 'Service agreement',
+    text126: 'Copyright by Hermit Wallet',
+    text127: 'Last updated on'
   },
   CT: {}
 }

@@ -73,7 +73,7 @@
       </view>
       
       <view class="main-bottom">
-      	<miners-column @getMinersCost="getMinersCost"></miners-column>
+      	<miners-column @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
       
       	<view class="submit-btn" @click="transferConfirm">
       		<Submitbtn>{{ language.text144 }}</Submitbtn>
@@ -310,8 +310,16 @@ export default {
     }
   },
   methods: {
+    getMinimumGas() {
+      this.$cache.set('_minimumGas', 0, 0)
+      const data = JSON.parse(JSON.stringify(this.sendFormData))
+      this.callSimulate = {}
+      this.$nextTick(() => {
+        this.callSimulate = data
+      })
+    },
     aaConfirm() {
-      this.callSimulate = this.sendFormData
+      this.callSimulate = JSON.parse(JSON.stringify(this.sendFormData)) 
       this.submitPopupIsShow = true 
       this.aa = false
     },
@@ -423,12 +431,14 @@ export default {
         .balance) {
         const quota = this.$cache.get('_quota')
         if (quota == null) {
-          this.callSimulate = this.sendFormData
+          this.feeLoading = true
+          this.callSimulate = JSON.parse(JSON.stringify(this.sendFormData))
           this.submitPopupIsShow = true
         } else if (Number(this.sendFormData.sendAmount) > Number(quota.amount)) {
           this.aa = true
         } else {
-          this.callSimulate = this.sendFormData
+          this.feeLoading = true
+          this.callSimulate = JSON.parse(JSON.stringify(this.sendFormData))
           this.submitPopupIsShow = true
         }
       }
@@ -574,6 +584,9 @@ export default {
     },
     handlerGas(res) {
       this.feeLoading = false
+      if (!res.code) {
+        this.$cache.set('_minimumGas', res, 0)
+      }
       if (res.code || this.isCustomFess) return
       this.sendFormData.gas = res
     },
@@ -825,13 +838,10 @@ export default {
 
 	.main-bottom {
 		width: 100%;
-		height: 612rpx;
 		background: #F4F6FA;
-		// position: absolute;
-		// bottom: 0;
 
 		.submit-btn {
-			margin: 48rpx 64rpx 0;
+			margin: 96rpx 64rpx 0;
 			// position: fixed;
 			// bottom: var(--window-bottom);
 			// bottom: 30rpx;
@@ -951,7 +961,6 @@ export default {
 		font-size: 24rpx;
 		color: #EC2828;
 		letter-spacing: 0;
-		position: absolute;
 	}
 
 	/deep/ .u-popup__content {
@@ -1250,7 +1259,8 @@ export default {
 	}
   
   .container {
-    // height: calc(100vh - 112rpx - var(--status-bar-height));
+    height: calc(100vh - 112rpx - var(--status-bar-height));
+    // height: 100vh;
     overflow-y: scroll;
   }
 </style>

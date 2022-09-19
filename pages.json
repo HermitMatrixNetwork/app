@@ -1,5 +1,15 @@
 {
-  "pages": [{
+  "pages": [
+    // {
+    //     "path" : "pages/lauchPage/lauchPage",
+    //     "style" :                                                                                    
+    //     {
+    //         "navigationBarTitleText": "",
+    //         "enablePullDownRefresh": false
+    //     }
+        
+    // },
+    {
       "path": "pages/index/index",
       "style": {
         "navigationBarTitleText": "钱包首页"
@@ -144,7 +154,7 @@
       "path": "pages/market/index",
       "style": {
         "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
+        "enablePullDownRefresh": true
       }
     },
     {
@@ -497,6 +507,15 @@
         }
         ,{
             "path" : "pages/mine/guanyu/userAgreement",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/market/tools",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",

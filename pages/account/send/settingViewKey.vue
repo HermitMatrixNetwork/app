@@ -1,5 +1,6 @@
 <template>
   <view class="container">
+    <view :callSimulate="callSimulate" :change:callSimulate="render.simulateFee"></view>
     <view class="mask" v-show="loading"></view>
     <custom-header :title="language.text104" style="background-color: #fff;"></custom-header>
     <view class="perform_contract" style="background-color: #fff;">
@@ -15,7 +16,7 @@
       <InputTitle title="Memo" isBlod :placeholder="language.text106" :inputVal.sync="formData.memo"></InputTitle>
     </view>
 
-    <miners-column @getMinersCost="getMinersCost"></miners-column>
+    <miners-column @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
     <view style="height: 40rpx;background: #fff;" />
 
     <view class="submit-button">
@@ -60,9 +61,10 @@
             <view class="label">
               {{ language.text111 }}
             </view>
-            <view class="value">
-              25000 * {{ formData.gas }} GHM
-              <view class="price">{{ 25000 * formData.gas }} GHM</view>
+            <custom-loading v-if="feeLoading"></custom-loading>
+            <view v-else class="value">
+              {{ formData.gas }} * {{ formData.gasPrice }} ughm
+              <view class="price">{{ totalGas }} GHM</view>
             </view>
           </view>
 
@@ -128,6 +130,8 @@ import Submitbtn from './components/submit-btn.vue'
 import verifyTouchID from '../mixins/verifyTouchID.js'
 import { getRamNumber } from '@/utils/index.js'
 import language from '../language/index.js'
+import decimal from 'decimal'
+import mainCoin from '@/config/index.js'
 export default {
   mixins: [verifyTouchID],
   components: {
@@ -140,6 +144,7 @@ export default {
       submitPopupIsShow: false,
       formData: {
         gas: '',
+        gasPrice: '',
         view_key: '',
         memo: '',
         contract_address: '',
@@ -163,6 +168,9 @@ export default {
       },
       verifyMethod: 'password',
       verifyTouchErrorTip: '',
+      isCustomFess: false,
+      feeLoading: true,
+      callSimulate: {},
     }
   },
   onLoad(options) {
@@ -231,7 +239,14 @@ export default {
       this.submitPopupIsShow = false
     },
     getMinersCost(val) {
-      this.formData.gas = val.amount
+      if (val.speed == this.language.text27) {
+        // this.sendFormData.gas = val.
+        this.formData.gas = val.minersGas
+        this.isCustomFess = true
+      } else {
+        this.isCustomFess = false
+      }
+      this.formData.gasPrice = val.amount
     },
     passwordButton() {
       // 通过校验
@@ -285,29 +300,6 @@ export default {
             url: `/pages/account/send/token_content_other?tokenID=${this.token.ID}`
           })
         }, 3000)
-        // uni.showToast({
-        //   title: `${this.language.text185}`,
-        //   image: '/static/img/mine/success.png',
-        //   mask: true,
-        //   duration: 3000,
-        //   complete: () => {
-        //     this.token.view_key = this.formData.view_key
-        //     this.token.loadingBalance = true
-        //     this.token.showWarn = false
-        //     const wallet = this.$cache.get('_currentWallet')
-        //     const coinList = wallet.coinList
-        //     const coinIndex = coinList.findIndex(item => item.ID == this.token.ID)
-        //     coinList.splice(coinIndex, 1, this.token)
-        //     wallet.coinList = coinList
-        //     this.$cache.set('_currentWallet', wallet, 0)
-        //     this.updateWalletList(wallet)
-        //     setTimeout(() => {
-        //       uni.reLaunch({
-        //         url: `/pages/account/send/token_content_other?tokenID=${this.token.ID}`
-        //       })
-        //     }, 2000)
-        //   }
-        // })
       } else {
         this.verifyTouchID = 3
         this.showToast = true
@@ -320,6 +312,8 @@ export default {
     },
     setViekey() {
       if (this.validate()) {
+        this.feeLoading = true
+        this.callSimulate = JSON.parse(JSON.stringify(this.formData))
         this.submitPopupIsShow = true
       }
     },
@@ -344,30 +338,80 @@ export default {
       walletList.unshift(wallet)
       this.$cache.set('_walletList', walletList, 0)
       return true
+    },
+    handlerGas(res) {
+      this.feeLoading = false
+      if (!res.code) {
+        this.$cache.set('_minimumGas', res, 0)
+      }
+      if (res.code || this.isCustomFess) return
+      this.formData.gas = res
+    },
+    getMinimumGas() {
+      this.$cache.set('_minimumGas', 0, 0)
+      const data = JSON.parse(JSON.stringify(this.formData))
+      this.callSimulate = {}
+      this.$nextTick(() => {
+        this.callSimulate = data
+      })
     }
-  }
+  },
+  computed: {
+    totalGas() {
+      return new decimal(this.formData.gas + '').mul(new decimal(this.formData.gasPrice)).div(new decimal(mainCoin.decimals)).toString()
+    }
+  },
 }
 </script>
 
 <script lang="renderjs" module="render">
   import {
-    setViewKey
+    setViewKey,
+    getSecret
   } from '@/utils/secretjs/SDK.js'
   import renderUtils from '@/utils/render.base.js'
   import mainCoin from '@/config/index.js'
+  import secretjs from '@/utils/secretjs/index.js'
   export default {
     methods: {
       async setViewkey(data) {
         if (data == 0) return
         let res = {}
         try {
-          let gas = data.gas * mainCoin.decimals
-          res = await setViewKey(data, gas)
+          res = await setViewKey(data, data.gas, data.gasPrice)
         } catch (e) {
           console.log(res, e)
           res.code = 7
         }
         renderUtils.runMethod(this._$id, 'handlerResult', res, this)
+      },
+      async simulateFee(val) {
+        if (!val.address) return
+        let res = {}
+        let codeHash
+        const Secret = await getSecret()
+        
+        try {
+          if (!val.codeHash) {
+            codeHash = await Secret.query.snip20.contractCodeHash(val.contract_address)
+          }
+
+          const msgExecuteContract = new secretjs.MsgExecuteContract({
+            sender: val.address,
+            contractAddress: val.contract_address,
+            codeHash,
+            msg: { set_viewing_key: { key: val.view_key } },
+            sentFunds: []
+          })
+          res = await Secret.tx.simulate([msgExecuteContract], {
+            feeDenom: 'ughm',
+          })
+          let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
+          renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
+        } catch (e) {
+          console.log(e);
+          res.code = 7
+        }
       }
     }
   }

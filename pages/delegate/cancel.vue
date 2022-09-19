@@ -68,7 +68,7 @@
           </view>
         </view>
       </view>
-      <miners-column @getMinersCost="getMinersCost"></miners-column>
+      <miners-column @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
       <view class="main-bottom">
         <view class="btn" @click="transferConfirm">
           {{ language.text20 }}
@@ -104,7 +104,7 @@
       
             <!--Memo-->
             <view class="memo_type">
-              <text>Meno</text>
+              <text>Memo</text>
               <text>{{ formData.memo }}</text>
             </view>
       
@@ -346,7 +346,8 @@ export default {
 
       if (verify) {
         this.formData.validatorAddress = this.selData.delegation.validatorAddress
-        this.callSimulate = this.formData
+        this.feeLoading = true
+        this.callSimulate = JSON.parse(JSON.stringify(this.formData))
         this.submitPopupIsShow = true
       }
 
@@ -450,9 +451,21 @@ export default {
     },
     handlerGas(res) {
       this.feeLoading = false
+      if (!res.code) {
+        this.$cache.set('_minimumGas', res, 0)
+      }
       if (res.code || this.isCustomFess) return
       this.formData.gas = res
     },
+    getMinimumGas() {
+      this.$cache.set('_minimumGas', 0, 0)
+      this.formData.validatorAddress = this.selData.delegation.validatorAddress
+      const data = JSON.parse(JSON.stringify(this.formData))
+      this.callSimulate = {}
+      this.$nextTick(() => {
+        this.callSimulate = data
+      })
+    }
   },
   computed: {
     totalGas() {
@@ -905,7 +918,7 @@ export default {
     // bottom: 64rpx;
     // left: 50%;
     // transform: translateX(-50%);
-    margin: 48rpx auto 0;
+    margin: 96rpx auto 0;
     width: 622rpx;
     height: 96rpx;
     border-radius: 16rpx;

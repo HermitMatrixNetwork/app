@@ -18,7 +18,7 @@
     </view>
 
 
-    <miners-column @getMinersCost="getMinersCost"></miners-column>
+    <miners-column @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
 
     <u-popup :show="submitPopupIsShow" @close="submitPopupIsShow=false" mode="bottom" round="16rpx"
       :safeAreaInsetBottom="true">
@@ -238,7 +238,8 @@ export default {
       if (!checkAddress(this.formData.withdrawAddress)) {
         this.showAddressErrorTip = true
       } else {
-        this.callSimulate = this.formData
+        this.feeLoading = true
+        this.callSimulate = JSON.parse(JSON.stringify(this.formData))
         this.showAddressErrorTip = false
         this.submitPopupIsShow = true
       }
@@ -322,9 +323,20 @@ export default {
     },
     handlerGas(res) {
       this.feeLoading = false
+      if (!res.code) {
+        this.$cache.set('_minimumGas', res, 0)
+      }
       if (res.code || this.isCustomFess) return
       this.formData.gas = res
     },
+    getMinimumGas() {
+      this.$cache.set('_minimumGas', 0, 0)
+      const data = JSON.parse(JSON.stringify(this.formData))
+      this.callSimulate = {}
+      this.$nextTick(() => {
+        this.callSimulate = data
+      })
+    }
   },
   computed: {
     totalGas() {

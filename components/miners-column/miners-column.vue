@@ -88,7 +88,7 @@ export default {
     costChoose(item, index) {
       if (index == 3 && this.selectedMiners == 3) {
         uni.navigateTo({
-          url: `/pages/account/send/custom_cost?data=${JSON.stringify(this.minersList[3])}&redirectUrl=${this.redirectUrl}`,
+          url: `/pages/account/send/custom_cost?data=${JSON.stringify(this.minersList[3])}&redirectUrl=${this.redirectUrl}&notQuery=true`,
           events: {
             someEvent: data => {
               data = Object.assign({
@@ -109,6 +109,7 @@ export default {
       }
     },
     addCustom() {
+      this.$emit('getMinimumGas')
       uni.navigateTo({
         url: `/pages/account/send/custom_cost?redirectUrl=${this.redirectUrl}`,
         events: {

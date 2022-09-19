@@ -45,7 +45,7 @@
         </view>
       </view>
     </view>
-    <miners-column @getMinersCost="getMinersCost" :redirectUrl="redirectUrl" :minusIndex="minusIndex" :customData="minusData"></miners-column>
+    <miners-column @getMinersCost="getMinersCost" :redirectUrl="redirectUrl" :minusIndex="minusIndex" :customData="minusData" @getMinimumGas="getMinimumGas"></miners-column>
     <view class="main-bottom">
       <view class="btn" @click="transferConfirm">
         {{ language.text68 }}
@@ -154,8 +154,9 @@ import WalletCrypto from '@/utils/walletCrypto.js'
 import verifyTouchID from './mixins/verifyTouchID.js'
 import language from './language/index.js'
 import decimal from 'decimal'
+import reflsh from '@/utils/reflesh.js'
 export default {
-  mixins: [verifyTouchID],
+  mixins: [verifyTouchID, reflsh],
   components: {
     InputTitle
   },
@@ -345,7 +346,8 @@ export default {
       }
 
       if (verify) {
-        this.callSimulate = this.formData
+        this.feeLoading = true
+        this.callSimulate = JSON.parse(JSON.stringify(this.formData))
         this.submitPopupIsShow = true
       }
     },
@@ -432,8 +434,19 @@ export default {
     },
     handlerGas(res) {
       this.feeLoading = false
+      if (!res.code) {
+        this.$cache.set('_minimumGas', res, 0)
+      }
       if (res.code || this.isCustomFess) return
       this.formData.gas = res
+    },
+    getMinimumGas() {
+      this.$cache.set('_minimumGas', 0, 0)
+      const data = JSON.parse(JSON.stringify(this.formData))
+      this.callSimulate = {}
+      this.$nextTick(() => {
+        this.callSimulate = data
+      })
     }
   },
   computed: {

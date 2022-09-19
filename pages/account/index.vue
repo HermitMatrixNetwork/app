@@ -109,8 +109,9 @@ import SwitchWallet from '@/pages/walletManager/switchWallet.vue'
 import TokenColumn from './send/components/TokenColumn.vue'
 import languages from './language'
 import mixin from './mixins/index.js'
+import reflsh from '@/utils/reflesh.js'
 export default {
-  mixins: [mixin],
+  mixins: [mixin, reflsh],
   components: {
     TokenColumn,
     SwitchWallet

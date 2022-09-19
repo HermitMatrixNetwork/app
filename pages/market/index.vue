@@ -1,23 +1,26 @@
 <template>
   <view class="market">
-    <view class="status_bar">
-      <!-- APP下会占用系统原生消息因此需要该占位符 -->
-    </view>
-    <view class="header">
-      <u-search :showAction="false" :placeholder="language.text02" shape="round" :clearabled="true" v-model="searchVal" @search="search" searchIcon="/static/img/delegate/search2.png"></u-search>
+    <view class="page-header">
+      <view class="status_bar">
+        <!-- APP下会占用系统原生消息因此需要该占位符 -->
+      </view>
+      <view class="header">
+        <u-search :showAction="false" :placeholder="language.text02" shape="round" :clearabled="true" v-model="searchVal"
+          @search="search" searchIcon="/static/img/delegate/search2.png"></u-search>
+      </view>
     </view>
     <view class="container">
       <view class="banner-wrap">
         <view class="uni-margin-wrap">
-          <swiper class="swiper" circular :indicator-dots="indicatorDots" :indicator-color="'rgba(255,255,255,0.55)'" :indicator-active-color="'#fff'" :autoplay="autoplay" :interval="interval"
-            :duration="duration">
+          <swiper class="swiper" circular :indicator-dots="indicatorDots" :indicator-color="'rgba(255,255,255,0.55)'"
+            :indicator-active-color="'#fff'" :autoplay="autoplay" :interval="interval" :duration="duration" :current="current">
             <swiper-item v-for="(item, index) in bannerList" :key="index" @click="jump(item.link)">
-              <image class="swiper-item" :src="item.url" style="width: 100%"/>
+              <image class="swiper-item" :src="item.url" style="width: 100%" />
             </swiper-item>
           </swiper>
         </view>
       </view>
-      
+
       <view class="recently">
         <view class="heade">
           <view class="left">{{ language.text03 }}</view>
@@ -33,16 +36,16 @@
           </view>
         </view>
       </view>
-      
+
       <view class="tools">
         <view class="heade">
           <view class="left">Tools</view>
-          <view class="right">
+          <view class="right"  @click="toTools">
             <text>{{ language.text04 }}</text>
             <image src="/static/img/ic-arrow1.png"></image>
           </view>
         </view>
-        <view class="content" v-for="(item, index) in list" :key="index" @click="toWebView(item)">
+        <view class="content" v-for="(item, index) in tools" :key="index" @click="toWebView(item)">
           <view class="logo">
             <image :src="item.logo"></image>
           </view>
@@ -76,7 +79,7 @@
           <image src="/static/img/gamefi.png" style="width: 686rpx;height: 240rpx;;"></image>
         </view>
       </view>
-      
+
     </view>
 
     <tab-bar :current-page="1" />
@@ -85,21 +88,23 @@
 
 <script>
 import language from './language/index.js'
-import { getBannerList } from '@/api/token.js'
+import {
+  getBannerList
+} from '@/api/token.js'
 export default {
   data() {
     return {
       language: language[this.$cache.get('_language')],
-      list: [{
+      tools: [{
         name: '区块浏览器',
         des: '这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器',
-        url: '',
+        url: 'http://158.247.237.78/home',
         logo: '/static/img/account/uGHM.png'
       }],
       recently: [{
         name: '区块浏览器',
         des: '这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器',
-        url: '',
+        url: 'http://158.247.237.78/home',
         logo: '/static/img/account/uGHM.png'
       }],
       bannerList: [],
@@ -113,13 +118,18 @@ export default {
         fontSize: '28rpx',
         color: '#275EF1'
       },
+      current: 0
     }
   },
   async created() {
     this.recently = this.$cache.get('_recently') || this.recently
     this.$cache.set('_recently', this.recently, 0)
+    
+    this.tools = this.$cache.get('_tools') || this.tools
+    this.$cache.set('_tools', this.tools, 0)
     const res = (await getBannerList()).data.data.banner.photos.photos
     this.bannerList = res
+
   },
   methods: {
     toRecently() {
@@ -127,31 +137,57 @@ export default {
         url: './recently'
       })
     },
-    toWebView(item) {
+    toTools() {
       uni.navigateTo({
-        url: `./webview?jumpUrl=${'http://192.168.0.171:8888/'}`
+        url: './tools'
       })
     },
-    jump(link) {
+    toWebView(item) { // Tools
+      // todo 添加进最近访问列表
+      uni.navigateTo({
+        url: `./webview?jumpUrl=${item.url}`
+      })
+    },
+    jump(link) { // 轮播图
       uni.navigateTo({
         url: `./webview?jumpUrl=${link}`
       })
     },
     search() {}
-  }
+  },
+  async onPullDownRefresh() {
+    const res = (await getBannerList()).data.data.banner.photos.photos
+    this.bannerList = res
+    this.current = 0
+    setTimeout(function() {
+      uni.stopPullDownRefresh()
+    }, 1000)
+  },
 }
 </script>
 
 
 <style lang="scss" scoped>
+  .page-header {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    z-index: 999999999999999999999;
+  }
+  
   .status_bar {
     height: var(--status-bar-height);
     width: 100%;
+     background-color: #F4F6F9;
   }
 
   .market {
     height: 100vh;
+    padding-top: calc(112rpx + var(--status-bar-height));
+    // padding-bottom: calc( 120rpx + 56rpx);
     background-color: #F4F6F9;
+    // overflow-y: scroll;
+    // box-sizing: ;
   }
 
   .header {
@@ -285,42 +321,49 @@ export default {
       }
     }
   }
-  
-  	.uni-margin-wrap {
-  		width: 690rpx;
-  		width: 100%;
-  	}
-  	.swiper {
-  		height: 300rpx;
-      border-radius: 20rpx;
-      overflow: hidden;
 
-  	}
-  	.swiper-item {
-  		display: block;
-  		height: 300rpx;
-  		line-height: 300rpx;
-  		text-align: center;
-  	}
-  	.swiper-list {
-  		margin-top: 40rpx;
-  		margin-bottom: 0;
-  	}
-  	.uni-common-mt {
-  		margin-top: 60rpx;
-  		position: relative;
-  	}
-  	.info {
-  		position: absolute;
-  		right: 20rpx;
-  	}
-  	.uni-padding-wrap {
-  		width: 550rpx;
-  		padding: 0 100rpx;
-  	}
-    
-    .container {
-      height: calc(100vh - 112rpx - var(--status-bar-height) - 120rpx - 56rpx);
-      overflow-y: scroll;
-    }
+  .uni-margin-wrap {
+    width: 690rpx;
+    width: 100%;
+  }
+
+  .swiper {
+    height: 300rpx;
+    border-radius: 20rpx;
+    overflow: hidden;
+
+  }
+
+  .swiper-item {
+    display: block;
+    height: 300rpx;
+    line-height: 300rpx;
+    text-align: center;
+  }
+
+  .swiper-list {
+    margin-top: 40rpx;
+    margin-bottom: 0;
+  }
+
+  .uni-common-mt {
+    margin-top: 60rpx;
+    position: relative;
+  }
+
+  .info {
+    position: absolute;
+    right: 20rpx;
+  }
+
+  .uni-padding-wrap {
+    width: 550rpx;
+    padding: 0 100rpx;
+  }
+
+  .container {
+    // height: calc(100vh - 112rpx - var(--status-bar-height) - 120rpx - 56rpx);
+    // overflow-y: scroll;
+    padding-bottom: calc( 120rpx + 56rpx);
+  }
 </style>

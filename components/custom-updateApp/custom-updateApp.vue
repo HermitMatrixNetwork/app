@@ -3,7 +3,7 @@
     <!-- <image src='/static/icon/update_logo.png'/> -->
     <view class="image"></view>
     <view class="title">
-      <text>V{{ version }}{{ language.text83 }}</text>
+      <text>V{{ version }} {{ language.text83 }}</text>
     </view>
 
     <view class="describe">
@@ -13,9 +13,8 @@
       <u-line-progress v-else :percentage="progress" showText />
     </view>
 
-    <view class="control">
-      <u-button class="cancel" @click="cancel">{{ language.text84 }}</u-button>
-      <u-button class="upgrade" @click="upgrade">{{ language.text85 }}</u-button>
+    <view class="control" v-if="!upgrading">
+      <u-button  class="upgrade" @click="upgrade">{{ language.text85 }}</u-button>
     </view>
   </view>
   <view v-else></view>
@@ -36,6 +35,7 @@ export default {
       downloading: false,
       show: false,
       progress: 0,
+      upgrading: false
     }
   },
   props: {
@@ -68,7 +68,7 @@ export default {
           versionCode, 
           version
         } = inf
-        // res.version = '100' @latest
+        // res.version = '900'//  @latest
         if (Number(versionCode) >= Number(res.version)) {
           if (this.tip) {
             this.$emit('update:latestVersion', version)
@@ -83,7 +83,7 @@ export default {
           versionCode, 
           version
         } = inf
-        // res.version = '100'  @latest
+        // res.version = '900' // @latest
         if (Number(versionCode) >= Number(res.version)) {
           if (this.tip) {
             this.$emit('update:latestVersion', version)
@@ -106,9 +106,11 @@ export default {
     },
     cancel() {
       this.$emit('update:updating', false)
+      plus.downloader.clear()
       this.show = false
     },
     async upgrade() {
+      this.upgrading = true
       // #ifdef APP-PLUS
 
       let lastProgressValue = 0

@@ -1,5 +1,6 @@
 <template>
   <view>
+<!--    <web-view :src="jumpUrl"></web-view> -->
   </view>
 </template>
 

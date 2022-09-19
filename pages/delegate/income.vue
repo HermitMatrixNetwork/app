@@ -81,7 +81,7 @@
     </view>
 
     <view class="main-bottom">
-      <miners-column @getMinersCost="getMinersCost"></miners-column>
+      <miners-column @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
 
       <view class="btn" @click="transferConfirm">
         {{ language.text20 }}
@@ -367,7 +367,8 @@ export default {
 
       if (verify) {
         this.formData.validatorAddress = this.selData.delegation.validatorAddress
-        this.callSimulate = this.formData // 调用render.sendToken
+        this.feeLoading = true
+        this.callSimulate = JSON.parse(JSON.stringify(this.formData))
         this.submitPopupIsShow = true
       }
     },
@@ -493,9 +494,21 @@ export default {
     },
     handlerGas(res) {
       this.feeLoading = false
+      if (!res.code) {
+        this.$cache.set('_minimumGas', res, 0)
+      }
       if (res.code || this.isCustomFess) return
       this.formData.gas = res
     },
+    getMinimumGas() {
+      this.$cache.set('_minimumGas', 0, 0)
+      this.formData.validatorAddress = this.selData.delegation.validatorAddress
+      const data = JSON.parse(JSON.stringify(this.formData))
+      this.callSimulate = {}
+      this.$nextTick(() => {
+        this.callSimulate = data
+      })
+    }
   },
   computed: {
     totalGas() {

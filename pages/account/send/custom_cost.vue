@@ -12,8 +12,9 @@
 			<view :style="{ opacity : waringIsShow ?  1 : 0}" class="waringPrompt">{{ language.text34 }}</view>
 			<!-- Gas -->
 			<view class="Gas_num">
-				<InputTitle :title="'Gas Limit'" :type="'number'" :placeholder="'Gas'" :inputVal.sync="minersGas">
+				<InputTitle :disabled="minimumGas == 0" :title="'Gas Limit'" :type="'number'" :placeholder="'Gas'" :inputVal.sync="minersGas" ref="gas">
 				</InputTitle>
+        <view :style="{ opacity : showGasError ?  1 : 0}" class="waringPrompt">{{ language.text228 }} ({{ minimumGas }})</view>
 			</view>
 		</view>
 		<view class="bottom-btn">
@@ -35,10 +36,12 @@ export default {
     return {
       amount: '',
       minersGas: '',
-      leastGas: 0.000000215,
+      leastGas: 0.015,
       waringIsShow: false,
       language: language[this.$cache.get('_language')],
-      redirectUrl: ''
+      redirectUrl: '',
+      minimumGas: 0,
+      showGasError: false
     }
   },
   onLoad(options) {
@@ -48,12 +51,30 @@ export default {
       this.minersGas = data.minersGas
     } else {
       // this.minersGas = this.$cache.get('_MINERS_GAS')
-      this.minersGas = 20000
+      this.minersGas = 0
     }
     
     if (options.redirectUrl) {
       this.redirectUrl = options.redirectUrl
     }
+    
+    this.minimumGas = this.$cache.get('_minimumGas') || 0
+    if (this.minimumGas == 0) {
+      this.timer = setInterval(() => {
+        this.minimumGas = this.$cache.get('_minimumGas') || 0
+        if (this.minimumGas !== 0) {
+          this.minersGas = this.minimumGas
+          !options.notQuery && (this.$refs.gas.childValue = this.minersGas)
+          clearInterval(this.timer)
+        }
+      }, 1500)
+    } else {
+      !options.notQuery && (this.minersGas = this.minimumGas)
+    }
+
+  },
+  onUnload() {
+    clearInterval(this.timer)
   },
   watch: {
     amount(val) {
@@ -70,7 +91,7 @@ export default {
       this.redirectUrl = this.originRedirectUrl + `&minusIndex=3&minusData=${JSON.stringify({
         price: '0.00',
         demon: 'ughm',
-        time: `约 3 秒`,
+        time: '约 3 秒',
         amount: this.amount,
         minersGas: this.minersGas,
         speed: this.language.text27,
@@ -81,6 +102,12 @@ export default {
   methods: {
     submitCustom() {
       if (!(this.amount && this.minersGas)) return
+      
+      if (Number(this.minimumGas) > Number(this.minersGas) || this.minimumGas == 0) {
+        return this.showGasError = true
+      } else {
+        this.showGasError = false
+      }
       this.$cache.set('_MINERS_GAS', this.minersGas, 0)
       const eventChannel = this.getOpenerEventChannel()
       eventChannel.emit('someEvent', {
@@ -91,7 +118,7 @@ export default {
         this.redirectUrl = this.originRedirectUrl + `&minusIndex=3&minusData=${JSON.stringify({
           price: '0.00',
           demon: 'ughm',
-          time: `约 3 秒`,
+          time: '约 3 秒',
           amount: this.amount,
           minersGas: this.minersGas,
           speed: this.language.text27,

@@ -187,7 +187,7 @@ const languages = {
     'text160': '钱包移除后将无法恢复，请务必先完成备份再操作，否则资产丢失无法找回！',
     'text161': '取消',
     'text162': '确认',
-    'text163': '提示：钱包移除成功！',
+    'text163': '钱包移除成功！',
     'text164': '首页资产管理',
     'text165': '輸入合約地址查詢',
     'text166': '热门资产',
@@ -251,8 +251,8 @@ const languages = {
     text224: '明文私钥',
     text225: 'Keystore',
     text226: '不可转账给自己',
-    text227: '已全部加载完毕'
-		
+    text227: '已全部加载完毕',
+    text228: 'Gas过低，请输入有效GAS'
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -528,7 +528,8 @@ const languages = {
     text224: 'public key',
     text225: 'Keystore',
     text226: 'Cannot transfer to yourself',
-    text227: 'end'
+    text227: 'end',
+    text228: 'Gas is too low, please enter a valid GAS'
   }
 }
 export default languages
