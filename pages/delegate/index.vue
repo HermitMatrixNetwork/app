@@ -64,8 +64,14 @@ export default {
     width: 100%;
   }
   .delegate {
+    padding-top: calc(112rpx + 26rpx + var(--status-bar-height));
     .container {
       .top {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background-color: #fff;
+        height: 112rpx;
         display: flex;
         padding: 26rpx 32rpx;
         font-size: 40rpx;

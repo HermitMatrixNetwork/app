@@ -62,7 +62,7 @@ export default {
 <style lang="scss">
   .content {
     background-color: #F2F4F8;
-    width: 100vw;
+    padding-top: calc(112rpx + var(--status-bar-height));
     height: 100vh;
 
     .header {
@@ -71,7 +71,7 @@ export default {
 
     .import-container {
       width: 686rpx;
-      margin: 32rpx;
+      margin: 32rpx auto;
       background: #FFFFFF;
       border-radius: 16rpx;
     }

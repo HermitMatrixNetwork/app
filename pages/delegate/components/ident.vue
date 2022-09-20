@@ -56,7 +56,7 @@
 					<view class="list-item" v-for="(item,index) in showList" :key="index" @click="toValidatorDetail(item)">
 						<view class="left">
 							<view class="name">{{item.validator_name }}</view>
-							<view class="other">{{item.operatorAddress|sliceAddress(7, -8)}}</view>
+							<view class="other">{{item.operator_address|sliceAddress(7, -8)}}</view>
 						</view>
 						<view class="center">
 							{{ item.uptimes }}
@@ -165,6 +165,7 @@ export default {
           item.rate = item.commission_rate * 100 + '%'
           return item
         })
+        console.log(this.validators)
         this.$cache.set('_validators', this.validators, 0)
       } catch (e) {
         console.log('request errpr', e)

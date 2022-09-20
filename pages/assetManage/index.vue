@@ -1,6 +1,6 @@
 <template>
   <view class="asset-manage">
-    <custom-header tabUrl="/pages/account/index" :showRight="false">
+    <custom-header class="header" tabUrl="/pages/account/index" :showRight="false">
       <view slot="center" class="search">
         <u-search :placeholder="language.text165" shape="round" :clearabled="true" v-model="address"
           :showAction="false" @search="searchCoin" searchIcon="/static/img/delegate/search2.png"></u-search>
@@ -110,7 +110,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .header {
+    z-index: 9999;
+  }
   .asset-manage {
+    padding-top: calc(112rpx + var(--status-bar-height));
+    height: 100vh;
+      
     .search {
       width: 628rpx;
       margin: -16rpx 0 0 24rpx;

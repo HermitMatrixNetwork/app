@@ -429,7 +429,7 @@ export default {
   }
 
   .container {
-    height: 100vh;
+    padding-top: calc(112rpx + var(--status-bar-height));
     background-color: #F4F6FA;
   }
 
@@ -515,11 +515,7 @@ export default {
   }
 
   .submit-button {
-    width: 100%;
-    padding: 130rpx 64rpx 64rpx;
-    position: absolute;
-    bottom: 0;
-
+    margin: 96rpx 32rpx 0;
   }
 
   .btn {

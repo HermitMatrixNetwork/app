@@ -17,5 +17,13 @@ export default {
     'text27': 'customize',
     'text28': 'About'
   },
-  CT: {}
+  CT: {
+    'text22': '礦工費',
+    'text23': '快',
+    'text24': '推薦',
+    'text25': '慢',
+    'text26': '秒',
+    'text27': '自定義',
+    'text28': '約'
+  }
 }

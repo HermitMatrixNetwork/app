@@ -4,5 +4,8 @@ export default {
   },
   EN: {
     text01: 'No data yet'
+  },
+  CT: {
+    text01: '暫無數據'
   }
 }

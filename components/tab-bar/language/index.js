@@ -11,14 +11,19 @@ var languages = {
     'text04': '市场',
     'text07': '暂未开放'
   },
-  TC: {
+  CT: {
     asset: '資產',
     market: '市場',
     delegate: '',
     transaction: '交易',
     mine: '我的',
+    'text01': '資產',
+    'text02': '我的',
+    'text03': '交易',
+    'text04': '市場',
+    'text07': '暫未開放'
   },
-  EN:{
+  EN: {
     asset: '資產',
     market: '市場',
     delegate: '',

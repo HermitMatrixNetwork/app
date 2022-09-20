@@ -1,5 +1,5 @@
 <template>
-  <view>
+  <view class="page-wrapper">
     <custom-header></custom-header>
 
     <view class="logo">
@@ -52,6 +52,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .page-wrapper {
+    padding-top: calc(112rpx + var(--status-bar-height));
+  }
+  
   .logo {
     margin-top: 88rpx;
     margin-bottom: 102rpx;

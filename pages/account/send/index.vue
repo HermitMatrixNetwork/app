@@ -744,6 +744,7 @@ export default {
 		width: 100%;
 		height: 100%;
 		background: #F4F6FA;
+    padding-top: calc(112rpx + var(--status-bar-height));
 	}
 
 	.main-top {
@@ -841,12 +842,7 @@ export default {
 		background: #F4F6FA;
 
 		.submit-btn {
-			margin: 96rpx 64rpx 0;
-			// position: fixed;
-			// bottom: var(--window-bottom);
-			// bottom: 30rpx;
-			width: 622rpx;
-			// top: 24rpx;
+			margin: 96rpx 32rpx 48rpx;
 		}
 	}
 

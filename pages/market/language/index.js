@@ -21,5 +21,15 @@ export default {
     text08: 'Recently used',
     text09: 'Tools'
   },
-  CT: {}
+  CT: {
+    'text01': '應用',
+    'text02': '搜索DAPP或輸入鏈接訪問',
+    'text03': '最近',
+    'text04': '全部',
+    'text05': '最近使用',
+    'text06': '交易',
+    'text07': '暫未開放',
+    text08: '最近使用',
+    text09: 'Tools'
+  }
 }

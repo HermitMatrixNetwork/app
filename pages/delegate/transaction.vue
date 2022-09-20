@@ -53,6 +53,9 @@ export default {
 </script>
 
 <style  lang="scss" scoped>
+  .transtion {
+    padding-top: calc(112rpx + var(--status-bar-height));
+  }
 	.lists {
 		padding: 0 32rpx;
 	}

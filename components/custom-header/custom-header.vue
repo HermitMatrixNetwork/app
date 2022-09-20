@@ -1,5 +1,5 @@
 <template>
-  <view :style="customStyle">
+  <view :style="customStyle" class="page-header">
     <!-- 状态栏 -->
     <view class="status_bar">
       <!-- APP下会占用系统原生消息因此需要该占位符 -->
@@ -45,10 +45,10 @@ export default {
       type: String,
       default: ''
     },
-		relaunchUrl: {
-			type: String,
-			default: ''
-		},
+    relaunchUrl: {
+      type: String,
+      default: ''
+    },
     delay: Number,
     delayHandler: Function
   },
@@ -80,10 +80,10 @@ export default {
           url: this.redirUrl
         })
       } else if (this.relaunchUrl) {
-				uni.reLaunch({
-					url: this.relaunchUrl
-				})
-			} else {
+        uni.reLaunch({
+          url: this.relaunchUrl
+        })
+      } else {
         uni.navigateBack()
       }
     }
@@ -92,6 +92,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .page-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #fff;
+  }
   .status_bar {
     height: var(--status-bar-height);
     width: 100%;

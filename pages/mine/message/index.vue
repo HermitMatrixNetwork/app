@@ -98,7 +98,8 @@ export default {
     margin-top: 20rpx;
   }
 	.container {
-		height: 100vh;
+		padding-top: calc(112rpx + var(--status-bar-height));
+    min-height: 100vh;
 		background-color: #F4F6F9;
 	}
 

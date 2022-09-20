@@ -601,8 +601,7 @@ export default {
   }
 
   .sendPage {
-    height: 100vh;
-    overflow: hidden;
+    padding-top: calc(112rpx + var(--status-bar-height));
     background: #F4F6F9;
   }
 
@@ -667,10 +666,7 @@ export default {
 
   .main-bottom {
     width: 100%;
-    height: 612rpx;
     background: #F4F6FA;
-    // position: absolute;
-    // bottom: 0;
 
     .submit-btn {
       position: absolute;
@@ -910,11 +906,7 @@ export default {
   }
 
   .btn {
-    position: absolute;
-    bottom: 64rpx;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 622rpx;
+    margin: 96rpx 32rpx 48rpx;
     height: 96rpx;
     border-radius: 16rpx;
     background-color: #002FA7 !important;

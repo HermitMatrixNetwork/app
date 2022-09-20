@@ -12,10 +12,10 @@ export default {
       isTor: false,
       language: {
         CN: {
-          text01: '请开启洋葱代理服务器'
+          // text01: '请开启洋葱代理服务器'
         },
         EN: {
-          text01: 'Please open onion proxy server!'
+          // text01: 'Please open onion proxy server!'
         }
       }
     }
@@ -37,26 +37,7 @@ export default {
     let _appInit = this.$cache.get('_appInit')
     console.log('_appInit', _appInit)
     // #ifdef APP-PLUS
-    // 判断是否是被洋葱代理服务代理
-    this.isTor = await isTor()
-
-    if (!this.isTor) { // 非洋葱浏览器
-      console.log(1)
-      uni.showToast({
-        icon: 'none',
-        title: this.language[this.$cache.get('_language')].text01,
-        duration: 3000,
-      })
-      uni.reLaunch({
-        url: '/pages/index/index',
-        success: () => {
-          plus.navigator.closeSplashscreen()
-          setTimeout(() => {
-            plus.runtime.quit()
-          }, 3000)
-        }
-      })
-    } else if (this.$cache.get('_currentWallet') == null) { // 本地缓存没有钱包（直接进入首页）
+    if (this.$cache.get('_currentWallet') == null) { // 本地缓存没有钱包（直接进入首页）
       console.log(2)
       this.$cache.set('_agree_protocol', false, 0)
       uni.reLaunch({
@@ -104,34 +85,14 @@ export default {
             plus.navigator.closeSplashscreen()
           }
         })
-      } else {
-        console.log(page && page.route)
-        if (this.$cache.get('_currentWallet') !== null && !page) {
-          uni.reLaunch({
-            url: '/pages/account/index',
-            success: () => {
-              plus.navigator.closeSplashscreen()
-            }
-          })
-        }
-
-        this.isTor = await isTor()
-        if (!this.isTor) {
-          console.log(7)
-          uni.showToast({
-            title: this.language[this.$cache.get('_language')].text01,
-            icon: 'none'
-          })
-          uni.reLaunch({
-            url: '/pages/index/index',
-            success: () => {
-              plus.navigator.closeSplashscreen()
-              setTimeout(() => {
-                plus.runtime.quit()
-              }, 3000)
-            }
-          })
-        }
+      } else if (this.$cache.get('_currentWallet') !== null && !page) {
+        uni.reLaunch({
+          url: '/pages/account/index',
+          success: () => {
+            plus.navigator.closeSplashscreen()
+          }
+        })
+  
       }
       this.$cache.set('_appInit', 0, 0)
     }

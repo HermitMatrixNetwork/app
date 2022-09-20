@@ -52,7 +52,7 @@
             </view>
           </view>
         </view>
-        <no-data v-else :tip="language.text12" :btnTx="language.text64" @btnClick="btnClick" />
+        <no-data style="padding-bottom: calc( 120rpx + 56rpx);" v-else :tip="language.text12" :btnTx="language.text64" @btnClick="btnClick" />
       </view>
     </view>
   </view>

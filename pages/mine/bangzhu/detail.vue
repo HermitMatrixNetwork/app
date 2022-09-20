@@ -63,7 +63,8 @@ export default {
 
 <style lang="scss" scoped>
 	.container{
-		height: 100vh;
+    padding-top: calc(112rpx + var(--status-bar-height));
+		min-height: 100vh;
 	}
 	.header {
 		border-bottom: 2rpx solid #F4F6F9;

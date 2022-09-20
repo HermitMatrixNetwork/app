@@ -127,7 +127,8 @@ export default {
 
 <style lang="scss" scoped>
   .address_pages {
-    height: 100vh;
+    padding-top: calc(112rpx + var(--status-bar-height));
+    min-height: 100vh;
     background: #F4F6FA;
   }
 

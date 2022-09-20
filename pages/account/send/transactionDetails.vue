@@ -161,6 +161,14 @@ export default {
           'Memo': res.tx.body.memo,
           [this.language.text88]: res.transactionHash
         }
+      } else if (typeUrl.includes('MsgSetWithdrawAddress')) {
+        this.transactionMessage = {
+          [this.language.text92]: '0.00GHM',
+          [this.language.text111]: res.fee,
+          [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
+          [this.language.text94]: res.tx.body.messages[0].value.withdrawAddress,
+          [this.language.text88]: res.transactionHash
+        }
       }
       
       this.loading = false

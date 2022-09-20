@@ -51,6 +51,7 @@ export default {
 
 <style lang="scss" scoped>
 	.asset-manage {
+    padding-top: calc(112rpx + var(--status-bar-height));
 		.search {
 			width: 628rpx;
 			margin: -16rpx 0 0 24rpx;

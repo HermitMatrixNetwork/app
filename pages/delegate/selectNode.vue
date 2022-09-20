@@ -70,6 +70,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .select-node {
+    padding-top: calc(112rpx + var(--status-bar-height));
+  }
+  
 	.lists {
 		padding: 0 32rpx;
 		border-top: 2rpx solid rgba(131,151,177,0.20);

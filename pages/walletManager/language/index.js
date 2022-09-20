@@ -47,12 +47,25 @@ export default {
     text29: 'Keystore',
     text30: '加密的私钥 JSON',
     text31: '选择导入类型',
-		text32: '切换钱包'
-    
-    
+    text32: '切换钱包'
+
+
   },
   'CT': {
-
+    'text11': '添加錢包',
+    'text12': '創建錢包',
+    'text13': '導入錢包',
+    text02: '沒有錢包',
+    text04: '已有錢包',
+    text25: '助記詞',
+    text26: '由單詞組成，以空格隔開',
+    text27: '私鑰',
+    text28: '明文私鑰',
+    text29: 'Keystore',
+    text30: '加密的私鑰 JSON',
+    text31: '選擇導入類型',
+    text32: '切換錢包',
+    'hermitWalle': 'Hermit Wallet',
   },
   'EN': {
     'text11': 'Add wallet',
@@ -67,7 +80,7 @@ export default {
     text29: 'keystore',
     text30: 'Encrypted private key JSON',
     text31: 'Select import type',
-		text32: 'Switch wallets',
+    text32: 'Switch wallets',
     'hermitWalle': 'Hermit Wallet',
   }
 }

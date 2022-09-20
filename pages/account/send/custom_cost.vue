@@ -137,8 +137,7 @@ export default {
 
 <style lang="scss" scoped>
 	.custom_cost {
-		width: 100%;
-		height: 100%;
+    padding-top: calc(112rpx + var(--status-bar-height));
 		background: #FFFFFF;
 
 		.custom_main {

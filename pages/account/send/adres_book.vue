@@ -69,6 +69,7 @@ export default {
   }
 
 	.address-book {
+    padding-top: calc(112rpx + var(--status-bar-height));
 		width: 100%;
 		background: #FFFFFF;
 	}

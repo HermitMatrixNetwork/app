@@ -43,14 +43,14 @@ export default {
       language: language[this.$cache.get('_language')],
       wallet: this.$cache.get('_currentWallet'),
       showModal: false,
-			quota: {}
+      quota: {}
     }
   },
   created() {
-		this.quota = this.$cache.get('_quota') || {
-				amount: '0.00',
-				denom: 'GHM'
-			}
+    this.quota = this.$cache.get('_quota') || {
+      amount: '0.00',
+      denom: 'GHM'
+    }
   },
   filters: {
     amountFormat(val) {
@@ -64,7 +64,7 @@ export default {
     confirm(val) {
       if (val < 0) return
       this.quota.amount = val * 1
-			this.$cache.set('_quota', this.quota, 0)
+      this.$cache.set('_quota', this.quota, 0)
       this.showModal = false
       this.$refs.notify.show('', this.language.text30, { bgColor: ' #275EF1' })
     }
@@ -74,7 +74,8 @@ export default {
 
 <style lang="scss" scoped>
   .dae {
-    height: 100vh;
+    min-height: 100vh;
+    padding-top: calc(112rpx + var(--status-bar-height));
     background-color: #F4F6F9;
   }
 

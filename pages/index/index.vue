@@ -192,6 +192,7 @@ export default {
       &-import {
         height: 120rpx;
         margin-top: 40rpx;
+        margin-bottom: 40rpx;
         font-size: 32rpx;
         color: #2C365A;
         background-color: #F2F2F4;
@@ -222,7 +223,7 @@ export default {
     }
 
     &-content {
-      height: 1092rpx;
+      height: 60vh;
       margin: 0 16rpx;
       padding: 48rpx 48rpx 24rpx;
       word-break: break-all;

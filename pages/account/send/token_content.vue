@@ -74,7 +74,7 @@
                   </view>
                   <view class="right">
                     <view class="amount" :class="[`${record.type}-amount`]">
-                      {{ ['delegate', 'fail'].includes(record.type) ? '' : (record.plus ? '+' : '-') }}
+                      {{ ['delegate', 'fail', 'setWithdrawAddress'].includes(record.type) ? '' : (record.plus ? '+' : '-') }}
                       {{ record.amount }}
                     </view>
                     <view class="real-money">
@@ -288,7 +288,11 @@ export default {
           'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.delegate.page}`,
           `pagination.limit=${this.pagination.delegate.size}`
         ]),
-        txsQuery([`events=message.sender='${ this.address }'`, 'events=message.action=\'/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward\'',
+        // txsQuery([`events=message.sender='${ this.address }'`, 'events=message.action=\'/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward\'',
+        //   'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.withdraw.page}`,
+        //   `pagination.limit=${this.pagination.withdraw.size}`
+        // ]),
+        txsQuery([`events=message.sender='${ this.address }'`, 'events=message.module=\'distribution\'',
           'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.withdraw.page}`,
           `pagination.limit=${this.pagination.withdraw.size}`
         ]),
@@ -363,9 +367,14 @@ export default {
               item.type = 'delegate'
               break
             case 3:
+              const originType = item.tx.body.messages[0]['@type']
               item.icon = require(
                 '@/static/img/account/lingqu.png')
-              item.type = 'withdraw'
+              if (originType.includes('MsgSetWithdrawAddress')) {
+                item.type = 'setWithdrawAddress'
+              } else if (originType.includes('MsgWithdrawDelegatorReward')) {
+                item.type = 'withdraw'  
+              }
               item.raw_log.replace(/\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match, p1) => {
                 item.amount = p1 / mainCoin.decimals + mainCoin.alias_name
               })
@@ -468,7 +477,11 @@ export default {
           ])).data.tx_responses
           break
         case 'withdraw':
-          result = (await txsQuery([`events=message.sender='${ this.address }'`, 'events=message.action=\'/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward\'',
+          // result = (await txsQuery([`events=message.sender='${ this.address }'`, 'events=message.action=\'/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward\'',
+          //   'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.withdraw.page * this.pagination[type].size}`,
+          //   `pagination.limit=${this.pagination.withdraw.size}`
+          // ])).data.tx_responses
+          result = (await txsQuery([`events=message.sender='${ this.address }'`, 'events=message.module=\'distribution\'',
             'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.withdraw.page * this.pagination[type].size}`,
             `pagination.limit=${this.pagination.withdraw.size}`
           ])).data.tx_responses
@@ -535,16 +548,21 @@ export default {
               item.type = 'delegate'
               break
             case 'withdraw':
+              const originType = item.tx.body.messages[0]['@type']
               item.icon = require(
                 '@/static/img/account/lingqu.png')
-              item.type = 'withdraw'
               item.raw_log.replace(/\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match, p1) => {
                 item.amount = p1 / mainCoin.decimals + mainCoin.alias_name
               })
               item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
-                item.withdraw_aAddress = p1
+                item.withdraw_address = p1
               })
-              console.log(item)
+              if (originType.includes('MsgSetWithdrawAddress')) {
+                item.type = 'setWithdrawAddress'
+              } else if (originType.includes('MsgWithdrawDelegatorReward')) {
+                item.type = 'withdraw'  
+              }
+
               item.plus = item.withdraw_address == this.address ? true : false
               break
             }
@@ -705,8 +723,7 @@ export default {
   }
 
   .token_content {
-    height: 100vh;
-    overflow: hidden;
+    padding-top: calc(112rpx + var(--status-bar-height));
     background: #FFFFFF;
   }
 

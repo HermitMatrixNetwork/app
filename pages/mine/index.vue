@@ -1,6 +1,6 @@
 <template>
 	<view class="mine">
-		<custom-header :showGoBack="false" :title="language.text01" :customStyle="{ 'background-color': '#fff' }">
+		<custom-header :showGoBack="false" :title="language.text01" :customStyle="{ 'background-color': '#fff', 'z-index': 999 }">
 			<template slot="right">
 				<view class="header-icon" @click="toMessage">
 					<image src="@/static/img/mine/message.png"></image>
@@ -117,7 +117,7 @@ export default {
       messageNum: 0, //要显示的通知数量
       noNotice: false, //通知是否显示
       notices: 0, //本地存储中的通知数量
-			reflesh: false
+      reflesh: false
     }
   },
   onShow () {
@@ -126,15 +126,15 @@ export default {
   },
   methods: {
     toPage (position, index) {
-			if (this[position][index].page == './yuyan/index') {
-				uni.redirectTo({
-					url: './yuyan/index'
-				})
-			} else {
-				uni.navigateTo({
+      if (this[position][index].page == './yuyan/index') {
+        uni.redirectTo({
+          url: './yuyan/index'
+        })
+      } else {
+        uni.navigateTo({
 				  url: this[position][index].page,
-				})
-			}
+        })
+      }
 
     },
     toMessage () {
@@ -162,8 +162,9 @@ export default {
 
 <style lang="scss" scoped>
 .mine {
-	height: 100vh;
+  height: 100vh;
 	background-color: #F4F6F9;
+  padding-top: calc(112rpx + var(--status-bar-height));
 }
 
 .header-icon {
@@ -199,7 +200,8 @@ image {
 }
 
 .import-container {
-	margin: 32rpx 0;
+	margin: 32rpx 0 0;
+  padding-bottom: calc( 120rpx + 56rpx);
 }
 
 .import-type {

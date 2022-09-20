@@ -160,7 +160,7 @@ export default {
       this.callRender = this.formData
     },
     handerResult(res) {
-			let nodeList = this.$cache.get('_nodeList') || []
+      let nodeList = this.$cache.get('_nodeList') || []
       this.callRender = 0
       if (res.code == 7) {
         this.linkErrorTip = 0
@@ -225,7 +225,8 @@ export default {
 
 <style lang="scss" scoped>
   .container {
-    height: 100vh;
+    min-height: 100vh;
+    padding-top: calc(112rpx + var(--status-bar-height));
     background-color: #F4F6F9;
   }
 
