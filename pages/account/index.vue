@@ -10,7 +10,7 @@
       </view>
     
       <view class="header-icon">
-        <image src="/static/img/account/saoma.png" style="width:44rpx;height:44rpx;" @click="scanCode" />
+        <image src="/static/img/account/saoma2.png" style="width:44rpx;height:44rpx;" @click="scanCode" />
         <image src="/static/img/account/setting.png" style="width:44rpx;height:44rpx;" @click="toGo('/pages/walletManager/index')"></image>
       </view>
     </view>
@@ -66,7 +66,7 @@
         <u-tabs :list="coinList" lineColor="#2C365A" @click="click" :inactiveStyle="inactiveStyle"
           :activeStyle="activeStyle" lineWidth="20" lineHeight="3" :itemStyle="itemStyle" :current="currentIndex" class="coin-tabs">
           <view slot="right" style="padding-bottom: 8rpx">
-            <image src="/static/img/account/add.png" @click="toAsset" style="width: 48rpx;height: 48rpx;"></image>
+            <image src="/static/img/account/add3.png" @click="toAsset" style="width: 48rpx;height: 48rpx;"></image>
           </view>
         </u-tabs>
         <scroll-view v-if="visibaleTokenList.length" class="coinbox" scroll-y :style="{ height: scrollHeight }">
@@ -301,7 +301,10 @@ export default {
     },
     toAsset() {
       this.$nextTick(() => {
-        uni.redirectTo({
+        // uni.redirectTo({
+        //   url: '/pages/assetManage/index'
+        // })
+        uni.navigateTo({
           url: '/pages/assetManage/index'
         })
       })
@@ -491,8 +494,8 @@ export default {
     .header-icon {
       display: flex;
       align-items: center;
-      width: 120rpx;
-      justify-content: space-around;
+      width: 125rpx;
+      justify-content: space-between;
     }
   }
   

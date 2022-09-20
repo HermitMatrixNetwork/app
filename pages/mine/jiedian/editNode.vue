@@ -107,6 +107,14 @@ export default {
     this.formData = JSON.parse(options.node)
     this.nodeIndex = this.$cache.get('_nodeList').findIndex(item => item.link == this.formData.link)
   },
+  onBackPress(event) {
+    if (event.from == 'backbutton') {
+      uni.redirectTo({
+        url: './index'
+      })
+      return true
+    }
+  },
   methods: {
     removeNode() {
       const currentNode = getCurrentRpc()

@@ -109,6 +109,14 @@ export default {
     checkVerify() {
       this.callRender = this.formData
     }
+  },
+  onBackPress(event) {
+    if (event.from == 'backbutton') {
+      uni.redirectTo({
+        url: './index'
+      })
+      return true
+    }
   }
 }
 </script>

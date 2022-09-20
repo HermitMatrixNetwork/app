@@ -96,7 +96,7 @@ export default {
         this.showWalletDescribeErrorTip = false
       }
 
-      if (!this.showWalletDescribeErrorTip && !this.showWalletNameErrorTip && !this.showAddressErrorTipEmpty && !this.showAddressErrorTipDuplicate) {
+      if (!this.showWalletDescribeErrorTip && !this.showWalletNameErrorTip && !this.showAddressError) {
         addressBook.push({
           walletName: this.walletName,
           walletDescribe: this.walletDescribe,

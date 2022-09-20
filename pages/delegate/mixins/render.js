@@ -10,7 +10,6 @@ export default {
   methods: {
     async getLists(address) {
       let list = await getDelegatorDelegations(address)
-      console.log(list);
       for (let i = 0; i < list.length; i++) {
         let {
           delegatorAddress,

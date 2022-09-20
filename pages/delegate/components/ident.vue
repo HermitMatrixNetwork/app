@@ -133,6 +133,7 @@ export default {
   methods: {
     updateData() {
       console.log('indent update data')
+      this.currentWallet = this.$cache.get('_currentWallet')
       this.loading = true
       this.ValidatorsData()
       // this.address = this.currentWallet.address

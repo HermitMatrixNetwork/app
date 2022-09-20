@@ -121,7 +121,15 @@ export default {
         }
       })
     }
-  }
+  },
+  onBackPress(event) {
+    if (event.from == 'backbutton') {
+      uni.switchTab({
+        url: '/pages/delegate/index'
+      })
+      return true
+    }
+  },
 }
 </script>
 

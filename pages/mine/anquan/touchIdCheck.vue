@@ -1,6 +1,6 @@
 <template>
   <view class="touchId">
-    <view class="status_bar"></view>
+    <custom-header></custom-header>
     <view class="content">
       <view class="title">
         <text>{{ language.text34 }}</text>
@@ -202,6 +202,7 @@ export default {
   }
   .touchId {
     height: 100vh;
+    padding-top: calc(112rpx + var(--status-bar-height));
     background-color: #F4F6F9;
   }
 
