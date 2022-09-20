@@ -71,7 +71,7 @@ export default {
 
 <style lang="scss" scoped>
   .token-information {
-    height: 100vh;
+    padding-top: calc(112rpx + var(--status-bar-height));
     background-color: #F4F6F9;
   }
   

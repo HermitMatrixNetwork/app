@@ -9,7 +9,9 @@ const languages = {
   CT: {
     searchPlaceholder: '輸入合約地址查詢',
     homeAssets: '首頁資產管理',
-    hotAssets: '熱門資產'
+    hotAssets: '熱門資產',
+    text01: '未搜索到相關代幣',
+    text02: '支持所有 Hermit Matrix Network 代幣'
   },
   EN: {
     searchPlaceholder: '输入合约地址查询',

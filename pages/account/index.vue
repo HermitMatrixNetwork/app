@@ -3,21 +3,19 @@
     <view class="mask" v-show="updating"></view>
     <custom-updateApp :updating.sync="updating" checkImmediate />
     <!-- 钱包主页 -->
-    <view class="status_bar">
-      <!-- APP下会占用系统原生消息因此需要该占位符 -->
+    <view class="account-header">
+      <view class="header-left" @click="showSwitchWallet = true">
+        <view class="title">{{ currentWallet.name }}</view>
+        <image src="/static/img/account/down.png" style="width: 32rpx; height: 32rpx;"></image>
+      </view>
+    
+      <view class="header-icon">
+        <image src="/static/img/account/saoma.png" style="width:44rpx;height:44rpx;" @click="scanCode" />
+        <image src="/static/img/account/setting.png" style="width:44rpx;height:44rpx;" @click="toGo('/pages/walletManager/index')"></image>
+      </view>
     </view>
     <view class="main">
-      <view class="account-header">
-        <view class="header-left" @click="showSwitchWallet = true">
-          <view class="title">{{ currentWallet.name }}</view>
-          <image src="/static/img/account/down.png" style="width: 32rpx; height: 32rpx;"></image>
-        </view>
 
-        <view class="header-icon">
-          <image src="/static/img/account/saoma.png" style="width:44rpx;height:44rpx;" @click="scanCode" />
-          <image src="/static/img/account/setting.png" style="width:44rpx;height:44rpx;" @click="toGo('/pages/walletManager/index')"></image>
-        </view>
-      </view>
       <view class="basic-data">
         <view class="user-msg">
           <view class="allassets" style="display: flex; align-items: center;">
@@ -66,12 +64,12 @@
       </u-modal>
       <view class="coin-list">
         <u-tabs :list="coinList" lineColor="#2C365A" @click="click" :inactiveStyle="inactiveStyle"
-          :activeStyle="activeStyle" lineWidth="20" lineHeight="3" :itemStyle="itemStyle" :current="currentIndex">
+          :activeStyle="activeStyle" lineWidth="20" lineHeight="3" :itemStyle="itemStyle" :current="currentIndex" class="coin-tabs">
           <view slot="right" style="padding-bottom: 8rpx">
             <image src="/static/img/account/add.png" @click="toAsset" style="width: 48rpx;height: 48rpx;"></image>
           </view>
         </u-tabs>
-        <scroll-view v-if="visibaleTokenList.length" class="coinbox" scroll-y>
+        <scroll-view v-if="visibaleTokenList.length" class="coinbox" scroll-y :style="{ height: scrollHeight }">
           <view class="content" v-for="item in visibaleTokenList" :key="item.ID">
             <TokenColumn :showWarn="item.showWarn" :tokenName="item.alias_name"
               :tokenIcon="item.logo" class="token" @click.native="queryToken(item)" @showTishi="aa = true">
@@ -150,7 +148,12 @@ export default {
       coinType: 'All',
       initRender: 0, // call render.init
       callBalanceLoading: 0,
-      currentIndex: 0
+      currentIndex: 0,
+      systemBarHeight: 0,
+      basicDataHeight: 0,
+      accountColumnHeight: 0,
+      coinTabsHeight: 0
+      
     }
   },
   onShow() {
@@ -159,16 +162,39 @@ export default {
     this.aa = false
     this.firstShowAa = true
     this.initRender++
-    
-
-        
   },
   created() {
     //获取选择的代币
     this.address = this.currentWallet.address
-
+  },
+  mounted() {
+    this.getSystemStatusHeight()
+    this.calculateHeight()
   },
   methods: {
+    getSystemStatusHeight() {
+      uni.getSystemInfo({
+        success: res => {
+          this.systemBarHeight = res.statusBarHeight
+        }
+      })
+    },
+    calculateHeight() {
+      const query = uni.createSelectorQuery().in(this)
+      query.select('.basic-data').boundingClientRect(data => {
+        this.basicDataHeight = data.height + 'px'
+      })
+      
+      query.select('.account-column').boundingClientRect(data => {
+        this.accountColumnHeight = data.height + 'px'
+      })
+      query.select('.coin-tabs').boundingClientRect(data => {
+        this.coinTabsHeight = data.height + 'px'
+      })
+      
+      query.exec()
+    
+    },
     initCoinList() {
       let coinList = this.$cache.get('_currentWallet').coinList || []
       let tokenType = new Set()
@@ -294,6 +320,11 @@ export default {
         result = this.tokenList
       }
       return result
+    },
+    scrollHeight() {
+      const operation_btn = '180rpx'
+      const marginHeight = '24rpx + 48rpx'
+      return `calc(100vh - 112rpx - ${operation_btn} - ${marginHeight} - ${this.systemBarHeight + 'rpx'} - ${this.basicDataHeight} - ${this.accountColumnHeight} - ${this.coinTabsHeight} - 56rpx)`
     }
   },
   // watch: {
@@ -431,45 +462,46 @@ export default {
     height: 100%;
   }
 
-  .status_bar {
-    height: var(--status-bar-height);
-    width: 100%;
-  }
-
   .account {
     width: 100%;
     height: 100%;
+    padding-top: calc(112rpx + var(--status-bar-height));
   }
-
-  .main {
-    margin-left: 38rpx;
-    margin-right: 26rpx;
-    height: 100%;
-
-    .account-header {
-      width: 100%;
-      font-size: 34rpx;
-      padding-top: 20rpx;
-      padding-bottom: 32rpx;
-      font-weight: 600;
-      color: #2c3457;
-      letter-spacing: 0;
+  
+  .account-header {
+    padding: 0 32rpx;
+    position: fixed;
+    top: var(--status-bar-height);
+    width: 100%;
+    height: 112rpx;
+    font-size: 34rpx;
+    font-weight: 600;
+    color: #2c3457;
+    letter-spacing: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+  
+    .header-left {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-
-      .header-left {
-        display: flex;
-        align-items: center;
-      }
-
-      .header-icon {
-        display: flex;
-        align-items: center;
-        width: 120rpx;
-        justify-content: space-around;
-      }
     }
+  
+    .header-icon {
+      display: flex;
+      align-items: center;
+      width: 120rpx;
+      justify-content: space-around;
+    }
+  }
+  
+  .main {
+    // margin-left: 38rpx;
+    // margin-right: 26rpx;
+    padding: 0 32rpx;
+    height: 100%;
+    
 
     .basic-data {
       width: 100%;
@@ -545,7 +577,6 @@ export default {
 
       .coinbox {
         width: 100%;
-        height: 600rpx;
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
-  <view>
-    <custom-header></custom-header>
+  <view class="page-wrapper">
+    <custom-header class="page-header"></custom-header>
 
     <view class="mnemonic">
       <view class="mnemonic-title">{{ language.text14 }}</view>
@@ -82,8 +82,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .page-wrapper {
+    padding-top: calc(112rpx + var(--status-bar-height));
+  }
+  
+  .page-header {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    width: 100%;
+  }
+  
   .mnemonic {
-    margin-top: 64rpx;
     padding: 0 42rpx 0 40rpx;
 
     &-title {
@@ -182,11 +192,7 @@ export default {
     }
 
     &-confirm {
-      position: absolute;
-      bottom: 64rpx;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 622rpx;
+      margin-top: 32rpx;
       height: 96rpx;
       border-radius: 16rpx;
       background-color: #002FA7;

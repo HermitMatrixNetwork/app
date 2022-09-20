@@ -57,9 +57,9 @@
             "splashscreen" : {
                 "androidStyle" : "default",
                 "android" : {
-                    "hdpi" : "C:/Users/admin/Desktop/启动页/9png/480_762.9.png",
-                    "xhdpi" : "C:/Users/admin/Desktop/启动页/9png/720_1242.9.png",
-                    "xxhdpi" : "C:/Users/admin/Desktop/启动页/9png/1080_1882.9.png"
+                    "hdpi" : "C:/Users/admin/Desktop/启动页/启动页/andriod/480_762.png",
+                    "xhdpi" : "C:/Users/admin/Desktop/启动页/启动页/andriod/720_1242.png",
+                    "xxhdpi" : "C:/Users/admin/Desktop/启动页/启动页/andriod/1080_1882.png"
                 },
                 "iosStyle" : "default",
                 "ios" : {

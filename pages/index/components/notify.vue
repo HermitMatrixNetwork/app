@@ -31,13 +31,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
   /deep/ .u-notify {
     border-radius: 0 0 16rpx 16rpx;
     padding: 0 !important;
+
     .u-notify__warpper {
       align-items: flex-end !important;
       justify-content: flex-start;
       height: 200rpx;
+      
 
       .u-notify__warpper__text {
         margin-bottom: 40rpx;

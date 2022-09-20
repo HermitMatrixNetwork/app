@@ -37,8 +37,10 @@
           <view class="right">{{ language.text11 }}</view>
         </view>
         <custom-loading v-if="loading" class="loading"></custom-loading>
-        <view class="list-data" v-else-if="list.length">
-          <view class="list-item" v-for="(item,index) in list" :key="index">
+        <!-- :style="{ height: scrollHeight }" -->
+        
+        <scroll-view :style="{ height: scrollHeight }" scroll-y class="list-data" v-else-if="1" >
+        <view class="list-item" v-for="(item,index) in list" :key="index">
             <view class="left">
               <view class="name">{{item.validator.description.moniker}}</view>
               <view class="other">{{item.validator.operatorAddress|sliceAddress(7, -8)}}</view>
@@ -51,8 +53,8 @@
               <view class="other">{{ item.timestamp }} +UTC</view>
             </view>
           </view>
-        </view>
-        <no-data v-else :tip="language.text12" :btnTx="language.text64" @btnClick="btnClick" />
+        </scroll-view>
+        <no-data style="padding-bottom: calc( 120rpx + 56rpx);" v-else :tip="language.text12" :btnTx="language.text64" @btnClick="btnClick" />
       </view>
     </view>
   </view>
@@ -81,10 +83,41 @@ export default {
       allData: {},
       currentWallet: this.$cache.get('_currentWallet'),
       loading: true,
-      mainCoin
+      mainCoin,
+      systemBarHeight: 0,
+      headerBoxHeight: 0,
+      titleHeight: 0,
+      listTitleHeight: 0
     }
   },
+  mounted() {
+    this.getSystemStatusHeight()
+    this.calculateHeight()
+  },
   methods: {
+    getSystemStatusHeight() {
+      uni.getSystemInfo({
+        success: res => {
+          this.systemBarHeight = res.statusBarHeight
+        }
+      })
+    },
+    calculateHeight() {
+      const query = uni.createSelectorQuery().in(this)
+      query.select('.header-box').boundingClientRect(data => {
+        this.headerBoxHeight = data.height + 'px'
+      })
+      
+      query.select('.my-delegate .title').boundingClientRect(data => {
+        this.titleHeight = data.height + 'px'
+      })
+      query.select('.my-delegate .list-title').boundingClientRect(data => {
+        this.listTitleHeight = data.height + 'px'
+      })
+      
+      query.exec()
+      console.log(this.headerBoxHeight, this.titleHeight)
+    },
     btnClick() {
       this.$emit('switchToDelegate')
     },
@@ -139,6 +172,10 @@ export default {
         reward = reward.substr(0, 6) + '...' + reward.substr(-6)
       }
       return reward
+    },
+    scrollHeight() {
+      const operation_btn = '180rpx'
+      return `calc(100vh - 112rpx - ${operation_btn} - 188rpx - 24rpx - 48rpx - ${this.titleHeight} - ${this.headerBoxHeight} - 56rpx - ${this.listTitleHeight})`
     }
   }
 }

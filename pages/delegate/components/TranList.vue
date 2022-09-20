@@ -26,117 +26,120 @@
 </template>
 
 <script>
-  import {
-    txsQuery
-  } from '@/api/cosmos.js'
-  import {
-    sliceAddress
-  } from '@/utils/filters.js'
-  import mainCoin from '@/config/index.js'
-  import language from '../language/index.js'
-  export default {
-    props: {
-      currentTab: Number
-    },
-    data() {
-      return {
-        language: language[this.$cache.get('_language')],
-        wallet: this.$cache.get('_currentWallet'),
-        list: {
-          all: [],
-          delegate: [],
-          undelegate: [],
-          withdraw: []
-        },
-        types: ['all', 'delegate', 'undelegate', 'withdraw'],
-        mainCoin,
-        loading: true
-      }
-    },
-    methods: {
-      goTo(url) {
-        uni.navigateTo({
-          url
-        })
+import {
+  txsQuery
+} from '@/api/cosmos.js'
+import {
+  sliceAddress
+} from '@/utils/filters.js'
+import mainCoin from '@/config/index.js'
+import language from '../language/index.js'
+export default {
+  props: {
+    currentTab: Number
+  },
+  data() {
+    return {
+      language: language[this.$cache.get('_language')],
+      wallet: this.$cache.get('_currentWallet'),
+      list: {
+        all: [],
+        delegate: [],
+        undelegate: [],
+        withdraw: []
       },
-      toDetail(info) {
-        uni.navigateTo({
-          url: `/pages/account/send/transactionDetails?data=${JSON.stringify(info)}`
-        })
-      }
-    },
-    async created() {
-      Promise.all([
-        txsQuery([`events=message.sender='${ this.wallet.address }'`, 'events=message.module=\'staking\'',
-          'order_by=ORDER_BY_DESC'
-        ]),
-        // 不能做分页，要区分是设置setWithdrawAddress还是withdraw
-        txsQuery([`events=message.sender='${ this.wallet.address }'`, 'events=message.module=\'distribution\'',
-          'order_by=ORDER_BY_DESC'
-        ])
-      ]).then(res => {
-        const result = res[0].data.tx_responses
-        const withdraw = res[1].data.tx_responses
-        result.forEach(item => {
-          const type = item.tx.body.messages[0]['@type']
-
-          item.validator_address = item.tx.body.messages[0].validator_address
-          item.delegator_address = item.tx.body.messages[0].delegator_address
-          item.amount = item.tx.body.messages[0].amount.amount / mainCoin.decimals
-
-          if (type.includes('MsgUndelegate')) {
-            item.icon = '/static/img/delegate/fasong2.png'
-            this.list['undelegate'].push(item)
-
-
-          } else if (type.includes('MsgDelegate')) {
-            item.icon = '/static/img/delegate/weituo2.png'
-            this.list['delegate'].push(item)
-          }
-
-          item.timestamp = item.timestamp.replace(/Z|T/g, ' ')
-
-        })
-
-
-
-        withdraw.forEach(item => {
-          const type = item.tx.body.messages[0]['@type']
-          item.validator_address = item.tx.body.messages[0].validator_address
-          item.delegator_address = item.tx.body.messages[0].delegator_address
-					item.type = 'withdraw'
-          item.raw_log.replace(
-            /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
-            p1) => {
-              item.amount = p1 / mainCoin.decimals
-            })
-					item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
-							item.reciver_address = p1
-					})
-          if (type.includes('MsgWithdrawDelegatorReward')) {
-            item.icon = '/static/img/delegate/shoukuan2.png'
-            this.list['withdraw'].push(item)
-          }
-
-          item.timestamp = item.timestamp.replace(/Z|T/g, ' ')
-        })
-        this.list['all'].push(...this.list['delegate'], ...this.list['undelegate'], ...this.list['withdraw'])
-        this.loading = false
-        this.list['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      types: ['all', 'delegate', 'undelegate', 'withdraw'],
+      mainCoin,
+      loading: true
+    }
+  },
+  methods: {
+    goTo(url) {
+      uni.navigateTo({
+        url
       })
     },
-    filters: {
-      sliceAddress
+    toDetail(info) {
+      uni.navigateTo({
+        url: `/pages/account/send/transactionDetails?data=${JSON.stringify(info)}`
+      })
     }
+  },
+  async created() {
+    Promise.all([
+      txsQuery([`events=message.sender='${ this.wallet.address }'`, 'events=message.module=\'staking\'',
+        'order_by=ORDER_BY_DESC'
+      ]),
+      // 不能做分页，要区分是设置setWithdrawAddress还是withdraw
+      txsQuery([`events=message.sender='${ this.wallet.address }'`, 'events=message.module=\'distribution\'',
+        'order_by=ORDER_BY_DESC'
+      ])
+    ]).then(res => {
+      const result = res[0].data.tx_responses
+      const withdraw = res[1].data.tx_responses
+      result.forEach(item => {
+        const type = item.tx.body.messages[0]['@type']
+
+        item.validator_address = item.tx.body.messages[0].validator_address
+        item.delegator_address = item.tx.body.messages[0].delegator_address
+        item.amount = item.tx.body.messages[0].amount.amount / mainCoin.decimals
+
+        if (type.includes('MsgUndelegate')) {
+          item.icon = '/static/img/delegate/fasong2.png'
+          this.list['undelegate'].push(item)
+
+
+        } else if (type.includes('MsgDelegate')) {
+          item.icon = '/static/img/delegate/weituo2.png'
+          this.list['delegate'].push(item)
+        }
+
+        item.timestamp = item.timestamp.replace(/Z|T/g, ' ')
+
+      })
+
+
+
+      withdraw.forEach(item => {
+        const type = item.tx.body.messages[0]['@type']
+        item.validator_address = item.tx.body.messages[0].validator_address
+        item.delegator_address = item.tx.body.messages[0].delegator_address
+					
+        item.raw_log.replace(
+          /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
+            p1) => {
+            item.amount = p1 / mainCoin.decimals
+          })
+        item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
+          item.reciver_address = p1
+        })
+        item.icon = '/static/img/delegate/shoukuan2.png'  
+        if (type.includes('MsgWithdrawDelegatorReward')) {
+          item.type = 'withdraw'
+        } else {
+          item.type = 'setWithdrawAddress'
+          item.amount = '0.00'
+        }
+        this.list['withdraw'].push(item)
+        item.timestamp = item.timestamp.replace(/Z|T/g, ' ')
+      })
+      this.list['all'].push(...this.list['delegate'], ...this.list['undelegate'], ...this.list['withdraw'])
+      this.loading = false
+      this.list['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+    })
+  },
+  filters: {
+    sliceAddress
   }
+}
 </script>
 
 <style lang="scss" scoped>
   .list {
-    height: calc(100vh - 80rpx - 112rpx);
-    // #ifdef APP-PLUS
-    height: calc(100vh - 80rpx - 112rpx - var(--status-bar-height));
-    // #endif
+    // height: calc(100vh - 80rpx - 112rpx);
+    // // #ifdef APP-PLUS
+    // height: calc(100vh - 80rpx - 112rpx - var(--status-bar-height));
+    // // #endif
     overflow-y: scroll;
 
     .item {
@@ -179,7 +182,7 @@
   }
 	
 	.no-data {
-		height: calc(100vh - var(--status-bar-height) - 112rpx);
+		height: calc(100vh - var(--status-bar-height) - 112rpx - 80rpx);
 		display: flex;
 		flex-direction: column;
 		justify-content: center;

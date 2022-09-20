@@ -64,6 +64,7 @@ export default {
     background-color: #F2F4F8;
     width: 100vw;
     height: 100vh;
+    padding-top: calc(112rpx + var(--status-bar-height));
 
     .header {
       background-color: #fff;

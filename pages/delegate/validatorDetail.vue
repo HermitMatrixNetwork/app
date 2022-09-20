@@ -127,9 +127,8 @@ export default {
 
 <style lang="scss" scoped>
 	.container {
-		height: 100vh;
+    padding-top: calc(112rpx + var(--status-bar-height));
 		background-color: #F4F6F9;
-		overflow: hidden;
 	}
 	
 	.wrapper {
@@ -254,12 +253,8 @@ export default {
 	}
 
 	.btn {
-		// position: fixed;
-		// bottom: 16rpx;
-		// left: 50%;
-		// transform: translateX(-50%);
-		margin: 64rpx auto 0;
-		width: 622rpx;
+		margin: 96rpx 32rpx 48rpx;
+    width: auto;
 		height: 96rpx;
 		border-radius: 16rpx;
 		background-color: #002FA7 !important;

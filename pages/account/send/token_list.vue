@@ -44,6 +44,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .choose_token {
+    padding-top: calc(112rpx + var(--status-bar-height));
+  }
+  
   .token-list {
     margin: 32rpx 32rpx 0;
   }

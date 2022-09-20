@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="page-wrapper">
 		<custom-header tabUrl="/pages/mine/index" :title="language.text93">
 			<template slot="right">
 				<view class="record" @click="showEditWalletNameModal = true">
@@ -206,6 +206,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .page-wrapper {
+    padding-top: calc(112rpx + var(--status-bar-height));
+  }
 .record {
 	font-weight: 400;
 	font-size: 28rpx;

@@ -582,8 +582,7 @@ export default {
   }
 
   .token_content {
-    height: 100vh;
-    overflow: hidden;
+    padding-top: calc(112rpx + var(--status-bar-height));
     background: #FFFFFF;
   }
 

@@ -402,8 +402,7 @@ export default {
   }
 
   .container {
-    height: 100vh;
-    width: 100vw;
+    padding-top: calc(112rpx + var(--status-bar-height));
     background-color: #F4F6F9;
   }
 

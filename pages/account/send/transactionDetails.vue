@@ -161,6 +161,14 @@ export default {
           'Memo': res.tx.body.memo,
           [this.language.text88]: res.transactionHash
         }
+      } else if (typeUrl.includes('MsgSetWithdrawAddress')) {
+        this.transactionMessage = {
+          [this.language.text92]: '0.00GHM',
+          [this.language.text111]: res.fee,
+          [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
+          [this.language.text94]: res.tx.body.messages[0].value.withdrawAddress,
+          [this.language.text88]: res.transactionHash
+        }
       }
       
       this.loading = false
@@ -286,14 +294,14 @@ export default {
     width: 100%;
     height: 100vh;
     background: #F4F6FA;
+    padding-top: calc(112rpx + var(--status-bar-height));
   }
 
   .transacTionMain {
     position: relative;
-    padding: 0 32rpx;
+    padding: 0 32rpx 32rpx;
     margin: 48rpx 32rpx 0;
     background: #FFFFFF;
-    height: 936rpx;
     box-shadow: 0 8rpx 54rpx 0 rgba(4, 6, 15, 0.05);
     border-radius: 16rpx;
 

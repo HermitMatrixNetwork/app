@@ -83,7 +83,7 @@
           <!--Memo-->
           <view class="memo_type">
             <text>Memo</text>
-            <text>{{ formData.memo }}</text>
+            <text class="memo">{{ formData.memo }}</text>
           </view>
 
           <!--矿工费-->
@@ -535,8 +535,7 @@ export default {
   }
 
   .sendPage {
-    height: 100vh;
-    overflow: hidden;
+    padding-top: calc(112rpx + var(--status-bar-height));
     background: #F4F6F9;
   }
 
@@ -734,6 +733,13 @@ export default {
       .memo_type {
         padding-top: 33rpx;
         padding-bottom: 43rpx;
+        .memo {
+          -webkit-line-clamp: 2;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
 
       .miners_fee {
@@ -877,11 +883,7 @@ export default {
   }
 
   .btn {
-    position: absolute;
-    bottom: 64rpx;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 622rpx;
+    margin: 96rpx 32rpx 48rpx;
     height: 96rpx;
     border-radius: 16rpx;
     background-color: #002FA7 !important;
