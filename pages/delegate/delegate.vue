@@ -83,7 +83,7 @@
           <!--Memo-->
           <view class="memo_type">
             <text>Memo</text>
-            <text>{{ formData.memo }}</text>
+            <text class="memo">{{ formData.memo }}</text>
           </view>
 
           <!--矿工费-->
@@ -733,6 +733,13 @@ export default {
       .memo_type {
         padding-top: 33rpx;
         padding-bottom: 43rpx;
+        .memo {
+          -webkit-line-clamp: 2;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
 
       .miners_fee {

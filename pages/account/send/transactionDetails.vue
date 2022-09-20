@@ -294,14 +294,14 @@ export default {
     width: 100%;
     height: 100vh;
     background: #F4F6FA;
+    padding-top: calc(112rpx + var(--status-bar-height));
   }
 
   .transacTionMain {
     position: relative;
-    padding: 0 32rpx;
+    padding: 0 32rpx 32rpx;
     margin: 48rpx 32rpx 0;
     background: #FFFFFF;
-    height: 936rpx;
     box-shadow: 0 8rpx 54rpx 0 rgba(4, 6, 15, 0.05);
     border-radius: 16rpx;
 

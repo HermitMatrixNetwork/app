@@ -149,8 +149,21 @@ export default {
       } else {
         this.nameError = false
       }
+      
+      if (verify) {
+        
+        // 同一个验证节点，在不该rpc链接的情况下不做校验rpx的有效性
+        const nodeIndex = nodeList.findIndex(item => item.link == this.formData.link)
+        
+        if (nodeList[this.nodeIndex].link == this.formData.link) {
+          this.handerResult({ code: 0 })
+        } else {
+          this.checkVerify()
+        }
+      }
 
-      verify && this.checkVerify()
+      
+
     },
     checkExist(nodeList) {
       const nodeIndex = nodeList.findIndex(item => item.link == this.formData.link)

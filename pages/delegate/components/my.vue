@@ -40,20 +40,7 @@
         <!-- :style="{ height: scrollHeight }" -->
         
         <scroll-view :style="{ height: scrollHeight }" scroll-y class="list-data" v-else-if="1" >
-         <view class="list-item" v-for="(item,index) in 20" :key="index">
-            <view class="left">
-              <view class="name">123</view>
-              <view class="other">3213123123</view>
-            </view>
-            <view class="center">
-              123213123
-            </view>
-            <view class="right">
-              <view class="name">123123</view>
-              <view class="other">123213</view>
-            </view>
-          </view>
-<!--         <view class="list-item" v-for="(item,index) in list" :key="index">
+        <view class="list-item" v-for="(item,index) in list" :key="index">
             <view class="left">
               <view class="name">{{item.validator.description.moniker}}</view>
               <view class="other">{{item.validator.operatorAddress|sliceAddress(7, -8)}}</view>
@@ -65,7 +52,7 @@
               <view class="name">{{item.balance.amount / mainCoin.decimals }}</view>
               <view class="other">{{ item.timestamp }} +UTC</view>
             </view>
-          </view> -->
+          </view>
         </scroll-view>
         <no-data style="padding-bottom: calc( 120rpx + 56rpx);" v-else :tip="language.text12" :btnTx="language.text64" @btnClick="btnClick" />
       </view>
