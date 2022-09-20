@@ -1,9 +1,5 @@
 <template>
   <view class="delegate">
-    
-    <view class="status_bar">
-      <!-- APP下会占用系统原生消息因此需要该占位符 -->
-    </view>
     <view class="container">
       <div class="top">
         <view class="left" @click="selindex = 0" :class="{ actived: selindex == 0 }">
@@ -64,11 +60,11 @@ export default {
     width: 100%;
   }
   .delegate {
-    padding-top: calc(112rpx + 26rpx + var(--status-bar-height));
+    padding-top: calc(112rpx + var(--status-bar-height));
     .container {
       .top {
         position: fixed;
-        top: 0;
+        top: var(--status-bar-height);
         width: 100%;
         background-color: #fff;
         height: 112rpx;

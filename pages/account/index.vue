@@ -193,7 +193,6 @@ export default {
       })
       
       query.exec()
-      console.log(this.basicDataHeight, this.accountColumnHeight, this.coinTabsHeight)
     
     },
     initCoinList() {
