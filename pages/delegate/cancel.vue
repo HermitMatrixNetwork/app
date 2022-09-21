@@ -320,6 +320,7 @@ export default {
     },
     submitAgain() {
       this.modalPasswordIsShow = true
+      this.firstTime = true
       // #ifdef APP-PLUS
       if (this.touchId) {
         this.verify()
@@ -428,6 +429,10 @@ export default {
           indexChange: (index) => {
             this.selectIndex = index
             this.selData = this.$cache.get('_delegateInfo').list[index]
+            this.balance = this.selData.balance.amount / mainCoin.decimals
+            if (this.formData.amount.amount !== '') {
+              this.sendAmountChange(this.formData.amount.amount)
+            }
           },
           selindexChange: () => {
             eventChannel.emit('selindexChange') 

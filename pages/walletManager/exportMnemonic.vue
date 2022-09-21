@@ -1,6 +1,6 @@
 <template>
-  <view>
-    <custom-header :title="language.text119"></custom-header>
+  <view class="page-wrapper">
+    <custom-header :title="language.text119" :customStyle="{ 'z-index': 99 }"></custom-header>
 
 
     <view class="border"></view>
@@ -65,6 +65,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .page-wrapper {
+    padding-top: calc(112rpx + var(--status-bar-height));
+  }
   .border {
     border-top: 1rpx solid #8397B1;
     opacity: .16;
@@ -144,11 +147,8 @@ export default {
   }
 
   .validate-mnemonic-btn {
-    position: absolute;
-    bottom: 64rpx;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 622rpx;
+    margin: 96rpx 32rpx 32rpx;
+    width: auto;
     height: 96rpx;
     background: #002FA7;
     border-radius: 16rpx;

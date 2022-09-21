@@ -1,5 +1,5 @@
 <template>
-  <view>
+  <view class="page-wrapper">
     <custom-header :title="language.text121"></custom-header>
 
     
@@ -62,6 +62,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .page-wrapper {
+    padding-top: calc(112rpx + var(--status-bar-height));
+  }
+  
   .border {
     border-top: 1rpx solid #8397B1;
     opacity: .16;

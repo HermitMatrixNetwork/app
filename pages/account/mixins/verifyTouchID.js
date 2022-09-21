@@ -28,6 +28,7 @@ export default {
           } else if (this.firstTime && e.code == 5 || e.code == 7) {
             // '尝试次数过多。请切换验证方式'
             this.verifyTouchErrorTip = this.language.text204
+            console.log(this.verifyTouchErrorTip)
             this.verifyTouchID = 2
           } else {
             // 验证指纹中
@@ -44,8 +45,9 @@ export default {
             plus.nativeUI.closeWaiting() //兼容Android平台关闭等待框
             // 验证失败
             this.toast.msg = this.language.text203
-            if (this.firstTime && e.code == 5 || e.code == 7) {
+            if (!this.firstTime && e.code == 5 || e.code == 7) {
               this.verifyTouchErrorTip = this.language.text204
+              console.log(this.verifyTouchErrorTip)
               this.firstTime = false
             }
           }, 1000)

@@ -48,9 +48,16 @@ export default {
       }
     },
     toImportWallet() {
-      uni.navigateTo({
-        url: '/pages/walletManager/importWallet',
-      })
+      const touchId = this.$cache.get('_touchId')
+      if (touchId == 0) {
+        uni.navigateTo({
+          url: '/pages/walletManager/importWallet',
+        })
+      } else {
+        uni.navigateTo({
+          url: '/pages/mine/anquan/touchIdCheck?redirectUrl=/pages/walletManager/importWallet?from=walletManager&redirectType=redirect'
+        })
+      }
     }
   }
 }

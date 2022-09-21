@@ -62,7 +62,6 @@ export default {
       // })
       const eventChannel = this.getOpenerEventChannel()
       eventChannel.emit('indexChange', i)
-      console.log(this.from)
       if (this.from == 'search') {
         uni.navigateBack({
           delta: 2

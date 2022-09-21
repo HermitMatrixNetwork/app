@@ -36,10 +36,9 @@ export default {
   },
   onShow() {
     this.$nextTick(() => {
-			setTimeout(()=>{
+      setTimeout(()=>{
 				 this.$refs.customChildNode.updateData()
-			},500)
-      console.log('testtestestest')
+      },500)
     })
   },
   methods: {
