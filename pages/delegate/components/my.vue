@@ -90,6 +90,12 @@ export default {
       listTitleHeight: 0
     }
   },
+  created() {
+    // this.address = this.currentWallet.address
+    setTimeout(()=>{
+      this.updateData()
+    },500)
+  },
   mounted() {
     this.getSystemStatusHeight()
     this.calculateHeight()
