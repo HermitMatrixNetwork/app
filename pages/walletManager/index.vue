@@ -63,7 +63,7 @@
             <text>{{ language.text123 }}</text>
           </view>
           <u--textarea :placeholder="language.text124"  border="surround" v-model="name" maxlength="60" :autoHeight="$cache.get('_language') == 'CN'"
-            :class="{ 'error-edit-name': editNameError }" clearable class="textarea"  :placeholderStyle="placeholderStyle">
+            :class="{ 'error-edit-name': editNameError }" clearable class="textarea"  :placeholderStyle="placeholderStyle" :formatter="formatter">
           </u--textarea>
           <view class="error-tip" :style="{ opacity: editNameError ? 1 : 0 }">
             {{ language.text124 }}
@@ -93,7 +93,7 @@
           </view>
           <view v-if="verifyMethod == 'password'">
             <view class="input-view">
-              <u-input :type="showPassword ? 'text' : 'password'" :placeholder="language.text49"
+              <u-input :type="showPassword ? 'text' : 'password'" :placeholder="language.text49" :formatter="formatter"
                 border="surround" v-model="password" class="edit-name-input" :class="{ 'error-edit-name': editNameError }">
                 <template slot="suffix">
                   <image :src="showPassword? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="closeConfirmPasswordModal" style="width: 32rpx; height: 32rpx;"></image>
@@ -149,8 +149,9 @@
 import language from '@/pages/account/language/index.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
 import verifyTouchID from '@/pages/account/mixins/verifyTouchID.js'
+import mixins from '@/pages/account/mixins/index.js'
 export default {
-  mixins: [verifyTouchID],
+  mixins: [verifyTouchID,mixins],
   data() {
     return {
       wallet: this.$cache.get('_currentWallet') || {},
@@ -307,6 +308,9 @@ export default {
       if (this.touchId) {
         plus.fingerprint.cancel()
       }
+    },
+    formatter(val){
+      return this.dealInputValue(val)
     }
   }
 }

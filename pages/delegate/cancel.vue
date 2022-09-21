@@ -63,7 +63,7 @@
               <text>Memo</text>
             </view>
             <view class="value">
-              <u--input :placeholder="language.text65" v-model="formData.memo"></u--input>
+              <u--input :placeholder="language.text65" v-model="formData.memo" :formatter="Memoformatter"></u--input>
             </view>
           </view>
         </view>
@@ -280,6 +280,9 @@ export default {
       } else {
         return num
       }
+    },
+    Memoformatter(val){
+      return this.dealInputValue(val)
     },
     chooseAddress() {
       uni.navigateTo({

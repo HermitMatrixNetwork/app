@@ -11,7 +11,7 @@
           <view v-if="selindex == 1" class="line" />
         </view>
       </div>
-      <component :is="['My', 'Ident'][selindex]" @switchToDelegate="switchToDelegate"></component>
+      <component :is="['My', 'Ident'][selindex]" ref='customChildNode' @switchToDelegate="switchToDelegate"></component>
 			<!-- <My v-if="selindex===0" @switchToDelegate="switchToDelegate"></My> -->
 			<!-- <Ident v-if="selindex===1" @switchToDelegate="switchToDelegate"></Ident> -->
 		</view>
@@ -34,12 +34,14 @@ export default {
       language: language[this.$cache.get('_language')]
     }
   },
-  // onShow() {
-  //   this.$nextTick(() => {
-  //     this.$refs.customChildNode.updateData()
-  //     console.log('testtestestest')
-  //   })
-  // },
+  onShow() {
+    this.$nextTick(() => {
+			setTimeout(()=>{
+				 this.$refs.customChildNode.updateData()
+			},500)
+      console.log('testtestestest')
+    })
+  },
   methods: {
     switchToDelegate() {
       this.selindex = 1
@@ -48,15 +50,15 @@ export default {
   // onReady(){
   //   console.log('加载')
   // },
-  // watch: {
-  //   selindex: {
-  //     // handler(newVal) {
-  //     //   this.$nextTick(() => {
-  //     //     this.$refs.customChildNode.updateData()
-  //     //   })
-  //     // }
-  //   }
-  // }
+  watch: {
+    selindex: {
+      handler(newVal) {
+        this.$nextTick(() => {
+          this.$refs.customChildNode.updateData()
+        })
+      }
+    }
+  }
 }
 </script>
 

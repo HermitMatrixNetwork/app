@@ -92,9 +92,9 @@ export default {
   },
   created() {
     // this.address = this.currentWallet.address
-    setTimeout(()=>{
-      this.updateData()
-    },500)
+    // setTimeout(()=>{
+    //   this.updateData()
+    // },500)
   },
   mounted() {
     this.getSystemStatusHeight()
