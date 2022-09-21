@@ -13,7 +13,7 @@
         :disabled="disabled"
       />
 
-      <u--textarea v-model="childValue" @focus="textareaFocus" @blur="textareaBlur" :placeholder="placeholder" :autoHeight="isAutoHeight" v-else class="textarea" maxlength="60" :disabled="disabled">
+      <u--textarea v-model="childValue" :formatter='formatter' @focus="textareaFocus" @blur="textareaBlur" :placeholder="placeholder" :autoHeight="isAutoHeight" v-else class="textarea" maxlength="60" :disabled="disabled">
       </u--textarea>
       <slot name="inputRight"></slot>
     </view>
@@ -21,7 +21,9 @@
 </template>
 
 <script>
+import mixins from '../../mixins/index.js'
 export default {
+  mixins:[mixins],
   props: {
     disabled: {
       type: Boolean,
@@ -68,31 +70,38 @@ export default {
       type: Boolean,
       default: false
     },
-		isAutoHeight: {
-			type: Boolean,
-			default: true
-		}
+    isAutoHeight: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {
       childValue: this.inputVal,
     }
   },
-	methods: {
-		textareaFocus(val) {
-			this.$emit('textareaFocus')
-		},
-		textareaBlur(val) {
-			this.$emit('textareaBlur')
-		}
-	},
+  methods: {
+    textareaFocus(val) {
+      this.$emit('textareaFocus')
+    },
+    textareaBlur(val) {
+      this.$emit('textareaBlur')
+    },
+    formatter(val){
+      return this.dealInputValue(val)
+    }
+  },
   watch: {
     childValue: {
       handler(newVal) {
-        this.$emit('update:inputVal', newVal)
+        let value = this.dealInputValue(newVal)
+        console.log(value)
+        this.childValue = value     
+        this.$emit('update:inputVal', value)
       }
     }
-  }
+  },
+  computed:{}
 }
 </script>
 
