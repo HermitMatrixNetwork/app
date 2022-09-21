@@ -32,12 +32,13 @@ export default {
     this.$cache.get('_MINERS_GAS') || this.$cache.set('_MINERS_GAS', MINERS_GAS, 0)
     this.$cache.get('_currentRpc') || this.$cache.set('_currentRpc', DEFAULT_RPC.link, 0)
     // 0 表示第一次进入
-    this.$cache.get('_appInit') || this.$cache.set('_appInit', 0, 0)
+    this.$cache.set('_appInit', 0, 0)
     let _appInit = this.$cache.get('_appInit')
-    console.log('_appInit', _appInit)
+    
+    
     // #ifdef APP-PLUS
     if (this.$cache.get('_currentWallet') == null) { // 本地缓存没有钱包（直接进入首页）
-      console.log(2)
+      console.log('本地缓存没有钱包（直接进入首页）')
       this.$cache.set('_agree_protocol', false, 0)
       uni.reLaunch({
         url: '/pages/index/index',
@@ -46,7 +47,7 @@ export default {
         }
       })
     } else if (_appInit == 0 && this.$cache.get('_touchId') == 1) { // 本地缓存有钱包 且开启了指纹锁
-      console.log(3)
+      console.log('本地缓存有钱包 且开启了指纹锁')
       uni.navigateTo({
         url: '/pages/mine/anquan/backgroundVerify?redirectUrl=/pages/account/index&type=reLaunch',
         animationType: 'none',
@@ -55,7 +56,7 @@ export default {
         }
       })
     } else if (_appInit !== 1) { // 本地缓存有钱包 且没有开启指纹锁
-      console.log(4)
+      console.log('本地缓存有钱包 且没有开启指纹锁')
       uni.reLaunch({
         url: '/pages/account/index',
         success: () => {
@@ -70,28 +71,28 @@ export default {
     uni.hideTabBar({
       animation: false
     })
-    var pages = getCurrentPages()
-    var page = pages[pages.length - 1]
+    
     // #ifdef APP-PLUS
     if (this.$cache.get('_appInit') == 1) {
-      // const _appInit = this.$cache.get('_appInit')
       // 从后台唤起
-      if (this.$cache.get('_touchId') == 1) {
+      console.log('后台唤起')
+      if (this.$cache.get('_currentWallet') == null) {
+        console.log('本地缓存没有钱包（直接进入首页）')
+        this.$cache.set('_agree_protocol', false, 0)
+        uni.reLaunch({
+          url: '/pages/index/index',
+          success: () => {
+            plus.navigator.closeSplashscreen()
+          }
+        })
+      } else if (this.$cache.get('_touchId') == 1) {
         uni.navigateTo({
-          url: '/pages/mine/anquan/backgroundVerify?redirectUrl=',
+          url: '/pages/mine/anquan/backgroundVerify',
           animationType: 'none',
           success: () => {
             plus.navigator.closeSplashscreen()
           }
         })
-      } else if (this.$cache.get('_currentWallet') !== null && !page) {
-        uni.reLaunch({
-          url: '/pages/account/index',
-          success: () => {
-            plus.navigator.closeSplashscreen()
-          }
-        })
-  
       }
       this.$cache.set('_appInit', 0, 0)
     }

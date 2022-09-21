@@ -16,8 +16,7 @@
         "splashscreen" : {
             "alwaysShowBeforeRender" : false,
             "waiting" : true,
-            "autoclose" : true,
-            "delay" : 0
+            "autoclose" : false
         },
         /* 模块配置 */
         "modules" : {
@@ -57,9 +56,9 @@
             "splashscreen" : {
                 "androidStyle" : "default",
                 "android" : {
-                    "hdpi" : "C:/Users/admin/Desktop/启动页/启动页/andriod/480_762.png",
-                    "xhdpi" : "C:/Users/admin/Desktop/启动页/启动页/andriod/720_1242.png",
-                    "xxhdpi" : "C:/Users/admin/Desktop/启动页/启动页/andriod/1080_1882.png"
+                    "hdpi" : "C:/Users/admin/Desktop/启动页2/启动页2/480_762.png",
+                    "xhdpi" : "C:/Users/admin/Desktop/启动页2/启动页2/720_1242.png",
+                    "xxhdpi" : "C:/Users/admin/Desktop/启动页2/启动页2/1080_1882.png"
                 },
                 "iosStyle" : "default",
                 "ios" : {

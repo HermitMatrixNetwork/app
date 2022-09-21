@@ -71,7 +71,6 @@ export default {
     uni.navigateBack()
   },
   onBackPress(events) {
-    console.log(events)
     if (events.from == 'backbutton') {
       // plus.runtime.quit = function() {
       //   main.moveTaskToBack(false)
@@ -139,7 +138,6 @@ export default {
       })
     },
     verifyTouchIDSuccess() {
-      console.log('success')
       switch(this.type) {
       case 'reLaunch':
         uni.reLaunch({
@@ -147,10 +145,7 @@ export default {
         })
         break
       default:
-        console.log('fire')
-        uni.reLaunch({
-        	url: '/pages/account/index'
-        })
+        uni.navigateBack()
       }
     },
     confirm() {

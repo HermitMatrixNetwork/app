@@ -420,8 +420,14 @@ export default {
       this.formData.gasPrice = val.amount
     },
     selectNode(url) {
-      uni.redirectTo({
-        url
+      uni.navigateTo({
+        url,
+        events: {
+          indexChange: (index) => {
+            this.selectIndex = index
+            this.selData = this.$cache.get('_delegateInfo').list[index]
+          }
+        }
       })
     },
     handlerBalance(res) {

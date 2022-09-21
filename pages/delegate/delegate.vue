@@ -539,6 +539,7 @@ export default {
   .sendPage {
     padding-top: calc(112rpx + var(--status-bar-height));
     background: #F4F6F9;
+    height: 100vh;
   }
 
   .main-top {

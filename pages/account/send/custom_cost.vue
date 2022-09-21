@@ -1,6 +1,7 @@
 <template>
 	<view class="custom_cost">
-		<custom-header :redirUrl="redirectUrl" :title="language.text173" />
+    <!-- :redirUrl="redirectUrl" -->
+		<custom-header :title="language.text173" />
 		<view class="custom_main">
 			<!-- Gas price -->
 			<view class="gas_price">
@@ -114,22 +115,22 @@ export default {
         amount: this.amount,
         minersGas: this.minersGas
       })
-      if (this.redirectUrl) {
-        this.redirectUrl = this.originRedirectUrl + `&minusIndex=3&minusData=${JSON.stringify({
-          price: '0.00',
-          demon: 'ughm',
-          time: '约 3 秒',
-          amount: this.amount,
-          minersGas: this.minersGas,
-          speed: this.language.text27,
-        })
-        }`
-        uni.redirectTo({
-          url: this.redirectUrl
-        })
-      } else {
-        uni.navigateBack()
-      }
+      // if (this.redirectUrl) {
+      //   this.redirectUrl = this.originRedirectUrl + `&minusIndex=3&minusData=${JSON.stringify({
+      //     price: '0.00',
+      //     demon: 'ughm',
+      //     time: '约 3 秒',
+      //     amount: this.amount,
+      //     minersGas: this.minersGas,
+      //     speed: this.language.text27,
+      //   })
+      //   }`
+      //   uni.redirectTo({
+      //     url: this.redirectUrl
+      //   })
+      // } else {
+      uni.navigateBack()
+      // }
     },
   }
 }
