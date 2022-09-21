@@ -84,23 +84,35 @@
       <template slot="default">
         <view>
           <view class="title">
-            <text>{{ language.text48 }}</text>
+            <view>
+            	{{ verifyMethod == 'touchID' ? language.text196 : language.text48 }}
+            	<text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
+            		class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
+            </view>
             <image src="@/static/img/ic-close.png" @click="cancel('password')"></image>
           </view>
-          <view class="input-view">
-            <u-input :type="showPassword ? 'text' : 'password'" :placeholder="language.text49"
-              border="surround" v-model="password" class="edit-name-input" :class="{ 'error-edit-name': editNameError }">
-              <template slot="suffix">
-                <image :src="showPassword? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="showPassword = !showPassword" style="width: 32rpx; height: 32rpx;"></image>
-              </template>
-            </u-input>
+          <view v-if="verifyMethod == 'password'">
+            <view class="input-view">
+              <u-input :type="showPassword ? 'text' : 'password'" :placeholder="language.text49"
+                border="surround" v-model="password" class="edit-name-input" :class="{ 'error-edit-name': editNameError }">
+                <template slot="suffix">
+                  <image :src="showPassword? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="closeConfirmPasswordModal" style="width: 32rpx; height: 32rpx;"></image>
+                </template>
+              </u-input>
+            </view>
+            <view class="error-tip" :style="{ opacity: confirmPasswordError ? 1 : 0 }">
+              {{ language.text150 }}
+            </view>
           </view>
-          <view class="error-tip" :style="{ opacity: confirmPasswordError ? 1 : 0 }">
-            {{ language.text150 }}
+          <view v-else class="touch-verify">
+            <view class="logo">
+            	<image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
+            </view>
           </view>
+
         </view>
       </template>
-      <template slot="confirmButton">
+      <template slot="confirmButton" v-if="verifyMethod == 'password'">
         <view class="confirm-button">
           <uni-button class="confirm" @click="confirm('password')">{{ language.text144 }}</uni-button>
         </view>
@@ -119,6 +131,16 @@
       </view>
     </u-modal>
     
+    <!-- 指纹验证 -->
+    <view class="toast" v-show="showToast">
+    	<view class="toast-icon">
+    		<image :src="toast.icon"></image>
+    	</view>
+    	<view class="toast-content">
+    		<text>{{ toast.msg }}</text>
+    	</view>
+    </view>
+    
     <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
@@ -126,7 +148,9 @@
 <script>
 import language from '@/pages/account/language/index.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
+import verifyTouchID from '@/pages/account/mixins/verifyTouchID.js'
 export default {
+  mixins: [verifyTouchID],
   data() {
     return {
       wallet: this.$cache.get('_currentWallet') || {},
@@ -142,13 +166,48 @@ export default {
       placeholderStyle: {
         color: 'red',
         'font-size': '100rpx'
-      }
+      },
+      verifyMethod: 'password',
+      touchId: this.$cache.get('_touchId'),
+      verifyTouchErrorTip: '',
+      showToast: false,
+      toast: {
+        icon: '/static/img/mine/loading.gif',
+        // msg: '失败次数超出限制，请稍后再设置',
+        msg: '失败次数超出限制，请切换其它方式验证'
+      },
     }
   },
+  onLoad() {
+    if (this.touchId) this.verifyMethod = 'touchID'
+  },
   methods: {
+    hideModel() {
+      this.showConfirmPasswordModal = false
+    },
+    verifyTouchIDSuccess() {
+      this.$nextTick(() => {
+        // this.checkSuccess = this.sendFormData
+        // this.transferLoading = true
+        this.verifyTouchID = 3
+        this.showToast = false
+        this.showConfirmPasswordModal = true
+        this.verifyMethod = 'password'
+        // this.toast.msg = `${this.language.text198}...`
+        // this.toast.icon = '/static/img/mine/loading.gif'
+        // uni.showToast({
+        //   title: `${this.language.text198}...`,
+        //   icon: 'loading',
+        //   duration: 999999999
+        // })
+      })
+    },
     conConfim() {
       this.aa = false
       this.showConfirmPasswordModal = true
+      if (this.touchId) {
+        this.verify()
+      }
     },
     toResetPassword() {
       uni.redirectTo({
@@ -163,6 +222,9 @@ export default {
         this.aa = true
       } else {
         this.showConfirmPasswordModal = true
+        if (this.touchId) {
+          this.verify()
+        }
       }
     },
     cancel(target) {
@@ -172,6 +234,10 @@ export default {
         this.showEditWalletNameModal = false
       } else if (target === 'password') {
         this.password = ''
+        if (this.$cache.get('_touchId')) this.verifyMethod = 'touchID'
+        if (this.touchId) {
+          plus.fingerprint.cancel()
+        }
         this.confirmPasswordError = false
         this.showConfirmPasswordModal = false
       }
@@ -184,6 +250,7 @@ export default {
         return false
       }
       this.confirmPasswordError = false
+      if (this.$cache.get('_touchId')) this.verifyMethod = 'touchID'
       this.showConfirmPasswordModal = false
       this.password = ''
       return true
@@ -231,6 +298,15 @@ export default {
           url: `/pages/walletManager/export${this.target}Reminder`
         })
       }
+    },
+    closeConfirmPasswordModal() {
+      this.password = ''
+      if (this.$cache.get('_touchId')) this.verifyMethod = 'touchID'
+      this.confirmPasswordError = false
+      this.showConfirmPasswordModal = false
+      if (this.touchId) {
+        plus.fingerprint.cancel()
+      }
     }
   }
 }
@@ -239,6 +315,7 @@ export default {
 <style lang="scss" scoped>
   .container {
     background-color: #F4F6F9;
+    padding-top: calc(112rpx + var(--status-bar-height));
     width: 100vw;
     height: 100vh;
   }
@@ -555,4 +632,48 @@ export default {
     border-radius: 16rpx;
   }
   
+  .verifyTouchErrorTip {
+  	color: red;
+  	font-size: 24rpx;
+  }
+  
+  .toast {
+  	position: fixed;
+  	left: 50%;
+  	top: 50%;
+  	transform: translate(-50%, -50%) !important;
+  	width: 240rpx;
+  	background: rgba(0, 0, 0, .6);
+  	padding: 0 20rpx 32rpx;
+  	justify-content: center;
+  	border-radius: 6rpx;
+  	z-index: 999999999;
+  
+  	&-icon {
+  		text-align: center;
+  		margin-top: 65rpx;
+  
+  		image {
+  			width: 65rpx;
+  			height: 65rpx;
+  		}
+  	}
+  
+  	&-content {
+  		margin-top: 20rpx;
+  		font-weight: 400;
+  		font-size: 28rpx;
+  		color: #FFFFFF;
+  		text-align: center;
+  	}
+  }
+  
+  // 指纹验证
+  .touch-verify {
+  	margin-top: 80rpx;
+    margin-bottom: 32rpx;
+  	.logo {
+  		text-align: center;
+  	}
+  }
 </style>

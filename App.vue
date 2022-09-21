@@ -9,7 +9,6 @@ import {
 export default {
   data() {
     return {
-      isTor: false,
       language: {
         CN: {
           // text01: '请开启洋葱代理服务器'
@@ -24,7 +23,7 @@ export default {
     uni.hideTabBar({
       animation: false
     })
-    if (!this.isTor && this.$cache.get('_currentWallet') == null) {
+    if (this.$cache.get('_currentWallet') == null) {
       uni.clearStorageSync()
     }
     this.$cache.get('_language') || this.$cache.set('_language', 'CN', 0)
