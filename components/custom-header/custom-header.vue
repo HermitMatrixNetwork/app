@@ -7,7 +7,9 @@
 
     <view class="container">
       <view class="left">
-        <image v-if="showGoBack" src="/static/img/black.png" @click="beforeGoBack" style="width:48rpx;height:48rpx"></image>
+        <view v-if="showGoBack" @click="beforeGoBack" class="back_button">
+          <image  src="/static/img/black.png"  style="width:48rpx;height:48rpx"></image>  
+        </view>
         <slot v-else name="left"></slot>
       </view>
       <view class="center">
@@ -92,6 +94,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  
   .page-header {
     position: fixed;
     top: 0;
@@ -127,9 +130,12 @@ export default {
     }
 
     .left {
-      padding-left: 18rpx;
-      display: flex;
-      align-items: center;
+      .back_button {
+        padding: 0 48rpx 0 18rpx;
+        height: 112rpx;
+        display: flex;
+        align-items: center;
+      }
 
       /deep/ .u-icon__icon {
         font-size: 48rpx !important;

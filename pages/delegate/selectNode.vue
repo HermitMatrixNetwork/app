@@ -1,9 +1,11 @@
 <template>
 	<view class="select-node">
     <!-- :redirUrl='`${redirectURL}?selectIndex=${selectIndex}`' -->
-		<custom-header  :title="language.text21" >
+		<custom-header  :title="language.text21" :customStyle="{ 'z-index': 99 }">
 			<template #right>
-        <image src="/static/img/delegate/search2.png" style="width: 44rpx; height: 44rpx;" @click="toSearch"></image>
+        <view class="search_icon">
+          <image src="/static/img/delegate/search2.png" style="width: 44rpx; height: 44rpx;" @click="toSearch"></image>
+        </view>
 			</template>
 		</custom-header>
 		<view class="lists">
@@ -108,4 +110,10 @@ export default {
 		justify-content: center;
 		transform: translateY(-112rpx);
 	}
+  
+  .search_icon {
+    height: 112rpx;
+    display: flex;
+    align-items: center;
+  }
 </style>
