@@ -420,12 +420,17 @@ export default {
       this.formData.gasPrice = val.amount
     },
     selectNode(url) {
+      const eventChannel = this.getOpenerEventChannel()
+     
       uni.navigateTo({
         url,
         events: {
           indexChange: (index) => {
             this.selectIndex = index
             this.selData = this.$cache.get('_delegateInfo').list[index]
+          },
+          selindexChange: () => {
+            eventChannel.emit('selindexChange') 
           }
         }
       })

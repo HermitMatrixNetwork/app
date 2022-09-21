@@ -12,7 +12,8 @@
       <custom-loading class="loading" v-if="loading"></custom-loading>
 			<List v-else-if="list.length" :list="list" :selectIndex="selectIndex" :redirectURL="redirectURL"/>
 			<view v-else class="no-data">
-				<no-data ></no-data>
+				<no-data v-if="redirectURL == '/pages/delegate/cancel'" :tip="language.text12" :btnTx="language.text64" @btnClick="btnClick"></no-data>
+        <no-data v-else></no-data>
 			</view>
 		</view>
 	</view>
@@ -65,6 +66,13 @@ export default {
     clearInterval(this.timer)
   },
   methods: {
+    btnClick() {
+      const eventChannel = this.getOpenerEventChannel()
+      eventChannel.emit('selindexChange') 
+      uni.navigateBack({
+        delta: 2
+      })
+    },
     toSearch() {
       const eventChannel = this.getOpenerEventChannel()
       
