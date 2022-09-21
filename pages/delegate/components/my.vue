@@ -39,7 +39,7 @@
         <custom-loading v-if="loading" class="loading"></custom-loading>
         <!-- :style="{ height: scrollHeight }" -->
         
-        <scroll-view :style="{ height: scrollHeight }" scroll-y class="list-data" v-else-if="1" >
+        <scroll-view :style="{ height: scrollHeight }" scroll-y class="list-data" v-else-if="list.length" >
         <view class="list-item" v-for="(item,index) in list" :key="index">
             <view class="left">
               <view class="name">{{item.validator.description.moniker}}</view>
@@ -116,7 +116,6 @@ export default {
       })
       
       query.exec()
-      console.log(this.headerBoxHeight, this.titleHeight)
     },
     btnClick() {
       this.$emit('switchToDelegate')
@@ -124,21 +123,22 @@ export default {
     updateData() {
       console.log('delegate update data')
       // if (this.$cache.get('_updateDelegateInfo') === null || this.$cache.get('_updateDelegateInfo')) {
-      // this.loading = true
+      this.list = []
+      this.loading = true
+      this.allData = {}
+      if (this.currentWallet.address !== this.$cache.get('_currentWallet').address) {
+        this.currentWallet = this.$cache.get('_currentWallet')
+        this.$cache.delete('_delegateInfo')
+      }
+      
       this.address = this.currentWallet.address
-      // } else {
-      //   this.allData = this.$cache.get('_delegateInfo')
-      //   this.list = this.allData.list
-      //   this.loading = false
-      // }
       
       if (this.$cache.get('_delegateInfo')) {
         this.address = this.currentWallet.address
-        this.allData = this.$cache.get('_delegateInfo')
-        this.list = this.allData.list
-      } else {
-        this.loading = true
+        // this.allData = this.$cache.get('_delegateInfo')
+        // this.list = this.allData.list
       }
+
     },
     goTo(url) {
       uni.navigateTo({

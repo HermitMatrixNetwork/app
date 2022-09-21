@@ -1,6 +1,6 @@
 <template>
   <view class="asset-manage">
-    <custom-header class="header" tabUrl="/pages/account/index" :showRight="false">
+    <custom-header class="header" :showRight="false">
       <view slot="center" class="search">
         <u-search :placeholder="language.text165" shape="round" :clearabled="true" v-model="address"
           :showAction="false" @search="searchCoin" searchIcon="/static/img/delegate/search2.png"></u-search>
@@ -104,6 +104,14 @@ export default {
 
       return true
 
+    }
+  },
+  onBackPress(event) {
+    if (event.from == 'backbutton') {
+      // uni.switchTab({
+      //   url: '/pages/account/index'
+      // })
+      // return true
     }
   }
 }

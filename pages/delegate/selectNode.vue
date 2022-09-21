@@ -65,7 +65,15 @@ export default {
         url: `./search?selectIndex=${this.selectIndex}&redirectURL=/pages/delegate/cancel`
       })
     }
-  }
+  },
+  onBackPress(event) {
+    if (event.from == 'backbutton') {
+      uni.redirectTo({
+        url: this.redirectURL
+      })
+      return true
+    }
+  },
 }
 </script>
 

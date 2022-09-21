@@ -105,7 +105,6 @@
             <image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
           </view>
         </view>
-        <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">{{ language.text197 }}</view>
       </view>
     </u-modal>
     <!-- 指纹验证 -->
@@ -190,6 +189,7 @@ export default {
     },
     closeModalPasswordIsShow() {
       this.modalPasswordIsShow = false
+      if (this.$cache.get('_touchId')) this.verifyMethod = 'touchID'
       this.payPassword = ''
       if (this.touchId) {
         plus.fingerprint.cancel()
@@ -208,13 +208,15 @@ export default {
     },
     verifyTouchIDSuccess() {
       this.$nextTick(() => {
-        this.passwordCheck = false
-        this.loading = true
-        this.callRender = this.formData
+        // this.passwordCheck = false
+        // this.loading = true
+        // this.callRender = this.formData
         this.verifyTouchID = 3
-        this.showToast = true
-        this.toast.msg = `${this.language.text184}...`
-        this.toast.icon = '/static/img/mine/loading.gif'
+        this.modalPasswordIsShow = true
+        this.verifyMethod = 'password'
+        this.showToast = false
+        // this.toast.msg = `${this.language.text184}...`
+        // this.toast.icon = '/static/img/mine/loading.gif'
         // this.$nextTick(() => {
         //   uni.showToast({
         //     title: `${this.language.text184}...`,
