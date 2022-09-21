@@ -19,7 +19,7 @@
       <text class="errorTip" :style="{ opacity: showAddressError ? 1 : 0 }" v-text="language[addressError]"> </text>
       <!-- <InputTitle @textareaFocus="textareaFocus" @textareaBlur="textareaBlur" ref="walletNameTextarea" :title="language.text88" :inputVal.sync="walletName" isTextarea :class="{ 'wallet-name-input': walletName == language.text07 }"></InputTitle> -->
       <view class="label-title">{{ language.text88 }}</view>
-			<u--textarea v-model="walletName" :placeholder="language.text07" maxlength="60" class="textarea" :autoHeight="$cache.get('_language') == 'CN'"></u--textarea>
+			<u--textarea v-model="walletName" :placeholder="language.text07" :formatter='formatter' maxlength="60" class="textarea" :autoHeight="$cache.get('_language') == 'CN'"></u--textarea>
 			<text class="errorTip" :style="{ opacity: showWalletNameErrorTip ? 1 : 0 }">{{ language[walletNamerError] }}</text>
       <InputTitle style="margin-top: 32rpx;" isTextarea :isAutoHeight="$cache.get('_language') == 'CN'" :title="language.text87" :placeholder="language.text08" :inputVal.sync="walletDescribe"></InputTitle>
       <text class="errorTip" :style="{ opacity: showWalletDescribeErrorTip ? 1 : 0 }">{{ language.text117 }}</text>
@@ -33,7 +33,9 @@
 import InputTitle from './send/components/Input-title.vue'
 import language from '@/pages/mine/language/index.js'
 import { checkAddress } from '@/utils/index.js'
+import mixins from '@/pages/account/mixins/index.js'
 export default {
+  mixins:[mixins],
   components: {
     InputTitle
   },
@@ -120,6 +122,9 @@ export default {
           this.$refs.textarea.childValue = res.result
         },
       })
+    },
+    formatter(val){
+      return this.dealInputValue(val)
     }
   }
 }

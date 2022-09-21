@@ -12,9 +12,9 @@
         </view>
       </div>
       <component :is="['My', 'Ident'][selindex]" ref='customChildNode' @switchToDelegate="switchToDelegate"></component>
-			<!-- <My v-if="selindex===0" @switchToDelegate="switchToDelegate"></My> -->
-			<!-- <Ident v-if="selindex===1" @switchToDelegate="switchToDelegate"></Ident> -->
-		</view>
+      <!-- <My v-if="selindex===0" @switchToDelegate="switchToDelegate"></My> -->
+      <!-- <Ident v-if="selindex===1" @switchToDelegate="switchToDelegate"></Ident> -->
+    </view>
     <tab-bar :current-page="2" />
   </view>
 </template>
@@ -28,21 +28,21 @@ export default {
     My,
     Ident
   },
-  data() {
+  data () {
     return {
       selindex: 0,
       language: language[this.$cache.get('_language')]
     }
   },
-  onShow() {
+  onShow () {
     this.$nextTick(() => {
-      setTimeout(()=>{
-				 this.$refs.customChildNode.updateData()
-      },500)
+      setTimeout(() => {
+        this.$refs.customChildNode.updateData()
+      }, 500)
     })
   },
   methods: {
-    switchToDelegate() {
+    switchToDelegate () {
       this.selindex = 1
     }
   },
@@ -51,7 +51,7 @@ export default {
   // },
   watch: {
     selindex: {
-      handler(newVal) {
+      handler (newVal) {
         this.$nextTick(() => {
           this.$refs.customChildNode.updateData()
         })
@@ -62,50 +62,52 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .status_bar {
-    height: var(--status-bar-height);
-    width: 100%;
-  }
-  .delegate {
-    padding-top: calc(112rpx + var(--status-bar-height));
-    .container {
-      .top {
-        position: fixed;
-        top: var(--status-bar-height);
-        width: 100%;
-        background-color: #fff;
-        height: 112rpx;
-        display: flex;
-        padding: 26rpx 32rpx;
-        font-size: 40rpx;
-        color: #8397B1;
-        border-radius: 2px;
-        
-      }
+.status_bar {
+  height: var(--status-bar-height);
+  width: 100%;
+}
 
-      .left {
-        text-align: center;
+.delegate {
+  padding-top: calc(112rpx + var(--status-bar-height));
 
-      }
+  .container {
+    .top {
+      position: fixed;
+      top: var(--status-bar-height);
+      width: 100%;
+      background-color: #fff;
+      height: 112rpx;
+      display: flex;
+      padding: 26rpx 32rpx;
+      font-size: 40rpx;
+      color: #8397B1;
+      border-radius: 2px;
 
-      .right {
-        margin-left: 32rpx;
-      }
+    }
 
-      .line {
-        height: 4rpx;
-        width: 70%;
-        margin: auto;
-        margin-top: 12rpx;
-        background: #275EF1;
-        border-radius: 32px;
-        opacity: .8;
-      }
+    .left {
+      text-align: center;
+
+    }
+
+    .right {
+      margin-left: 32rpx;
+    }
+
+    .line {
+      height: 4rpx;
+      width: 70%;
+      margin: auto;
+      margin-top: 12rpx;
+      background: #275EF1;
+      border-radius: 32px;
+      opacity: .8;
     }
   }
+}
 
-  .actived {
-    color: #2C365A;
-    font-weight: 600;
-  }
+.actived {
+  color: #2C365A;
+  font-weight: 600;
+}
 </style>

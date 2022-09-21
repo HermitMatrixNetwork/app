@@ -71,7 +71,9 @@ export default {
       // 		string = string.replace(obj[i].key, obj[i].value)
       // 	}
       // }
-      return string.replace(/[\>,\<,\&,\',\"]/g,'')
+      string = string.replace(/[\>\<\&\'\"]/g,"")
+			// console.log(string);
+			return string
     }
 
   }
