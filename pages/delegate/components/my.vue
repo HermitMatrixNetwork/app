@@ -148,7 +148,12 @@ export default {
     },
     goTo(url) {
       uni.navigateTo({
-        url
+        url,
+        events: {
+          selindexChange: () => {
+            this.$emit('switchToDelegate') 
+          }
+        }
       })
     },
     async initData(data) {

@@ -1,16 +1,19 @@
 <template>
 	<view class="select-node">
     <!-- :redirUrl='`${redirectURL}?selectIndex=${selectIndex}`' -->
-		<custom-header  :title="language.text21" >
+		<custom-header  :title="language.text21" :customStyle="{ 'z-index': 99 }">
 			<template #right>
-        <image src="/static/img/delegate/search2.png" style="width: 44rpx; height: 44rpx;" @click="toSearch"></image>
+        <view class="search_icon">
+          <image src="/static/img/delegate/search2.png" style="width: 44rpx; height: 44rpx;" @click="toSearch"></image>
+        </view>
 			</template>
 		</custom-header>
 		<view class="lists">
       <custom-loading class="loading" v-if="loading"></custom-loading>
 			<List v-else-if="list.length" :list="list" :selectIndex="selectIndex" :redirectURL="redirectURL"/>
 			<view v-else class="no-data">
-				<no-data ></no-data>
+				<no-data v-if="redirectURL == '/pages/delegate/cancel'" :tip="language.text12" :btnTx="language.text64" @btnClick="btnClick"></no-data>
+        <no-data v-else></no-data>
 			</view>
 		</view>
 	</view>
@@ -63,6 +66,13 @@ export default {
     clearInterval(this.timer)
   },
   methods: {
+    btnClick() {
+      const eventChannel = this.getOpenerEventChannel()
+      eventChannel.emit('selindexChange') 
+      uni.navigateBack({
+        delta: 2
+      })
+    },
     toSearch() {
       const eventChannel = this.getOpenerEventChannel()
       
@@ -108,4 +118,10 @@ export default {
 		justify-content: center;
 		transform: translateY(-112rpx);
 	}
+  
+  .search_icon {
+    height: 112rpx;
+    display: flex;
+    align-items: center;
+  }
 </style>
