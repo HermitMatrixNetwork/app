@@ -129,7 +129,6 @@ export default {
   created() {
     // this.address = this.currentWallet.address
     this.ValidatorsData()
-    console.log('test2')
   },
   onReady() {
     this.updateData()
@@ -170,10 +169,9 @@ export default {
           item.rate = item.commission_rate * 100 + '%'
           return item
         })
-        console.log(this.validators)
         this.$cache.set('_validators', this.validators, 0)
       } catch (e) {
-        console.log('request errpr', e)
+        console.log('request error', e)
       } finally {
         this.loading = false
       }
