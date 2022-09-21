@@ -71,8 +71,7 @@ export default {
 	.message {
 		height: calc(100vh - 112rpx - 1px - var(--status-bar-height));
 		overflow-y: auto;
-		padding: 0 32rpx 0;
-
+		padding: calc(112rpx + var(--status-bar-height)) 32rpx 0;
 		.title {
 			font-weight: 600;
 			font-size: 36rpx;

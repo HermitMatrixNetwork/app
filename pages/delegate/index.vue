@@ -39,7 +39,6 @@ export default {
 			setTimeout(()=>{
 				 this.$refs.customChildNode.updateData()
 			},500)
-      console.log('testtestestest')
     })
   },
   methods: {

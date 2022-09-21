@@ -87,7 +87,7 @@ const languages = {
     text84: '密码输入不一致，请重新输入',
     text85: '钱包名称不能超过10个字符',
     text86: '钱包已存在，请勿导入相同的钱包',
-    text87: `ㅤㅤHermit Matrix Network（以下简称我或者我们）是专业从事区块链软件的极客开发组织，专注于利用去中心化技术为像您这样的个人（“您”或“您的”）提供可信的数字资产管理服务。我们托管一个顶级域名站：https://Hermit.ink，该网站提供有关Hermit和我们的产品的信息，以及我们产品的子域（“网站”）信息，其中包括文本、图像、音频、代码和其他材料或第三方信息。<br>
+    text87: `ㅤㅤHermit Matrix Network（以下简称我或者我们）是专业从事区块链软件的极客开发组织，专注于利用去中心化技术为像您这样的个人（“您”或“您的”）提供可信的数字资产管理服务。我们托管一个顶级域名站：https://www.hermit.network，该网站提供有关Hermit和我们的产品的信息，以及我们产品的子域（“网站”）信息，其中包括文本、图像、音频、代码和其他材料或第三方信息。<br>
     
     由于越来越多的诈骗者想方设法欺骗毫无戒心的受害者的数字资产，请您在每次访问我们的域名站时验证SSL证书。在从您正在访问的网站下载、点击或以其他方式与之交互之前，请确保SSL证书的真实性。为免疑义，我们无法控制任何第三方网站或服务的内容、隐私政策或行为，也不对其承担任何责任。对于因使用或依赖任何此类网站或服务上或通过此类网站或服务提供的任何此类内容、商品或服务而造成或声称造成的任何损害或损失，我们概不负责或承担任何直接或间接责任。<br>
     
@@ -403,7 +403,7 @@ const languages = {
     text84: '密碼輸入不一致，請重新輸入',
     text85: '錢包名稱不能超過10個字符',
     text86: '錢包已存在，請勿導入相同的錢包',
-    text87: `Hermit Matrix Network（以下簡稱我或者我們）是專業從事區塊鏈軟件的極客開發組織，專註於利用去中心化技術為像您這樣的個人（「您」或「您的」）提供可信的數字資產管理服務。我們托管一個頂級域名站：https://Hermit.ink，該網站提供有關Hermit和我們的產品的信息，以及我們產品的子域（「網站」）信息，其中包括文本、圖像、音頻、代碼和其他材料或第三方信息。
+    text87: `Hermit Matrix Network（以下簡稱我或者我們）是專業從事區塊鏈軟件的極客開發組織，專註於利用去中心化技術為像您這樣的個人（「您」或「您的」）提供可信的數字資產管理服務。我們托管一個頂級域名站：https://www.hermit.network，該網站提供有關Hermit和我們的產品的信息，以及我們產品的子域（「網站」）信息，其中包括文本、圖像、音頻、代碼和其他材料或第三方信息。
     
     由於越來越多的詐騙者想方設法欺騙毫無戒心的受害者的數字資產，請您在每次訪問我們的域名站時驗證SSL證書。在從您正在訪問的網站下載、點擊或以其他方式與之交互之前，請確保SSL證書的真實性。為免疑義，我們無法控製任何第三方網站或服務的內容、隱私政策或行為，也不對其承擔任何責任。對於因使用或依賴任何此類網站或服務上或通過此類網站或服務提供的任何此類內容、商品或服務而造成或聲稱造成的任何損害或損失，我們概不負責或承擔任何直接或間接責任。
     
@@ -716,7 +716,7 @@ const languages = {
     text84: 'The password input is inconsistent, please re-enter',
     text85: 'Wallet name cannot exceed 10 characters',
     text86: 'Wallet already exists, please do not import the same wallet',
-    text87: `Hermit Matrix Network (hereinafter referred to as "me" or "us") is a geek development organization specializing in blockchain software, dedicated to providing trusted digital asset management services for individuals like you ("you" or "your") using decentralized technology. We host a top-level domain: https://Hermit.ink, which provides information about Hermit and our products, as well as sub-domain ("Website") information about our products, including text, images, audio, code and other materials or third-party information.<br>
+    text87: `Hermit Matrix Network (hereinafter referred to as "me" or "us") is a geek development organization specializing in blockchain software, dedicated to providing trusted digital asset management services for individuals like you ("you" or "your") using decentralized technology. We host a top-level domain: https://www.hermit.network, which provides information about Hermit and our products, as well as sub-domain ("Website") information about our products, including text, images, audio, code and other materials or third-party information.<br>
 As more and more scammers try to trick unsuspecting victims of digital assets, verify your SSL certificate every time you visit our domain name. Make sure the SSL certificate is authentic before downloading, clicking on, or otherwise interacting with it from the website you are visiting. For the avoidance of doubt, we have no control or liability over the content, privacy policy or conduct of any third party website or service. We shall not be liable or liable, directly or indirectly, for any damage or loss caused or claimed by the use of, or reliance on, any such content, goods or services on or through such websites or services.<br>
 This Service Agreement ("Agreement" or "Service Agreement") contains the terms and conditions governing your access to and use of the Website and Services we provide (as defined below) and is an agreement between us and you or the entity you represent. Please read the Service Agreement carefully before using this site or service. By using the Site, or by clicking a button or check box to accept or agree to the Terms of Service (if any) of this Service Agreement, or by filling out a Service Order, or, if earlier, by using or otherwise accessing the Service (Effective Date), you (1) accept and agree to this Service Agreement and any additional terms, rules and conditions of participation that we may from time to time issue, and (2) agree to the collection, use, disclosure and other processing of information as described in our Privacy Policy. If you do not agree to this Service Agreement, you may not access or use the Services.<br>
 In particular, we remind you to read this Service Agreement and other documents referred to in this Service Agreement carefully, in particular the Disclaimer and Limitation of Liability clause in this Service Agreement, before using our Hermit Mobile Application (hereinafter referred to as "Hermit" or "this Software", which Hermit can download from any mobile application platform, including but not limited to Google Play Store and Apple App Store), to ensure that you fully understand the terms of this Service Agreement and consider the risks of using Hermit.<br>
