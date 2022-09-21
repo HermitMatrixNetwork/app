@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     addNode() {
-      uni.redirectTo({
+      uni.navigateTo({
         url: './addNode'
       })
     },
@@ -67,7 +67,7 @@ export default {
       })
     },
     toEditNode(item) {
-      uni.redirectTo({
+      uni.navigateTo({
         url: `./editNode?node=${JSON.stringify(item)}`
       })
     }

@@ -38,6 +38,10 @@ export default {
       type: String,
       required: true
     },
+    from: {
+      type: String,
+      default: ''
+    },
     selectIndex: Number
   },
   data() {
@@ -45,16 +49,28 @@ export default {
       mainCoin
     }
   },
+
   methods: {
 	 selRadio(index){
       console.log(index)
 	 },
     clickItem(val) {
-			const delegateList = this.$cache.get('_delegateInfo')
-			const i = delegateList.list.findIndex(item => item.validator.operatorAddress == val.validator.operatorAddress)
-      uni.redirectTo({
-        url: `${this.redirectURL}?selectIndex=${i}`
-      })
+      const delegateList = this.$cache.get('_delegateInfo')
+      const i = delegateList.list.findIndex(item => item.validator.operatorAddress == val.validator.operatorAddress)
+      // uni.redirectTo({
+      //   url: `${this.redirectURL}?selectIndex=${i}`
+      // })
+      const eventChannel = this.getOpenerEventChannel()
+      eventChannel.emit('indexChange', i)
+      console.log(this.from)
+      if (this.from == 'search') {
+        uni.navigateBack({
+          delta: 2
+        })
+      } else {
+        uni.navigateBack()
+      }
+      
     },
   }
 	

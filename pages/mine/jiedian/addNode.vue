@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <custom-header backUrl="./index" class="header" :title="language.text39" :customStyle="{ 'background-color': '#fff' }">
+    <custom-header class="header" :title="language.text39" :customStyle="{ 'background-color': '#fff' }">
       <template slot="right">
         <view class="save" @click="addNode">
           {{ language.text43 }}
@@ -112,9 +112,10 @@ export default {
   },
   onBackPress(event) {
     if (event.from == 'backbutton') {
-      uni.redirectTo({
-        url: './index'
-      })
+      // uni.redirectTo({
+      //   url: './index'
+      // })
+      uni.navigateBack()
       return true
     }
   }

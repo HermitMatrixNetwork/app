@@ -7,7 +7,7 @@
         :actionStyle="searchStyle" @search="searchCoin" @custom="goBack" searchIcon="/static/img/delegate/search2.png"></u-search>
     </view>
     <view class="list" v-if="list.length > 0">
-      <List :list="list" :redirectURL="'/pages/delegate/cancel'" :selectIndex="selectIndex" />
+      <List :list="list" :redirectURL="redirectURL" :selectIndex="selectIndex" :from="from"/>
     </view>
     <view v-else class="noData">
       <image v-if="reAddress!=''" class="data" src="/static/img/account/nodata.png" alt="" />
@@ -29,23 +29,29 @@ export default {
       reAddress: '', //renderjs调用
       address: '', //查询地址
       list: [], //查询结果
-			delegateList: [], // 正在质押的验证人节点信息
+      delegateList: [], // 正在质押的验证人节点信息
       searchStyle: {
         fontSize: '28rpx',
         color: '#275EF1'
       },
-			selectIndex: -1,
-			selectValidator: {}
+      selectIndex: -1,
+      originSelectIndex: -1,
+      selectValidator: {},
+      redirectURL: '',
+      from: ''
     }
   },
   components: {
     List
   },
   onLoad(options) {
-		this.delegateList = this.$cache.get('_delegateInfo')
-		if (options.selectIndex > -1) {
-			this.selectValidator = this.delegateList.list[options.selectIndex]
-		}
+    this.delegateList = this.$cache.get('_delegateInfo')
+    if (options.selectIndex > -1) {
+      this.originSelectIndex = options.selectIndex
+      this.selectValidator = this.delegateList.list[options.selectIndex]
+    }
+    this.redirectURL = options.redirectURL
+    this.from = options.from
     // if(options.address){
     //   this.address =options.address
     //   this.reAddress = options.address
@@ -54,10 +60,10 @@ export default {
   methods: {
     //查询合约
     searchCoin() {
-			this.list = this.delegateList.list.filter(item => item.validator.operatorAddress == this.address || this.address == item.validator.description.moniker)
-			if (this.selectValidator.validator) {
-				this.selectIndex = this.list.findIndex(item => item.validator.operatorAddress == this.selectValidator.validator.operatorAddress)
-			}
+      this.list = this.delegateList.list.filter(item => item.validator.operatorAddress == this.address || this.address == item.validator.description.moniker)
+      if (this.selectValidator.validator) {
+        this.selectIndex = this.list.findIndex(item => item.validator.operatorAddress == this.selectValidator.validator.operatorAddress)
+      }
       this.reAddress = this.address
     },
     goBack() {
@@ -76,6 +82,14 @@ export default {
         this.list = []
       }
 
+    }
+  },
+  onBackPress(event) {
+    if (event.from == 'backbutton') {
+      uni.navigateBack({
+        delta: 2
+      })
+      return true
     }
   }
 }
@@ -147,4 +161,8 @@ export default {
 	.list {
 		padding: 0 32rpx;
 	}
+  
+  /deep/ .u-search__action--active {
+    width: auto !important;
+  }
 </style>

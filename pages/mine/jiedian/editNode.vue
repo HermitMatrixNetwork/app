@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <custom-header backUrl="./index" class="header" :title="language.text108" :customStyle="{ 'background-color': '#fff' }">
+    <custom-header class="header" :title="language.text108" :customStyle="{ 'background-color': '#fff' }">
       <template slot="right">
         <view class="save" @click="confirm">
           {{ language.text49 }}
@@ -109,9 +109,10 @@ export default {
   },
   onBackPress(event) {
     if (event.from == 'backbutton') {
-      uni.redirectTo({
-        url: './index'
-      })
+      // uni.redirectTo({
+      //   url: './index'
+      // })
+      uni.navigateBack()
       return true
     }
   },
@@ -194,9 +195,7 @@ export default {
           bgColor: '#275EF1'
         })
         setTimeout(() => {
-          uni.redirectTo({
-            url: './index'
-          })
+          uni.navigateBack()
         }, 1000)
       }
     }

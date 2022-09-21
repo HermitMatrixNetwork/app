@@ -1,6 +1,7 @@
 <template>
 	<view class="select-node">
-		<custom-header :redirUrl='`${redirectURL}?selectIndex=${selectIndex}`' :title="language.text21" >
+    <!-- :redirUrl='`${redirectURL}?selectIndex=${selectIndex}`' -->
+		<custom-header  :title="language.text21" >
 			<template #right>
         <image src="/static/img/delegate/search2.png" style="width: 44rpx; height: 44rpx;" @click="toSearch"></image>
 			</template>
@@ -35,12 +36,14 @@ export default {
       loading: true,
       currentWallet: this.$cache.get('_currentWallet'),
       selectIndex: -1,
-      redirectURL: ''
+      redirectURL: '',
+
     }
   },
   onLoad(options) {
     options.selectIndex && (this.selectIndex = Number(options.selectIndex))
     options.redirectURL && (this.redirectURL = options.redirectURL)
+
   },
   created() {
     if (!this.$cache.get('_delegateInfo')) {
@@ -61,16 +64,24 @@ export default {
   },
   methods: {
     toSearch() {
+      const eventChannel = this.getOpenerEventChannel()
+      
       uni.navigateTo({
-        url: `./search?selectIndex=${this.selectIndex}&redirectURL=/pages/delegate/cancel`
+        url: `./search?selectIndex=${this.selectIndex}&redirectURL=${this.redirectURL}&from=search`,
+        events: {
+          indexChange: (index) => {
+            eventChannel.emit('indexChange', index)
+          }
+        }
       })
     }
   },
   onBackPress(event) {
     if (event.from == 'backbutton') {
-      uni.redirectTo({
-        url: this.redirectURL
-      })
+      uni.navigateBack()
+      // uni.redirectTo({
+      //   url: this.redirectURL + `?selectIndex=${this.selectIndex}`
+      // })
       return true
     }
   },

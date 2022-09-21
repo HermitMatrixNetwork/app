@@ -460,8 +460,17 @@ export default {
       })
     },
     selectNode(url) {
-      uni.redirectTo({
-        url
+      // uni.redirectTo({
+      //   url
+      // })
+      uni.navigateTo({
+        url,
+        events: {
+          indexChange: (index) => {
+            this.selectIndex = index
+            this.selData = this.$cache.get('_delegateInfo').list[index]
+          }
+        }
       })
     },
     handlerBalance(res) {
@@ -605,6 +614,7 @@ export default {
   .sendPage {
     padding-top: calc(112rpx + var(--status-bar-height));
     background: #F4F6F9;
+    height: 100vh;
   }
 
   .main-top {

@@ -128,9 +128,6 @@ export default {
   },
   created() {
     // this.address = this.currentWallet.address
-    this.ValidatorsData()
-  },
-  onReady() {
     this.updateData()
   },
   methods: {

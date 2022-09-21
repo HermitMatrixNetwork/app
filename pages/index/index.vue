@@ -76,6 +76,14 @@ export default {
   onLoad() {
     if (this.$cache.get('_currentWallet') == null) {
       this.agree_protocol = this.$cache.get('_agree_protocol') || false
+      plus.navigator.closeSplashscreen()
+    } else {
+      uni.reLaunch({
+        url: '/pages/account/index',
+        success: () => {
+          plus.navigator.closeSplashscreen()
+        }
+      })
     }
   },
   methods: {

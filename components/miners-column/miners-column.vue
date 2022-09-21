@@ -95,7 +95,7 @@ export default {
                 price: '0.00',
                 demon: 'ughm',
                 speed: this.language.text27,
-                time: '约3秒'
+                time: `${language[this.$cache.get('_language')].text28} 3 ${language[this.$cache.get('_language')].text26}`
               }, data)
               this.minersList.splice(3, 1, data)
               this.$emit('getMinersCost', data)
@@ -119,7 +119,7 @@ export default {
               price: '0.00',
               demon: 'ughm',
               speed: this.language.text27,
-              time: '约3秒'
+              time: `${language[this.$cache.get('_language')].text28} 3 ${language[this.$cache.get('_language')].text26}`
             }, data)
             this.minersList.push(data)
             this.$emit('getMinersCost', data)
