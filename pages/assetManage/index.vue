@@ -113,6 +113,11 @@ export default {
       // })
       // return true
     }
+  },
+  watch:{
+    address(value){
+      this.address = value.replace(/[\<\>\'\"\&]/g,'')
+    }
   }
 }
 </script>

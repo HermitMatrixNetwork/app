@@ -8,193 +8,195 @@
 			</template>
 		</custom-header>
 		<view class="container">
-      <view class="main-top">
-      
-      	<view class="content">
-      
-      		<!-- 代币选择 -->
-      		<view class="change-token" @click="jumpTokenlist">
-      			<image :src="token.logo"></image>
-      			<text>{{ token.alias_name }}</text>
-      			<view class="icon-right">
-      				<image src="/static/img/ic-arrow1.png" style="width:32rpx; height: 32rpx;"></image>
-      			</view>
-      		</view>
-      
-      		<!-- 收款地址 -->
-      		<view class="collection-adres">
-      			<InputTitle :title="language.text16" :type="'text'" :placeholder="language.text17"
-      				:isTextarea="true" ref="addressInptval" :inputVal.sync="sendFormData.receiveAddress">
-      				<template #title-icon>
-      					<image src="/static/img/account/addressbook.png" @click="toAddressBook"
-      						style="width:44rpx; height: 44rpx;"></image>
-      				</template>
-      			</InputTitle>
-      			<text :style="{ opacity: showAddressErrorTip ? 1 : 0 }"
-      				class="waringPrompt">{{ language[addressError] }}</text>
-      		</view>
-      
-      		<!-- 发送金额 -->
-      		<view class="send-amount">
-      			<view class="send-amount">
-      				<view class="amount">
-      					<view class="label">
-      						<text>{{ language.text18 }}</text>
-      						<view class="can-be-use">
-      							{{ language.text193 }}：
-      							<custom-loading v-if="loading"></custom-loading>
-      							<text v-else>{{  formatBalance(token.balance) || '0.000000' }} {{ token.alias_name }}</text>
-      						</view>
-      					</view>
-      					<view class="value"
-      						:class="{ valueError : (Number(sendFormData.sendAmount) > Number(token.balance) || showAmountErrorTip)}">
-      						<!-- @input="sendAmountInput" -->
-      						<u--input :placeholder="language.text19" type="digit" v-model="sendFormData.sendAmount" :formatter="formatter"
-      							></u--input>
-      						<view class="value-info">
-      							<text class="denom">{{ token.alias_name }}</text>
-      							<view class="border"></view>
-      							<text class="all" @click="testAmount">{{ language.text21 }}</text>
-      						</view>
-      					</view>
-      				</view>
-      			</view>
-      			<text v-if="Number(sendFormData.sendAmount) > Number(token.balance)"
-      				class="waringPrompt">{{ language.text194 }}</text>
-      			<text v-else-if="showAmountErrorTip" class="waringPrompt">{{ language.text195 }}</text>
-      		</view>
-      
-      		<view class="send-memo">
-      			<InputTitle :title="'Memo'" :type="'text'" :placeholder="language.text106"
-      				:inputVal.sync="sendFormData.memo">
-      			</InputTitle>
-      		</view>
-      	</view>
-      </view>
-      
-      <view class="main-bottom">
-      	<miners-column @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
-      
-      	<view class="submit-btn" @click="transferConfirm">
-      		<Submitbtn>{{ language.text144 }}</Submitbtn>
-      	</view>
-      </view>
-      
-      <u-popup :show="submitPopupIsShow" @close="submitPopupIsShow=false" mode="bottom" class="double-check-popup"
-      	:safeAreaInsetBottom="true">
-      	<view class="submitPopup">
-      		<view class="main">
-      			<view class="popup-title">
-      				{{ language.text42 }}
-      				<image src="/static/img/account/close.png" style="width: 32rpx; height: 32rpx;"
-      					@click="submitPopupIsShow=false"></image>
-      			</view>
-      
-      			<!-- 发送账户 -->
-      			<view class="send-address">
-      				<text>{{language.text43}}</text>
-      				<text>{{sendFormData.userAddress}}</text>
-      			</view>
-      
-      			<!-- 接收账户 -->
-      			<view class="receive_address">
-      				<text>{{ language.text174 }}</text>
-      				<text>{{sendFormData.receiveAddress}}</text>
-      			</view>
-      
-      			<!-- 转账金额 -->
-      			<view class="transfer_amount">
-      				<text>{{ language.text45 }}</text>
-      				<text>{{sendFormData.sendAmount?sendFormData.sendAmount:'0'}} {{ token.alias_name }}</text>
-      			</view>
-      
-      			<!--Memo-->
-      			<view class="memo_type">
-      				<text>Memo</text>
-      				<text class="memo">{{ sendFormData.memo }}</text>
-      			</view>
-      
-      			<!--矿工费-->
-      			<view class="miners_fee">
-      				<text>{{language.text46}}</text>
-              <custom-loading v-if="feeLoading"></custom-loading>
-      				<view v-else>
-      					<view>{{ sendFormData.gas }} * {{ sendFormData.gasPrice }}
-      						ughm
-      					</view>
-      					<view class="price">
-      						{{ totalGas }}
-      						GHM
-      					</view>
-      				</view>
-      			</view>
-      		</view>
-      		<view class="submit-btn" @click="submitAgain" style="position: absolute; bottom: 64rpx; width: 622rpx;">
-      			<Submitbtn>{{ language.text47 }}</Submitbtn>
-      		</view>
-      	</view>
-      </u-popup>
-      
-      <u-modal :show="modalPasswordIsShow" :showConfirmButton="false">
-      	<view class="modal_main">
-      		<view class="modal_title">
-      			<view>
-      				{{ verifyMethod == 'touchID' ? language.text196 : language.text48 }}
-      				<text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
-      					class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
-      			</view>
-      			<image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
-      				@click="closeModalPasswordIsShow"></image>
-      		</view>
-      		<!--  -->
-      		<view v-if="verifyMethod == 'password'">
-      			<view class="item">
-      				<view class="item-input item-input-password">
-      					<u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text49">
-      					</u-input>
-      					<image
-      						:src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
-      						@click="passwordEye = !passwordEye"
-      						style="width: 32rpx; height: 32rpx; margin-right: 36rpx;"></image>
-      				</view>
-      			</view>
-      			<text v-if="passwordCheck" class="waringPrompt">{{ language.text51 }}</text>
-      			<u-button @click="passwordButton" class="btn">{{ language.text107 }}</u-button>
-      		</view>
-      		<view v-else class="touch-verify">
-      			<view class="logo">
-      				<image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
-      			</view>
-      		</view>
-      	</view>
-      </u-modal>
-      <view :check="checkSuccess" :change:check="render.sendToken"></view>
-      <view :callSimulate="callSimulate" :change:callSimulate="render.simulateFee"></view>
-      
-      <!-- 指纹验证 -->
-      <view class="toast" v-show="showToast">
-      	<view class="toast-icon">
-      		<image :src="toast.icon"></image>
-      	</view>
-      	<view class="toast-content">
-      		<text>{{ toast.msg }}</text>
-      	</view>
-      </view>
-      
-      <!-- 大额提醒 -->
-      <u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
-      	<view class="modalContent">
-      		<image src="/static/img/tishi2.png" style="width: 64rpx; height: 64rpx;"></image>
-      		<view class="modal-title">{{ language.text172 }}</view>
-      		<text class="modal-content">{{ language.text219 }}</text>
-      		<view class="confirm-button">
-      			<uni-button @click="aa = false" class="cancel">{{ language.text170 }}</uni-button>
-      			<uni-button @click="aaConfirm" class="confirm">{{ language.text09 }}</uni-button>
-      		</view>
-      	</view>
-      </u-modal>
-    </view>
-   
+			<view class="main-top">
+
+				<view class="content">
+
+					<!-- 代币选择 -->
+					<view class="change-token" @click="jumpTokenlist">
+						<image :src="token.logo"></image>
+						<text>{{ token.alias_name }}</text>
+						<view class="icon-right">
+							<image src="/static/img/ic-arrow1.png" style="width:32rpx; height: 32rpx;"></image>
+						</view>
+					</view>
+
+					<!-- 收款地址 -->
+					<view class="collection-adres">
+						<InputTitle :title="language.text16" :type="'text'" :placeholder="language.text17"
+							:isTextarea="true" ref="addressInptval" :inputVal.sync="sendFormData.receiveAddress">
+							<template #title-icon>
+								<image src="/static/img/account/addressbook.png" @click="toAddressBook"
+									style="width:44rpx; height: 44rpx;"></image>
+							</template>
+						</InputTitle>
+						<text :style="{ opacity: showAddressErrorTip ? 1 : 0 }"
+							class="waringPrompt">{{ language[addressError] }}</text>
+					</view>
+
+					<!-- 发送金额 -->
+					<view class="send-amount">
+						<view class="send-amount">
+							<view class="amount">
+								<view class="label">
+									<text>{{ language.text18 }}</text>
+									<view class="can-be-use">
+										{{ language.text193 }}：
+										<custom-loading v-if="loading"></custom-loading>
+										<text v-else>{{ formatBalance(token.balance) || '0.000000' }}
+											{{ token.alias_name }}</text>
+									</view>
+								</view>
+								<view class="value"
+									:class="{ valueError : (Number(sendFormData.sendAmount) > Number(token.balance) || showAmountErrorTip)}">
+									<!-- @input="sendAmountInput" -->
+									<u--input :placeholder="language.text19" type="digit"
+										v-model="sendFormData.sendAmount" :formatter="formatter"></u--input>
+									<view class="value-info">
+										<text class="denom">{{ token.alias_name }}</text>
+										<view class="border"></view>
+										<text class="all" @click="testAmount">{{ language.text21 }}</text>
+									</view>
+								</view>
+							</view>
+						</view>
+						<text v-if="Number(sendFormData.sendAmount) > Number(token.balance)"
+							class="waringPrompt">{{ language.text194 }}</text>
+						<text v-else-if="showAmountErrorTip" class="waringPrompt">{{ language.text195 }}</text>
+					</view>
+
+					<view class="send-memo">
+						<InputTitle :title="'Memo'" :type="'text'" :placeholder="language.text106"
+							:inputVal.sync="sendFormData.memo">
+						</InputTitle>
+					</view>
+				</view>
+			</view>
+
+			<view class="main-bottom">
+				<miners-column @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
+
+				<view class="submit-btn" @click="transferConfirm">
+					<Submitbtn :loadingIsShow="btnLoading">{{ language.text144 }}</Submitbtn>
+				</view>
+			</view>
+
+			<u-popup :show="submitPopupIsShow" @close="submitPopupIsShow=false" mode="bottom" class="double-check-popup"
+				:safeAreaInsetBottom="true">
+				<view class="submitPopup">
+					<view class="main">
+						<view class="popup-title">
+							{{ language.text42 }}
+							<image src="/static/img/account/close.png" style="width: 32rpx; height: 32rpx;"
+								@click="submitPopupIsShow=false"></image>
+						</view>
+
+						<!-- 发送账户 -->
+						<view class="send-address">
+							<text>{{language.text43}}</text>
+							<text>{{sendFormData.userAddress}}</text>
+						</view>
+
+						<!-- 接收账户 -->
+						<view class="receive_address">
+							<text>{{ language.text174 }}</text>
+							<text>{{sendFormData.receiveAddress}}</text>
+						</view>
+
+						<!-- 转账金额 -->
+						<view class="transfer_amount">
+							<text>{{ language.text45 }}</text>
+							<text>{{sendFormData.sendAmount?sendFormData.sendAmount:'0'}} {{ token.alias_name }}</text>
+						</view>
+
+						<!--Memo-->
+						<view class="memo_type">
+							<text>Memo</text>
+							<text class="memo">{{ sendFormData.memo }}</text>
+						</view>
+
+						<!--矿工费-->
+						<view class="miners_fee">
+							<text>{{language.text46}}</text>
+							<!-- <custom-loading v-if="feeLoading"></custom-loading> -->
+							<view>
+								<view>{{ sendFormData.gas }} * {{ sendFormData.gasPrice }}
+									ughm
+								</view>
+								<view class="price">
+									{{ totalGas }}
+									GHM
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="submit-btn" @click="submitAgain"
+						style="position: absolute; bottom: 64rpx; width: 622rpx;">
+						<Submitbtn>{{ language.text47 }}</Submitbtn>
+					</view>
+				</view>
+			</u-popup>
+
+			<u-modal :show="modalPasswordIsShow" :showConfirmButton="false">
+				<view class="modal_main">
+					<view class="modal_title">
+						<view>
+							{{ verifyMethod == 'touchID' ? language.text196 : language.text48 }}
+							<text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
+								class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
+						</view>
+						<image src="/static/img/account/close.png" style="width: 32rpx;height: 32rpx;"
+							@click="closeModalPasswordIsShow"></image>
+					</view>
+					<!--  -->
+					<view v-if="verifyMethod == 'password'">
+						<view class="item">
+							<view class="item-input item-input-password">
+								<u-input :password="!passwordEye" v-model="payPassword" :placeholder="language.text49">
+								</u-input>
+								<image
+									:src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
+									@click="passwordEye = !passwordEye"
+									style="width: 32rpx; height: 32rpx; margin-right: 36rpx;"></image>
+							</view>
+						</view>
+						<text v-if="passwordCheck" class="waringPrompt">{{ language.text51 }}</text>
+						<u-button @click="passwordButton" class="btn">{{ language.text107 }}</u-button>
+					</view>
+					<view v-else class="touch-verify">
+						<view class="logo">
+							<image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
+						</view>
+					</view>
+				</view>
+			</u-modal>
+			<view :check="checkSuccess" :change:check="render.sendToken"></view>
+			<view :callSimulate="callSimulate" :change:callSimulate="render.simulateFee"></view>
+
+			<!-- 指纹验证 -->
+			<view class="toast" v-show="showToast">
+				<view class="toast-icon">
+					<image :src="toast.icon"></image>
+				</view>
+				<view class="toast-content">
+					<text>{{ toast.msg }}</text>
+				</view>
+			</view>
+
+			<!-- 大额提醒 -->
+			<u-modal :show="aa" width="686rpx" :showConfirmButton="false" class="hintModal">
+				<view class="modalContent">
+					<image src="/static/img/tishi2.png" style="width: 64rpx; height: 64rpx;"></image>
+					<view class="modal-title">{{ language.text172 }}</view>
+					<text class="modal-content">{{ language.text219 }}</text>
+					<view class="confirm-button">
+						<uni-button @click="aa = false" class="cancel">{{ language.text170 }}</uni-button>
+						<uni-button @click="aaConfirm" class="confirm">{{ language.text09 }}</uni-button>
+					</view>
+				</view>
+			</u-modal>
+		</view>
+		<custom-notify ref="notify"></custom-notify>
 	</view>
 </template>
 
@@ -211,7 +213,9 @@ import mixin from '../mixins/index.js'
 import verifyTouchID from '../mixins/verifyTouchID.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
 import mainCoin from '@/config/index.js'
-import { checkAddress } from '@/utils/index.js'
+import {
+  checkAddress
+} from '@/utils/index.js'
 import {
   onlyPositiveNumber
 } from '@/utils/directives.js'
@@ -276,7 +280,8 @@ export default {
       aa: false,
       addressError: 'text188', // text188:收款地址不能为空 ; text220: 输入地址有误，请检查后重新输入
       isCustomFess: false,
-      feeLoading: true
+      feeLoading: true,
+      btnLoading: false
     }
   },
   onLoad(options) {
@@ -317,8 +322,9 @@ export default {
       })
     },
     aaConfirm() {
-      this.callSimulate = JSON.parse(JSON.stringify(this.sendFormData)) 
-      this.submitPopupIsShow = true 
+      this.callSimulate = JSON.parse(JSON.stringify(this.sendFormData))
+      // this.submitPopupIsShow = true
+      this.btnLoading = true
       this.aa = false
     },
     formatBalance(val) {
@@ -326,8 +332,8 @@ export default {
     },
     formatter(val) {
       // if (val.split('.'))
-      let num = val.replace(/[^\d.]/g,'')
-				
+      let num = val.replace(/[^\d.]/g, '')
+
       if (num.split('.')[1] && num.split('.')[1].length > 6) {
         return `${num.split('.')[0]}.${num.split('.')[1].substr(0, 6)}`
       } else {
@@ -389,7 +395,7 @@ export default {
       this.modalPasswordIsShow = true
       this.firstTime = true
       // #ifdef APP-PLUS
-      if (this.touchId) {       
+      if (this.touchId) {
         this.verify()
       }
       // #endif
@@ -401,6 +407,8 @@ export default {
       this.submitPopupIsShow = false
     },
     async transferConfirm() { //转账确认
+      if(this.btnLoading) return
+      if (this.sendFormData.gas !== '') return this.submitPopupIsShow = true
       const {
         receiveAddress,
         sendAmount,
@@ -410,16 +418,16 @@ export default {
       if (receiveAddress.trim() === '') {
         this.addressError = 'text188'
         this.showAddressErrorTip = true
-      } else if (!checkAddress(receiveAddress)){
+      } else if (!checkAddress(receiveAddress)) {
         this.addressError = 'text220'
         this.showAddressErrorTip = true
       } else if (receiveAddress == this.sendFormData.userAddress) {
         this.addressError = 'text226'
         this.showAddressErrorTip = true
       } else {
-        this.showAddressErrorTip = false          
+        this.showAddressErrorTip = false
       }
-				
+
 
       if (sendAmount == '' || sendAmount <= 0) {
         this.showAmountErrorTip = true
@@ -431,21 +439,26 @@ export default {
       // console.log(this.showAddressErrorTip, this.showAmountErrorTip, this.sendFormData.sendAmount <= this.token.balance)
       if (!this.showAddressErrorTip && !this.showAmountErrorTip && this.sendFormData.sendAmount <= this.token
         .balance) {
-        const quota = this.$cache.get('_quota')
+        this.btnLoading = true
+        // if(this.btnLoading) return
+        const quota = this.$cache.get('_quota') //最大限额
         if (quota == null) {
           if (!this.isCustomFess) {
-            this.feeLoading = true
+            this.btnLoading = true
           }
+          //给callSimulate赋值调用simulateFee方法
           this.callSimulate = JSON.parse(JSON.stringify(this.sendFormData))
-          this.submitPopupIsShow = true
+          console.log('callSimulate', this.callSimulate)
+          // this.submitPopupIsShow = true
+          return
         } else if (Number(this.sendFormData.sendAmount) > Number(quota.amount)) {
           this.aa = true
         } else {
           if (!this.isCustomFess) {
-            this.feeLoading = true
+            this.btnLoading = true
           }
           this.callSimulate = JSON.parse(JSON.stringify(this.sendFormData))
-          this.submitPopupIsShow = true
+          // this.submitPopupIsShow = true
         }
       }
     },
@@ -589,17 +602,26 @@ export default {
       return true
     },
     handlerGas(res) {
-      this.feeLoading = false
+      // this.feeLoading = false
+      this.btnLoading = false
+      this.submitPopupIsShow = true
       if (!res.code) {
         this.$cache.set('_minimumGas', res, 0)
       }
       if (res.code || this.isCustomFess) return
       this.sendFormData.gas = res
     },
+    gasError(e) {
+      // console.log(res)
+      this.$refs.notify.show('', e===0?'地址有误':this.language.text229)
+      this.btnLoading = false
+      this.sendFormData.sendAmount = ''
+    }
   },
   computed: {
     totalGas() {
-      return new decimal(this.sendFormData.gas + '').mul(new decimal(this.sendFormData.gasPrice)).div(new decimal(this.mainCoin.decimals)).toString()
+      return new decimal(this.sendFormData.gas + '').mul(new decimal(this.sendFormData.gasPrice)).div(
+        new decimal(this.mainCoin.decimals)).toString()
     }
   },
   watch: {
@@ -610,6 +632,18 @@ export default {
           this.payPassword = ''
         }
       }
+    },
+    'sendFormData.receiveAddress':{
+      handler(val){
+        this.sendFormData.gas = ''
+        this.callSimulate = {}
+      }
+    },
+    'sendFormData.sendAmount':{
+		  handler(val){
+        this.sendFormData.gas = ''
+        this.callSimulate = {}
+		  }
     }
   }
 }
@@ -620,10 +654,10 @@ export default {
 		getBalance,
 		transferOtherToken,
 		getOtherTransationHistory,
-    getSecret
+		getSecret
 	} from '@/utils/secretjs/SDK.js'
-  import decimal from 'decimal'
-  import secretjs from '@/utils/secretjs/index.js'
+	import decimal from 'decimal'
+	import secretjs from '@/utils/secretjs/index.js'
 	import WalletCrypto from '@/utils/walletCrypto.js'
 	import renderUtils from '@/utils/render.base.js'
 	import mainCoin from '@/config/index.js'
@@ -639,14 +673,15 @@ export default {
 					sendAmount,
 					memo,
 					gas,
-          gasPrice,
+					gasPrice,
 					decimals
 				} = newValue
 				// let totalGas = new decimal(gas + '').mul(new decimal(gasPrice)).toString()
 				if (newValue.token.alias_name == mainCoin.alias_name) {
-				sendAmount = sendAmount * mainCoin.decimals
+					sendAmount = sendAmount * mainCoin.decimals
 					try {
-						res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas, gasPrice)
+						res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas,
+							gasPrice)
 					} catch (e) {
 						console.log(e);
 						res.code = 7
@@ -701,38 +736,46 @@ export default {
 				}, this)
 
 			},
-      async simulateFee(val) {
-        if (!val.sendAmount || Number(val.sendAmount) == '') return
-        const Secret = await getSecret()
-        let res = {}
-        let {
-        	receiveAddress,
-        	userAddress,
-        	sendAmount,
-        	memo,
-        	gas,
-        	decimals
-        } = val
-        try {
-          const msgSend = new secretjs.MsgSend({
-            amount: [{
-              amount: sendAmount * val.token.decimals + '',
-              denom: 'ughm'
-            }],
-            fromAddress: userAddress,
-            toAddress: receiveAddress
-          })
-          res = await Secret.tx.simulate([msgSend], {
-            feeDenom: 'ughm',
-          })
-          let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
-          renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
-          console.log(res);
-        } catch (e) {
-          console.log('e', e); // @todo out of gas
-          res.code = 7
-        }
-      }
+			async simulateFee(val) {
+				if (!val.sendAmount || Number(val.sendAmount) == '') return
+				const Secret = await getSecret()
+				let res = {}
+				let {
+					receiveAddress,
+					userAddress,
+					sendAmount,
+					memo,
+					gas,
+					decimals
+				} = val
+				try {
+					const msgSend = new secretjs.MsgSend({
+						amount: [{
+							amount: sendAmount * val.token.decimals + '',
+							denom: 'ughm'
+						}],
+						fromAddress: userAddress,
+						toAddress: receiveAddress
+					})
+					res = await Secret.tx.simulate([msgSend], {
+						feeDenom: 'ughm',
+					})
+					let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
+					renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
+
+				} catch (e) {
+					console.log('e', e.message); // @todo out of gas
+					res.code = 7
+					let msg = e.message
+					let error = ''
+					if(msg.includes('decoding bech32 failed')){
+						error = 0
+					}else{
+						error = 1
+					}
+					renderUtils.runMethod(this._$id, 'gasError', error, this) //错误调用gasError方法
+				}
+			}
 		}
 	}
 </script>
@@ -751,7 +794,7 @@ export default {
 		width: 100%;
 		height: 100%;
 		background: #F4F6FA;
-    padding-top: calc(112rpx + var(--status-bar-height));
+		padding-top: calc(112rpx + var(--status-bar-height));
 	}
 
 	.main-top {
@@ -905,13 +948,14 @@ export default {
 			.memo_type {
 				padding-top: 33rpx;
 				padding-bottom: 43rpx;
-        .memo {
-          -webkit-line-clamp: 2;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
+
+				.memo {
+					-webkit-line-clamp: 2;
+					display: -webkit-box;
+					-webkit-box-orient: vertical;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
 			}
 
 			.transfer_amount {}
@@ -1267,10 +1311,10 @@ export default {
 			}
 		}
 	}
-  
-  .container {
-    height: calc(100vh - 112rpx - var(--status-bar-height));
-    // height: 100vh;
-    overflow-y: scroll;
-  }
+
+	.container {
+		height: calc(100vh - 112rpx - var(--status-bar-height));
+		// height: 100vh;
+		overflow-y: scroll;
+	}
 </style>

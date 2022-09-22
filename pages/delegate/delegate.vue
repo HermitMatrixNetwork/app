@@ -40,7 +40,7 @@
             <text>Memo</text>
           </view>
           <view class="value">
-            <u--input :placeholder="language.text65" v-model="formData.memo"></u--input>
+            <u--input :placeholder="language.text65" v-model="formData.memo" :formatter='dealFormatter'></u--input>
           </view>
         </view>
       </view>
@@ -48,7 +48,8 @@
     <miners-column @getMinersCost="getMinersCost" :redirectUrl="redirectUrl" :minusIndex="minusIndex" :customData="minusData" @getMinimumGas="getMinimumGas"></miners-column>
     <view class="main-bottom">
       <view class="btn" @click="transferConfirm">
-        {{ language.text68 }}
+        <!-- {{ language.text68 }} -->
+				<Submitbtn :loadingIsShow="btnLoading">{{ language.text68 }}</Submitbtn>
       </view>
     </view>
 
@@ -89,8 +90,8 @@
           <!--矿工费-->
           <view class="miners_fee">
             <text>{{ language.text29 }}</text>
-            <custom-loading v-if="feeLoading"></custom-loading>
-            <view v-else>
+            <!-- <custom-loading v-if="feeLoading"></custom-loading> -->
+            <view>
               <view>{{ formData.gas }} * {{ formData.gasPrice }} ughm</view>
               <view class="price">{{ totalGas }} GHM</view>
             </view>
@@ -148,16 +149,19 @@
 
 <script>
 import InputTitle from '@/pages/account/send/components/Input-title.vue'
+import Submitbtn from '@/pages/account/send/components/submit-btn.vue'
 import mainCoin from '@/config/index.js'
 import WalletCrypto from '@/utils/walletCrypto.js'
 import verifyTouchID from './mixins/verifyTouchID.js'
 import language from './language/index.js'
 import decimal from 'decimal'
 import reflsh from '@/utils/reflesh.js'
+import mixins from '@/pages/delegate/mixins/index.js'
 export default {
-  mixins: [verifyTouchID, reflsh],
+  mixins: [verifyTouchID, reflsh,mixins],
   components: {
-    InputTitle
+    InputTitle,
+    Submitbtn
   },
   data() {
     return {
@@ -212,7 +216,8 @@ export default {
       callSimulate: {},
       feeLoading: true,
       minusIndex: 1,
-      minusData: {}
+      minusData: {},
+      btnLoading:false,
     }
   },
   onLoad(value) {
@@ -336,6 +341,8 @@ export default {
       })
     },
     transferConfirm() { //转账确认
+      if(this.btnLoading) return
+      if (this.formData.gas !== '') return this.submitPopupIsShow = true
       let verify = true
       let amount = this.formData.amount.amount
       if (amount == '' || amount <= 0) {
@@ -350,10 +357,11 @@ export default {
 
       if (verify) {
         if (!this.isCustomFess) {
-          this.feeLoading = true
+          // this.feeLoading = true
+          this.btnLoading = true
         }
         this.callSimulate = JSON.parse(JSON.stringify(this.formData))
-        this.submitPopupIsShow = true
+        // this.submitPopupIsShow = true
       }
     },
     testAmount() {
@@ -438,7 +446,9 @@ export default {
       return true
     },
     handlerGas(res) {
-      this.feeLoading = false
+      // this.feeLoading = false
+      this.btnLoading = false
+      this.submitPopupIsShow = true
       if (!res.code) {
         this.$cache.set('_minimumGas', res, 0)
       }
@@ -452,12 +462,30 @@ export default {
       this.$nextTick(() => {
         this.callSimulate = data
       })
+    },
+    gasError(res) {
+		  // console.log(res)
+		  this.$refs.notify.show('', '油费不足')
+		  this.btnLoading = false
+		  this.formData.amount.amount = ''
+    },
+    dealFormatter(val){
+      return this.dealInputValue(val)
     }
   },
   computed: {
     totalGas() {
       return new decimal(this.formData.gas + '').mul(new decimal(this.formData.gasPrice)).div(new decimal(mainCoin.decimals)).toString()
     }
+  },
+  watch:{
+    'formData.amount.amount':{
+		  handler(val){
+		    // console.log(val)
+		    this.formData.gas = ''
+		  },
+		  deep:true
+    },
   }
 }
 </script>
@@ -522,6 +550,7 @@ export default {
         } catch (e) {
           console.log(e);
           res.code = 7
+					renderUtils.runMethod(this._$id, 'gasError', res, this) //错误调用gasError方法
         }
       }
     },

@@ -252,7 +252,8 @@ const languages = {
     text225: 'Keystore',
     text226: '不可转账给自己',
     text227: '已全部加载完毕',
-    text228: 'Gas过低，请输入有效GAS'
+    text228: 'Gas过低，请输入有效GAS',
+    text229: '油费不足'
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -504,7 +505,8 @@ const languages = {
     text225: 'Keystore',
     text226: '不可轉賬給自己',
     text227: '已全部加載完畢',
-    text228: 'Gas過低，請輸入有效GAS'
+    text228: 'Gas過低，請輸入有效GAS',
+    text229: '郵費不足'
   },
   EN: {
     Mywallet: 'My wallet',
@@ -757,7 +759,8 @@ const languages = {
     text225: 'Keystore',
     text226: 'Cannot transfer to yourself',
     text227: 'end',
-    text228: 'Gas is too low, please enter a valid GAS'
+    text228: 'Gas is too low, please enter a valid GAS',
+    text229: 'Insufficient fuel charge'
   }
 }
 export default languages

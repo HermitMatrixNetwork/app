@@ -13,7 +13,7 @@
         {{ language.text40 }}
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="formData.name" :placeholder="language.text105"></u-input>
+      <u-input class="wallet-name-input" v-model="formData.name" :formatter='formatter' :placeholder="language.text105"></u-input>
       <view class="error-tip" :style="{ opacity: nameError ? 1 : 0 }">
         {{ language.nameErrorTip }}
       </view>
@@ -24,7 +24,7 @@
         RPC {{ language.text90 }}
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="formData.link" :placeholder="language.text106"></u-input>
+      <u-input class="wallet-name-input" v-model="formData.link" :formatter='formatter' :placeholder="language.text106"></u-input>
       <view class="error-tip" :style="{ opacity: linkError ? 1 : 0 }">
         {{ language[linkErrorList[linkErrorTip]] }}
       </view>
@@ -117,6 +117,9 @@ export default {
     }
   },
   methods: {
+    formatter(val){
+      return val.replace(/[\>\<\&\'\"]/g,'')
+    },
     removeNode() {
       const currentNode = getCurrentRpc()
       if (currentNode == this.formData.link) {

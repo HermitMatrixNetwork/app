@@ -13,7 +13,7 @@
         {{ language.text40 }}
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="formData.name" :placeholder="language.text105"></u-input>
+      <u-input class="wallet-name-input" v-model="formData.name" :formatter='formatter' :placeholder="language.text105"></u-input>
       <view class="error-tip" :style="{ opacity: nameError ? 1 : 0 }">
         {{ language.nameErrorTip }}
       </view>
@@ -24,7 +24,7 @@
         {{ language.text41 }}
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="formData.link" :placeholder="language.text106"></u-input>
+      <u-input class="wallet-name-input" v-model="formData.link" :formatter='formatter' :placeholder="language.text106"></u-input>
       <view class="error-tip" :style="{ opacity: linkError ? 1 : 0 }">
         {{ language[linkErrorList[linkErrorTip]] }}
       </view>
@@ -45,7 +45,9 @@
 
 <script>
 import language from '../language/index.js'
+import mixins from '@/pages/account/mixins/index.js'
 export default {
+  mixins:[mixins],
   data() {
     return {
       language: language[this.$cache.get('_language')],
@@ -108,6 +110,9 @@ export default {
     },
     checkVerify() {
       this.callRender = this.formData
+    },
+    formatter(val){
+      return this.dealInputValue(val)
     }
   },
   onBackPress(event) {

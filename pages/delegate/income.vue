@@ -85,7 +85,8 @@
       <miners-column @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
 
       <view class="btn" @click="transferConfirm">
-        {{ language.text20 }}
+        <!-- {{ language.text20 }} -->
+				<Submitbtn :loadingIsShow="btnLoading">{{ language.text20 }}</Submitbtn>
       </view>
     </view>
 
@@ -119,8 +120,7 @@
           <!--矿工费-->
           <view class="miners_fee">
             <text>{{ language.text29 }}</text>
-            <custom-loading v-if="feeLoading"></custom-loading>
-            <view v-else>
+            <view>
               <view>{{ formData.gas }} * {{ formData.gasPrice }} ughm</view>
               <view class="price">{{ totalGas }} GHM</view>
             </view>
@@ -181,6 +181,7 @@
 <script>
 // https://secretjs.scrt.network/interfaces/MsgWithdrawDelegatorRewardParams
 import InputTitle from '@/pages/account/send/components/Input-title.vue'
+import Submitbtn from '@/pages/account/send/components/submit-btn.vue'
 import {
   sliceAddress
 } from '@/utils/filters.js'
@@ -192,7 +193,8 @@ import decimal from 'decimal'
 export default {
   mixins: [verifyTouchID],
   components: {
-    InputTitle
+    InputTitle,
+    Submitbtn
   },
   data() {
     return {
@@ -245,7 +247,8 @@ export default {
       verifyTouchErrorTip: '',
       callRenderGetBanlance: 0,
       callSimulate: {},
-      feeLoading: true
+      feeLoading: true,
+      btnLoading:false
     }
   },
   onLoad(options) {
@@ -355,6 +358,8 @@ export default {
       })
     },
     transferConfirm() { //转账确认
+      if(this.btnLoading) return
+      if (this.formData.gas !== '') return this.submitPopupIsShow = true
       let verify = true
 
       if (!this.selData) {
@@ -370,10 +375,10 @@ export default {
       if (verify) {
         this.formData.validatorAddress = this.selData.delegation.validatorAddress
         if (!this.isCustomFess) {
-          this.feeLoading = true
+          this.btnLoading = true
         }
         this.callSimulate = JSON.parse(JSON.stringify(this.formData))
-        this.submitPopupIsShow = true
+        // this.submitPopupIsShow = true
       }
     },
     passwordButton() {
@@ -465,12 +470,14 @@ export default {
       // uni.redirectTo({
       //   url
       // })
+      let _this = this
       uni.navigateTo({
         url,
         events: {
           indexChange: (index) => {
             this.selectIndex = index
             this.selData = this.$cache.get('_delegateInfo').list[index]
+            this.formData.gas = ''
             this.balance = (this.selData.rewards.amount / mainCoin.delegateDecimals).toFixed(5)
           }
         }
@@ -507,7 +514,8 @@ export default {
       return true
     },
     handlerGas(res) {
-      this.feeLoading = false
+      this.btnLoading = false
+      this.submitPopupIsShow = true
       if (!res.code) {
         this.$cache.set('_minimumGas', res, 0)
       }
@@ -522,6 +530,12 @@ export default {
       this.$nextTick(() => {
         this.callSimulate = data
       })
+    },
+    gasError(res) {
+		  // console.log(res)
+		  this.$refs.notify.show('', '油费不足')
+		  this.btnLoading = false
+      this.callSimulate = {}
     }
   },
   computed: {
@@ -597,6 +611,7 @@ export default {
         } catch (e) {
           console.log(e);
           res.code = 7
+					renderUtils.runMethod(this._$id, 'gasError', res, this) //错误调用gasError方法
         }
       }
     }

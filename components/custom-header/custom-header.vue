@@ -8,7 +8,7 @@
     <view class="container">
       <view class="left">
         <view v-if="showGoBack" @click="beforeGoBack" class="back_button">
-          <image  src="/static/img/black1x.png"  style="width:48rpx;height:48rpx"></image>  
+          <image  src="/static/img/black.png"  style="width:48rpx;height:48rpx"></image>  
         </view>
         <slot v-else name="left"></slot>
       </view>

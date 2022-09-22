@@ -45,8 +45,7 @@
     		    <view class="miners_fee">
             
             <text >{{ language.text29 }}</text>
-            <custom-loading v-if="feeLoading"></custom-loading>
-    		      <view v-else>
+    		      <view>
               <view>{{ formData.gas }} * {{ formData.gasPrice }} ughm</view>
               <view class="price">{{ totalGas }} GHM</view>
     		      </view>
@@ -91,7 +90,11 @@
     </u-modal>
 
     <view class="btn" :class="{ complete: formData.withdrawAddress !== '' }">
-      <u-button :disabled="formData.withdrawAddress == ''" @click="confirmProtocol">{{ language.text68 }}</u-button>
+			<view class="u-button">
+				
+      <!-- <u-button :disabled="formData.withdrawAddress == ''" >{{ language.text68 }}</u-button> -->
+			<Submitbtn @click.native="confirmProtocol" :loadingIsShow="btnLoading">{{ language.text68 }}</Submitbtn>
+			</view>
     </view>
 
     <view :callRender="callRender" :change:callRender="render.withdraw"></view>
@@ -105,11 +108,13 @@
         <text>{{ toast.msg }}</text>
       </view>
     </view>
+		<custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
 <script>
 import InputTitle from '@/pages/account/send/components/Input-title.vue'
+import Submitbtn from '@/pages/account/send/components/submit-btn.vue'
 import WalletCrypto from '@/utils/walletCrypto.js'
 import verifyTouchID from './mixins/verifyTouchID.js'
 import language from './language/index.js'
@@ -119,7 +124,8 @@ import mainCoin from '@/config/index.js'
 export default {
   mixins: [verifyTouchID],
   components: {
-    InputTitle
+    InputTitle,
+    Submitbtn
   },
   data() {
     return {
@@ -152,6 +158,7 @@ export default {
       showAddressErrorTip: false,
       callSimulate: {},
       feeLoading: true,
+      btnLoading:false
     }
   },
   onLoad() {
@@ -238,15 +245,19 @@ export default {
       this.formData.gasPrice = val.amount
     },
     confirmProtocol() {
+      if(!this.formData.withdrawAddress) return
+      if(this.btnLoading) return
+      if (this.formData.gas !== '') return this.submitPopupIsShow = true
       if (!checkAddress(this.formData.withdrawAddress)) {
         this.showAddressErrorTip = true
       } else {
         if (!this.isCustomFess) {
-          this.feeLoading = true
+          // this.feeLoading = true
+          this.btnLoading = true
         }
         this.callSimulate = JSON.parse(JSON.stringify(this.formData))
         this.showAddressErrorTip = false
-        this.submitPopupIsShow = true
+        // this.submitPopupIsShow = true
       }
     },
     passwordButton() {
@@ -327,7 +338,8 @@ export default {
       return true
     },
     handlerGas(res) {
-      this.feeLoading = false
+      this.btnLoading = false
+      this.submitPopupIsShow = true
       if (!res.code) {
         this.$cache.set('_minimumGas', res, 0)
       }
@@ -341,11 +353,23 @@ export default {
       this.$nextTick(() => {
         this.callSimulate = data
       })
+    },
+    gasError(res) {
+		  // console.log(res)
+		  this.$refs.notify.show('', '地址有误')
+		  this.btnLoading = false
+		  this.callSimulate = {}
     }
   },
   computed: {
     totalGas() {
       return new decimal(this.formData.gas + '').mul(new decimal(this.formData.gasPrice)).div(new decimal(mainCoin.decimals)).toString()
+    }
+  },
+  watch:{
+    'formData.withdrawAddress'(val){
+      this.formData.gas = ''
+      this.callSimulate = {}
     }
   }
 }
@@ -387,8 +411,15 @@ export default {
           let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
           renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
         } catch (e) {
-          console.log(e);
-          res.code = 7
+					let msg = e.message
+					// let error = ''
+					res.code = 7
+					// if(msg.includes('decoding bech32 failed')){
+					// 	error = 0
+					// }else if(msg){
+					// 	error = 1
+					// }
+					renderUtils.runMethod(this._$id, 'gasError', res, this) //错误调用gasError方法
         }
       }
     }
@@ -433,13 +464,12 @@ export default {
     position: fixed;
     bottom: 64rpx;
     left: 50%;
+		width: 100%;
     transform: translateX(-50%);
 
     .u-button {
-      width: 622rpx;
-      height: 96rpx;
-      background: #002FA7;
-      border-radius: 16rpx;
+      width: 100%;
+			padding: 0 32rpx;
       font-size: 32rpx;
       color: #FCFCFD;
     }

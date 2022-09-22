@@ -163,6 +163,11 @@ export default {
       uni.stopPullDownRefresh()
     }, 1000)
   },
+  watch:{
+    searchVal(val){
+      this.searchVal = val.replace(/[\>\<\"\'\&]/g,'')
+    }
+  }
 }
 </script>
 

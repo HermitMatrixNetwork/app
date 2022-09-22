@@ -13,15 +13,15 @@
     <view class="account-box">
       <view class="account-column">
         <view class="column-item" @click="goTo('/pages/delegate/cancel')">
-          <image src="/static/img/delegate/fasong2.png" style="width: 80rpx; height: 80rpx;"></image>
+          <image src="/static/img/delegate/quxiaoweituo.png" ></image>
           <text>{{ language.text06 }}</text>
         </view>
         <view class="column-item" @click="goTo('/pages/delegate/income')">
-          <image src="/static/img/delegate/shoukuan2.png" style="width: 80rpx; height: 80rpx;"></image>
+          <image src="/static/img/delegate/shouyilingqu.png"></image>
           <text>{{ language.text07 }}</text>
         </view>
         <view class="column-item" @click="goTo('/pages/delegate/transaction')">
-          <image src="/static/img/delegate/weituo2.png" style="width: 80rpx; height: 80rpx;"></image>
+          <image src="/static/img/delegate/jiaoyijilu.png"></image>
           <text>{{ language.text08 }}</text>
         </view>
       </view>
@@ -269,7 +269,7 @@ export default {
       .column-item {
         color: #2c4364;
         font-size: 28rpx;
-        text-align: center;
+				text-align: center;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -278,6 +278,10 @@ export default {
         text {
           padding-top: 16rpx;
         }
+				image{
+					height: 80rpx;
+					width: 80rpx;
+				}
       }
     }
 

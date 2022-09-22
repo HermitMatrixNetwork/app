@@ -20,7 +20,7 @@
     <view style="height: 40rpx;background: #fff;" />
 
     <view class="submit-button">
-      <Submitbtn @click.native="setViekey">{{ language.text107 }}</Submitbtn>
+      <Submitbtn @click.native="setViekey" :loadingIsShow="btnLoading">{{ language.text107 }}</Submitbtn>
     </view>
 
     <u-popup :show="submitPopupIsShow" @close="submitPopupIsShow=false" mode="bottom" round="16rpx"
@@ -61,8 +61,8 @@
             <view class="label">
               {{ language.text111 }}
             </view>
-            <custom-loading v-if="feeLoading"></custom-loading>
-            <view v-else class="value">
+            <!-- <custom-loading v-if="feeLoading"></custom-loading> -->
+            <view class="value">
               {{ formData.gas }} * {{ formData.gasPrice }} ughm
               <view class="price">{{ totalGas }} GHM</view>
             </view>
@@ -170,6 +170,7 @@ export default {
       isCustomFess: false,
       feeLoading: true,
       callSimulate: {},
+      btnLoading:false
     }
   },
   onLoad(options) {
@@ -314,12 +315,15 @@ export default {
       }
     },
     setViekey() {
+      if(this.btnLoading) return
+      if (this.formData.gas !== '') return this.submitPopupIsShow = true
       if (this.validate()) {
         if (!this.isCustomFess) {
-          this.feeLoading = true
+          // this.feeLoading = true
+          this.btnLoading = true
         }
         this.callSimulate = JSON.parse(JSON.stringify(this.formData))
-        this.submitPopupIsShow = true
+        // this.submitPopupIsShow = true
       }
     },
     validate() {
@@ -345,7 +349,9 @@ export default {
       return true
     },
     handlerGas(res) {
-      this.feeLoading = false
+      // this.feeLoading = false
+      this.btnLoading = false
+      this.submitPopupIsShow = true
       if (!res.code) {
         this.$cache.set('_minimumGas', res, 0)
       }
@@ -359,6 +365,12 @@ export default {
       this.$nextTick(() => {
         this.callSimulate = data
       })
+    },
+    gasError(res) {
+		  // console.log(res)
+		  this.$refs.notify.show('', '油费不足')
+		  this.btnLoading = false
+      this.callSimulate = {}
     }
   },
   computed: {
@@ -416,6 +428,7 @@ export default {
         } catch (e) {
           console.log(e);
           res.code = 7
+					renderUtils.runMethod(this._$id, 'gasError', res, this) //错误调用gasError方法
         }
       }
     }

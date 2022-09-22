@@ -8,7 +8,7 @@
       </view>
       <view class="wallet-password-item" :class="{ errorBorder: confirmPasswordError }">
         <u-input :password="!passwordEye" class="wallet-password-input" :class="{error: confirmPasswordError}"
-          v-model="originVal" :placeholder="language[placeholder[flag]]">
+          v-model="originVal" :placeholder="language[placeholder[flag]]" :formatter="formatter">
         </u-input>
         <view :class="{error: confirmPasswordError}" style="height: 100%; display: flex; align-items: center; border-radius: 0 16rpx 16rpx 0; overflow: hidden;">
           <image  :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="passwordEye = !passwordEye" style="width: 32rpx; height: 32rpx; margin-right: 36rpx"></image>
@@ -35,7 +35,6 @@ export default {
   data() {
     return {
       language: language[this.$cache.get('_language')],
-      errorTip: ['text150', 'text157', 'text156'],
       errorTip: 'text150',
       label: ['text147', 'text153', 'text154'],
       placeholder: ['text148', 'text153', 'text154'],
@@ -114,6 +113,9 @@ export default {
     },
     verifyPasswordCheck() {
       return this.newPassword === this.originVal
+    },
+    formatter(val){
+      return val.replace(/[\>\<\&\'\"]/g,'')
     }
   },
   watch: {
