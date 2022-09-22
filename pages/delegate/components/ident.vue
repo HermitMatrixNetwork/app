@@ -70,6 +70,8 @@
 				<no-data v-else :tip="language.text101"/>
 			</view>
 		</view>
+    <view :callMainCoinBalance="callMainCoinBalance" :change:callMainCoinBalance="render.getMainCoinBalance">
+    </view>
 	</view>
 </template>
 
@@ -124,6 +126,7 @@ export default {
       sortRule: 'des', // asc:升序; des:降序
       mainCoin,
       status: 0,
+      callMainCoinBalance: 0
     }
   },
   created() {
@@ -133,7 +136,10 @@ export default {
   methods: {
     updateData() {
       console.log('indent update data')
+      this.sortRule = 'des'
+      this.sortTarget = language[this.$cache.get('_language')].text48
       this.currentWallet = this.$cache.get('_currentWallet')
+      this.callMainCoinBalance++
       this.loading = true
       this.ValidatorsData()
       // this.address = this.currentWallet.address
@@ -189,6 +195,9 @@ export default {
       uni.navigateTo({
         url:`/pages/delegate/confirm?data=${data}`
       })
+    },
+    handlerMainCoinBalance(res) {
+      this.currentWallet.coinList[0].balance = res.res
     }
   },
   computed: {
@@ -238,7 +247,30 @@ export default {
 </script>
 
 
-// <script lang="renderjs" module="render">
+ <script lang="renderjs" module="render">
+  import {
+    getMainCoinBalance 
+  } from '@/utils/secretjs/SDK.js'
+  import renderUtils from '@/utils/render.base.js'
+  export default {
+    methods: {
+      async getMainCoinBalance(val) {
+        if (val == 0)return
+        let wallet;
+        //#ifdef APP-PLUS
+        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+        //#endif
+        
+        //#ifndef APP-PLUS 
+        wallet = uni.getStorageSync('_currentWallet').data
+        //#endif
+        const res = await getMainCoinBalance(wallet.address)
+        renderUtils.runMethod(this._$id, 'handlerMainCoinBalance', {
+          res
+        }, this)
+      }
+    }
+  }
 // 	import {
 // 		getValidators,
 // 		getSigningInfo
@@ -274,7 +306,7 @@ export default {
 // 			}
 // 		}
 // 	}
-// </script>
+ </script>
 
 <style lang="scss" scoped>
   .loading {

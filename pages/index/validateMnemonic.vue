@@ -99,6 +99,7 @@ export default {
 
 <style lang="scss" scoped>
   .page-wrapper {
+    height: 100vh;
     padding-top: calc(112rpx + var(--status-bar-height))
   }
   .mnemonic {

@@ -1,6 +1,6 @@
 <template>
   <view class="page-wrapper">
-    <custom-header :customStyle="{ 'z-index': 99 }" :title="language.text120"></custom-header>
+    <custom-header :customStyle="{ 'z-index': 98 }" :title="language.text120"></custom-header>
 
     
     <view class="border"></view>
@@ -13,9 +13,9 @@
         {{ rawPassword }}
       </view>
     </view>
-    
+    <uni-button class="validate-mnemonic-btn" @click="copy">{{ language.text230 }}</uni-button>
     <Tooltip></Tooltip>
-    <Notify ref="notify"></Notify>
+    <Notify ref="notify" style="z-index: 99"></Notify>
   </view>
 </template>
 
@@ -80,7 +80,6 @@ export default {
     }
 
     .item {
-      width: 686rpx;
       height: 180rpx;
       border-radius: 16rpx;
       background-color: #F2F4F8;
@@ -91,5 +90,17 @@ export default {
       color: #2C365A;
       line-height: 48rpx;
     }
+  }
+  
+  .validate-mnemonic-btn {
+    margin: 96rpx 32rpx 32rpx;
+    width: auto;
+    height: 96rpx;
+    background: #17C499;
+    border-radius: 16rpx;
+    font-weight: 400;
+    font-size: 32rpx;
+    line-height: 96rpx;
+    color: #FCFCFD;
   }
 </style>

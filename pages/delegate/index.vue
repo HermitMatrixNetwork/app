@@ -57,6 +57,15 @@ export default {
         })
       }
     }
+  },
+  onPullDownRefresh() {
+    this.$refs.customChildNode.updateData()
+    // this.$nextTick(() => {
+    //   uni.stopPullDownRefresh()
+    // })
+    setTimeout(() => {
+      uni.stopPullDownRefresh()
+    }, 1500)
   }
 }
 </script>

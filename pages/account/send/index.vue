@@ -74,7 +74,7 @@
 			</view>
 
 			<view class="main-bottom">
-				<miners-column @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
+				<miners-column ref="miners" @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
 
 				<view class="submit-btn" @click="transferConfirm">
 					<Submitbtn :loadingIsShow="btnLoading">{{ language.text144 }}</Submitbtn>
@@ -613,7 +613,7 @@ export default {
     },
     gasError(e) {
       // console.log(res)
-      this.$refs.notify.show('', e===0?'地址有误':this.language.text229)
+      this.$refs.notify.show('', e===0?'地址有误':this.language.text231)
       this.btnLoading = false
       this.sendFormData.sendAmount = ''
     }
@@ -645,7 +645,19 @@ export default {
         this.callSimulate = {}
 		  }
     }
-  }
+  },
+  onPullDownRefresh() {
+    this.receiveAddress = this.$refs.addressInptval.childValue = ''
+    this.sendFormData.sendAmount = ''
+    this.sendFormData.memo = this.$refs.memoInptval.childValue = ''
+    this.sendFormData.gas = ''
+    this.isCustomFess = false
+    this.sendFormData.gasPrice = 0.015
+    this.$refs.miners.resetMiners()
+    this.$nextTick(() => {
+      uni.stopPullDownRefresh()
+    })
+  },
 }
 </script>
 <script lang="renderjs" module="render">

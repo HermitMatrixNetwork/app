@@ -85,6 +85,10 @@ export default {
     }
   },
   methods: {
+    resetMiners() {
+      this.minersList.length = 3
+      this.selectedMiners = 1
+    },
     costChoose(item, index) {
       if (index == 3 && this.selectedMiners == 3) {
         uni.navigateTo({

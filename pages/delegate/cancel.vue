@@ -68,7 +68,7 @@
           </view>
         </view>
       </view>
-      <miners-column @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
+      <miners-column ref="miners" @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
       <view class="main-bottom">
        <view class="btn" @click="transferConfirm">
           <!-- {{ language.text20 }} -->
@@ -529,6 +529,21 @@ export default {
 		  },
 		  deep:true
     },
+    
+  },
+  onPullDownRefresh() {
+    this.selData = ''
+    this.formData.memo = ''
+    this.formData.amount.amount = ''
+    this.selectIndex = -1
+    this.$refs.miners.resetMiners()
+    this.formData.gas = ''
+    this.isCustomFess = false
+    this.formData.gasPrice = 0.015
+    
+    this.$nextTick(() => {
+      uni.stopPullDownRefresh()
+    })
   }
 }
 </script>

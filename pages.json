@@ -152,14 +152,14 @@
       "path": "pages/delegate/index",
       "style": {
         "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
+        "enablePullDownRefresh": true
       }
     },
     {
       "path": "pages/delegate/cancel",
       "style": {
         "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
+        "enablePullDownRefresh": true
       }
     }, {
       "path": "pages/delegate/selectNode",
@@ -177,7 +177,7 @@
       "path": "pages/delegate/income",
       "style": {
         "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
+        "enablePullDownRefresh": true
       }
     }, {
       "path": "pages/delegate/transaction",
@@ -224,7 +224,7 @@
       "path": "pages/account/send/index",
       "style": {
         "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
+        "enablePullDownRefresh": true
       }
     },
     {
@@ -238,7 +238,7 @@
       "path": "pages/account/send/token_content",
       "style": {
         "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
+        "enablePullDownRefresh": true
       }
     },
     {

@@ -5,6 +5,7 @@ import {
   Tx
 } from 'secretjs-hmt/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
 import secretjs from './index.js'
+import mainCoin from '@/config/index.js'
 
 import { getCurrentRpc } from '@/config/index.js'
 
@@ -322,4 +323,19 @@ export const getWithdrawAddress = async (address) => {
   })
   
   return result
+}
+
+export const getMainCoinBalance = async (address, denom = 'ughm') => {
+  let Secret = await getSecret()
+  
+  const result = await Secret.query.bank.balance({
+    address,
+    denom
+  })
+  
+  let balance = result.balance.amount
+  
+  balance = balance / mainCoin.decimals
+  
+  return balance
 }

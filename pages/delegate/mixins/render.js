@@ -4,6 +4,7 @@ import {
   getStakingValidator,
   getRewards
 } from '@/utils/secretjs/SDK'
+import mainCoin from '@/config/index.js'
 
 export default {
 
