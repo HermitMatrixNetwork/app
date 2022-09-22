@@ -241,7 +241,9 @@ export default {
       if (!checkAddress(this.formData.withdrawAddress)) {
         this.showAddressErrorTip = true
       } else {
-        this.feeLoading = true
+        if (!this.isCustomFess) {
+          this.feeLoading = true
+        }
         this.callSimulate = JSON.parse(JSON.stringify(this.formData))
         this.showAddressErrorTip = false
         this.submitPopupIsShow = true

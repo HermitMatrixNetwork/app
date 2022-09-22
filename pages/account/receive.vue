@@ -147,6 +147,7 @@ export default {
     width: 100%;
     padding-top: calc(112rpx + var(--status-bar-height));
     background: #0F53C5;
+    height: 100vh;
 
     .topPrompt {
       position: relative;
