@@ -131,7 +131,7 @@ export default {
 
     .left {
       .back_button {
-        padding: 0 48rpx 0 18rpx;
+        padding: 0 0 0 18rpx;
         height: 112rpx;
         display: flex;
         align-items: center;

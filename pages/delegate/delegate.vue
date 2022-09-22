@@ -349,7 +349,9 @@ export default {
       }
 
       if (verify) {
-        this.feeLoading = true
+        if (!this.isCustomFess) {
+          this.feeLoading = true
+        }
         this.callSimulate = JSON.parse(JSON.stringify(this.formData))
         this.submitPopupIsShow = true
       }

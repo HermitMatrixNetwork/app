@@ -1,11 +1,11 @@
 <template>
 	<view class="transtion">
-		<custom-header :title="language.text38" >
+		<custom-header :title="language.text38" :customStyle="{ 'z-index': 99, 'background-color': '#fff' }">
 		</custom-header>
 		<u-tabs class="tabs" :inactiveStyle="inactiveStyle" :activeStyle="activeStyle" :itemStyle="itemStyle" :list="list1" lineColor="#1E5EFF" lineHeight="4" @change	="changeTab"></u-tabs>
-		<view class="lists">
+		<scroll-view class="lists" scroll-y :style="{ height: scrollHeight }">
 			<TranList :currentTab="currentTab" />
-		</view>
+		</scroll-view>
 	</view>
 </template>
 
@@ -40,12 +40,29 @@ export default {
       itemStyle: {
         height: '80rpx'
       },
-      currentTab: 0
+      currentTab: 0,
+      systemBarHeight: 0,
+      
     }
   },
+  mounted() {
+    this.getSystemStatusHeight()
+  },
   methods: {
+    getSystemStatusHeight() {
+      uni.getSystemInfo({
+        success: res => {
+          this.systemBarHeight = res.statusBarHeight
+        }
+      })
+    },
     changeTab(item) {
       this.currentTab = item.index
+    }
+  },
+  computed: {
+    scrollHeight() {
+      return `calc(100vh - 112rpx  - ${this.systemBarHeight + 'rpx'} - 92rpx - 32rpx)`
     }
   }
 

@@ -10,7 +10,7 @@
       "path": "pages/account/index",
       "style": {
         "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
+        "enablePullDownRefresh": true
       }
     },
     {

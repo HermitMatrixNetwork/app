@@ -165,6 +165,7 @@ export default {
   .address_pages {
     height: 100vh;
     background: #F4F6FA;
+    padding-top: calc(112rpx + var(--status-bar-height));
   }
 
   .main {

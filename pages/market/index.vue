@@ -171,8 +171,8 @@ export default {
   .page-header {
     position: fixed;
     top: 0;
-    width: 100vw;
-    z-index: 999999999999999999999;
+    width: 100%;
+    z-index: 99;
   }
   
   .status_bar {
@@ -365,5 +365,11 @@ export default {
     // height: calc(100vh - 112rpx - var(--status-bar-height) - 120rpx - 56rpx);
     // overflow-y: scroll;
     padding-bottom: calc( 120rpx + 56rpx);
+    position: relative;
+    z-index: 1;
+  }
+  
+  /deep/ uni-image>img {
+    position: static !important;
   }
 </style>

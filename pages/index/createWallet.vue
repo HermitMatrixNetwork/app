@@ -143,6 +143,7 @@ export default {
 <style lang="scss" scoped>
   .create-wallet {
     padding-top: calc(112rpx + var(--status-bar-height));
+    height: 100vh;
   }
 
   .title {

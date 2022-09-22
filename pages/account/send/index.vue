@@ -433,13 +433,17 @@ export default {
         .balance) {
         const quota = this.$cache.get('_quota')
         if (quota == null) {
-          this.feeLoading = true
+          if (!this.isCustomFess) {
+            this.feeLoading = true
+          }
           this.callSimulate = JSON.parse(JSON.stringify(this.sendFormData))
           this.submitPopupIsShow = true
         } else if (Number(this.sendFormData.sendAmount) > Number(quota.amount)) {
           this.aa = true
         } else {
-          this.feeLoading = true
+          if (!this.isCustomFess) {
+            this.feeLoading = true
+          }
           this.callSimulate = JSON.parse(JSON.stringify(this.sendFormData))
           this.submitPopupIsShow = true
         }
@@ -723,8 +727,9 @@ export default {
           })
           let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
           renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
+          console.log(res);
         } catch (e) {
-          console.log(e);
+          console.log('e', e); // @todo out of gas
           res.code = 7
         }
       }

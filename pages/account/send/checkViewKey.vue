@@ -66,6 +66,7 @@ export default {
 	position: relative;
 	height: 100vh;
 	width: 100%;
+  padding-top: calc(112rpx + var(--status-bar-height));
 }
 
 .title{
