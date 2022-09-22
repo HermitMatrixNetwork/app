@@ -42,7 +42,7 @@
         </view>
       </view>
       <view class="protocol-content">
-        <text v-text='language.text87'>
+        <text v-html='language.text87'>
 
         </text>
       </view>
