@@ -252,7 +252,9 @@ const languages = {
     text225: 'Keystore',
     text226: '不可转账给自己',
     text227: '已全部加载完毕',
-    text228: 'Gas过低，请输入有效GAS'
+    text228: 'Gas过低，请输入有效GAS',
+    text229: '注：Gas Limit的估值受转账金额、收款地址及Memo的影响，请先完成转账信息的填写，才可以获取该估值；',
+    text230: '点击复制'
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -504,7 +506,9 @@ const languages = {
     text225: 'Keystore',
     text226: '不可轉賬給自己',
     text227: '已全部加載完畢',
-    text228: 'Gas過低，請輸入有效GAS'
+    text228: 'Gas過低，請輸入有效GAS',
+    text229: '註：Gas Limit的估值受轉賬金額、收款地址及Memo的影響，請先完成轉賬信息的填寫，才可以獲取該估值；',
+    text230: '點擊復製'
   },
   EN: {
     Mywallet: 'My wallet',
@@ -757,7 +761,9 @@ const languages = {
     text225: 'Keystore',
     text226: 'Cannot transfer to yourself',
     text227: 'end',
-    text228: 'Gas is too low, please enter a valid GAS'
+    text228: 'Gas is too low, please enter a valid GAS',
+    text229: 'Note: The valuation of Gas Limit is affected by the transfer amount, the receiving address and the Memo. Please fill in the transfer information before obtaining the valuation;',
+    text230: 'Click Copy'
   }
 }
 export default languages

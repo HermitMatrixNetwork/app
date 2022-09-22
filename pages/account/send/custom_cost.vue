@@ -16,6 +16,7 @@
 				<InputTitle :disabled="minimumGas == 0" :title="'Gas Limit'" :type="'number'" :placeholder="'Gas'" :inputVal.sync="minersGas" ref="gas">
 				</InputTitle>
         <view :style="{ opacity : showGasError ?  1 : 0}" class="waringPrompt">{{ language.text228 }} ({{ minimumGas }})</view>
+        <view class="waringPrompt" style="margin-top: 24rpx;">{{ language.text229 }}</view>
 			</view>
 		</view>
 		<view class="bottom-btn">

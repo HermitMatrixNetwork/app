@@ -7,7 +7,7 @@
       <view class="title">
         {{ language.text105 }}
       </view>
-      <textarea v-model="formData.view_key" cols="30" rows="10" :placeholder="language.text205"
+      <textarea v-model="formData.view_key" cols="30" rows="10" :placeholder="language.text205" disabled
         class="viewkey_input"></textarea>
     </view>
     <view style="height: 16rpx;background: #F4F6FA;" />
@@ -441,7 +441,6 @@ export default {
 
   .perform_contract {
     width: 100%;
-    height: 540rpx;
     padding: 48rpx 32rpx 38rpx;
 
     .title {
@@ -457,7 +456,7 @@ export default {
 
     .viewkey_input {
       width: 100%;
-      height: 402rpx;
+      height: 250rpx;
       background: #F7F8FA;
       border-radius: 16rpx;
 

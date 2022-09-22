@@ -100,7 +100,8 @@
         </swiper-item>
       </swiper>
     </view>
-    <view :callRenderDelegateRecord="callRenderDelegateRecord" :change:callRenderDelegateRecord="render.getAddress">
+    <view :callRenderDelegateRecord="callRenderDelegateRecord" :change:callRenderDelegateRecord="render.getAddress"></view>
+    <view :callMainCoinBalance="callMainCoinBalance" :change:callMainCoinBalance="render.getMainCoinBalance">
     </view>
     <view class="operation_btn">
       <button @click="toSend('/pages/account/send/index', token)">{{ language.text64 }}</button>
@@ -223,7 +224,8 @@ export default {
       mainCoin,
       mainTokenHeight: '0rpx',
       navHeight: '0rpx',
-      systemBarHeight: '0rpx'
+      systemBarHeight: '0rpx',
+      callMainCoinBalance: 0
     }
   },
   async onLoad(options) {
@@ -240,6 +242,20 @@ export default {
     } else {
       this.loadingBalace = false
     }
+  },
+  onPullDownRefresh() {
+    this.callRenderDelegateRecord = ''
+    this.callMainCoinBalance++
+    this.init()
+    const wallet = this.$cache.get('_currentWallet')
+    this.$nextTick(() => {
+      this.callRenderDelegateRecord = this.address
+      setTimeout(() => {
+        uni.stopPullDownRefresh()
+      }, 1500)    
+    })
+
+
   },
   beforeDestroy() {
     clearInterval(this.timer)
@@ -667,6 +683,9 @@ export default {
       uni.navigateTo({
         url: `./transactionDetails?data=${JSON.stringify(record)}`
       })
+    },
+    handlerMainCoinBalance(res) {
+      this.token.balance = res.res
     }
   },
   filters: {
@@ -692,7 +711,8 @@ export default {
 <script lang="renderjs" module="render">
   import {
     getDelegationRecord,
-    getUnbondingDelegationRecord
+    getUnbondingDelegationRecord,
+    getMainCoinBalance 
   } from '@/utils/secretjs/SDK.js'
   import renderUtils from '@/utils/render.base.js'
   export default {
@@ -712,6 +732,21 @@ export default {
         // const result = await getUnbondingDelegationRecord(address)
         // console.log('getUnbondingDelegationRecord', result.unbondingResponses);
       },
+      async getMainCoinBalance(val) {
+        if (val == 0)return
+        let wallet;
+        //#ifdef APP-PLUS
+        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+        //#endif
+        
+        //#ifndef APP-PLUS 
+        wallet = uni.getStorageSync('_currentWallet').data
+        //#endif
+        const res = await getMainCoinBalance(wallet.address)
+        renderUtils.runMethod(this._$id, 'handlerMainCoinBalance', {
+          res
+        }, this)
+      }
     }
   }
 </script>

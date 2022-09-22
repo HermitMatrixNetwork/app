@@ -76,7 +76,7 @@
               <template #right>
                 <custom-loading v-if="item.loadingBalance"></custom-loading>
                 <view class="coinNumber" v-else>
-                  <view class="number">{{ item.balance || 0 }}</view>
+                  <view class="number">{{ formatBalance(item.balance) || 0 }}</view>
                   <view class="money">$0.00000</view>
                 </view>
               </template>
@@ -115,7 +115,7 @@ export default {
     SwitchWallet
   },
   filters: {
-    sliceAddress
+    sliceAddress,
   },
   data() {
     return {
@@ -157,7 +157,14 @@ export default {
     }
   },
   onPullDownRefresh() {
+    this.initCoinList()
+    this.aa = false
+    this.firstShowAa = true
     this.initRender++
+    this.address = ''
+    this.$nextTick(() => {
+      this.address = this.$cache.get('_currentWallet').address
+    })
     setTimeout(() => {
       uni.stopPullDownRefresh()
     }, 3000)
@@ -178,6 +185,11 @@ export default {
     this.calculateHeight()
   },
   methods: {
+    formatBalance(val) {
+      if (val) {
+        return Number(val).toFixed(6)
+      }
+    },
     getSystemStatusHeight() {
       uni.getSystemInfo({
         success: res => {

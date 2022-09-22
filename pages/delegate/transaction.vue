@@ -3,8 +3,8 @@
 		<custom-header :title="language.text38" :customStyle="{ 'z-index': 99, 'background-color': '#fff' }">
 		</custom-header>
 		<u-tabs class="tabs" :inactiveStyle="inactiveStyle" :activeStyle="activeStyle" :itemStyle="itemStyle" :list="list1" lineColor="#1E5EFF" lineHeight="4" @change	="changeTab"></u-tabs>
-		<scroll-view class="lists" scroll-y :style="{ height: scrollHeight }">
-			<TranList :currentTab="currentTab" />
+		<scroll-view class="lists" scroll-y :style="{ height: scrollHeight }" refresher-enabled="true" :refresher-triggered="triggered" :refresher-threshold="60" @refresherrefresh="onRefresh">
+			<TranList :currentTab="currentTab" ref="tranList" :triggered.sync="triggered" />
 		</scroll-view>
 	</view>
 </template>
@@ -42,13 +42,18 @@ export default {
       },
       currentTab: 0,
       systemBarHeight: 0,
-      
+      triggered: true
     }
   },
   mounted() {
     this.getSystemStatusHeight()
   },
   methods: {
+    onRefresh() {
+      console.log('refresh')
+      this.triggered = true
+      const res = this.$refs.tranList.init()
+    },
     getSystemStatusHeight() {
       uni.getSystemInfo({
         success: res => {

@@ -130,6 +130,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .index {
+    height: 100vh;
+  }
   .status_bar {
     height: var(--status-bar-height);
     width: 100%;

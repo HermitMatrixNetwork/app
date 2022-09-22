@@ -1,7 +1,7 @@
 <template>
 	<view class="sendPage">
 		<view class="mask" v-show="transferLoading"></view>
-		<custom-header :title="language.text15" :style="titleStyle">
+		<custom-header :title="language.text15" :style="titleStyle" :customStyle="{ 'z-index': 99 }">
 			<template #right>
 				<image src="/static/img/account/saoma.png" style="width:44rpx; height: 44rpx;" @click="scanCode">
 				</image>
@@ -65,7 +65,7 @@
       		</view>
       
       		<view class="send-memo">
-      			<InputTitle :title="'Memo'" :type="'text'" :placeholder="language.text106"
+      			<InputTitle :title="'Memo'" :type="'text'" :placeholder="language.text106" ref="memoInptval"
       				:inputVal.sync="sendFormData.memo">
       			</InputTitle>
       		</view>
@@ -73,7 +73,7 @@
       </view>
       
       <view class="main-bottom">
-      	<miners-column @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
+      	<miners-column ref="miners" @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
       
       	<view class="submit-btn" @click="transferConfirm">
       		<Submitbtn>{{ language.text144 }}</Submitbtn>
@@ -611,7 +611,19 @@ export default {
         }
       }
     }
-  }
+  },
+  onPullDownRefresh() {
+    this.receiveAddress = this.$refs.addressInptval.childValue = ''
+    this.sendFormData.sendAmount = ''
+    this.sendFormData.memo = this.$refs.memoInptval.childValue = ''
+    this.sendFormData.gas = ''
+    this.isCustomFess = false
+    this.sendFormData.gasPrice = 0.015
+    this.$refs.miners.resetMiners()
+    this.$nextTick(() => {
+      uni.stopPullDownRefresh()
+    })
+  },
 }
 </script>
 <script lang="renderjs" module="render">
@@ -748,8 +760,7 @@ export default {
 	}
 
 	.sendPage {
-		width: 100%;
-		height: 100%;
+		height: 100vh;
 		background: #F4F6FA;
     padding-top: calc(112rpx + var(--status-bar-height));
 	}
@@ -1269,8 +1280,8 @@ export default {
 	}
   
   .container {
-    height: calc(100vh - 112rpx - var(--status-bar-height));
+    // height: calc(100vh - 112rpx - var(--status-bar-height));
     // height: 100vh;
-    overflow-y: scroll;
+    // overflow-y: scroll;
   }
 </style>

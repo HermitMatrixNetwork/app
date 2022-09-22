@@ -82,7 +82,7 @@
     </view>
 
     <view class="main-bottom">
-      <miners-column @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
+      <miners-column ref="miners" @getMinersCost="getMinersCost" @getMinimumGas="getMinimumGas"></miners-column>
 
       <view class="btn" @click="transferConfirm">
         {{ language.text20 }}
@@ -528,6 +528,22 @@ export default {
     totalGas() {
       return new decimal(this.formData.gas + '').mul(new decimal(this.formData.gasPrice)).div(new decimal(mainCoin.decimals)).toString()
     }
+  },
+  onPullDownRefresh() {
+    this.callWithdrawAddress = ''
+    this.selData = ''
+    this.balance = ''
+    this.currentWallet = this.$cache.get('_currentWallet')
+    this.formData.gas = ''
+    this.isCustomFess = false
+    this.formData.gasPrice = 0.015
+    this.selectIndex = -1
+    this.$refs.miners.resetMiners()
+    
+    this.$nextTick(() => {
+      this.callWithdrawAddress = this.currentWallet.address
+      uni.stopPullDownRefresh()
+    })
   }
 }
 </script>
