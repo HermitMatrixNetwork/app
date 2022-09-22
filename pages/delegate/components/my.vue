@@ -13,15 +13,15 @@
     <view class="account-box">
       <view class="account-column">
         <view class="column-item" @click="goTo('/pages/delegate/cancel')">
-          <image src="/static/img/delegate/quxiaoweituo@2x.png" style="width: 80rpx; height: 80rpx;"></image>
+          <image src="/static/img/delegate/fasong2.png" style="width: 80rpx; height: 80rpx;"></image>
           <text>{{ language.text06 }}</text>
         </view>
         <view class="column-item" @click="goTo('/pages/delegate/income')">
-          <image src="/static/img/delegate/shouyilingqu@2x.png" style="width: 80rpx; height: 80rpx;"></image>
+          <image src="/static/img/delegate/shoukuan2.png" style="width: 80rpx; height: 80rpx;"></image>
           <text>{{ language.text07 }}</text>
         </view>
         <view class="column-item" @click="goTo('/pages/delegate/transaction')">
-          <image src="/static/img/delegate/jiaoyijilu@2x.png" style="width: 80rpx; height: 80rpx;"></image>
+          <image src="/static/img/delegate/weituo2.png" style="width: 80rpx; height: 80rpx;"></image>
           <text>{{ language.text08 }}</text>
         </view>
       </view>
