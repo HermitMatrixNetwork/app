@@ -109,7 +109,7 @@ import languages from './language'
 import mixin from './mixins/index.js'
 import reflsh from '@/utils/reflesh.js'
 export default {
-  mixins: [mixin, reflsh],
+  mixins: [mixin],
   components: {
     TokenColumn,
     SwitchWallet
@@ -155,6 +155,12 @@ export default {
       coinTabsHeight: 0
       
     }
+  },
+  onPullDownRefresh() {
+    this.initRender++
+    setTimeout(() => {
+      uni.stopPullDownRefresh()
+    }, 3000)
   },
   onShow() {
     // this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
@@ -388,6 +394,7 @@ export default {
             coin.showWarn = false
             let res = await getBalance(wallet.address)
             balance = res.balance.amount
+            console.log(res);
           } else { // 非主网币
             if (coin.view_key == '') {
               coin.showWarn = true

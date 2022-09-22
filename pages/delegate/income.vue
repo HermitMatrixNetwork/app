@@ -4,7 +4,8 @@
     <view :callRenderGetBanlance="callRenderGetBanlance" :change:callRenderGetBanlance="render.getBalance"></view>
     <view class="mask" v-show="loading"></view>
     <view :callWithdraw="callWithdraw" :change:callWithdraw="render.withdraw"></view>
-    <custom-header :title="language.text31" :style="titleStyle">
+    <custom-notify ref="notify" style="z-index: 3"></custom-notify>
+    <custom-header :title="language.text31" :style="titleStyle" :customStyle="{ 'z-index': 2 }">
       <!-- 			<template #right>
 				<u-icon :name="require('@/static/img/account/saoma.png')" size="44rpx" @click="scanCode" />
 			</template> -->
@@ -162,8 +163,6 @@
         </view>
       </view>
     </u-modal>
-
-    <custom-notify ref="notify"></custom-notify>
 
     <view :callWithdrawAddress="callWithdrawAddress" :change:callWithdrawAddress="render.getWithdrawAddress"></view>
 
