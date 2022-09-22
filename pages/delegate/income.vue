@@ -317,6 +317,7 @@ export default {
       // })
     },
     submitAgain() {
+      this.firstTime = true
       this.modalPasswordIsShow = true
       // #ifdef APP-PLUS
       if (this.touchId) {
@@ -469,6 +470,7 @@ export default {
           indexChange: (index) => {
             this.selectIndex = index
             this.selData = this.$cache.get('_delegateInfo').list[index]
+            this.balance = (this.selData.rewards.amount / mainCoin.delegateDecimals).toFixed(5)
           }
         }
       })

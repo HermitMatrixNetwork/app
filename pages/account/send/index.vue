@@ -387,8 +387,9 @@ export default {
     },
     async submitAgain() {
       this.modalPasswordIsShow = true
+      this.firstTime = true
       // #ifdef APP-PLUS
-      if (this.touchId) {
+      if (this.touchId) {       
         this.verify()
       }
       // #endif

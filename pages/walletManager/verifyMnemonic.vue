@@ -1,5 +1,5 @@
 <template>
-  <view>
+  <view class="page-wrapper">
     <custom-header></custom-header>
 
     <view class="mnemonic">
@@ -94,6 +94,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .page-wrapper {
+    padding-top: calc(112rpx + var(--status-bar-height));
+  }
   .mnemonic {
     margin-top: 64rpx;
     padding: 0 42rpx 0 40rpx;
@@ -173,11 +176,8 @@ export default {
     }
 
     &-confirm {
-      position: absolute;
-      bottom: 64rpx;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 622rpx;
+      margin: 96rpx 32rpx 32rpx;
+      width: auto;
       height: 96rpx;
       border-radius: 16rpx;
       background-color: #002FA7;

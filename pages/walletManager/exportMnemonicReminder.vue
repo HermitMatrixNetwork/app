@@ -1,6 +1,6 @@
 <template>
-  <view>
-    <custom-header></custom-header>
+  <view class="page-wrapper">
+    <custom-header :customStyle="{ 'z-index': 99 }"></custom-header>
 
     <view class="logo">
       <image src="/static/img/index/tishi.png" style="width: 174rpx; height: 174rpx;"></image>
@@ -58,6 +58,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .page-wrapper {
+    padding-top: calc(112rpx + var(--status-bar-height));
+  }
   .logo {
     margin-top: 88rpx;
     margin-bottom: 102rpx;
@@ -111,11 +114,8 @@ export default {
     }
 
     .btn {
-      position: absolute;
-      bottom: 64rpx;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 622rpx;
+      margin: 96rpx 32rpx 32rpx;
+      width: auto;
       height: 96rpx;
       border-radius: 16rpx;
       background-color: #002FA7 !important;

@@ -227,6 +227,7 @@ export default {
       })
     },
     submitAgain() {
+      this.firstTime = true
       this.modalPasswordIsShow = true
       // #ifdef APP-PLUS
       if (this.touchId) {

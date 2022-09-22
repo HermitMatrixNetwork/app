@@ -96,7 +96,7 @@
               <u-input :type="showPassword ? 'text' : 'password'" :placeholder="language.text49" :formatter="formatter"
                 border="surround" v-model="password" class="edit-name-input" :class="{ 'error-edit-name': editNameError }">
                 <template slot="suffix">
-                  <image :src="showPassword? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="closeConfirmPasswordModal" style="width: 32rpx; height: 32rpx;"></image>
+                  <image :src="showPassword? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="showPassword = !showPassword" style="width: 32rpx; height: 32rpx;"></image>
                 </template>
               </u-input>
             </view>
@@ -183,6 +183,12 @@ export default {
     if (this.touchId) this.verifyMethod = 'touchID'
   },
   methods: {
+    verifyTouchIDFail() {
+      this.showToast = false
+    },
+    verifyTouchIDOverTime() {
+      this.showToast = false
+    },
     hideModel() {
       this.showConfirmPasswordModal = false
     },
@@ -211,9 +217,12 @@ export default {
       }
     },
     toResetPassword() {
-      uni.redirectTo({
-        url: './resetPassword'
-      })
+      this.target = 'resetPassword'
+      this.showConfirmPasswordModal = true
+      this.firstTime = true
+      if (this.touchId) {
+        this.verify()
+      }
     },
     clickItem(target) {
       this.target = target
@@ -223,6 +232,7 @@ export default {
         this.aa = true
       } else {
         this.showConfirmPasswordModal = true
+        this.firstTime = true
         if (this.touchId) {
           this.verify()
         }
@@ -292,6 +302,12 @@ export default {
         if (!result) return
         // 删除当前钱包
         this.removeWallet()
+      } else if (this.target === 'resetPassword') {
+        const result = this.verifyPawword()
+        if (!result) return
+        uni.navigateTo({
+          url: './resetPassword'
+        })
       } else {
         const result = this.verifyPawword()
         if (!result) return
@@ -376,11 +392,8 @@ export default {
   }
 
   .remove-wallet-btn {
-    position: absolute;
-    bottom: 64rpx;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 622rpx;
+    margin: 96rpx 32rpx 32rpx;
+    width: auto;
     height: 96rpx;
     font-weight: 400;
     font-size: 32rpx;

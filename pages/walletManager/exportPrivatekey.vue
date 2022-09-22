@@ -1,6 +1,6 @@
 <template>
-  <view>
-    <custom-header :title="language.text120"></custom-header>
+  <view class="page-wrapper">
+    <custom-header :customStyle="{ 'z-index': 99 }" :title="language.text120"></custom-header>
 
     
     <view class="border"></view>
@@ -53,6 +53,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .page-wrapper {
+    padding-top: calc(112rpx + var(--status-bar-height));
+  }
+  
   .border {
     border-top: 1rpx solid #8397B1;
     opacity: .16;
