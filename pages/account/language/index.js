@@ -255,7 +255,9 @@ const languages = {
     text228: 'Gas过低，请输入有效GAS',
     text229: '注：Gas Limit的估值受转账金额、收款地址及Memo的影响，请先完成转账信息的填写，才可以获取该估值；',
     text230: '点击复制',
-    text231: '油费不足'
+    text231: '油费不足',
+    text232: '地址有误',
+    
   },
   CT: {
     Mywallet: '我的錢包 ',
