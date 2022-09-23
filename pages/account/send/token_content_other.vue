@@ -45,7 +45,7 @@
         </view>
       </view>
 
-      <swiper v-else class="transaction_history_item" :current="listCurrentIndex" @change="switchSwiper"
+     <swiper v-else class="transaction_history_item" :current="listCurrentIndex" @change="switchSwiper"
         :style="{ height: scrollHeight }">
         <swiper-item v-for="(item,index) in list" :key="item.name" :item-id="index+''">
           <!-- @scrolltolower="loadMore(item.type)" -->
@@ -168,7 +168,7 @@ export default {
         total: 0,
         loading: false
       },
-      loading: false,
+      loading: true,
       lockAmountLoading: true,
       callRenderTransationHistory: {},
       lockAmount: 0,

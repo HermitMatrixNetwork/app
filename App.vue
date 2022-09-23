@@ -78,13 +78,13 @@ export default {
       console.log('后台唤起')
       if (this.$cache.get('_currentWallet') == null) {
         console.log('本地缓存没有钱包（直接进入首页）')
-        this.$cache.set('_agree_protocol', false, 0)
-        uni.reLaunch({
-          url: '/pages/index/index',
-          success: () => {
-            plus.navigator.closeSplashscreen()
-          }
-        })
+        // this.$cache.set('_agree_protocol', false, 0)
+        // uni.reLaunch({
+        //   url: '/pages/index/index',
+        //   success: () => {
+        //     plus.navigator.closeSplashscreen()
+        //   }
+        // })
       } else if (this.$cache.get('_touchId') == 1) {
         uni.navigateTo({
           url: '/pages/mine/anquan/backgroundVerify',
