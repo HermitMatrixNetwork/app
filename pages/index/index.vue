@@ -1,5 +1,7 @@
 <template>
   <view class="index">
+    <view class="mask" v-show="updating"></view>
+    <custom-updateApp ref="custom_update" :updating.sync="updating" checkImmediate />
     <!-- 状态栏 -->
     <view class="status_bar">
       <!-- APP下会占用系统原生消息因此需要该占位符 -->
@@ -16,7 +18,7 @@
         {{ language.text67 }}
       </view>
     </view>
-    <view class="content">
+    <view class="wallet-content">
 
       <view class="wallet">
         <view class="wallet-create" @click="toCreateWallet">
@@ -70,8 +72,12 @@ export default {
       agree_protocol: this.$cache.get('_agree_protocol') || false,
       showProtocol: false,
       action: '',
-      language: language[this.$cache.get('_language')]
+      language: language[this.$cache.get('_language')],
+      updating: false
     }
+  },
+  onShow() {
+    this.$refs.custom_update && this.$refs.custom_update.checkUpdate()
   },
   onLoad() {
     if (this.$cache.get('_currentWallet') == null) {
@@ -170,7 +176,7 @@ export default {
     }
   }
 
-  .content {
+  .wallet-content {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -294,5 +300,15 @@ export default {
 
   .complete {
     opacity: 1 !important;
+  }
+  
+  .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,.5) !important;
+    z-index: 9999;
   }
 </style>

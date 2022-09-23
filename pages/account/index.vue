@@ -1,7 +1,7 @@
 <template>
   <view class="account">
     <view class="mask" v-show="updating"></view>
-    <!-- <custom-updateApp :updating.sync="updating" checkImmediate /> -->
+    <custom-updateApp ref="custom_update" :updating.sync="updating" checkImmediate />
     <!-- 钱包主页 -->
     <view class="account-header">
       <view class="header-left" @click="showSwitchWallet = true">
@@ -177,6 +177,7 @@ export default {
     }, 3000)
   },
   onShow() {
+    this.$refs.custom_update && this.$refs.custom_update.checkUpdate()
     // this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
     this.initCoinList()
     this.aa = false

@@ -33,7 +33,7 @@ export default {
       describe: '',
       downUrl: '',
       downloading: false,
-      show: false,
+      show: false, // false
       progress: 0,
       upgrading: false
     }
@@ -79,6 +79,7 @@ export default {
     async checkUpdate() {
       this.downloading = false
       this.upgrading = false
+      this.progress = 0
       const res = (await getVersion()).data.data.version
       plus.runtime.getProperty(plus.runtime.appid, (inf) => {
         const {
@@ -126,9 +127,17 @@ export default {
             status
           })
           plus.runtime.install(download.filename, {}, function() {
+            this.$nextTick(() => {
+              this.downloading = false
+              this.upgrading = false
+              this.progress = 0
+            })
             console.log('安装完成', {
               download,
-              status
+              status,
+              downloading: this.downloading,
+              upgrading: this.upgrading,
+              progress: this.progress
             })
           }, function(e) {
             console.log('安装文件失败', {

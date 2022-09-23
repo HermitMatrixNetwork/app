@@ -616,10 +616,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .scroll-view {
-    height: calc(100vh - 112rpx - var(--status-bar-height));
-    overflow-y: scroll;
-  }
   
   .mask {
     position: absolute;
@@ -634,6 +630,7 @@ export default {
   .sendPage {
     padding-top: calc(112rpx + var(--status-bar-height));
     background: #F4F6F9;
+    height: 100vh;
   }
 
   .main-top {
