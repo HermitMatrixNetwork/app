@@ -66,7 +66,7 @@
 
 					<view class="send-memo">
 						<InputTitle :title="'Memo'" :type="'text'" :placeholder="language.text106"
-							:inputVal.sync="sendFormData.memo">
+							:inputVal.sync="sendFormData.memo" ref="memoInptval">
 						</InputTitle>
 					</view>
 				</view>
@@ -653,9 +653,9 @@ export default {
     this.isCustomFess = false
     this.sendFormData.gasPrice = 0.015
     this.$refs.miners.resetMiners()
-    this.$nextTick(() => {
+    setTimeout(() => {
       uni.stopPullDownRefresh()
-    })
+    }, 1500)
   },
 }
 </script>

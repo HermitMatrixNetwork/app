@@ -291,6 +291,41 @@ export default {
 
     },
     async init() {
+      this.pagination = {
+        sender: {
+          page: 0,
+          size: 5,
+          total: 0,
+          loading: false
+        },
+        recipient: {
+          page: 0,
+          size: 5,
+          total: 0,
+          loading: false
+        },
+        delegate: {
+          page: 0,
+          size: 5,
+          total: 0,
+          loading: false
+        },
+        withdraw: {
+          page: 0,
+          size: 5,
+          total: 0,
+          loading: false
+        },
+        fail: {
+          page: 0,
+          size: 5,
+          total: 0,
+          loading: false
+        },
+        all: {
+          loading: false
+        }
+      }
       await Promise.all([
         txsQuery([`events=message.module='${'bank'}'`, `events=transfer.sender='${this.address}'`,
           'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.sender.page}`,
