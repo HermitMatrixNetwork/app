@@ -680,6 +680,7 @@ export default {
 
     },
     toSend(url, params) {
+      if(this.sendbtnLoading) return
       uni.navigateTo({
         url: `${url}?tokenID=${this.token.ID}`,
         events: {
