@@ -1,7 +1,7 @@
 <template>
   <view class="account">
     <view class="mask" v-show="updating"></view>
-    <custom-updateApp :updating.sync="updating" checkImmediate />
+    <!-- <custom-updateApp :updating.sync="updating" checkImmediate /> -->
     <!-- 钱包主页 -->
     <view class="account-header">
       <view class="header-left" @click="showSwitchWallet = true">

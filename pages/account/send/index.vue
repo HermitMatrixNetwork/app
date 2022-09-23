@@ -467,13 +467,25 @@ export default {
         this.passwordCheck = true
       } else {
         this.passwordCheck = false
-        this.checkSuccess = this.sendFormData // 调用render.sendToken
-        this.modalPasswordIsShow = false
-        this.transferLoading = true
-        this.verifyTouchID = 3
+        // this.checkSuccess = this.sendFormData // 调用render.sendToken
+        // this.modalPasswordIsShow = false
+				
         this.showToast = true
-        this.toast.msg = `${this.language.text198}...`
-        this.toast.icon = '/static/img/mine/loading.gif'
+        this.toast.msg = this.language.text37
+        this.toast.icon = '/static/img/mine/success.png'
+				
+        let {receiveAddress,userAddress,sendAmount,memo,gas,gasPrice,decimal,token} = this.sendFormData
+        setTimeout(()=>{
+					uni.redirectTo({
+					  url: `./token_content?tokenID=${this.token?this.token.ID:0}&sendToken=${JSON.stringify({receiveAddress,userAddress,sendAmount,memo,gas,gasPrice,decimal,token})}`
+					})
+				},1000)
+        // this.transferLoading = true
+        // this.verifyTouchID = 3
+        //showToast弹出框
+        // this.showToast = true
+        // this.toast.msg = `${this.language.text198}...`
+        // this.toast.icon = '/static/img/mine/loading.gif'
         // uni.showToast({
         //   title: `${this.language.text198}...`,
         //   icon: 'loading',
@@ -511,6 +523,7 @@ export default {
           changeToken: (data) => {
             this.token = data
             this.sendFormData.token = this.token
+            this.sendFormData.gas = ''
             clearInterval(this.timer)
             if (this.token.loadingBalance) {
               this.loading = true
@@ -652,6 +665,7 @@ export default {
     this.sendFormData.gas = ''
     this.isCustomFess = false
     this.sendFormData.gasPrice = 0.015
+		this.btnLoading = false
     this.$refs.miners.resetMiners()
     setTimeout(() => {
       uni.stopPullDownRefresh()
