@@ -1,6 +1,6 @@
 <template>
   <view class="page-wrapper">
-    <custom-header tabUrl="/pages/mine/index" :title="language.text93">
+    <custom-header tabUrl="/pages/mine/index" :title="language.text93" :customStyle="{ 'z-index': 99 }">
       <template slot="right">
         <view class="record" @click="showEditWalletNameModal = true">
           {{ language.text95 }}</view
@@ -131,11 +131,11 @@
 </template>
 
 <script>
-import language from "../language/index.js";
-import SubmitBtn from "../../account/send/components/submit-btn.vue";
-import { problemFeedback, queryFeedbackHistory } from "@/api/token.js";
-import { pathToBase64 } from "image-tools";
-import mixins from "@/pages/account/mixins/index.js";
+import language from '../language/index.js'
+import SubmitBtn from '../../account/send/components/submit-btn.vue'
+import { problemFeedback, queryFeedbackHistory } from '@/api/token.js'
+import { pathToBase64 } from 'image-tools'
+import mixins from '@/pages/account/mixins/index.js'
 export default {
   mixins: [mixins],
   components: {
@@ -143,57 +143,57 @@ export default {
   },
   data() {
     return {
-      language: language[this.$cache.get("_language")],
+      language: language[this.$cache.get('_language')],
       fileList: [],
       showEditWalletNameModal: false,
-      email: "",
+      email: '',
       editNameError: false,
       formData: {
-        title: "",
-        desc: "",
-        email: "",
+        title: '',
+        desc: '',
+        email: '',
       },
       btnswitch: true,
-    };
+    }
   },
   methods: {
     async afterRead(file, lists, name) {
       pathToBase64(file.file.url).then((res) => {
-        this.fileList.push({ ...file.file, base64: res });
-      });
+        this.fileList.push({ ...file.file, base64: res })
+      })
     },
     cancel() {
-      this.showEditWalletNameModal = false;
+      this.showEditWalletNameModal = false
     },
     async confirm() {
       if (!/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(this.email)) {
-        this.$refs.notify.show("", this.language.text71);
-        return;
+        this.$refs.notify.show('', this.language.text71)
+        return
       }
       if (this.btnswitch) {
-        console.log("执行");
-        this.btnswitch = false;
-        const res = await queryFeedbackHistory(this.email);
-        console.log(this.btnswitch);
-        console.log("历史记录", res);
+        console.log('执行')
+        this.btnswitch = false
+        const res = await queryFeedbackHistory(this.email)
+        console.log(this.btnswitch)
+        console.log('历史记录', res)
         if (res.data.code == 0 && res.data.data.notices.length !== 0) {
           uni.navigateTo({
-            url: "./record",
+            url: './record',
             events: {
               sendMessage(res) {
-                console.log(res);
+                console.log(res)
               },
             },
             success(data) {
-              data.eventChannel.emit("acceptDataFromOpenerPage", res);
+              data.eventChannel.emit('acceptDataFromOpenerPage', res)
             },
-          });
-          this.email = "";
+          })
+          this.email = ''
         } else {
-          this.showEditWalletNameModal = false;
-          this.$refs.notify.show("success", this.language.text124);
+          this.showEditWalletNameModal = false
+          this.$refs.notify.show('success', this.language.text124)
         }
-        this.btnswitch = true;
+        this.btnswitch = true
       }
 
       // }else{
@@ -206,51 +206,52 @@ export default {
           this.formData.email
         )
       ) {
-        this.$refs.notify.show("", this.language.text71);
-        return;
+        this.$refs.notify.show('', this.language.text71)
+        return
       }
-      const { title, desc, email } = this.formData;
+      const { title, desc, email } = this.formData
       let arr = this.fileList.map((item) => {
-        return item.base64;
-      });
+        return item.base64
+      })
       let data = {
         title,
         desc,
         email,
         photos: JSON.stringify(arr),
-      };
+      }
       if (!(title && desc && email))
-        return this.$refs.notify.show("error", this.language.text76);
-      const res = await problemFeedback(data);
-      console.log(res);
+        return this.$refs.notify.show('error', this.language.text76)
+      const res = await problemFeedback(data)
+      console.log(res)
       if (res.data.code == 0) {
-        this.$refs.notify.show("success", this.language.text77, {
-          bgColor: "#275EF1",
-        });
+        this.$refs.notify.show('success', this.language.text77, {
+          bgColor: '#275EF1',
+        })
 
         this.formData = {
-          title: "",
-          desc: "",
-          email: "",
-        };
-        this.fileList = [];
+          title: '',
+          desc: '',
+          email: '',
+        }
+        this.fileList = []
       } else {
-        this.$refs.notify.show("error", res.data.msg);
+        this.$refs.notify.show('error', res.data.msg)
       }
     },
     deletePic(e) {
-      this.fileList.splice(e.index, 1);
+      this.fileList.splice(e.index, 1)
     },
-	formatter(val){
-		return this.dealInputValue(val)
-	}
+    formatter(val){
+      return this.dealInputValue(val)
+    }
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
 .page-wrapper {
   padding-top: calc(112rpx + var(--status-bar-height));
+  height: 100vh;
 }
 .record {
   font-weight: 400;
@@ -465,11 +466,8 @@ export default {
 }
 
 .submit-btn {
-  position: absolute;
-  bottom: 64rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 622rpx;
+  margin: 96rpx 32rpx 32rpx;
+  width: auto;
   height: 96rpx;
   border-radius: 16rpx;
   background-color: #002fa7 !important;

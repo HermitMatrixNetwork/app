@@ -1,7 +1,8 @@
 <template>
 	<view class="sendPage">
+    <custom-notify ref="notify" style="z-index: 99"></custom-notify>
 		<view class="mask" v-show="transferLoading"></view>
-		<custom-header :title="language.text15" :style="titleStyle">
+		<custom-header :title="language.text15" :style="titleStyle" :customStyle="{ 'z-index': 98 }">
 			<template #right>
 				<image src="/static/img/account/saoma.png" style="width:44rpx; height: 44rpx;" @click="scanCode">
 				</image>
@@ -195,7 +196,6 @@
 				</view>
 			</u-modal>
 		</view>
-		<custom-notify ref="notify"></custom-notify>
 	</view>
 </template>
 
@@ -773,23 +773,51 @@ export default {
 					gas,
 					decimals
 				} = val
+        console.log(val.token.decimals);
+        console.log(sendAmount);
+        const denom = val.token.alias_name == mainCoin.alias_name ? 'ughm' : 'SGHM'
+        // const amount = val.token.alias_name == 'GHM' ? (sendAmount * val.token.decimals + '') : (sendAmount + '')
 				try {
-					const msgSend = new secretjs.MsgSend({
-						amount: [{
-							amount: sendAmount * val.token.decimals + '',
-							denom: 'ughm'
-						}],
-						fromAddress: userAddress,
-						toAddress: receiveAddress
-					})
-					res = await Secret.tx.simulate([msgSend], {
-						feeDenom: 'ughm',
-					})
-					let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
-					renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
+          if (val.token.alias_name == mainCoin.alias_name) { // 主网币
+            const msgSend = new secretjs.MsgSend({
+            	amount: [{
+            		amount: sendAmount * val.token.decimals + '',
+            		denom
+            	}],
+            	fromAddress: userAddress,
+            	toAddress: receiveAddress
+            })
+            res = await Secret.tx.simulate([msgSend], {
+            	feeDenom: 'ughm'
+            })
+            let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
+            renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
+          } else { // 非主网币 @todo 币名
+            let codeHash = val.token.codeHash
+            if (!val.token.codeHash) {
+              codeHash = await Secret.query.snip20.contractCodeHash(val.token.contract_address)
+            }
+            const msgExecuteContract = new secretjs.MsgExecuteContract({
+              sender: userAddress,
+              contractAddress: val.token.contract_address,
+              codeHash,
+              msg: {
+                send: {
+                  amount: sendAmount * val.token.decimals + '',
+                  recipient: receiveAddress 
+                }
+              }
+            })
+            res = await Secret.tx.simulate([msgExecuteContract], {
+              feeDenom: 'ughm',
+            })
+            let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
+            renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
+          }
+
 
 				} catch (e) {
-					console.log('e', e.message); // @todo out of gas
+					console.log('e', e.message);
 					res.code = 7
 					let msg = e.message
 					let error = ''
@@ -816,8 +844,7 @@ export default {
 	}
 
 	.sendPage {
-		width: 100%;
-		height: 100%;
+		height: 100vh;
 		background: #F4F6FA;
 		padding-top: calc(112rpx + var(--status-bar-height));
 	}
@@ -1338,8 +1365,7 @@ export default {
 	}
 
 	.container {
-		height: calc(100vh - 112rpx - var(--status-bar-height));
+		// height: calc(100vh - 112rpx - var(--status-bar-height));
 		// height: 100vh;
-		overflow-y: scroll;
 	}
 </style>

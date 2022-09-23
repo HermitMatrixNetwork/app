@@ -76,7 +76,9 @@
               <template #right>
                 <custom-loading v-if="item.loadingBalance"></custom-loading>
                 <view class="coinNumber" v-else>
-                  <view class="number">{{ formatBalance(item.balance) || 0 }}</view>
+                  <view class="number" v-if="item.alias_name !== mainCoin.alias_name">{{ formatBalance(item.balance) || 0 }}</view>
+                  <view class="number" v-else-if="!lockAmountLoading">{{ formatBalance(item.balance + lockAmount) || 0 }}</view>
+                  <view class="number" v-else>0.00</view>
                   <view class="money">$0.00000</view>
                 </view>
               </template>
@@ -89,6 +91,7 @@
 
     <view :initRender="initRender" :change:initRender="render.init"></view>
     <view :callBalanceLoading="callBalanceLoading" :change:callBalanceLoading="render.setBalanceLoading"></view>
+    <view :getLockAmount="getLockAmount" :change:getLockAmount="render.getDelegationRecord"></view>
 
     <custom-notify ref="notify"></custom-notify>
     <tab-bar />
@@ -152,11 +155,15 @@ export default {
       systemBarHeight: 0,
       basicDataHeight: 0,
       accountColumnHeight: 0,
-      coinTabsHeight: 0
-      
+      coinTabsHeight: 0,
+      lockAmountLoading: true,
+      lockAmount: 0,
+      mainCoin,
+      getLockAmount: 0
     }
   },
   onPullDownRefresh() {
+    this.getLockAmount++
     this.initCoinList()
     this.aa = false
     this.firstShowAa = true
@@ -175,6 +182,7 @@ export default {
     this.aa = false
     this.firstShowAa = true
     this.initRender++
+    this.getLockAmount++
   },
   created() {
     //获取选择的代币
@@ -327,6 +335,17 @@ export default {
         })
       })
       this.callBalanceLoading += 1
+    },
+    setLockAmount({
+      result
+    }) {
+      let lock = 0
+      result.delegationResponses.forEach(item => {
+        lock += Number(item.balance.amount)
+      })
+      this.lockAmountLoading = false
+      this.lockAmount = lock / mainCoin.decimals
+      console.log('lockAmount', this.lockAmount)
     }
   },
   computed: {
@@ -367,7 +386,8 @@ export default {
     getBalance,
     getCodeHash,
     getOtherBalance,
-    getTokenDecimals
+    getTokenDecimals,
+    getDelegationRecord
   } from '@/utils/secretjs/SDK'
   import renderUtils from '@/utils/render.base.js'
   import mainCoin from '@/config/index.js'
@@ -436,6 +456,21 @@ export default {
       setBalanceLoading(newVal) {
         if (newVal == 0) return
         this.balanceLoading = false
+      },
+      async getDelegationRecord(val) {
+        if (val == 0) return
+        let wallet;
+        //#ifdef APP-PLUS
+        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+        //#endif
+        
+        //#ifndef APP-PLUS 
+        wallet = uni.getStorageSync('_currentWallet').data
+        //#endif
+        const result = await getDelegationRecord(wallet.address)
+        renderUtils.runMethod(this._$id, 'setLockAmount', {
+          result
+        }, this)
       },
       async getOtherTokenBalance(coin, wallet) {
         let balance = 0
