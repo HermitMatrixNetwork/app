@@ -93,7 +93,10 @@
       </swiper>
     </view>
     <view class="operation_btn">
-      <u-button @click="toSend('/pages/account/send/index', token)">{{ language.text03 }}</u-button>
+      <u-button @click="toSend('/pages/account/send/index', token)">
+			<custom-loading v-if="sendbtnLoading"></custom-loading>
+			<text v-else>{{ language.text03 }}</text>
+			</u-button>
       <u-button @click="toGo('/pages/account/receive')">{{ language.text04 }}</u-button>
       <u-button @click="dealBtn">{{ language.text06 }}</u-button>
       <u-button class="view-key" @click="toViewKey">
@@ -108,7 +111,8 @@
     </view>
     <view :callRenderLoadMore="callRenderLoadMore" :change:callRenderLoadMore="render.more"></view>
     <view :callBalanceLoading="callBalanceLoading" :change:callBalanceLoading="render.setBalanceLoading"></view>
-  </view>
+		<view :check="sendTokenMessage" :change:check="render.sendToken"></view>
+	</view>
 </template>
 
 <script>
@@ -171,10 +175,17 @@ export default {
       callRenderLoadMore: 1,
       mainTokenHeight: '0rpx',
       navHeight: '0rpx',
-      systemBarHeight: '0rpx'
+      systemBarHeight: '0rpx',
+      sendTokenMessage:false,
+      sendbtnLoading:false,
     }
   },
   async onLoad(options) {
+    let obj = options.sendToken?JSON.parse(options.sendToken):false
+    // console.log('获取的数据',obj)
+    this.sendbtnLoading = !!obj
+    this.sendTokenMessage = obj
+		
     this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
     if (this.token.loadingBalance) {
       this.timer = setInterval(() => {
@@ -198,6 +209,11 @@ export default {
     this.calculateHeight()
   },
   methods: {
+    txResult(res){
+      // this.init({res:res,token:this.token}) //刷新列表
+      this.sendbtnLoading = false
+      this.callRenderTransationHistory = {...this.callRenderTransationHistory,random:Math.floor(Math.random() * 10000)}
+    },
     getSystemStatusHeight() {
       uni.getSystemInfo({
         success: res => {
@@ -223,6 +239,21 @@ export default {
       res,
       token
     }) {
+			
+      this.accountTransfer = {
+			  'transfer': [],
+			  'recipient': [],
+			  'fail': [],
+			  'all': []
+      },
+      this.pagination = {
+        page: 1,
+        size: 5,
+        total: 0,
+        loading: false
+      },
+      // console.log('初始化获取的列表',res)
+      console.log(1111111111111111, res.transaction_history)
       if (res.viewing_key_error || res.parse_err) {
         console.log('出现了预期之外的错误', res.viewing_key_error)
       } else {
@@ -444,7 +475,15 @@ export default {
       const operation_btn = '180rpx'
       return `calc(100vh - 112rpx - ${this.mainTokenHeight} - ${borderHeight} - ${operation_btn} - ${this.navHeight} - ${this.systemBarHeight + 'rpx'})`
     }
-  }
+  },
+  onBackPress(e) {
+	  if(e.from === 'backbutton'){
+	    uni.switchTab({
+	      url:'/pages/account/index'
+	    })
+	    return true
+	  }
+  },
 }
 </script>
 <script lang="renderjs" module="render">
@@ -453,8 +492,11 @@ export default {
     getTokenDecimals,
     getCodeHash,
     getOtherBalance,
+		SendTokentoOtherAddress,
+		transferOtherToken
   } from '@/utils/secretjs/SDK.js'
   import renderUtils from '@/utils/render.base.js'
+	import mainCoin from '@/config/index.js'
   export default {
     data() {
       return {
@@ -469,6 +511,7 @@ export default {
     },
     methods: {
       async getAddress(token) {
+				console.log('调用');
         if (!token || !token.view_key) {
         } else {
           token = JSON.parse(JSON.stringify(token))
@@ -570,7 +613,85 @@ export default {
         if (newVal == 1) return;
         this.pagination.page = newVal
         this.getTransationHistory(this.token, this.wallet, true)
-      }
+      },
+			async sendToken(newValue) {
+				// console.log('调用',newValue);
+				if (!newValue) return
+				// return
+				let res = {}
+				let otherToken = false
+				let {
+					receiveAddress,
+					userAddress,
+					sendAmount,
+					memo,
+					gas,
+					gasPrice,
+					decimals
+				} = newValue
+				// let totalGas = new decimal(gas + '').mul(new decimal(gasPrice)).toString()
+				if (newValue.token.alias_name == mainCoin.alias_name) {
+					sendAmount = sendAmount * mainCoin.decimals
+					try {
+						res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas,
+							gasPrice)
+							// console.log('发送结果',res);
+					} catch (e) {
+						console.log(e);
+						res.code = 7
+					}
+				} else {
+					try {
+						otherToken = true
+						const result = await transferOtherToken({
+							sender: userAddress,
+							contractAddress: newValue.token.contract_address,
+							codeHash: newValue.token.codeHash,
+							msg: {
+								transfer: {
+									recipient: receiveAddress,
+									amount: sendAmount * newValue.token.decimals + ''
+								}
+							}
+						}, newValue.memo, gas, gasPrice)
+						if (result.code !== 0) throw result
+						res = (await getOtherTransationHistory({
+							contract: {
+								address: newValue.token.contract_address,
+								codeHash: newValue.token.codeHash
+							},
+							address: userAddress,
+							auth: {
+								key: newValue.token.view_key
+							}
+						}, {
+							page_size: 1,
+							page: 1
+						}, newValue.token)).transaction_history.txs[0]
+						console.log('record', res)
+						for (let val of Object.values(res.action)) {
+							res.to_address = val.recipient
+							res.from_address = val.from
+							res.sender = val.sender
+						}
+						res.type = res.to_address == userAddress ? 'recipient' : 'transfer'
+			
+						res.amount = res.coins.amount / newValue.token.decimals + newValue.token.alias_name
+						res.timestamp = new Date(res.block_time * 1000).toLocaleString()
+						res.code = 0
+					} catch (e) {
+						console.log(e);
+						res.code = 7
+					}
+				}
+				console.log('结果',res);
+				// renderUtils.runMethod(this._$id, 'dealSuccessJump', {
+				// 	res,
+				// 	otherToken
+				// }, this)
+				renderUtils.runMethod(this._$id,'txResult',res,this)
+			},
+			
     }
   }
 </script>

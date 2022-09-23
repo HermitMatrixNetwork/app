@@ -475,9 +475,11 @@ export default {
         this.toast.icon = '/static/img/mine/success.png'
 				
         let {receiveAddress,userAddress,sendAmount,memo,gas,gasPrice,decimal,token} = this.sendFormData
+				const {ID} = this.token
+				console.log('tokenID',ID);
         setTimeout(()=>{
 					uni.redirectTo({
-					  url: `./token_content?tokenID=${this.token?this.token.ID:0}&sendToken=${JSON.stringify({receiveAddress,userAddress,sendAmount,memo,gas,gasPrice,decimal,token})}`
+					  url: `./token_content${ID==0?'':'_other'}?tokenID=${this.token?ID:0}&sendToken=${JSON.stringify({receiveAddress,userAddress,sendAmount,memo,gas,gasPrice,decimal,token})}`
 					})
 				},1000)
         // this.transferLoading = true
