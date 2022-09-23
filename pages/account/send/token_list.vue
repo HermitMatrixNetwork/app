@@ -1,6 +1,6 @@
 <template>
   <view class="choose_token">
-    <custom-header :title="language.text192" />
+    <custom-header :title="language.text192" :customStyle="{ 'z-index': 99 }"/>
     <view class="border"></view>
     <view class="token-list">
       <TokenColumn :tokenName="item.alias_name" v-for="item in tokenList" :key="item.full_name" :tokenIcon="item.logo"
@@ -46,6 +46,7 @@ export default {
 <style lang="scss" scoped>
   .choose_token {
     padding-top: calc(112rpx + var(--status-bar-height));
+    height: 100vh;
   }
   
   .token-list {

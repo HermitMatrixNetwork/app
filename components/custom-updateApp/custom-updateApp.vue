@@ -77,6 +77,8 @@ export default {
       })
     },
     async checkUpdate() {
+      this.downloading = false
+      this.upgrading = false
       const res = (await getVersion()).data.data.version
       plus.runtime.getProperty(plus.runtime.appid, (inf) => {
         const {

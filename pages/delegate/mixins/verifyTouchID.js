@@ -45,7 +45,7 @@ export default {
           plus.nativeUI.closeWaiting() //兼容Android平台关闭等待框
           // 验证失败
           this.toast.msg = this.language.text89
-          if (this.firstTime && e.code == 5 || e.code == 7) {
+          if (!this.firstTime && e.code == 5 || e.code == 7) {
             // '尝试次数过多。请切换验证方式'
             this.verifyTouchErrorTip = this.language.text90
             this.firstTime = false

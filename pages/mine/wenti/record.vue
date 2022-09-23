@@ -66,6 +66,7 @@ export default {
 	.container {
 		height: 100vh;
 		background-color: #F4F6F9;
+    padding-top: calc(112rpx + var(--status-bar-height));
 	}
 
 	.header {

@@ -37,14 +37,14 @@
         <u-tabs :list="list" :is-scroll="false" @click="switchTabs" :current="listCurrentIndex">
         </u-tabs>
       </view>
-      <view v-if="token.showWarn || !token.view_key" class="no-data" :style="{ height: scrollHeight }">
+      <custom-loading v-if="loading" class="loading"></custom-loading>
+      <view v-else-if="token.showWarn || !token.view_key" class="no-data" :style="{ height: scrollHeight }">
         <image class="no-img" src="@/static/img/noviewkey.png" />
         <view class="tip" style="text-align: center;">
           <text>{{ language.text114 }}</text>
         </view>
       </view>
 
-      <custom-loading v-else-if="loading" class="loading"></custom-loading>
       <swiper v-else class="transaction_history_item" :current="listCurrentIndex" @change="switchSwiper"
         :style="{ height: scrollHeight }">
         <swiper-item v-for="(item,index) in list" :key="item.name" :item-id="index+''">
