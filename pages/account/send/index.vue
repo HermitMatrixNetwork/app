@@ -44,8 +44,7 @@
 									<view class="can-be-use">
 										{{ language.text193 }}：
 										<custom-loading v-if="loading"></custom-loading>
-										<text v-else>{{ formatBalance(token.balance) || '0.000000' }}
-											{{ token.alias_name }}</text>
+										<text v-else>{{ formatBalance(token.balance) || '0.000000' }}{{ token.alias_name }}</text>
 									</view>
 								</view>
 								<view class="value"
