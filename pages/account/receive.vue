@@ -10,35 +10,38 @@
       </view>
     </view>
 
-    <view class="receive_main">
-      <view class="hint">
-        {{ language.text53 }}
-      </view>
-
-      <view class="qrcode">
-        <tki-qrcode ref="qrcode" :val="code.val" :size="code.size" :unit="code.upx" :onval="code.onval"
-          :loadMake="code.loadMake" @result="qrR" :loadingText="language.text222" />
-      </view>
-
-      <text>{{ language.text54 }}</text>
-      <view class="wallet_address">
-        {{currentWallet.address}}
-      </view>
-
-
-      <view class="copy_btn">
-        <view @click="copy(code['val'])">
-          <image src="/static/img/account/copy2.png" style="width: 40rpx;height: 40rpx; margin-right:8rpx;"></image>
-          <text style="font-size:28rpx; margin:0;">{{ language.text55 }}</text>
+    <view class="wrapper" style="padding: 0 32rpx; background-color: #0F53C5 ;">
+      <view class="receive_main">
+        <view class="hint">
+          {{ language.text53 }}
         </view>
-        <view @click="capture">
-          <image src="/static/img/account/mipmap-mdpi_copy2.png" style="width: 40rpx;height: 40rpx; margin-right:8rpx;">
-          </image>
-          <text style="font-size:28rpx; margin:0;">{{ language.text214 }}</text>
+      
+        <view class="qrcode">
+          <tki-qrcode ref="qrcode" :val="code.val" :size="code.size" :unit="code.upx" :onval="code.onval"
+            :loadMake="code.loadMake" @result="qrR" :loadingText="language.text222" />
         </view>
+      
+        <text>{{ language.text54 }}</text>
+        <view class="wallet_address">
+          {{currentWallet.address}}
+        </view>
+      
+      
+        <view class="copy_btn">
+          <view @click="copy(code['val'])">
+            <image src="/static/img/account/copy2.png" style="width: 40rpx;height: 40rpx; margin-right:8rpx;"></image>
+            <text style="font-size:28rpx; margin:0;">{{ language.text55 }}</text>
+          </view>
+          <view @click="capture">
+            <image src="/static/img/account/mipmap-mdpi_copy2.png" style="width: 40rpx;height: 40rpx; margin-right:8rpx;">
+            </image>
+            <text style="font-size:28rpx; margin:0;">{{ language.text214 }}</text>
+          </view>
+        </view>
+      
       </view>
-
     </view>
+
     <view class="bottom_title">
       Hermit Wallet
     </view>
@@ -171,7 +174,7 @@ export default {
       display: flex;
       align-items: flex-start;
       width: 568rpx;
-      height: 120rpx;
+      // height: 120rpx;
       font-family: PingFangSC-Regular;
       font-weight: 400;
       font-size: 28rpx;
@@ -188,7 +191,7 @@ export default {
   }
 
   .receive_main {
-    margin: 0 32rpx;
+    // margin: 0 32rpx;
     height: 952rpx;
     margin-top: 32rpx;
     // background: #F5F6FA;
@@ -198,8 +201,8 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    position: relative;
     overflow: hidden;
+    position: relative;
 
     .hint {
       font-family: PingFangSC-Regular;
