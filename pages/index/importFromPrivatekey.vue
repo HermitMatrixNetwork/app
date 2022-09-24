@@ -5,19 +5,19 @@
       <view class="item">
         <view class="item-label">{{ language.text27 }}</view>
         <view class="item-input">
-          <u--textarea v-model.trim="privateKey64" :placeholder="language.text72"></u--textarea>
+          <u--textarea v-model.trim="privateKey64"  :formatter='formatter' :placeholder="language.text72"></u--textarea>
         </view>
       </view>
       <view class="item">
         <view class="item-label">{{ language.text45 }}</view>
         <view class="item-input item-input-password">
-          <u-input :password="!passwordEye" v-model="password" :placeholder="language.text46">
+          <u-input :password="!passwordEye" :formatter='formatter' v-model="password" :placeholder="language.text46">
           </u-input>
           <image :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
-            @click="passwordEye = !passwordEye" style="width: 32rpx; height: 32rpx; margin-right: 32rpx;"></image>
+            @click="passwordEye = !passwordEye" :formatter='formatter' style="width: 32rpx; height: 32rpx; margin-right: 32rpx;"></image>
         </view>
         <view class="item-input item-input-password password-check">
-          <u-input :password="!checkPasswordEye" v-model="checkPassword" :placeholder="language.text47">
+          <u-input :password="!checkPasswordEye" :formatter='formatter' v-model="checkPassword" :placeholder="language.text47">
           </u-input>
           <image :src="checkPasswordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'"
             @click="checkPasswordEye = !checkPasswordEye" style="width: 32rpx; height: 32rpx; margin-right: 32rpx;">
@@ -125,6 +125,9 @@ export default {
       uni.reLaunch({
         url: '/pages/account/index'
       })
+    },
+    formatter(val){
+		  return val.replace(/[\>\<\&\'\"]/g,'')
     }
   }
 }

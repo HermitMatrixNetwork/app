@@ -358,11 +358,12 @@ export default {
 
       if (verify) {
         this.formData.validatorAddress = this.selData.delegation.validatorAddress
-        if (!this.isCustomFess) {
-          // this.feeLoading = true
-          this.btnLoading = true
-        }
+        // if (!this.isCustomFess) {
+        //   // this.feeLoading = true
+        //   this.btnLoading = true
+        // }
         // console.log('formData',this.formData)
+        this.btnLoading = true
         this.callSimulate = JSON.parse(JSON.stringify(this.formData))
         // this.submitPopupIsShow = true
       }
@@ -483,13 +484,14 @@ export default {
       return true
     },
     handlerGas(res) {
-      // this.feeLoading = false
+      if(this.btnLoading){
+        this.submitPopupIsShow = true
+      }
       this.btnLoading = false
-      this.submitPopupIsShow = true
       if (!res.code) {
         this.$cache.set('_minimumGas', res, 0)
       }
-      if (res.code || this.isCustomFess) return
+      if (res.code) return
       this.formData.gas = res
     },
     getMinimumGas() {
@@ -526,6 +528,7 @@ export default {
 		  handler(val){
 		    // console.log(val)
         this.formData.gas = ''
+        this.callSimulate = {}
 		  },
 		  deep:true
     },

@@ -356,10 +356,10 @@ export default {
       }
 
       if (verify) {
-        if (!this.isCustomFess) {
-          // this.feeLoading = true
-          this.btnLoading = true
-        }
+        // if (!this.isCustomFess) {
+        // this.feeLoading = true
+        this.btnLoading = true
+        // }
         this.callSimulate = JSON.parse(JSON.stringify(this.formData))
         // this.submitPopupIsShow = true
       }
@@ -447,12 +447,14 @@ export default {
     },
     handlerGas(res) {
       // this.feeLoading = false
-      this.btnLoading = false
-      this.submitPopupIsShow = true
+      if(this.btnLoading){
+        this.btnLoading = false
+        this.submitPopupIsShow = true
+      }
       if (!res.code) {
         this.$cache.set('_minimumGas', res, 0)
       }
-      if (res.code || this.isCustomFess) return
+      if (res.code) return
       this.formData.gas = res
     },
     getMinimumGas() {

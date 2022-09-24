@@ -350,8 +350,10 @@ export default {
     },
     handlerGas(res) {
       // this.feeLoading = false
-      this.btnLoading = false
-      this.submitPopupIsShow = true
+      if(this.btnLoading){
+        this.submitPopupIsShow = true
+        this.btnLoading = false
+      }
       if (!res.code) {
         this.$cache.set('_minimumGas', res, 0)
       }

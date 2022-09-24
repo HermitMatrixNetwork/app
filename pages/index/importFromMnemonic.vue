@@ -6,19 +6,19 @@
         <view class="item-label">{{ language.text25 }}</view>
         <view class="item-input">
           <u--textarea v-model="mnemonic" height="180rpx" @input="mnemonicChange" :placeholder="language.text33"
-            maxlength="120">
+            maxlength="120" :formatter='formatter'>
           </u--textarea>
         </view>
       </view>
       <view class="item">
         <view class="item-label">{{ language.text34 }}</view>
         <view class="item-input item-input-password">
-          <u-input :password="!passwordEye" v-model="password" :placeholder="language.text35">
+          <u-input :password="!passwordEye" v-model="password" :formatter='formatter' :placeholder="language.text35">
           </u-input>
           <image  :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="passwordEye = !passwordEye" style="width: 32rpx; height: 32rpx; margin-right: 32rpx;"></image>
         </view>
         <view class="item-input item-input-password password-check">
-          <u-input :password="!checkPasswordEye" v-model="checkPassword" :placeholder="language.text36">
+          <u-input :password="!checkPasswordEye" :formatter='formatter' v-model="checkPassword" :placeholder="language.text36">
           </u-input>
           <image  :src="checkPasswordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="checkPasswordEye = !checkPasswordEye" style="width: 32rpx; height: 32rpx; margin-right: 32rpx;"></image>
         </view>
@@ -28,7 +28,7 @@
           {{ language.text37 }}
         </view>
         <view class="item-input item-input-name">
-          <u-input v-model="name" :placeholder="language.text38" :adjust-position="false"></u-input>
+          <u-input v-model="name" :formatter='formatter' :placeholder="language.text38" :adjust-position="false"></u-input>
         </view>
       </view>
     </view>
@@ -157,6 +157,9 @@ export default {
         // 通过校验
         return true
       }
+    },
+    formatter(val){
+      return val.replace(/[\>\<\&\'\"]/g,'')
     }
   }
 }

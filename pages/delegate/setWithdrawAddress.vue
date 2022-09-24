@@ -338,8 +338,10 @@ export default {
       return true
     },
     handlerGas(res) {
+      if(this.btnLoading){
+        this.submitPopupIsShow = true
+      }
       this.btnLoading = false
-      this.submitPopupIsShow = true
       if (!res.code) {
         this.$cache.set('_minimumGas', res, 0)
       }
@@ -347,6 +349,7 @@ export default {
       this.formData.gas = res
     },
     getMinimumGas() {
+      if(!this.formData.withdrawAddress) return
       this.$cache.set('_minimumGas', 0, 0)
       const data = JSON.parse(JSON.stringify(this.formData))
       this.callSimulate = {}
@@ -400,8 +403,9 @@ export default {
 
       },
       async simulateFee(val) {
+				console.log('执行');
         if (!val.delegatorAddress) return
-        let res = {}
+				let res = {}
         const Secret = await getSecret()
         try {
           const msgSetWithdrawAddress = new secretjs.MsgSetWithdrawAddress(val, val.gas, val.gasPrice)

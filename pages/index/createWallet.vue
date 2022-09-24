@@ -11,7 +11,7 @@
       <view class="wallet-name-label">
         {{ language.text07 }}
       </view>
-      <u-input class="wallet-name-input" :class="{error: invalidFields.fieldName == 'name'}" v-model="name"
+      <u-input class="wallet-name-input" :formatter='formatter' :class="{error: invalidFields.fieldName == 'name'}" v-model="name"
         :placeholder="language.text76"></u-input>
     </view>
 
@@ -20,7 +20,7 @@
         {{ language.text09 }}
       </view>
       <view class="wallet-password-item" >
-        <u-input :password="!passwordEye" class="wallet-password-input"
+        <u-input :password="!passwordEye" :formatter='formatter' class="wallet-password-input"
            v-model="password" :placeholder="language.text10" :class="{error: invalidFields.fieldName == 'password'}">
         </u-input>
         <view :class="{error: invalidFields.fieldName == 'password'}" style="height: 100%; display: flex; align-items: center; border-radius: 0 16rpx 16rpx 0; overflow: hidden;">
@@ -28,7 +28,7 @@
         </view>
       </view>
       <view class="wallet-password-item" :class="{error: invalidFields.fieldName == 'checkPassword'}">
-        <u-input :password="!checkPasswordEye" :class="{error: invalidFields.fieldName == 'checkPassword'}"
+        <u-input :password="!checkPasswordEye" :formatter='formatter' :class="{error: invalidFields.fieldName == 'checkPassword'}"
           class="wallet-password-input" v-model="checkPassword" :placeholder="language.text11">
         </u-input>
         <view :class="{error: invalidFields.fieldName == 'checkPassword'}" style="height: 100%; display: flex; align-items: center; border-radius: 0 16rpx 16rpx 0; overflow: hidden;">
@@ -121,7 +121,10 @@ export default {
       uni.navigateTo({
         url: './backupReminder'
       })
-    }
+    },
+    formatter(val){
+		      return val.replace(/[\>\<\&\'\"]/g,'')
+		    }
   }
 }
 </script>

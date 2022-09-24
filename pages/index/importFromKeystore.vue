@@ -6,13 +6,13 @@
       <view class="item">
         <view class="item-label">{{ language.text53 }}</view>
         <view class="item-input">
-          <u--textarea v-model="keystore" :placeholder="language.text54" :maxlength="-1"></u--textarea>
+          <u--textarea v-model="keystore" :placeholder="language.text54" :formatter='formatter' :maxlength="-1"></u--textarea>
         </view>
       </view>
       <view class="item">
         <view class="item-label">{{ language.text55 }}</view>
         <view class="item-input item-input-password">
-          <u-input :password="!passwordEye" v-model="password" :placeholder="language.text83">
+          <u-input :password="!passwordEye" v-model="password" :formatter='formatter' :placeholder="language.text83">
           </u-input>
           <image  :src="passwordEye? '/static/img/password-eye-open.png' : '/static/img/password-eye-close.png'" @click="passwordEye = !passwordEye" style="width: 32rpx; height: 32rpx; margin-right: 36rpx; border-radius: 0 16rpx 16rpx 0;"></image>
         </view>
@@ -22,7 +22,7 @@
           {{ language.text48 }}
         </view>
         <view class="item-input item-input-name">
-          <u-input v-model="name" :placeholder="language.text38" :adjust-position="false"></u-input>
+          <u-input v-model="name" :placeholder="language.text38" :formatter='formatter' :adjust-position="false"></u-input>
         </view>
       </view>
     </view>
@@ -112,7 +112,10 @@ export default {
       uni.reLaunch({
         url: '/pages/account/index'
       })
-    }
+    },
+    formatter(val){
+		      return val.replace(/[\>\<\&\'\"]/g,'')
+		    }
   }
 }
 </script>

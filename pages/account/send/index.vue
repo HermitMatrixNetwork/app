@@ -475,13 +475,13 @@ export default {
         this.toast.icon = '/static/img/mine/success.png'
 				
         let {receiveAddress,userAddress,sendAmount,memo,gas,gasPrice,decimal,token} = this.sendFormData
-				const {ID} = this.token
-				console.log('tokenID',ID);
+        const {ID} = this.token
+        console.log('tokenID',ID)
         setTimeout(()=>{
-					uni.redirectTo({
+          uni.redirectTo({
 					  url: `./token_content${ID==0?'':'_other'}?tokenID=${this.token?ID:0}&sendToken=${JSON.stringify({receiveAddress,userAddress,sendAmount,memo,gas,gasPrice,decimal,token})}`
-					})
-				},1000)
+          })
+        },1000)
         // this.transferLoading = true
         // this.verifyTouchID = 3
         //showToast弹出框
@@ -500,6 +500,7 @@ export default {
       this.sendFormData.sendAmount = this.token.balance
     },
     getMinersCost(val) {
+      console.log('油费',val)
       if (val.speed == this.language.text27) {
         // this.sendFormData.gas = val.
         this.sendFormData.gas = val.minersGas
@@ -616,13 +617,14 @@ export default {
       return true
     },
     handlerGas(res) {
-      // this.feeLoading = false
+      if(this.btnLoading){
+        this.submitPopupIsShow = true
+      }
       this.btnLoading = false
-      this.submitPopupIsShow = true
       if (!res.code) {
         this.$cache.set('_minimumGas', res, 0)
       }
-      if (res.code || this.isCustomFess) return
+      if (res.code) return 
       this.sendFormData.gas = res
     },
     gasError(e) {
@@ -667,7 +669,7 @@ export default {
     this.sendFormData.gas = ''
     this.isCustomFess = false
     this.sendFormData.gasPrice = 0.015
-		this.btnLoading = false
+    this.btnLoading = false
     this.$refs.miners.resetMiners()
     setTimeout(() => {
       uni.stopPullDownRefresh()
@@ -765,6 +767,7 @@ export default {
 			},
 			async simulateFee(val) {
 				if (!val.sendAmount || Number(val.sendAmount) == '') return
+				console.log('调用',val);
 				const Secret = await getSecret()
 				let res = {}
 				let {
