@@ -2,11 +2,12 @@
   <view class="page-wrapper">
     <custom-header class="header" :title="language.text31"></custom-header>
     <view class="container">
-      <view class="item">
+      <u-tabs :list="list" lineWidth="70" lineColor="#1E5EFF" :activeStyle="{ color: '#1E5EFF' }" @change="tabChange"></u-tabs>
+      <view class="item" style="margin-top: 48rpx;">
         <view class="item-label">{{ language.text25 }}</view>
         <view class="item-input">
           <u--textarea v-model="mnemonic" height="180rpx" @input="mnemonicChange" :placeholder="language.text33"
-            maxlength="120" :formatter='formatter'>
+            maxlength="120">
           </u--textarea>
         </view>
       </view>
@@ -88,10 +89,19 @@ export default {
           rule: 'required',
           errMessage: language[this.$cache.get('_language')].text64
         }]
-      }
+      },
+      list: [{
+        name: language[this.$cache.get('_language')].text88
+      },{
+        name: language[this.$cache.get('_language')].text89
+      }],
+      currentIndex: 0
     }
   },
   methods: {
+    tabChange(item) {
+      this.currentIndex = item.index
+    },
     importWallet() {
       // this.$cache.delete('_walletList') // @test
       const isValidate = this.verifyForm()
@@ -142,6 +152,13 @@ export default {
       const mnemonic = this.mnemonic.trim()
       return bip39.validateMnemonic(mnemonic)
     },
+    checkMnemonicLength() {
+      if (this.currentIndex == 0) {
+        return this.mnemonic.trim().split(' ').length == 12
+      } else {
+        return this.mnemonic.trim().split(' ').length == 24
+      }
+    },
     verifyForm() {
       const isEffectiveMnemonic = this.verifyTotalMnemonic()
       const result = validateAll.call(this, this.rules)
@@ -153,6 +170,8 @@ export default {
         this.$refs.notify.show('error', invalidateField.errMessage)
       } else if (!this.name) {
         this.$refs.notify.show('error', this.language.text65)
+      } else if (!this.checkMnemonicLength()) {
+        this.$refs.notify.show('error', this.language.text90)
       } else {
         // 通过校验
         return true
@@ -198,7 +217,6 @@ export default {
 
   .container {
     padding: 0 32rpx;
-    margin-top: 48rpx;
 
     .item {
       margin-bottom: 48rpx;

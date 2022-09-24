@@ -1,6 +1,7 @@
 <template>
   <view class="account">
     <view class="mask" v-show="updating"></view>
+    <view class="mask" v-show="switchingWallet || delayHide"></view>
     <custom-updateApp ref="custom_update" :updating.sync="updating" checkImmediate />
     <!-- 钱包主页 -->
     <view class="account-header">
@@ -92,7 +93,17 @@
     <view :initRender="initRender" :change:initRender="render.init"></view>
     <view :callBalanceLoading="callBalanceLoading" :change:callBalanceLoading="render.setBalanceLoading"></view>
     <view :getLockAmount="getLockAmount" :change:getLockAmount="render.getDelegationRecord"></view>
-
+    
+    <!-- 指纹验证 -->
+    <view class="toast" v-show="switchingWallet || delayHide">
+    	<view class="toast-icon">
+    		<image :src="toast.icon"></image>
+    	</view>
+    	<view class="toast-content">
+    		<text>{{ toast.msg }}</text>
+    	</view>
+    </view>
+    
     <custom-notify ref="notify"></custom-notify>
     <tab-bar />
   </view>
@@ -119,6 +130,9 @@ export default {
   },
   filters: {
     sliceAddress,
+  },
+  onHide() {
+    this.$refs.custom_update.reset()
   },
   data() {
     return {
@@ -159,7 +173,15 @@ export default {
       lockAmountLoading: true,
       lockAmount: 0,
       mainCoin,
-      getLockAmount: 0
+      getLockAmount: 0,
+      gettingBalance: true,
+      switchWallet: false,
+      toast: {
+        icon: '/static/img/mine/loading.gif',
+        msg: languages[this.$cache.get('_language')].text231
+      },
+      delayHide: false
+      
     }
   },
   onPullDownRefresh() {
@@ -182,6 +204,7 @@ export default {
     this.initCoinList()
     this.aa = false
     this.firstShowAa = true
+    this.lockAmountLoading = true
     this.initRender++
     this.getLockAmount++
   },
@@ -287,12 +310,29 @@ export default {
       //用户总资产是否显示
       this.eyeAsset = !this.eyeAsset
     },
-    closeSwitchWalletPopup() {
-      this.showSwitchWallet = false
-      this.currentWallet = this.$cache.get('_currentWallet')
-      this.initRender++
-      this.initCoinList()
-      this.tokenList = this.currentWallet.coinList
+    closeSwitchWalletPopup(update) {
+     
+      if (update) {
+        this.switchWallet = true
+        this.delayHide = true
+        this.gettingBalance = true
+        this.toast.msg = this.languages.text231
+        this.toast.icon = '/static/img/mine/loading.gif'
+        this.currentWallet = this.$cache.get('_currentWallet')
+        this.lockAmountLoading = true
+        this.initCoinList()
+        this.tokenList = this.currentWallet.coinList
+        setTimeout(() => {
+          this.initRender++
+          this.getLockAmount++
+          this.switchWallet = false
+        }, 1500)
+      } else {
+        this.showSwitchWallet = false
+      }
+    },
+    balanceDataUpdate() {
+      this.gettingBalance = false
     },
     queryToken(token) {
       if (token.apply_type) {
@@ -344,12 +384,15 @@ export default {
       result.delegationResponses.forEach(item => {
         lock += Number(item.balance.amount)
       })
-      this.lockAmountLoading = false
       this.lockAmount = lock / mainCoin.decimals
+      this.lockAmountLoading = false
       console.log('lockAmount', this.lockAmount)
     }
   },
   computed: {
+    switchingWallet() {
+      return (this.lockAmountLoading || this.gettingBalance) && this.switchWallet
+    },
     visibaleTokenList() {
       const type = {
         'token': 'SNIP20',
@@ -368,17 +411,29 @@ export default {
       return `calc(100vh - 112rpx - ${operation_btn} - ${marginHeight} - ${this.systemBarHeight + 'rpx'} - ${this.basicDataHeight} - ${this.accountColumnHeight} - ${this.coinTabsHeight} - 56rpx)`
     }
   },
-  // watch: {
-  //   tokenList: {
-  //     deep: true,
-  //     handler(newVal) {
-  //       if (this.firstShowAa) {
-  //         this.aa = newVal.find(item => item.showWarn) ? true : false
-  //         if (this.aa) this.firstShowAa = false
-  //       }
-  //     }
-  //   }
-  // }
+  watch: {
+    // tokenList: {
+    //   deep: true,
+    //   handler(newVal) {
+    //     if (this.firstShowAa) {
+    //       this.aa = newVal.find(item => item.showWarn) ? true : false
+    //       if (this.aa) this.firstShowAa = false
+    //     }
+    //   }
+    // }
+    switchingWallet(newVal) {
+      if (newVal) {
+        setTimeout(() => {
+          this.toast.msg = this.languages.text232
+          this.toast.icon = '/static/img/mine/success.png'
+        }, 2000)
+        setTimeout(() => {
+          this.delayHide = false
+          this.showSwitchWallet = false
+        }, 4000)
+      }
+    }
+  }
 }
 </script>
 
@@ -453,6 +508,7 @@ export default {
           coin.loadingBalance = false
         }
         this.balanceLoading && renderUtils.runMethod(this._$id, 'updateCoinList', coinList, this)
+        renderUtils.runMethod(this._$id, 'balanceDataUpdate', '', this)
       },
       setBalanceLoading(newVal) {
         if (newVal == 0) return
@@ -512,7 +568,7 @@ export default {
     width: 100vw;
     height: 100vh;
     background: rgba(0,0,0,.5) !important;
-    z-index: 9999;
+    z-index: 999999;
   }
   
   page {
@@ -728,5 +784,36 @@ export default {
       opacity: 0.16;
       background-color: #8397B1;
     }
+  }
+  
+  .toast {
+  	position: fixed;
+  	left: 50%;
+  	top: 50%;
+  	transform: translate(-50%, -50%) !important;
+  	width: 240rpx;
+  	background: rgba(0, 0, 0, .6);
+  	padding: 0 20rpx 32rpx;
+  	justify-content: center;
+  	border-radius: 6rpx;
+  	z-index: 999999999;
+  
+  	&-icon {
+  		text-align: center;
+  		margin-top: 65rpx;
+  
+  		image {
+  			width: 65rpx;
+  			height: 65rpx;
+  		}
+  	}
+  
+  	&-content {
+  		margin-top: 20rpx;
+  		font-weight: 400;
+  		font-size: 28rpx;
+  		color: #FFFFFF;
+  		text-align: center;
+  	}
   }
 </style>

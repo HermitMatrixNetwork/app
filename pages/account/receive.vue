@@ -281,5 +281,6 @@ export default {
     color: #FFFFFF;
     letter-spacing: 0;
     text-align: center;
+    background-color: #0F53C5;
   }
 </style>

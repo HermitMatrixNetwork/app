@@ -1,10 +1,11 @@
 <template>
   <view class="sendPage">
+    <custom-notify ref="notify" style="z-index: 99"></custom-notify>
     <view :callRenderGetBanlance="callRenderGetBanlance" :change:callRenderGetBanlance="render.getBalance"></view>
     <view :callSimulate="callSimulate" :change:callSimulate="render.simulateFee"></view>
     <view class="mask" v-show="loading"></view>
     <view :updataDelegate="updataDelegate" :change:updataDelegate="render.unDelegate"></view>
-    <custom-header tabUrl="/pages/delegate/index" :title="language.text06" :style="titleStyle">
+    <custom-header tabUrl="/pages/delegate/index" :title="language.text06" :style="titleStyle" :customStyle="{ 'z-index': 98 }">
     </custom-header>
     <view class="scroll-view">
       <view class="main-top">
@@ -157,7 +158,7 @@
         </view>
       </u-modal>
       
-      <custom-notify ref="notify"></custom-notify>
+      
       <!-- 指纹验证 -->
       <view class="toast" v-show="showToast">
         <view class="toast-icon">
@@ -544,9 +545,11 @@ export default {
     this.isCustomFess = false
     this.formData.gasPrice = 0.015
     
-    this.$nextTick(() => {
+    // this.$nextTick(() => {
+    setTimeout(() => {
       uni.stopPullDownRefresh()
-    })
+    }, 1500)
+    // })
   }
 }
 </script>

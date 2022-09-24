@@ -70,6 +70,7 @@ export default {
 <style lang="scss" scoped>
   .page-wrapper {
     padding-top: calc(112rpx + var(--status-bar-height));
+    height: 100vh;
   }
   .border {
     border-top: 1rpx solid #8397B1;

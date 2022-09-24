@@ -7,7 +7,7 @@
       </view>
       <u-list class="content" height="1080rpx">
         <view class="item" v-for="(wallet, index) in walletList" :key="index"
-          :class="{ selected: index == 0 }" @click="close(index)">
+          :class="{ selected: index == 0 }" @click="close($event, index)">
           <view class="item-left">
             <view class="item-left-name">{{ wallet.name }}</view>
             <view class="item-left-address">{{ wallet.address | formatAddress }}</view>
@@ -54,7 +54,7 @@ export default {
     }
   },
   methods: {
-    close(index) {
+    close(event, index) {
       if (index > 0) {
         const walletList = this.walletList
         const currentWallet = walletList[index]
@@ -62,8 +62,10 @@ export default {
         walletList.splice(index, 1)
         walletList.unshift(currentWallet)
         this.$cache.set('_walletList', walletList, 0)
+        this.$emit('close', true)
+      } else {
+        this.$emit('close')
       }
-      this.$emit('close')
     },
     closeAddWalletPopup() {
       this.showAddWallet = false

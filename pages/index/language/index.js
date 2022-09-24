@@ -311,7 +311,10 @@ const languages = {
     5.本《服务协议》自2022年9月3日起生效。<br>
     <br>
     本政策未尽事宜，您需遵守本站不时更新的公告及相关规则。
-    `
+    `,
+    text88: '12位助记词导入',
+    text89: '24位助记词导入',
+    text90: '助记词长度不正确'
   },
   'CT': {
     myDelegate: '我的委托',
@@ -627,7 +630,10 @@ const languages = {
     4.本《服務協議》未盡事宜，您需遵守我們不時更新的公告及相關規則。
     5.本《服務協議》自2022年9月3日起生效。
     
-    本政策未盡事宜，您需遵守本站不時更新的公告及相關規則。`
+    本政策未盡事宜，您需遵守本站不時更新的公告及相關規則。`,
+    text88: '12位助記詞導入',
+    text89: '24位助記詞導入',
+    text90: '助記詞長度不正確'
   },
   'EN': {
     text01: 'Create wallet',
@@ -934,7 +940,10 @@ XI、 Others<br>
 3. This Service Agreement is available to all users in Hermit. We encourage you to consult this Service Agreement every time you visit Hermit.<br>
 4. For matters not covered in this Service Agreement, you are subject to our bulletins and relevant rules as updated from time to time.<br>
 5. This Service Agreement shall enter into force as of September 3, 2022.<br>
-For matters not covered by this policy, you are required to abide by the bulletin and related rules updated from time to time.`
+For matters not covered by this policy, you are required to abide by the bulletin and related rules updated from time to time.`,
+    text88: '12 digit mnemonic import',
+    text89: '24 digit mnemonic import',
+    text90: 'The length of mnemonic words is incorrect'
   }
 }
 export default languages
