@@ -418,7 +418,7 @@
       "path": "pages/delegate/delegate",
       "style": {
         "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
+        "enablePullDownRefresh": true
       }
 
     },

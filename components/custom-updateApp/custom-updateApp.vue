@@ -61,6 +61,11 @@ export default {
     // #endif
   },
   methods: {
+    reset() {
+      this.downloading = false
+      this.upgrading = false
+      this.progress = 0
+    },
     async immediateCheck() {
       const res = (await getVersion()).data.data.version
       plus.runtime.getProperty(plus.runtime.appid, (inf) => {
@@ -127,17 +132,9 @@ export default {
             status
           })
           plus.runtime.install(download.filename, {}, function() {
-            this.$nextTick(() => {
-              this.downloading = false
-              this.upgrading = false
-              this.progress = 0
-            })
             console.log('安装完成', {
               download,
               status,
-              downloading: this.downloading,
-              upgrading: this.upgrading,
-              progress: this.progress
             })
           }, function(e) {
             console.log('安装文件失败', {
@@ -170,8 +167,7 @@ export default {
           })
           break
         case 3:
-          this.progress = parseInt(task.downloadedSize / task.totalSize * 100)
-          console.log('进度条', this.progress)
+          this.progress = parseInt(task.downloadedSize / task.totalSize * 100)  
           if (this.progress - lastProgressValue >= 2) {
             lastProgressValue = progress
             // res.change({

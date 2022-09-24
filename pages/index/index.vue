@@ -76,6 +76,9 @@ export default {
       updating: false
     }
   },
+  onHide() {
+    this.$refs.custom_update.reset()
+  },
   onShow() {
     this.$refs.custom_update && this.$refs.custom_update.checkUpdate()
   },

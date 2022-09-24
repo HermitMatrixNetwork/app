@@ -1,7 +1,7 @@
 <template>
   <view class="page-wrapper">
-    <custom-header></custom-header>
-
+    <Notify ref="notify" style="z-index: 99"></Notify>
+    <custom-header :customStyle="{ 'z-index': 98 }"></custom-header>
     <view class="mnemonic">
       <view class="mnemonic-title">{{ language.text142 }}</view>
       <view class="mnemonic-hint">
@@ -28,7 +28,7 @@
     </view>
 
     <!-- 错误提示 -->
-    <Notify ref="notify"></Notify>
+
   </view>
 </template>
 

@@ -1,10 +1,11 @@
 <template>
   <view class="sendPage">
+        <custom-notify ref="notify" style="z-index: 99"></custom-notify>
     <view :callSimulate="callSimulate" :change:callSimulate="render.simulateFee"></view>
     <view :callRenderGetBanlance="callRenderGetBanlance" :change:callRenderGetBanlance="render.getBalance"></view>
     <view class="mask" v-show="loading"></view>
     <view :updataDelegate="updataDelegate" :change:updataDelegate="render.delegate"></view>
-    <custom-header :backUrl="`/pages/delegate/validatorDetail?validatorInfo=${JSON.stringify(delegatorInfo)}`" :title="language.text58" :style="titleStyle">
+    <custom-header :customStyle="{ 'z-index': 98 }" :title="language.text58" :style="titleStyle">
     </custom-header>
     <view class="top-border"></view>
     <view class="main-top">
@@ -45,7 +46,7 @@
         </view>
       </view>
     </view>
-    <miners-column @getMinersCost="getMinersCost" :redirectUrl="redirectUrl" :minusIndex="minusIndex" :customData="minusData" @getMinimumGas="getMinimumGas"></miners-column>
+    <miners-column ref="miners" @getMinersCost="getMinersCost" :redirectUrl="redirectUrl" :minusIndex="minusIndex" :customData="minusData" @getMinimumGas="getMinimumGas"></miners-column>
     <view class="main-bottom">
       <view class="btn" @click="transferConfirm">
         <!-- {{ language.text68 }} -->
@@ -143,7 +144,6 @@
         <text>{{ toast.msg }}</text>
       </view>
     </view>
-    <custom-notify ref="notify"></custom-notify>
   </view>
 </template>
 
@@ -486,6 +486,17 @@ export default {
 		  },
 		  deep:true
     },
+  },
+  onPullDownRefresh() {
+    this.$refs.miners.resetMiners()
+    this.formData.gas = ''
+    this.isCustomFess = false
+    this.formData.gasPrice = 0.015
+    this.formData.amount.amount = ''
+    this.formData.memo = ''
+    setTimeout(() => {
+      uni.stopPullDownRefresh()
+    }, 1500)
   }
 }
 </script>

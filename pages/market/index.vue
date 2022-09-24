@@ -5,15 +5,16 @@
         <!-- APP下会占用系统原生消息因此需要该占位符 -->
       </view>
       <view class="header">
-        <u-search :showAction="false" :placeholder="language.text02" shape="round" :clearabled="true" v-model="searchVal"
-          @search="search" searchIcon="/static/img/delegate/search2.png"></u-search>
+        <u-search :showAction="false" :placeholder="language.text02" shape="round" :clearabled="true"
+          v-model="searchVal" @search="search" searchIcon="/static/img/delegate/search2.png"></u-search>
       </view>
     </view>
     <view class="container">
       <view class="banner-wrap">
         <view class="uni-margin-wrap">
           <swiper class="swiper" circular :indicator-dots="indicatorDots" :indicator-color="'rgba(255,255,255,0.55)'"
-            :indicator-active-color="'#fff'" :autoplay="autoplay" :interval="interval" :duration="duration" :current="current">
+            :indicator-active-color="'#fff'" :autoplay="autoplay" :interval="interval" :duration="duration"
+            :current="current">
             <swiper-item v-for="(item, index) in bannerList" :key="index" @click="jump(item.link)">
               <image class="swiper-item" :src="item.url" style="width: 100%" />
             </swiper-item>
@@ -29,18 +30,21 @@
             <image src="/static/img/ic-arrow1.png"></image>
           </view>
         </view>
-        <view class="content">
+        <view class="content" v-if="recently.length">
           <view class="item" v-for="(item, index) in recently.slice(0, 2)" :key="index" @click="toWebView(item)">
             <image :src="item.logo"></image>
             <text>{{ item.name }}</text>
           </view>
+        </view>
+        <view class="content" v-else>
+          <text class="no-data">{{ language.text10 }}</text>
         </view>
       </view>
 
       <view class="tools">
         <view class="heade">
           <view class="left">Tools</view>
-          <view class="right"  @click="toTools">
+          <view class="right" @click="toTools">
             <text>{{ language.text04 }}</text>
             <image src="/static/img/ic-arrow1.png"></image>
           </view>
@@ -101,12 +105,7 @@ export default {
         url: 'http://158.247.237.78/home',
         logo: '/static/img/account/uGHM.png'
       }],
-      recently: [{
-        name: '区块浏览器',
-        des: '这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器',
-        url: 'http://158.247.237.78/home',
-        logo: '/static/img/account/uGHM.png'
-      }],
+      recently: [],
       bannerList: [],
       background: ['#ff0', '#f00', '#0ff'],
       indicatorDots: true,
@@ -122,9 +121,15 @@ export default {
     }
   },
   async created() {
-    this.recently = this.$cache.get('_recently') || this.recently
-    this.$cache.set('_recently', this.recently, 0)
+    this.recently = this.$cache.get('_recently') || []
     
+    if (this.recently.length) {
+      this.recently = this.recently.filter(item => item.timeout > Date.now())
+      this.recently.sort((a, b) => b.timeout - a.timeout)
+    }
+    
+    this.$cache.set('_recently', this.recently, 0)
+
     this.tools = this.$cache.get('_tools') || this.tools
     this.$cache.set('_tools', this.tools, 0)
     const res = (await getBannerList()).data.data.banner.photos.photos
@@ -144,6 +149,17 @@ export default {
     },
     toWebView(item) { // Tools
       // todo 添加进最近访问列表
+      const itemIndex = this.recently.findIndex(ren => ren.url == item.url)
+      if (itemIndex == -1) {
+        item.timeout = Date.now() + 604800 // 7天过期
+        this.recently.push(item)
+      } else {
+        item.timeout = Date.now() + 604800
+        this.recently.splice(itemIndex, 1, item)
+      }
+      
+      this.$cache.set('_recently', this.recently, 0)
+      
       uni.navigateTo({
         url: `./webview?jumpUrl=${item.url}`
       })
@@ -163,9 +179,9 @@ export default {
       uni.stopPullDownRefresh()
     }, 1000)
   },
-  watch:{
-    searchVal(val){
-      this.searchVal = val.replace(/[\>\<\"\'\&]/g,'')
+  watch: {
+    searchVal(val) {
+      this.searchVal = val.replace(/[\>\<\"\'\&]/g, '')
     }
   }
 }
@@ -179,11 +195,11 @@ export default {
     width: 100%;
     z-index: 99;
   }
-  
+
   .status_bar {
     height: var(--status-bar-height);
     width: 100%;
-     background-color: #F4F6F9;
+    background-color: #F4F6F9;
   }
 
   .market {
@@ -251,7 +267,6 @@ export default {
   }
 
   .recently {
-    height: 240rpx;
     padding: 32rpx;
     background-color: #fff;
 
@@ -369,12 +384,19 @@ export default {
   .container {
     // height: calc(100vh - 112rpx - var(--status-bar-height) - 120rpx - 56rpx);
     // overflow-y: scroll;
-    padding-bottom: calc( 120rpx + 56rpx);
+    padding-bottom: calc(120rpx + 56rpx);
     position: relative;
     z-index: 1;
   }
-  
+
   /deep/ uni-image>img {
     position: static !important;
+  }
+  
+  .no-data {
+    font-family: PingFangSC-Regular;
+    font-size: 24rpx;
+    color: #8397B1;
+    line-height: 24rpx;
   }
 </style>

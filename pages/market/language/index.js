@@ -8,7 +8,8 @@ export default {
     'text06': '交易',
     'text07': '暂未开放',
     text08: '最近使用',
-    text09: 'Tools'
+    text09: 'Tools',
+    text10: '暂无数据'
   },
   EN: {
     'text01': 'DAPPs',
@@ -19,7 +20,8 @@ export default {
     'text06': 'Trade',
     'text07': 'Under development',
     text08: 'Recently used',
-    text09: 'Tools'
+    text09: 'Tools',
+    text10: '暫無數據'
   },
   CT: {
     'text01': '應用',
@@ -30,6 +32,7 @@ export default {
     'text06': '交易',
     'text07': '暫未開放',
     text08: '最近使用',
-    text09: 'Tools'
+    text09: 'Tools',
+    text10: 'No data'
   }
 }
