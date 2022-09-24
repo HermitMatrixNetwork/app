@@ -341,6 +341,7 @@ export default {
       })
     },
     transferConfirm() { //转账确认
+			
       if(this.btnLoading) return
       if (this.formData.gas !== '') return this.submitPopupIsShow = true
       let verify = true
@@ -458,6 +459,7 @@ export default {
       this.formData.gas = res
     },
     getMinimumGas() {
+      if(!this.formData.amount.amount) return
       this.$cache.set('_minimumGas', 0, 0)
       const data = JSON.parse(JSON.stringify(this.formData))
       this.callSimulate = {}
