@@ -403,7 +403,7 @@ export default {
 
       },
       async simulateFee(val) {
-				console.log('执行');
+				// console.log('执行');
         if (!val.delegatorAddress) return
 				let res = {}
         const Secret = await getSecret()

@@ -496,6 +496,7 @@ export default {
       this.formData.gas = res
     },
     getMinimumGas() {
+      if(!this.selData.delegation || !this.formData.amount.amount) return
       this.$cache.set('_minimumGas', 0, 0)
       this.formData.validatorAddress = this.selData.delegation.validatorAddress
       const data = JSON.parse(JSON.stringify(this.formData))

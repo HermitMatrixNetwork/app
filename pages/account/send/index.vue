@@ -766,7 +766,7 @@ export default {
 
 			},
 			async simulateFee(val) {
-				if (!val.sendAmount || Number(val.sendAmount) == '') return
+				if (!val.sendAmount || Number(val.sendAmount) == '' || !val.receiveAddress) return
 				console.log('调用',val);
 				const Secret = await getSecret()
 				let res = {}

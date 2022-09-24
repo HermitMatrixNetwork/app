@@ -369,7 +369,7 @@ export default {
       })
     },
     gasError(res) {
-		  // console.log(res)
+		  console.log(res)
 		  this.$refs.notify.show('', '油费不足')
 		  this.btnLoading = false
       this.callSimulate = {}
@@ -430,7 +430,7 @@ export default {
         } catch (e) {
           console.log(e);
           res.code = 7
-					renderUtils.runMethod(this._$id, 'gasError', res, this) //错误调用gasError方法
+					renderUtils.runMethod(this._$id, 'gasError', e, this) //错误调用gasError方法
         }
       }
     }
