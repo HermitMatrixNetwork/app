@@ -77,8 +77,8 @@
               <template #right>
                 <custom-loading v-if="item.loadingBalance"></custom-loading>
                 <view class="coinNumber" v-else>
-                  <view class="number" v-if="item.alias_name !== mainCoin.alias_name">{{ formatBalance(item.balance) || 0 }}</view>
-                  <view class="number" v-else-if="!lockAmountLoading">{{ formatBalance(item.balance + lockAmount) || 0 }}</view>
+                  <view class="number" v-if="item.alias_name !== mainCoin.alias_name">{{ formatBalance(item.balance) || '0.00' }}</view>
+                  <view class="number" v-else-if="!lockAmountLoading">{{ formatBalance(item.balance + lockAmount) || '0.00' }}</view>
                   <view class="number" v-else>0.00</view>
                   <view class="money">$0.00000</view>
                 </view>
@@ -477,7 +477,7 @@ export default {
         let coinList = JSON.parse(JSON.stringify(coin))
         for (let i = 0; i < coinList.length; i++) {
           let coin = coinList[i]
-          let balance = 0
+          let balance = 0.00
           if (coin.alias_name == mainCoin.alias_name) {
             coin.showWarn = false
             let res = await getBalance(wallet.address)
