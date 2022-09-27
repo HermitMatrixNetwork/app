@@ -370,7 +370,7 @@ export default {
     },
     gasError(res) {
 		  console.log(res)
-		  this.$refs.notify.show('', '油费不足')
+		  this.$refs.notify.show('', this.language.text233)
 		  this.btnLoading = false
       this.callSimulate = {}
     }

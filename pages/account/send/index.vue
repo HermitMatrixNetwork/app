@@ -629,7 +629,7 @@ export default {
     },
     gasError(e) {
       // console.log(res)
-      this.$refs.notify.show('', e===0?'地址有误':this.language.text231)
+      this.$refs.notify.show('', e===0?this.language.text234:this.language.text233)
       this.btnLoading = false
       this.sendFormData.sendAmount = ''
     }
