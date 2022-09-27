@@ -190,7 +190,7 @@
 					<view class="modal-title">{{ language.text172 }}</view>
 					<text class="modal-content">{{ language.text219 }}</text>
 					<view class="confirm-button">
-						<uni-button @click="aa = false" class="cancel">{{ language.text170 }}</uni-button>
+						<uni-button @click="aa = false;btnLoading = false" class="cancel">{{ language.text170 }}</uni-button>
 						<uni-button @click="aaConfirm" class="confirm">{{ language.text09 }}</uni-button>
 					</view>
 				</view>
