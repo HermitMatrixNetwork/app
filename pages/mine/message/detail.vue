@@ -103,6 +103,8 @@ export default {
 		.content {
 			font-size: 28rpx;
 			color: #8397B1;
+			white-space: normal;
+			word-break: break-all;
 		}
 	}
 </style>

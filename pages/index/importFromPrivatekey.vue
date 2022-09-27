@@ -29,7 +29,7 @@
           {{ language.text48 }}
         </view>
         <view class="item-input item-input-name">
-          <u-input v-model="name" :placeholder="language.text49" :adjust-position="false"></u-input>
+          <u-input v-model="name" :formatter='formatter' :placeholder="language.text49" :adjust-position="false"></u-input>
         </view>
       </view>
     </view>
