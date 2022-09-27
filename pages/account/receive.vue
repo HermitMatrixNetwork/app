@@ -1,6 +1,7 @@
 <template>
   <view class="receive">
-    <custom-header :title="language.text60" class="headerStyle"></custom-header>
+    <custom-notify ref="notify" style="z-index: 99"></custom-notify>
+    <custom-header :title="language.text60" class="headerStyle" :customStyle="{ 'z-index': 98 }"></custom-header>
 
     <view class="topPrompt">
       <view class="promptBg" />
@@ -45,7 +46,7 @@
     <view class="bottom_title">
       Hermit Wallet
     </view>
-    <custom-notify ref="notify"></custom-notify>
+    
   </view>
 </template>
 

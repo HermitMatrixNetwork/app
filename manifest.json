@@ -23,6 +23,10 @@
             "Fingerprint" : {},
             "Share" : {}
         },
+        "optimization" : {
+            "subPackages" : true
+        },
+        "runmode" : "liberate",
         /* 应用发布信息 */
         "distribute" : {
             /* android打包配置 */
@@ -156,6 +160,14 @@
                     "pathRewrite" : {
                         "^/browserServer" : "/"
                     }
+                },
+                "/recordServer": {
+                  "target" : "http://158.247.237.78:8188",
+                  "changeOrigin" : true,
+                  "secure" : false,
+                  "pathRewrite" : {
+                      "^/recordServer" : "/"
+                  }
                 }
             }
         }

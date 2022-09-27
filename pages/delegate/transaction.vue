@@ -3,8 +3,8 @@
 		<custom-header :title="language.text38" :customStyle="{ 'z-index': 99, 'background-color': '#fff' }">
 		</custom-header>
 		<u-tabs class="tabs" :inactiveStyle="inactiveStyle" :activeStyle="activeStyle" :itemStyle="itemStyle" :list="list1" lineColor="#1E5EFF" lineHeight="4" @change	="changeTab"></u-tabs>
-		<scroll-view class="lists" scroll-y :style="{ height: scrollHeight }" refresher-enabled="true" :refresher-triggered="triggered" :refresher-threshold="60" @refresherrefresh="onRefresh">
-			<TranList :currentTab="currentTab" ref="tranList" :triggered.sync="triggered" />
+		<scroll-view class="lists" scroll-y :style="{ height: scrollHeight }" :refresher-enabled="canRefresh" :refresher-triggered="triggered" :refresher-threshold="90" @refresherrefresh="onRefresh">
+			<TranList :currentTab="currentTab" ref="tranList" :triggered.sync="triggered" :canRefresh.sync="canRefresh" />
 		</scroll-view>
 	</view>
 </template>
@@ -42,7 +42,8 @@ export default {
       },
       currentTab: 0,
       systemBarHeight: 0,
-      triggered: true
+      triggered: true,
+      canRefresh: false
     }
   },
   mounted() {
@@ -50,7 +51,6 @@ export default {
   },
   methods: {
     onRefresh() {
-      console.log('refresh')
       this.triggered = true
       const res = this.$refs.tranList.init()
     },

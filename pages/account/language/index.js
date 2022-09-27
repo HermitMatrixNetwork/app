@@ -257,8 +257,12 @@ const languages = {
     text230: '点击复制',
     text231: '切换钱包中',
     text232: '切换钱包成功',
-    text233: '油费不足',
-    text234: '地址有误',
+    text233: '发送失败',
+    text234: '取消委托失败',
+    text235: '初始化合约失败',
+    text236: '调用合约失败',
+    text237: '油费不足',
+    text238: '地址有误',
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -515,8 +519,13 @@ const languages = {
     text230: '點擊復製',
     text231: '切換錢包中',
     text232: '切換錢包成功',
-    text233: '油費不足',
-    text234: '地址有誤',
+    text233: '發送失敗',
+    text234: '取消委托失敗',
+    text235: '初始化合約失敗',
+    text236: '調用合約失敗',
+
+    text237: '油費不足',
+    text238: '地址有誤',
   },
   EN: {
     Mywallet: 'My wallet',
@@ -774,8 +783,13 @@ const languages = {
     text230: 'Click Copy',
     text231: 'Switching wallets',
     text232: 'Switch wallet successfully',
-    text233: 'Insufficient fuel charge',
-    text234: 'The address is wrong.',
+    text233: 'Failed to send',
+    text234: 'Cancel delegation failed',
+    text235: 'Failed to initialize contract',
+    text236: 'Failed to call contract',
+
+    text237: 'Insufficient fuel charge',
+    text238: 'The address is wrong.',
   }
 }
 export default languages

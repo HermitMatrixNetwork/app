@@ -9,7 +9,7 @@
           <text class="label">{{language[item.label]}} :</text>
           <view class="value">
             <text :class="{ isLink : item.label == 'text79' }">{{ describe[item.value] || language.text113 }}</text>
-            <image v-if="['text79', 'text78'].includes(item.label) &&  describe[item.value]" src="/static/img/account/copy2.png" @click="copy(describe[item.value])"></image>
+            <image v-if="['text79', 'text78', 'text80'].includes(item.label) &&  describe[item.value]" src="/static/img/account/copy2.png" @click="copy(describe[item.value])"></image>
           </view>
         </view>
       </view>

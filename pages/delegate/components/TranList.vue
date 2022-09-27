@@ -1,7 +1,6 @@
 <template>
   <view class="list">
     <custom-loading style="margin-top: 30rpx;" v-if="loading"></custom-loading>
-    <view v-else-if="triggered"></view>
     <template v-else-if="list[types[currentTab]].length">
       <view class="item" v-for="(item, index) in list[types[currentTab]]" :key="index" @click="toDetail(item)">
         <view class="left">
@@ -9,16 +8,17 @@
         </view>
         <view class="center">
           <view class="address">
-            {{ item.txhash | sliceAddress(6, -6) }}
+            {{ item.showAddress | sliceAddress(6, -6) }}
           </view>
           <view class="name" v-show="item.timestamp">
-            {{ item.timestamp }} +UTC
+            {{ item.timestamp }}
           </view>
         </view>
         <div class="right" >
           <text class="num" :class="[item.type == 'withdraw' ? item.reciver_address == wallet.address ? 'plus' : 'minus' : '']">{{ item.type == "withdraw" ? item.reciver_address == wallet.address ? '+' : '-' : '' }} {{ item.amount }} {{ mainCoin.alias_name }}</text>
         </div>
       </view>
+      <view class="end">{{ language.text110 }}</view>
     </template>
 		<view v-else class="no-data">
 			<no-data :tip="language.text40" />
@@ -59,6 +59,17 @@ export default {
     }
   },
   methods: {
+    formatTime(time) {
+      let date = new Date(time)
+      let y = date.getFullYear()
+      let m = (date.getMonth() + 1 + '').padStart(2, '0')
+      let d = (date.getDate() + '').padStart(2, '0')
+      let hh = (date.getHours() + '').padStart(2, '0')
+      let mm = (date.getMinutes() + '').padStart(2, '0')
+      let ss = (date.getSeconds() + '').padStart(2, '0')
+    
+      return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+    },
     goTo(url) {
       uni.navigateTo({
         url
@@ -70,12 +81,9 @@ export default {
       })
     },
     init() {
-      this.list = {
-        all: [],
-        delegate: [],
-        undelegate: [],
-        withdraw: []
-      }
+      const tempUndelegateResult = []
+      const tempDelegateResult = []
+      const tempWithdrawResult = []
       return Promise.all([
         txsQuery([`events=message.sender='${ this.wallet.address }'`, 'events=message.module=\'staking\'',
           'order_by=ORDER_BY_DESC'
@@ -87,7 +95,7 @@ export default {
       ]).then(res => {
         const result = res[0].data.tx_responses
         const withdraw = res[1].data.tx_responses
-        result.forEach(item => {
+        result.forEach((item, index) => {
           const type = item.tx.body.messages[0]['@type']
       
           item.validator_address = item.tx.body.messages[0].validator_address
@@ -96,16 +104,17 @@ export default {
       
           if (type.includes('MsgUndelegate')) {
             item.icon = '/static/img/delegate/fasong2.png'
-            this.list['undelegate'].push(item)
-      
+            item.showAddress = item.validator_address
+            tempUndelegateResult.push(item)
       
           } else if (type.includes('MsgDelegate')) {
             item.icon = '/static/img/delegate/weituo2.png'
-            this.list['delegate'].push(item)
+            item.showAddress = item.validator_address
+            tempDelegateResult.push(item)
           }
       
           item.timestamp = item.timestamp.replace(/Z|T/g, ' ')
-      
+          item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() + 8)))
         })
       
       
@@ -120,24 +129,35 @@ export default {
               p1) => {
               item.amount = p1 / mainCoin.decimals
             })
-          item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
-            item.reciver_address = p1
-          })
           item.icon = '/static/img/delegate/shoukuan2.png'  
           if (type.includes('MsgWithdrawDelegatorReward')) {
+            item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
+              item.reciver_address = p1
+            })
             item.type = 'withdraw'
           } else {
+            item.raw_log.replace(/"key":"withdraw_address","value":"([0-9a-z]*)"/, (match, p1) => {
+              item.reciver_address = p1
+            })
             item.type = 'setWithdrawAddress'
             item.amount = '0.00'
           }
-          this.list['withdraw'].push(item)
+          item.showAddress = item.reciver_address
           item.timestamp = item.timestamp.replace(/Z|T/g, ' ')
+          item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() + 8)))
+          tempWithdrawResult.push(item)
         })
-        this.list['all'].push(...this.list['delegate'], ...this.list['undelegate'], ...this.list['withdraw'])
-        this.loading = false
+        this.list['undelegate'] = tempUndelegateResult
+        this.list['delegate'] = tempDelegateResult
+        this.list['withdraw'] = tempWithdrawResult
+        this.list['all'] = [...this.list['delegate'], ...this.list['undelegate'], ...this.list['withdraw']]
         this.list['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        this.loading = false
         
         this.$emit('update:triggered', false)
+        this.$nextTick(() => {
+          this.$emit('update:canRefresh', true)
+        })
       })
     }
   },
@@ -212,4 +232,11 @@ export default {
 	.minus {
 		color: #275EF1 !important;
 	}
+  
+  .end {
+    line-height: 120rpx;
+    text-align: center;
+    font-size: 28rpx;
+    color: #2C365A;
+  }
 </style>

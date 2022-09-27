@@ -239,7 +239,6 @@ export default {
         ascList = validatorsList.sort((a, b) => a.commission_rate - b.commission_rate)
         break
       }
-      
       return this.sortRule == 'asc' ? ascList : ascList.reverse()
     }
   }

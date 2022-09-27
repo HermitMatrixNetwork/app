@@ -5,7 +5,7 @@
       <view class="main_status">
         <image :src="statusIcon" />
         <text class="status"> {{ status }} </text>
-        <text class="times" v-show="result.timestamp">{{ result.timestamp }} +UTC</text>
+        <text class="times" v-show="result.timestamp">{{ result.timestamp }}</text>
       </view>
       <custom-loading v-if="loading" style="margin-top: 50rpx"></custom-loading>
       <view class="main_message" v-else>
@@ -43,12 +43,12 @@ export default {
   },
   onLoad(options) {
     let data = JSON.parse(options.data)
-    if (data.txhash) {
+    if(data.type == 'fail'){
+      this.formatFailData(data)
+    } else if (data.txhash) {
       this.transactionHash = data.txhash
     } else if(data.transactionHash) {
       this.transactionHash = data.transactionHash
-    } else if(data.type == 'fail'){
-      this.formatFailData(data)
     } else {
       this.formOtherToken(data)
     }
@@ -82,18 +82,6 @@ export default {
     },
     formData(res, typeUrl) {
       
-      function format(time) {
-        let date = new Date(time)
-        let y = date.getFullYear()
-        let m = (date.getMonth() + 1 + '').padStart(2, '0')
-        let d = (date.getDate() + '').padStart(2, '0')
-        let hh = (date.getHours() + '').padStart(2, '0')
-        let mm = (date.getMinutes() + '').padStart(2, '0')
-        let ss = (date.getSeconds() + '').padStart(2, '0')
-      
-        return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
-      }
-      
       // this.result.timestamp = format(item.block_time * 1000)
       this.result.timestamp = res.timestamp.trim().replace(/\-/g, (match, p1, p2) => {
         if (p1 == 4) {
@@ -102,6 +90,7 @@ export default {
           return '-'
         }
       }).split('T').join(' ').replace(/Z/, '')
+      this.result.timestamp = this.formatTime(new Date(new Date(this.result.timestamp).setHours(new Date(this.result.timestamp).getHours() + 8)))
       if (res.code == 0) {
         this.status = this.language.text181
         this.statusIcon = '/static/img/chenggong.png'
@@ -177,19 +166,8 @@ export default {
       console.log(res)
       this.status = this.language.text181
       this.statusIcon = '/static/img/chenggong.png'
-      function format(time) {
-        let date = new Date(time)
-        let y = date.getFullYear()
-        let m = (date.getMonth() + 1 + '').padStart(2, '0')
-        let d = (date.getDate() + '').padStart(2, '0')
-        let hh = (date.getHours() + '').padStart(2, '0')
-        let mm = (date.getMinutes() + '').padStart(2, '0')
-        let ss = (date.getSeconds() + '').padStart(2, '0')
       
-        return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
-      }
-      
-      this.result.timestamp = format(res.block_time * 1000)
+      this.result.timestamp = this.formatTime(new Date(new Date(res.block_time * 1000).setHours(new Date(res.block_time * 1000).getHours() + 8)))
       this.transactionMessage = {
         [this.language.text84]: res.amount,
         [this.language.text16]: res.to_address,
@@ -199,24 +177,25 @@ export default {
       }
       this.loading = false
     },
+    formatTime(time) {
+      let date = new Date(time)
+      let y = date.getFullYear()
+      let m = (date.getMonth() + 1 + '').padStart(2, '0')
+      let d = (date.getDate() + '').padStart(2, '0')
+      let hh = (date.getHours() + '').padStart(2, '0')
+      let mm = (date.getMinutes() + '').padStart(2, '0')
+      let ss = (date.getSeconds() + '').padStart(2, '0')
+    
+      return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+    },
     formatFailData(res) {
-      function format(time) {
-        let date = new Date(time)
-        let y = date.getFullYear()
-        let m = (date.getMonth() + 1 + '').padStart(2, '0')
-        let d = (date.getDate() + '').padStart(2, '0')
-        let hh = (date.getHours() + '').padStart(2, '0')
-        let mm = (date.getMinutes() + '').padStart(2, '0')
-        let ss = (date.getSeconds() + '').padStart(2, '0')
-      
-        return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
-      }
       // const failType = ['MsgSend', 'MsgUndelegate', 'MsgInstantiateContract', 'MsgExecuteContract']
       this.statusIcon = '/static/img/shibai1.png'
-      this.result.timestamp = format(res.timestamp)
+      this.result.timestamp = this.formatTime(res.timestamp)
+      this.result.timestamp = this.formatTime(new Date(new Date(this.result.timestamp).setHours(new Date(this.result.timestamp).getHours() + 8)))
       switch (res.operate) {
       case 'MsgSend': 
-        this.status = '发送失败'
+        this.status = this.language.text233 // 发送失败
         this.transactionMessage = {
           [this.language.text84]: '0.00', //res.amount,
           [this.language.text111]: res.fee / mainCoin.decimals + mainCoin.alias_name,
@@ -226,7 +205,7 @@ export default {
         }
         break
       case 'MsgUndelegate':
-        this.status = '取消委托失败',
+        this.status = this.language.text234, // 取消委托失败
         this.transactionMessage = {
           [this.language.text84]: '0.00', //res.amount
           [this.language.text111]: res.fee / mainCoin.decimals + mainCoin.alias_name,
@@ -236,7 +215,7 @@ export default {
         }
         break
       case 'MsgInstantiateContract':
-        this.status = '初始化合约失败',
+        this.status = this.language.text235, // 初始化合约失败
         this.transactionMessage = {
           [this.language.text111]: res.fee / mainCoin.decimals + mainCoin.alias_name,
           '合约Code_id': res.message.code_id,
@@ -244,7 +223,7 @@ export default {
         }
         break
       case 'MsgExecuteContract':
-        this.status = '调用合约失败',
+        this.status = this.language.text236, // 调用合约失败
         this.transactionMessage = {
           [this.language.text111]: res.fee / mainCoin.decimals + mainCoin.alias_name,
           '合约地址': res.message.contract,
@@ -253,6 +232,7 @@ export default {
         break
       }
       this.loading = false
+      console.log(this.status)
     },
     copy(item ,key) {
       const copyList = ['Memo', this.language.text84, this.language.text111] // Memo, Amount, Fee

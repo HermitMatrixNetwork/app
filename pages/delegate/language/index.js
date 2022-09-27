@@ -115,7 +115,8 @@ const languages = {
     text107: '收益领取地址不能为空',
     text108: '自定义',
     text109: '地址有误，请重新输入',
-    text110: '油费不足'
+    text110: '已全部加载完毕',
+    text111: '油费不足'
   },
   'CT': {
     myDelegate: '我的委托',
@@ -229,7 +230,8 @@ const languages = {
     text107: '收益領取地址不能為空',
     text108: '自定義',
     text109: '地址有誤，請重新輸入',
-    text110: '油費不足'
+    text110: '已全部加載完畢',
+    text111: '油費不足'
   },
   'EN': {
     'text01': 'my stakes',
@@ -341,7 +343,8 @@ const languages = {
     text107: 'The income receiving address cannot be blank',
     text108: 'customize',
     text109: 'The address is incorrect, please re-enter',
-    text110: 'Insufficient fuel charge'
+    text110: 'end',
+    text111: 'Insufficient fuel charge'
   }
 }
 export default languages

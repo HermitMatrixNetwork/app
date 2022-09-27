@@ -79,8 +79,8 @@
         <view class="modal_title">
           <view>
             {{ verifyMethod == 'touchID' ? language.text196 : language.text48 }}
-            <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''"
-              class="verifyTouchErrorTip">({{ verifyTouchErrorTip }})</text>
+            <text v-if="verifyMethod == 'touchID' && verifyTouchErrorTip !== ''" class="verifyTouchErrorTip">({{
+            verifyTouchErrorTip }})</text>
           </view>
           <image src="/static/img/account/close.png" style="width: 32rpx; height: 32rpx;"
             @click="closeModalPasswordIsShow"></image>
@@ -137,7 +137,7 @@ export default {
     InputTitle,
     Submitbtn
   },
-  data() {
+  data () {
     return {
       language: language[this.$cache.get('_language')],
       submitPopupIsShow: false,
@@ -170,10 +170,10 @@ export default {
       isCustomFess: false,
       feeLoading: true,
       callSimulate: {},
-      btnLoading:false
+      btnLoading: false
     }
   },
-  onLoad(options) {
+  onLoad (options) {
     if (this.touchId) this.verifyMethod = 'touchID'
     this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
     Object.assign(this.formData, this.token)
@@ -182,13 +182,13 @@ export default {
     }
   },
   methods: {
-    verifyTouchIDFail() {
+    verifyTouchIDFail () {
       this.showToast = false
     },
-    verifyTouchIDOverTime() {
+    verifyTouchIDOverTime () {
       this.showToast = false
     },
-    closeModalPasswordIsShow() {
+    closeModalPasswordIsShow () {
       this.modalPasswordIsShow = false
       if (this.$cache.get('_touchId')) this.verifyMethod = 'touchID'
       this.payPassword = ''
@@ -196,7 +196,7 @@ export default {
         plus.fingerprint.cancel()
       }
     },
-    changeVerifyMethod() {
+    changeVerifyMethod () {
       this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password'
       if (this.verifyMethod == 'touchID') {
         this.verify()
@@ -204,10 +204,10 @@ export default {
         plus.fingerprint.cancel()
       }
     },
-    hideModel() {
+    hideModel () {
       this.modalPasswordIsShow = false
     },
-    verifyTouchIDSuccess() {
+    verifyTouchIDSuccess () {
       this.$nextTick(() => {
         // this.passwordCheck = false
         // this.loading = true
@@ -227,7 +227,7 @@ export default {
         // })
       })
     },
-    submitAgain() {
+    submitAgain () {
       this.firstTime = true
       this.modalPasswordIsShow = true
       // #ifdef APP-PLUS
@@ -242,7 +242,7 @@ export default {
 
       this.submitPopupIsShow = false
     },
-    getMinersCost(val) {
+    getMinersCost (val) {
       if (val.speed == this.language.text27) {
         // this.sendFormData.gas = val.
         this.formData.gas = val.minersGas
@@ -252,7 +252,7 @@ export default {
       }
       this.formData.gasPrice = val.amount
     },
-    passwordButton() {
+    passwordButton () {
       // 通过校验
       const decode = WalletCrypto.decode(this.$cache.get('_currentWallet').password)
       if (this.payPassword != decode) {
@@ -276,12 +276,12 @@ export default {
         // })
       }
     },
-    close() {
+    close () {
       console.log('close')
       this.passwordCheck = false
       this.payPassword = ''
     },
-    handlerResult(res) {
+    handlerResult (res) {
       this.loading = false
       this.callRender = 0
       if (res.code == 0) {
@@ -314,8 +314,8 @@ export default {
         }, 3000)
       }
     },
-    setViekey() {
-      if(this.btnLoading) return
+    setViekey () {
+      if (this.btnLoading) return
       if (this.formData.gas !== '') return this.submitPopupIsShow = true
       if (this.validate()) {
         if (!this.isCustomFess) {
@@ -326,7 +326,7 @@ export default {
         // this.submitPopupIsShow = true
       }
     },
-    validate() {
+    validate () {
       if (this.formData.view_key.trim() === '') {
         this.$refs.notify.show('error', this.language.text210, {
           bgColor: '#EC6665'
@@ -337,7 +337,7 @@ export default {
         return true
       }
     },
-    updateWalletList(wallet) {
+    updateWalletList (wallet) {
       const walletList = this.$cache.get('_walletList') || []
       if (!wallet) return false
       const walletIndex = walletList.findIndex(item => item.address === wallet.address)
@@ -348,9 +348,9 @@ export default {
       this.$cache.set('_walletList', walletList, 0)
       return true
     },
-    handlerGas(res) {
+    handlerGas (res) {
       // this.feeLoading = false
-      if(this.btnLoading){
+      if (this.btnLoading) {
         this.submitPopupIsShow = true
         this.btnLoading = false
       }
@@ -360,7 +360,7 @@ export default {
       if (res.code || this.isCustomFess) return
       this.formData.gas = res
     },
-    getMinimumGas() {
+    getMinimumGas () {
       this.$cache.set('_minimumGas', 0, 0)
       const data = JSON.parse(JSON.stringify(this.formData))
       this.callSimulate = {}
@@ -368,15 +368,15 @@ export default {
         this.callSimulate = data
       })
     },
-    gasError(res) {
-		  console.log(res)
-		  this.$refs.notify.show('', this.language.text233)
-		  this.btnLoading = false
+    gasError (res) {
+      console.log(res)
+      this.$refs.notify.show('', this.language.text237)
+      this.btnLoading = false
       this.callSimulate = {}
     }
   },
   computed: {
-    totalGas() {
+    totalGas () {
       return new decimal(this.formData.gas + '').mul(new decimal(this.formData.gasPrice)).div(new decimal(mainCoin.decimals)).toString()
     }
   },
@@ -438,273 +438,273 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .mask {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, .5) !important;
-    z-index: 9999;
+.mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, .5) !important;
+  z-index: 9999;
+}
+
+.container {
+  padding-top: calc(112rpx + var(--status-bar-height));
+  background-color: #F4F6FA;
+  height: 100vh;
+}
+
+.perform_contract {
+  width: 100%;
+  padding: 48rpx 32rpx 38rpx;
+
+  .title {
+    height: 28rpx;
+    font-family: PingFangSC-Medium;
+    font-weight: 600;
+    font-size: 28rpx;
+    color: #2C365A;
+    letter-spacing: 0;
+    line-height: 28rpx;
+    margin-bottom: 24rpx;
   }
 
-  .container {
-    padding-top: calc(112rpx + var(--status-bar-height));
-    background-color: #F4F6FA;
-    height: 100vh;
-  }
-
-  .perform_contract {
+  .viewkey_input {
     width: 100%;
-    padding: 48rpx 32rpx 38rpx;
-
-    .title {
-      height: 28rpx;
-      font-family: PingFangSC-Medium;
-      font-weight: 600;
-      font-size: 28rpx;
-      color: #2C365A;
-      letter-spacing: 0;
-      line-height: 28rpx;
-      margin-bottom: 24rpx;
-    }
-
-    .viewkey_input {
-      width: 100%;
-      height: 250rpx;
-      background: #F7F8FA;
-      border-radius: 16rpx;
-
-      font-family: PingFangSC-Regular;
-      font-weight: 400;
-      font-size: 28rpx;
-      color: #2C365A;
-      letter-spacing: 0;
-      line-height: 40rpx;
-      padding: 32rpx;
-    }
-  }
-
-  .submitPopup {
-    width: 100%;
-    height: 1028rpx;
-
-    .main {
-
-      .popup-title {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-weight: 600;
-        font-size: 32rpx;
-        color: #2C365A;
-        letter-spacing: 0;
-        padding: 32rpx;
-        line-height: 32rpx;
-        background: #F6F8FA;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-      }
-
-
-      .item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 33rpx 0;
-        margin: 0 33rpx;
-        border-bottom: 2rpx solid rgba(131, 151, 177, .16);
-
-        .label {
-          flex: 1 0;
-          font-size: 28rpx;
-          color: #8F9BB3;
-        }
-
-        .value {
-          width: 400rpx;
-          word-break: break-word;
-          font-size: 28rpx;
-          color: #030319;
-          text-align: right;
-          flex: 2;
-        }
-      }
-    }
-
-  }
-
-  .submit-button {
-    margin: 96rpx 32rpx 0;
-  }
-
-  .btn {
-    position: absolute;
-    bottom: 64rpx;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 622rpx;
-    height: 96rpx;
+    height: 250rpx;
+    background: #F7F8FA;
     border-radius: 16rpx;
-    background-color: #002FA7 !important;
+
+    font-family: PingFangSC-Regular;
     font-weight: 400;
-    font-size: 32rpx;
-    color: #FCFCFD;
+    font-size: 28rpx;
+    color: #2C365A;
+    letter-spacing: 0;
+    line-height: 40rpx;
+    padding: 32rpx;
   }
+}
 
-  .confirm_btn {
-    height: 96rpx;
-    border-radius: 16rpx;
-    background-color: #002FA7 !important;
-    color: #FCFCFD;
-    margin-top: 80rpx;
-    font-size: 32rpx;
-  }
+.submitPopup {
+  width: 100%;
+  height: 1028rpx;
 
-  .modal_main {
-    width: 100%;
+  .main {
 
-    .modal_title {
-      font-family: PingFangSC-Medium;
+    .popup-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       font-weight: 600;
       font-size: 32rpx;
       color: #2C365A;
       letter-spacing: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 32rpx;
+      line-height: 32rpx;
+      background: #F6F8FA;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
     }
 
-    .modal_submit {
-      margin-top: 80rpx;
-    }
 
     .item {
-      margin-top: 64rpx;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 33rpx 0;
+      margin: 0 33rpx;
+      border-bottom: 2rpx solid rgba(131, 151, 177, .16);
 
-      &-input {
+      .label {
+        flex: 1 0;
+        font-size: 28rpx;
+        color: #8F9BB3;
+      }
 
-        .u-input {
-          height: 96rpx;
-          background-color: #F2F4F8;
-          border-radius: 16rpx 0 0 16rpx;
-          padding-left: 0 !important;
-
-          /deep/ input {
-            color: #2C365A !important;
-            font-size: 28rpx !important;
-            padding-left: 32rpx;
-            line-height: 48rpx !important;
-          }
-        }
-
-        /deep/ .input-placeholder {
-          // height: 48rpx !important;
-          font-weight: 400 !important;
-          font-size: 28rpx !important;
-          // color: #8397B1 !important;
-          color: #8397B1 !important;
-          // line-height: 48rpx !important;
-        }
-
-        &-password {
-          display: flex;
-          height: 96rpx;
-          background-color: #F2F4F8;
-          align-items: center;
-          border-radius: 16rpx;
-
-          .u-icon {
-            padding-right: 36rpx;
-            border-radius: 0 16rpx 16rpx 0 !important;
-          }
-        }
+      .value {
+        width: 400rpx;
+        word-break: break-word;
+        font-size: 28rpx;
+        color: #030319;
+        text-align: right;
+        flex: 2;
       }
     }
   }
 
-  /deep/ .u-popup__content {
-    border-top-right-radius: 16rpx;
-    border-top-left-radius: 16rpx;
+}
 
-    .u-modal__content {
-      padding: 48rpx 32rpx !important;
-    }
-  }
+.submit-button {
+  margin: 96rpx 32rpx 0;
+}
 
-  .waringPrompt {
-    margin-top: 8rpx;
-    font-weight: 400;
-    font-size: 24rpx;
-    color: #EC2828;
+.btn {
+  position: absolute;
+  bottom: 64rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 622rpx;
+  height: 96rpx;
+  border-radius: 16rpx;
+  background-color: #002FA7 !important;
+  font-weight: 400;
+  font-size: 32rpx;
+  color: #FCFCFD;
+}
+
+.confirm_btn {
+  height: 96rpx;
+  border-radius: 16rpx;
+  background-color: #002FA7 !important;
+  color: #FCFCFD;
+  margin-top: 80rpx;
+  font-size: 32rpx;
+}
+
+.modal_main {
+  width: 100%;
+
+  .modal_title {
+    font-family: PingFangSC-Medium;
+    font-weight: 600;
+    font-size: 32rpx;
+    color: #2C365A;
     letter-spacing: 0;
-    line-height: 24rpx;
-    height: 24rpx;
-    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  .price {
-    color: #8F9BB3;
-    margin-top: 24rpx;
-  }
-
-  .touch-verify {
+  .modal_submit {
     margin-top: 80rpx;
-
-    .logo {
-      text-align: center;
-    }
   }
 
-  .changeVerifyMethod {
-    text-align: right;
-    font-family: PingFangSC-Regular;
-    font-size: 28rpx;
-    color: #1E5EFF;
-    margin-top: 20rpx;
-  }
+  .item {
+    margin-top: 64rpx;
 
-  .toast {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) !important;
-    width: 240rpx;
-    background: rgba(0, 0, 0, .6);
-    padding: 0 20rpx 32rpx;
-    justify-content: center;
-    border-radius: 6rpx;
-    z-index: 999999999;
+    &-input {
 
-    &-icon {
-      text-align: center;
-      margin-top: 65rpx;
+      .u-input {
+        height: 96rpx;
+        background-color: #F2F4F8;
+        border-radius: 16rpx 0 0 16rpx;
+        padding-left: 0 !important;
 
-      image {
-        width: 65rpx;
-        height: 65rpx;
+        /deep/ input {
+          color: #2C365A !important;
+          font-size: 28rpx !important;
+          padding-left: 32rpx;
+          line-height: 48rpx !important;
+        }
+      }
+
+      /deep/ .input-placeholder {
+        // height: 48rpx !important;
+        font-weight: 400 !important;
+        font-size: 28rpx !important;
+        // color: #8397B1 !important;
+        color: #8397B1 !important;
+        // line-height: 48rpx !important;
+      }
+
+      &-password {
+        display: flex;
+        height: 96rpx;
+        background-color: #F2F4F8;
+        align-items: center;
+        border-radius: 16rpx;
+
+        .u-icon {
+          padding-right: 36rpx;
+          border-radius: 0 16rpx 16rpx 0 !important;
+        }
       }
     }
+  }
+}
 
-    &-content {
-      margin-top: 20rpx;
-      font-weight: 400;
-      font-size: 28rpx;
-      color: #FFFFFF;
-      text-align: center;
+/deep/ .u-popup__content {
+  border-top-right-radius: 16rpx;
+  border-top-left-radius: 16rpx;
+
+  .u-modal__content {
+    padding: 48rpx 32rpx !important;
+  }
+}
+
+.waringPrompt {
+  margin-top: 8rpx;
+  font-weight: 400;
+  font-size: 24rpx;
+  color: #EC2828;
+  letter-spacing: 0;
+  line-height: 24rpx;
+  height: 24rpx;
+  position: absolute;
+}
+
+.price {
+  color: #8F9BB3;
+  margin-top: 24rpx;
+}
+
+.touch-verify {
+  margin-top: 80rpx;
+
+  .logo {
+    text-align: center;
+  }
+}
+
+.changeVerifyMethod {
+  text-align: right;
+  font-family: PingFangSC-Regular;
+  font-size: 28rpx;
+  color: #1E5EFF;
+  margin-top: 20rpx;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) !important;
+  width: 240rpx;
+  background: rgba(0, 0, 0, .6);
+  padding: 0 20rpx 32rpx;
+  justify-content: center;
+  border-radius: 6rpx;
+  z-index: 999999999;
+
+  &-icon {
+    text-align: center;
+    margin-top: 65rpx;
+
+    image {
+      width: 65rpx;
+      height: 65rpx;
     }
   }
 
-  .verifyTouchErrorTip {
-    color: red;
-    font-size: 24rpx;
+  &-content {
+    margin-top: 20rpx;
+    font-weight: 400;
+    font-size: 28rpx;
+    color: #FFFFFF;
+    text-align: center;
   }
-  
-  .memo_type {
-    -webkit-line-clamp: 2;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+}
+
+.verifyTouchErrorTip {
+  color: red;
+  font-size: 24rpx;
+}
+
+.memo_type {
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>
