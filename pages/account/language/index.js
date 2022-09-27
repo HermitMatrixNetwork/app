@@ -260,8 +260,9 @@ const languages = {
     text233: '发送失败',
     text234: '取消委托失败',
     text235: '初始化合约失败',
-    text236: '调用合约失败'
-    
+    text236: '调用合约失败',
+    text237: '油费不足',
+    text238: '地址有误',
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -521,8 +522,10 @@ const languages = {
     text233: '發送失敗',
     text234: '取消委托失敗',
     text235: '初始化合約失敗',
-    text236: '調用合約失敗'
+    text236: '調用合約失敗',
 
+    text237: '油費不足',
+    text238: '地址有誤',
   },
   EN: {
     Mywallet: 'My wallet',
@@ -783,8 +786,10 @@ const languages = {
     text233: 'Failed to send',
     text234: 'Cancel delegation failed',
     text235: 'Failed to initialize contract',
-    text236: 'Failed to call contract'
+    text236: 'Failed to call contract',
 
+    text237: 'Insufficient fuel charge',
+    text238: 'The address is wrong.',
   }
 }
 export default languages

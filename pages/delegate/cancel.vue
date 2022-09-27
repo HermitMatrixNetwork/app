@@ -507,7 +507,7 @@ export default {
     },
     gasError(res) {
 		  // console.log(res)
-		  this.$refs.notify.show('', '油费不足')
+		  this.$refs.notify.show('', this.language.text111)
 		  this.btnLoading = false
 		  this.formData.amount.amount = ''
     }

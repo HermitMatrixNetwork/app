@@ -629,7 +629,7 @@ export default {
     },
     gasError(e) {
       // console.log(res)
-      this.$refs.notify.show('', e===0?'地址有误':this.language.text231)
+      this.$refs.notify.show('', e===0?this.language.text238:this.language.text237)
       this.btnLoading = false
       this.sendFormData.sendAmount = ''
     }
@@ -919,7 +919,7 @@ export default {
 				position: absolute;
 				top: 50%;
 				right: 32rpx;
-				transform: translateY(20%);
+				transform: translateY(20%); 
 				font-weight: 600;
 				font-size: 28rpx;
 				color: #2C365A;
