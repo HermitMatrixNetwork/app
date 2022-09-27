@@ -41,6 +41,9 @@ export default {
       }, 500)
     })
   },
+  onUnload() {
+    clearInterval(this.$refs.customChildNode.timer)
+  },
   methods: {
     switchToDelegate () {
       this.selindex = 1
@@ -54,11 +57,13 @@ export default {
       handler (newVal) {
         this.$nextTick(() => {
           this.$refs.customChildNode.updateData()
+          clearInterval(this.$refs.customChildNode.timer)
         })
       }
     }
   },
   onPullDownRefresh() {
+    clearInterval(this.$refs.customChildNode.timer)
     this.$refs.customChildNode.updateData()
     // this.$nextTick(() => {
     //   uni.stopPullDownRefresh()

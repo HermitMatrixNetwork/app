@@ -94,6 +94,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  image {
+    will-change: transform;
+  }
   
   .page-header {
     position: fixed;

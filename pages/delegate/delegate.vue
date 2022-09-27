@@ -197,6 +197,7 @@ export default {
         }, //发送金额
         memo: '',
         gas: '',
+        gasPrice: '',
         delegatorAddress: '',
         validatorAddress: ''
       },

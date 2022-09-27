@@ -1,6 +1,7 @@
 <template>
   <view class="my">
-    <view :address="address" :change:address="init"></view>
+    <view :address="address" :change:address="render.init"></view>
+    <view :updateRewards="updateRewards" :change:updateRewards="render.getRewards"></view>
     <view class="header-box">
       <view class="header">
         <headerItem :title="language.text02" :value="allData.total" />
@@ -50,7 +51,7 @@
             </view>
             <view class="right">
               <view class="name">{{item.balance.amount / mainCoin.decimals }}</view>
-              <view class="other">{{ item.timestamp }} +UTC</view>
+              <view class="other">{{ item.timestamp }}</view>
             </view>
           </view>
         </scroll-view>
@@ -87,7 +88,8 @@ export default {
       systemBarHeight: 0,
       headerBoxHeight: 0,
       titleHeight: 0,
-      listTitleHeight: 0
+      listTitleHeight: 0,
+      updateRewards: 0,
     }
   },
   created() {
@@ -101,6 +103,17 @@ export default {
     this.calculateHeight()
   },
   methods: {
+    formatTime(time) {
+      let date = new Date(time)
+      let y = date.getFullYear()
+      let m = (date.getMonth() + 1 + '').padStart(2, '0')
+      let d = (date.getDate() + '').padStart(2, '0')
+      let hh = (date.getHours() + '').padStart(2, '0')
+      let mm = (date.getMinutes() + '').padStart(2, '0')
+      let ss = (date.getSeconds() + '').padStart(2, '0')
+    
+      return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+    },
     getSystemStatusHeight() {
       uni.getSystemInfo({
         success: res => {
@@ -139,11 +152,11 @@ export default {
       
       this.address = this.currentWallet.address
       
-      if (this.$cache.get('_delegateInfo')) {
-        this.address = this.currentWallet.address
-        // this.allData = this.$cache.get('_delegateInfo')
-        // this.list = this.allData.list
-      }
+      // if (this.$cache.get('_delegateInfo')) {
+      // this.address = this.currentWallet.address
+      // this.allData = this.$cache.get('_delegateInfo')
+      // this.list = this.allData.list
+      // }
 
     },
     goTo(url) {
@@ -168,12 +181,28 @@ export default {
         // 获取最新质押时间
         const res = (await txsQuery([`events=message.sender='${this.address}'`, `events=delegate.validator='${validatorAddress}'`])).data.tx_responses
         item.timestamp = res.pop().timestamp.replace(/T|Z/g, ' ')
+        item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() + 8)))
       }
+      list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
       this.list = list
       this.loading = false
       this.address = ''
       this.$cache.set('_updateDelegateInfo', false, 36000)
       this.$cache.set('_delegateInfo', this.allData, 0)
+      
+      this.updateRewards = JSON.parse(JSON.stringify(data.list))
+    },
+    handerRewards(res) {
+      this.list = res
+      let totalRewards = 0
+      this.list.forEach(item => {
+        totalRewards += Number(item.rewards.amount)
+      })
+      totalRewards = totalRewards / mainCoin.delegateDecimals
+      this.allData.totalReward = totalRewards
+      setTimeout(() => {
+        this.updateRewards = JSON.parse(JSON.stringify(this.list))
+      }, 2000)
     }
   },
   computed: {
@@ -195,7 +224,8 @@ export default {
   import {
     getDelegationTotalRewards,
     getDelegatorDelegations,
-    getStakingValidator
+    getStakingValidator,
+    getRewards
   } from '@/utils/secretjs/SDK'
   import renderUtils from '@/utils/render.base.js'
   import mixin from '../mixins/render.js'
@@ -231,7 +261,21 @@ export default {
 
         // renderUtils.runMethod(this._$id, 'searchData', data, this)
       },
-
+      async getRewards(val) {
+        if (val == 0) return
+        // console.log('fire');
+        // console.log(val);
+        const pastVal = JSON.parse(JSON.stringify(val)) 
+         for (let i = 0; i < pastVal.length; i++) { 
+           let {
+             delegatorAddress,
+             validatorAddress
+           } = pastVal[i].delegation
+           const res = await getRewards(delegatorAddress, validatorAddress)
+           pastVal[i].rewards = res.rewards[0]
+         }
+        renderUtils.runMethod(this._$id, 'handerRewards', pastVal, this)
+      } // @todo 更新收益领取
     }
   }
 </script>

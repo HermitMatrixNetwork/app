@@ -3,7 +3,7 @@
     <custom-header :title="language.text08"></custom-header>
     <view class="border"></view>
 
-    <view class="list">
+    <view class="list" v-if="recently.length">
       <view class="content" v-for="(item, index) in recently" :key="index" @click="toWebView(item)">
         <view class="item">
           <view class="logo">
@@ -23,6 +23,7 @@
         <view class="border"></view>
       </view>
     </view>
+    <no-data v-else class="no-data" tip="暂无记录"></no-data>
   </view>
 </template>
 
@@ -50,6 +51,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .no-data {
+    // height: 100vh;
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .page-wrapper {
     height: 100vh;
     padding-top: calc(112rpx + var(--status-bar-height));

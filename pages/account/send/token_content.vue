@@ -11,7 +11,7 @@
         <template #right>
           <view style="padding-right: 16rpx;" class="token_price">
             <!-- <view class="balance" v-if="token.balance === undefined">0.00</view> -->
-            <custom-loading v-if="loadingBalace"></custom-loading>
+            <custom-loading v-if="loadingBalace || lockAmountLoading"></custom-loading>
             <view class="balance" v-else>{{ ( token.balance + lockAmount)  | formatBalance }}</view>
             <view>
               <text class="symbol">$</text>
@@ -68,13 +68,13 @@
                   </view>
                   <view class="content">
                     <view class="content-address">
-                      {{ record.txhash | sliceAddress(6, -6) }}
+                      {{ record.showAddress | sliceAddress(6, -6) }}
                     </view>
-                    <view class="content-time">{{ record.timestamp }} +UTC</view>
+                    <view class="content-time">{{ record.timestamp }}</view>
                   </view>
                   <view class="right">
                     <view class="amount" :class="[`${record.type}-amount`]">
-                      {{ ['delegate', 'fail', 'setWithdrawAddress'].includes(record.type) ? '' : (record.plus ? '+' : '-') }}
+                      {{ ['delegate', 'fail', 'setWithdrawAddress', 'executeContract'].includes(record.type) ? '' : (record.plus ? '+' : '-') }}
                       {{ record.amount }}
                     </view>
                     <view class="real-money">
@@ -85,12 +85,13 @@
                 </view>
                 <view class="border"></view>
               </view>
-              <view v-if="item.type !== 'all'">
+              <view v-if="item.type">
                 <view v-if="!pagination[item.type].nodata && !pagination[item.type].loading" class="loading-more"
                   @click="loadMore(item.type)">
-                  点击加载更多
+                  {{ language.text206 }}
                 </view>
-                <u-loading-icon v-else-if="pagination[item.type].loading" class="loading-more" mode="circle" text="加载中">
+                <u-loading-icon v-else-if="pagination[item.type].loading" class="loading-more" mode="circle"
+                  :text="language.text207">
                 </u-loading-icon>
                 <view v-else-if="pagination[item.type].nodata" class="loading-more">{{ language.text227 }}</view>
               </view>
@@ -100,20 +101,21 @@
         </swiper-item>
       </swiper>
     </view>
-    <view :callRenderDelegateRecord="callRenderDelegateRecord" :change:callRenderDelegateRecord="render.getAddress"></view>
+    <view :callRenderDelegateRecord="callRenderDelegateRecord" :change:callRenderDelegateRecord="render.getAddress">
+    </view>
     <view :callMainCoinBalance="callMainCoinBalance" :change:callMainCoinBalance="render.getMainCoinBalance">
     </view>
     <view class="operation_btn">
       <button @click="toSend('/pages/account/send/index', token)">
-					<custom-loading v-if="sendbtnLoading"></custom-loading>
-					<text v-else>{{ language.text64 }}</text>
-			</button>
+        <custom-loading v-if="sendbtnLoading"></custom-loading>
+        <text v-else>{{ language.text64 }}</text>
+      </button>
       <button @click="toGo('/pages/account/receive')">{{ language.text70 }}</button>
       <button @click="dealBtn">{{ language.text61 }}</button>
       <button @click="toDelegate">{{ language.text66 }}</button>
     </view>
-		<!--  -->
-		<view :check="sendTokenMessage" :change:check="render.sendToken"></view>
+    <!--  -->
+    <view :check="sendTokenMessage" :change:check="render.sendToken"></view>
   </view>
 </template>
 
@@ -131,6 +133,9 @@ import {
 import {
   txsQuery
 } from '@/api/cosmos.js'
+import {
+  getRecordList
+} from '@/api/record.js'
 import {
   getFailRecord,
   getWithdrawRecord
@@ -231,28 +236,30 @@ export default {
       navHeight: '0rpx',
       systemBarHeight: '0rpx',
       callMainCoinBalance: 0,
-      sendTokenMessage:false,
-      sendbtnLoading:false,
+      sendTokenMessage: false,
+      sendbtnLoading: false,
     }
   },
   async onLoad(options) {
-    let obj = options.sendToken?JSON.parse(options.sendToken):false
-    console.log('获取的数据',obj)
+    let obj = options.sendToken ? JSON.parse(options.sendToken) : false
+    console.log('获取的数据', obj)
     this.sendbtnLoading = !!obj
     this.sendTokenMessage = obj
     this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
     this.callRenderDelegateRecord = this.address
     const wallet = this.$cache.get('_currentWallet')
-    if (this.token.balance === undefined) {
-      this.timer = setInterval(() => {
-        if (wallet.coinList[0].balance === undefined) return
-        this.token.balance = wallet.coinList[0].balance
-        this.loadingBalace = false
-        clearInterval(this.timer)
-      }, 1000)
-    } else {
-      this.loadingBalace = false
-    }
+    this.loadingBalace = true
+    this.callMainCoinBalance++
+    // if (this.token.balance === undefined) {
+    //   this.timer = setInterval(() => {
+    //     if (wallet.coinList[0].balance === undefined) return
+    //     this.token.balance = wallet.coinList[0].balance
+    //     this.loadingBalace = false
+    //     clearInterval(this.timer)
+    //   }, 1000)
+    // } else {
+    //   this.loadingBalace = false
+    // }
   },
   onPullDownRefresh() {
     this.callRenderDelegateRecord = ''
@@ -263,7 +270,7 @@ export default {
       this.callRenderDelegateRecord = this.address
       setTimeout(() => {
         uni.stopPullDownRefresh()
-      }, 1500)    
+      }, 1500)
     })
 
 
@@ -294,7 +301,7 @@ export default {
       query.select('.main_token').boundingClientRect(data => {
         this.mainTokenHeight = data.height + 'px'
       })
-      
+
       query.select('.nav').boundingClientRect(data => {
         this.navHeight = data.height + 'px'
       })
@@ -334,7 +341,10 @@ export default {
           loading: false
         },
         all: {
-          loading: false
+          loading: false,
+          size: 30,
+          page: 0,
+          total: 0,
         }
       }
       await Promise.all([
@@ -363,27 +373,32 @@ export default {
           // 'limit': this.pagination.fail.size,
           // 'index': this.pagination.fail.page,
           'address': this.address
+        }),
+        getRecordList({
+          'address': this.address,
+          'limit': this.pagination.all.size,
+          'index': this.pagination.all.page
         })
       ]).then(res => {
+        console.log(res)
         if (this.pagination.sender.total == 0) {
           this.pagination.sender.total = res[0].data.pagination.total
           this.pagination.recipient.total = res[1].data.pagination.total
           this.pagination.delegate.total = res[2].data.pagination.total
           this.pagination.withdraw.total = res[3].data.pagination.total
-          
+
           // @toFixed 接口分页查找有重复的数据 暂不支持分页
           // this.pagination.fail.total = res[3].data.data.total
           this.pagination.fail.nodata = true
-          
-          
+          this.pagination.all.total = res[5].data.data.total
+
           // #ifndef APP-PLUS          
           // console.log(res[4])
           // #endif
         }
-
         // 处理 发送、接受、质押交易记录
         res.forEach((result, type) => {
-          if (type == 4) return
+          if (type == 4 || type == 5) return
           const records = result.data.tx_responses
           for (let i = 0, len = records.length; i < len; i++) {
             const item = records[i]
@@ -397,6 +412,8 @@ export default {
             item.delegator_address = item.tx.body.messages[0].delegator_address
             item.validator_address = item.tx.body.messages[0].validator_address
             item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
+            item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item
+              .timestamp).getHours() + 8)))
             item.tx.body.messages.forEach(cur => {
               if (cur.amount) {
                 if (Array.isArray(cur.amount)) {
@@ -413,19 +430,23 @@ export default {
                 '@/static/img/account/fasong2.png')
               item.type = 'sender'
               item.plus = item.to_address == this.address ? true : false
+              item.showAddress = item.to_address
               break
             case 1:
               item.icon = require('@/static/img/account/shoukuan2.png')
               item.type = 'recipient'
+              item.showAddress = item.from_address
               item.plus = true
               break
             case 2:
               if (item.tx.body.messages[0]['@type'].includes('MsgDelegate')) {
                 item.icon = require(
-                  '@/static/img/account/weituo2.png')                
+                  '@/static/img/account/weituo2.png')
               } else if (item.tx.body.messages[0]['@type'].includes('MsgUndelegate')) {
                 item.icon = require('@/static/img/delegate/fasong2.png')
+
               }
+              item.showAddress = item.validator_address
               item.type = 'delegate'
               break
             case 3:
@@ -433,17 +454,24 @@ export default {
               item.icon = require(
                 '@/static/img/account/lingqu.png')
               if (originType.includes('MsgSetWithdrawAddress')) {
+                item.raw_log.replace(/"key":"withdraw_address","value":"([0-9a-z]*)"/, (match, p1) => {
+                  item.withdraw_address = p1
+                })
                 item.type = 'setWithdrawAddress'
               } else if (originType.includes('MsgWithdrawDelegatorReward')) {
-                item.type = 'withdraw'  
+                item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
+                  item.withdraw_address = p1
+                })
+                item.type = 'withdraw'
               }
-              item.raw_log.replace(/\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match, p1) => {
-                item.amount = p1 / mainCoin.decimals + mainCoin.alias_name
-              })
-              item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
-                item.withdraw_address = p1
-              })
+              item.raw_log.replace(
+                /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
+                  p1) => {
+                  item.amount = p1 / mainCoin.decimals + mainCoin.alias_name
+                })
+
               item.plus = item.withdraw_address == this.address ? true : false
+              item.showAddress = item.withdraw_address
               break
             }
           }
@@ -452,7 +480,6 @@ export default {
         this.accountTransfer['recipient'] = res[1].data.tx_responses
         this.accountTransfer['delegate'] = res[2].data.tx_responses
         this.accountTransfer['withdraw'] = res[3].data.tx_responses
-        
         // 处理失败交易记录
         if (res[4].data.data.list) {
           this.accountTransfer['fail'] = res[4].data.data.list.map(item => {
@@ -460,11 +487,112 @@ export default {
             // item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
             item.amount = '0.00'
             item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
+            item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item
+              .timestamp).getHours() + 8)))
             item.type = 'fail'
             item.txhash = item._id
+            switch (item.operate) {
+            case 'MsgSend': // 发送失败
+              item.showAddress = item.message.to_address
+              break
+            case 'MesUndelegate': // 取消委托失败
+              item.showAddress = item.message.validator_address
+              break
+            case 'MsgInstantiateContract': // 初始化合约失败
+              item.showAddress = item.sender
+              break
+            case 'MsgExecuteContract': // 调用合约失败
+              item.showAddress = item.sender
+              break
+            }
             return item
           })
         }
+
+        // 处理全部数据
+        this.accountTransfer['all'] = res[5].data.data.list.map(item => {
+          item = item.tx_response
+          try {
+            const type = item.tx.body.messages[0]['@type']
+            item.amount = 0
+            item.from_address = item.tx.body.messages[0].from_address
+            item.to_address = item.tx.body.messages[0].to_address
+            item.withdraw_address = item.tx.body.messages[0].withdraw_address
+            item.delegator_address = item.tx.body.messages[0].delegator_address
+            item.validator_address = item.tx.body.messages[0].validator_address
+            item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
+            item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item
+              .timestamp).getHours() + 8)))
+            item.tx.body.messages.forEach(cur => {
+              if (cur.amount) {
+                if (Array.isArray(cur.amount)) {
+                  item.amount += Number(cur.amount[0].amount)
+                } else {
+                  item.amount += Number(cur.amount.amount)
+                }
+              }
+            })
+            item.amount = item.amount / mainCoin.decimals + mainCoin.alias_name
+            if (type.includes('MsgSend')) { // @tofo 区分是接收还是发送
+              if (item.to_address === this.address) { // 领取
+                item.type = 'recipient'
+                item.plus = true
+                item.icon = require('@/static/img/account/shoukuan2.png')
+                item.showAddress = item.from_address
+              } else { // 发送
+                item.icon = require(
+                  '@/static/img/account/fasong2.png')
+                item.plus = item.to_address == this.address ? true : false
+                item.type = 'sender'
+                item.showAddress = item.to_address
+              }
+            } else if (type.includes('MsgDelegate')) { // 委托
+              item.icon = require(
+                '@/static/img/account/weituo2.png')
+              item.showAddress = item.validator_address
+              item.type = 'delegate'
+            } else if (type.includes('MsgUndelegate')) { // 取消委托
+              item.icon = require('@/static/img/delegate/fasong2.png')
+              item.showAddress = item.validator_address
+              item.type = 'delegate'
+            } else if (type.includes('MsgWithdrawDelegatorReward')) { // 领取奖励
+              item.raw_log.replace(
+                /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
+                  p1) => {
+                  item.amount = p1 / mainCoin.decimals + mainCoin.alias_name
+                })
+              item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
+                item.withdraw_address = p1
+              })
+              item.icon = require(
+                '@/static/img/account/lingqu.png')
+              item.plus = item.withdraw_address == this.address ? true : false
+              item.showAddress = item.withdraw_address
+              item.type = 'withdraw'
+            } else if (type.includes('MsgSetWithdrawAddress')) { // 设置领取地址
+              item.raw_log.replace(
+                /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
+                  p1) => {
+                  item.amount = p1 / mainCoin.decimals + mainCoin.alias_name
+                })
+              item.raw_log.replace(/"key":"withdraw_address","value":"([0-9a-z]*)"/, (match, p1) => {
+                item.withdraw_address = p1
+              })
+              item.icon = require(
+                '@/static/img/account/lingqu.png')
+              item.plus = item.withdraw_address == this.address ? true : false
+              item.showAddress = item.withdraw_address
+              item.type = 'setWithdrawAddress'
+            } else if (type.includes('MsgExecuteContract')) { // 调用合约
+              item.type = 'executeContract'
+            }
+
+
+          } catch (e) {
+            console.log(item)
+          }
+          return item
+        })
 
         if (this.accountTransfer['sender'].length == Number(this.pagination.sender.total)) {
           this.pagination.sender.nodata = true
@@ -482,22 +610,32 @@ export default {
           this.pagination.withdraw.nodata = true
         }
 
+        if (this.accountTransfer['all'].length == Number(this.pagination.all.total)) {
+          this.pagination.all.nodata = true
+        }
+
         // if (this.accountTransfer['fail'].length == Number(this.pagination.fail.total)) {
         //   this.pagination.fail.nodata = true
         // }
 
-        this.accountTransfer['all'] = [...this.accountTransfer['sender'], ...this.accountTransfer['recipient'],
-          ...this.accountTransfer['delegate'], ...this.accountTransfer['withdraw'], ...this.accountTransfer[
-            'fail']
-        ]
         this.accountTransfer['fail'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-        this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-
+        // this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
         // #ifndef APP-PLUS 
         console.log(this.accountTransfer)
         // #endif
         this.loading = false
       })
+    },
+    formatTime(time) {
+      let date = new Date(time)
+      let y = date.getFullYear()
+      let m = (date.getMonth() + 1 + '').padStart(2, '0')
+      let d = (date.getDate() + '').padStart(2, '0')
+      let hh = (date.getHours() + '').padStart(2, '0')
+      let mm = (date.getMinutes() + '').padStart(2, '0')
+      let ss = (date.getSeconds() + '').padStart(2, '0')
+
+      return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
     },
     setLockAmount({
       result
@@ -510,7 +648,7 @@ export default {
       this.lockAmount = lock / mainCoin.decimals
     },
     async loadMore(type) {
-      if (type == 'all' || this.pagination[type].loading || this.pagination[type].nodata) return
+      if (this.pagination[type].loading || this.pagination[type].nodata) return
       this.pagination[type].loading = true
       this.pagination[type].page += 1
       let result
@@ -539,12 +677,10 @@ export default {
           ])).data.tx_responses
           break
         case 'withdraw':
-          // result = (await txsQuery([`events=message.sender='${ this.address }'`, 'events=message.action=\'/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward\'',
-          //   'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.withdraw.page * this.pagination[type].size}`,
-          //   `pagination.limit=${this.pagination.withdraw.size}`
-          // ])).data.tx_responses
-          result = (await txsQuery([`events=message.sender='${ this.address }'`, 'events=message.module=\'distribution\'',
-            'order_by=ORDER_BY_DESC', `pagination.offset=${this.pagination.withdraw.page * this.pagination[type].size}`,
+          result = (await txsQuery([`events=message.sender='${ this.address }'`,
+            'events=message.module=\'distribution\'',
+            'order_by=ORDER_BY_DESC',
+            `pagination.offset=${this.pagination.withdraw.page * this.pagination[type].size}`,
             `pagination.limit=${this.pagination.withdraw.size}`
           ])).data.tx_responses
           break
@@ -555,8 +691,14 @@ export default {
             'index': this.pagination[type].page,
             'address': this.address
           })).data.data.list
+          break
+        case 'all':
+          result = (await getRecordList({
+            'address': this.address,
+            'limit': this.pagination.all.size,
+            'index': this.pagination.all.page
+          })).data.data.list
         }
-
         if (type == 'fail') {
           for (let i = 0, len = result.length; i < len; i++) {
             const item = result[i]
@@ -564,9 +706,95 @@ export default {
             // item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
             item.amount = '0.00'
             item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
+            item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp)
+              .getHours() + 8)))
             item.type = 'fail'
             item.txhash = item._id
           }
+        } else if (type == 'all') {
+          result = result.map(item => {
+            item = item.tx_response
+            try {
+              const type = item.tx.body.messages[0]['@type']
+              item.amount = 0
+              item.from_address = item.tx.body.messages[0].from_address
+              item.to_address = item.tx.body.messages[0].to_address
+              item.withdraw_address = item.tx.body.messages[0].withdraw_address
+              item.delegator_address = item.tx.body.messages[0].delegator_address
+              item.validator_address = item.tx.body.messages[0].validator_address
+              item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
+              item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item
+                .timestamp).getHours() + 8)))
+              item.tx.body.messages.forEach(cur => {
+                if (cur.amount) {
+                  if (Array.isArray(cur.amount)) {
+                    item.amount += Number(cur.amount[0].amount)
+                  } else {
+                    item.amount += Number(cur.amount.amount)
+                  }
+                }
+              })
+              item.amount = item.amount / mainCoin.decimals + mainCoin.alias_name
+              if (type.includes('MsgSend')) { // @tofo 区分是接收还是发送
+                if (item.to_address === this.address) { // 领取
+                  item.type = 'recipient'
+                  item.plus = true
+                  item.icon = require('@/static/img/account/shoukuan2.png')
+                  item.showAddress = item.from_address
+                } else { // 发送
+                  item.icon = require(
+                    '@/static/img/account/fasong2.png')
+                  item.plus = item.to_address == this.address ? true : false
+                  item.type = 'sender'
+                  item.showAddress = item.to_address
+                }
+              } else if (type.includes('MsgDelegate')) { // 委托
+                item.icon = require(
+                  '@/static/img/account/weituo2.png')
+                item.showAddress = item.validator_address
+                item.type = 'delegate'
+              } else if (type.includes('MsgUndelegate')) { // 取消委托
+                item.icon = require('@/static/img/delegate/fasong2.png')
+                item.showAddress = item.validator_address
+                item.type = 'delegate'
+              } else if (type.includes('MsgWithdrawDelegatorReward')) { // 领取奖励
+                item.raw_log.replace(
+                  /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
+                    p1) => {
+                    item.amount = p1 / mainCoin.decimals + mainCoin.alias_name
+                  })
+                item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
+                  item.withdraw_address = p1
+                })
+                item.icon = require(
+                  '@/static/img/account/lingqu.png')
+                item.plus = item.withdraw_address == this.address ? true : false
+                item.showAddress = item.withdraw_address
+                item.type = 'withdraw'
+              } else if (type.includes('MsgSetWithdrawAddress')) { // 设置领取地址
+                item.raw_log.replace(
+                  /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
+                    p1) => {
+                    item.amount = p1 / mainCoin.decimals + mainCoin.alias_name
+                  })
+                item.raw_log.replace(/"key":"withdraw_address","value":"([0-9a-z]*)"/, (match, p1) => {
+                  item.withdraw_address = p1
+                })
+                item.icon = require(
+                  '@/static/img/account/lingqu.png')
+                item.plus = item.withdraw_address == this.address ? true : false
+                item.showAddress = item.withdraw_address
+                item.type = 'setWithdrawAddress'
+              } else if (type.includes('MsgExecuteContract')) { // 调用合约
+                item.type = 'executeContract'
+              }
+            
+            
+            } catch (e) {
+              console.log(item)
+            }
+            return item
+          })
         } else {
           for (let i = 0, len = result.length; i < len; i++) {
             const item = result[i]
@@ -578,6 +806,8 @@ export default {
             item.delegator_address = item.tx.body.messages[0].delegator_address
             item.validator_address = item.tx.body.messages[0].validator_address
             item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
+            item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp)
+              .getHours() + 8)))
             item.tx.body.messages.forEach(cur => {
               if (cur.amount) {
                 if (Array.isArray(cur.amount)) {
@@ -592,6 +822,7 @@ export default {
             case 'recipient':
               item.icon = require('@/static/img/account/shoukuan2.png')
               item.type = 'recipient'
+              item.showAddress = item.from_address
               item.plus = true
               break
             case 'sender':
@@ -599,32 +830,41 @@ export default {
                 '@/static/img/account/fasong2.png')
               item.type = 'sender'
               item.plus = item.to_address == this.address ? true : false
+              item.showAddress = item.to_address
               break
             case 'delegate':
               if (item.tx.body.messages[0]['@type'].includes('MsgDelegate')) {
                 item.icon = require(
-                  '@/static/img/account/weituo2.png')                
+                  '@/static/img/account/weituo2.png')
               } else if (item.tx.body.messages[0]['@type'].includes('MsgUndelegate')) {
                 item.icon = require('@/static/img/delegate/fasong2.png')
+
               }
               item.type = 'delegate'
+              item.showAddress = item.validator_address
               break
             case 'withdraw':
               const originType = item.tx.body.messages[0]['@type']
               item.icon = require(
                 '@/static/img/account/lingqu.png')
-              item.raw_log.replace(/\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match, p1) => {
-                item.amount = p1 / mainCoin.decimals + mainCoin.alias_name
-              })
-              item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
-                item.withdraw_address = p1
-              })
+              item.raw_log.replace(
+                /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
+                  p1) => {
+                  item.amount = p1 / mainCoin.decimals + mainCoin.alias_name
+                })
+
               if (originType.includes('MsgSetWithdrawAddress')) {
+                item.raw_log.replace(/"key":"withdraw_address","value":"([0-9a-z]*)"/, (match, p1) => {
+                  item.withdraw_address = p1
+                })
                 item.type = 'setWithdrawAddress'
               } else if (originType.includes('MsgWithdrawDelegatorReward')) {
-                item.type = 'withdraw'  
+                item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
+                  item.withdraw_address = p1
+                })
+                item.type = 'withdraw'
               }
-
+              item.showAddress = item.withdraw_address
               item.plus = item.withdraw_address == this.address ? true : false
               break
             }
@@ -634,12 +874,12 @@ export default {
         if (type == 'fail') {
           result.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
         }
-				
+
         this.accountTransfer[type].push(...result)
-        this.accountTransfer['all'].push(...result)
+        // this.accountTransfer['all'].push(...result)
         if (Number(this.pagination[type].total) == this.accountTransfer[type].length) this.pagination[type].nodata =
             true
-        this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        // this.accountTransfer['all'].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
 
       } catch {
         this.pagination[type].nodata = true
@@ -680,14 +920,14 @@ export default {
 
     },
     toSend(url, params) {
-      if(this.sendbtnLoading) return
+      if (this.sendbtnLoading) return
       uni.navigateTo({
         url: `${url}?tokenID=${this.token.ID}`,
         events: {
           addRecordToSendList: (data) => {
             const typeUrl = data.tx.body.messages[0].typeUrl
-            if (typeUrl.includes('MsgSend')) { 
-              data.type = 'sender' 
+            if (typeUrl.includes('MsgSend')) {
+              data.type = 'sender'
             }
             data.from_address = data.tx.body.messages[0].value.fromAddress
             data.to_address = data.tx.body.messages[0].value.toAddress
@@ -733,8 +973,9 @@ export default {
     },
     handlerMainCoinBalance(res) {
       this.token.balance = res.res
+      this.loadingBalace = false
     },
-    txResult(res){
+    txResult(res) {
       this.init() //刷新列表
       this.sendbtnLoading = false
     }
@@ -758,9 +999,9 @@ export default {
     }
   },
   onBackPress(e) {
-    if(e.from === 'backbutton'){
+    if (e.from === 'backbutton') {
       uni.switchTab({
-        url:'/pages/account/index'
+        url: '/pages/account/index'
       })
       return true
     }
@@ -772,12 +1013,12 @@ export default {
     getDelegationRecord,
     getUnbondingDelegationRecord,
     getMainCoinBalance,
-		SendTokentoOtherAddress,
-		transferOtherToken,
-		getOtherTransationHistory
+    SendTokentoOtherAddress,
+    transferOtherToken,
+    getOtherTransationHistory
   } from '@/utils/secretjs/SDK.js'
   import renderUtils from '@/utils/render.base.js'
-	import mainCoin from '@/config/index.js'
+  import mainCoin from '@/config/index.js'
   export default {
     methods: {
       getAddress(address) {
@@ -796,12 +1037,12 @@ export default {
         // console.log('getUnbondingDelegationRecord', result.unbondingResponses);
       },
       async getMainCoinBalance(val) {
-        if (val == 0)return
+        if (val == 0) return
         let wallet;
         //#ifdef APP-PLUS
         wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
         //#endif
-        
+
         //#ifndef APP-PLUS 
         wallet = uni.getStorageSync('_currentWallet').data
         //#endif
@@ -810,84 +1051,84 @@ export default {
           res
         }, this)
       },
-			async sendToken(newValue) {
-				// console.log('调用',newValue);
-				if (!newValue) return
-				// return
-				let res = {}
-				let otherToken = false
-				let {
-					receiveAddress,
-					userAddress,
-					sendAmount,
-					memo,
-					gas,
-					gasPrice,
-					decimals
-				} = newValue
-				// let totalGas = new decimal(gas + '').mul(new decimal(gasPrice)).toString()
-				if (newValue.token.alias_name == mainCoin.alias_name) {
-					sendAmount = sendAmount * mainCoin.decimals
-					try {
-						res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas,
-							gasPrice)
-							// console.log('发送结果',res);
-					} catch (e) {
-						console.log(e);
-						res.code = 7
-					}
-				} else {
-					try {
-						otherToken = true
-						const result = await transferOtherToken({
-							sender: userAddress,
-							contractAddress: newValue.token.contract_address,
-							codeHash: newValue.token.codeHash,
-							msg: {
-								transfer: {
-									recipient: receiveAddress,
-									amount: sendAmount * newValue.token.decimals + ''
-								}
-							}
-						}, newValue.memo, gas, gasPrice)
-						if (result.code !== 0) throw result
-						res = (await getOtherTransationHistory({
-							contract: {
-								address: newValue.token.contract_address,
-								codeHash: newValue.token.codeHash
-							},
-							address: userAddress,
-							auth: {
-								key: newValue.token.view_key
-							}
-						}, {
-							page_size: 1,
-							page: 1
-						}, newValue.token)).transaction_history.txs[0]
-						console.log('record', res)
-						for (let val of Object.values(res.action)) {
-							res.to_address = val.recipient
-							res.from_address = val.from
-							res.sender = val.sender
-						}
-						res.type = res.to_address == userAddress ? 'recipient' : 'transfer'
-			
-						res.amount = res.coins.amount / newValue.token.decimals + newValue.token.alias_name
-						res.timestamp = new Date(res.block_time * 1000).toLocaleString()
-						res.code = 0
-					} catch (e) {
-						console.log(e);
-						res.code = 7
-					}
-				}
-				console.log('结果',res);
-				// renderUtils.runMethod(this._$id, 'dealSuccessJump', {
-				// 	res,
-				// 	otherToken
-				// }, this)
-				renderUtils.runMethod(this._$id,'txResult',res,this)
-			},
-		}
+      async sendToken(newValue) {
+        // console.log('调用',newValue);
+        if (!newValue) return
+        // return
+        let res = {}
+        let otherToken = false
+        let {
+          receiveAddress,
+          userAddress,
+          sendAmount,
+          memo,
+          gas,
+          gasPrice,
+          decimals
+        } = newValue
+        // let totalGas = new decimal(gas + '').mul(new decimal(gasPrice)).toString()
+        if (newValue.token.alias_name == mainCoin.alias_name) {
+          sendAmount = sendAmount * mainCoin.decimals
+          try {
+            res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas,
+              gasPrice)
+            // console.log('发送结果',res);
+          } catch (e) {
+            console.log(e);
+            res.code = 7
+          }
+        } else {
+          try {
+            otherToken = true
+            const result = await transferOtherToken({
+              sender: userAddress,
+              contractAddress: newValue.token.contract_address,
+              codeHash: newValue.token.codeHash,
+              msg: {
+                transfer: {
+                  recipient: receiveAddress,
+                  amount: sendAmount * newValue.token.decimals + ''
+                }
+              }
+            }, newValue.memo, gas, gasPrice)
+            if (result.code !== 0) throw result
+            res = (await getOtherTransationHistory({
+              contract: {
+                address: newValue.token.contract_address,
+                codeHash: newValue.token.codeHash
+              },
+              address: userAddress,
+              auth: {
+                key: newValue.token.view_key
+              }
+            }, {
+              page_size: 1,
+              page: 1
+            }, newValue.token)).transaction_history.txs[0]
+            console.log('record', res)
+            for (let val of Object.values(res.action)) {
+              res.to_address = val.recipient
+              res.from_address = val.from
+              res.sender = val.sender
+            }
+            res.type = res.to_address == userAddress ? 'recipient' : 'transfer'
+
+            res.amount = res.coins.amount / newValue.token.decimals + newValue.token.alias_name
+            res.timestamp = new Date(res.block_time * 1000).toLocaleString()
+            res.code = 0
+          } catch (e) {
+            console.log(e);
+            res.code = 7
+          }
+        }
+        console.log('结果', res);
+        // renderUtils.runMethod(this._$id, 'dealSuccessJump', {
+        // 	res,
+        // 	otherToken
+        // }, this)
+        renderUtils.runMethod(this._$id, 'txResult', res, this)
+      },
+    }
   }
 </script>
 
@@ -1034,7 +1275,7 @@ export default {
       border: 2rpx solid rgba(131, 151, 177, 0.31);
       border-radius: 16rpx;
       line-height: 80rpx;
-      
+
       &:after {
         border: 0 !important;
       }
@@ -1042,9 +1283,9 @@ export default {
       &:nth-child(1) {
         background: #265EF2;
         color: #FCFCFD;
-				display: flex;
-				align-items: center;
-				justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       &:nth-child(2) {
@@ -1151,7 +1392,7 @@ export default {
   }
 
   .loading-more {
-    height: 90rpx;
+    height: 120rpx;
     line-height: 90rpx;
     text-align: center;
     font-size: 28rpx;

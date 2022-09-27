@@ -264,12 +264,18 @@ export default {
 
   },
   onShow() {
-    const wallet = this.currentWallet
+    // const wallet = this.currentWallet
     // if (!wallet.withdrawAddress) {
-    this.callWithdrawAddress = wallet.address
+    // this.callWithdrawAddress = wallet.address // @test delay
     // } else {
     //   this.$refs.addressInptval ? this.$refs.addressInptval.childValue = wallet.withdrawAddress : this.receiveAddress = wallet.withdrawAddress
     // }
+  },
+  mounted() {
+    const wallet = this.currentWallet
+    setTimeout(() => {
+      this.callWithdrawAddress = wallet.address
+    }, 500)
   },
   filters: {
     sliceAddress
