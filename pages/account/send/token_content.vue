@@ -250,11 +250,8 @@ export default {
     this.sendbtnLoading = !!obj
     this.sendTokenMessage = obj
     this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
-    this.callRenderDelegateRecord = this.address
     const wallet = this.$cache.get('_currentWallet')
     this.loadingBalace = true
-    this.callMainCoinBalance++
-    this.callUnboundingDelegators++
     // if (this.token.balance === undefined) {
     //   this.timer = setInterval(() => {
     //     if (wallet.coinList[0].balance === undefined) return
@@ -265,6 +262,10 @@ export default {
     // } else {
     //   this.loadingBalace = false
     // }
+  },
+  onReady() {
+    this.callRenderDelegateRecord = this.address
+    this.callMainCoinBalance++
   },
   onPullDownRefresh() {
     this.unboundingBlanceLoading = true
