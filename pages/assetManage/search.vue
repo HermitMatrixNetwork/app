@@ -48,6 +48,7 @@ import { sliceAddress } from '@/utils/filters.js'
 import {
   searchCoin
 } from '@/api/token.js'
+import { searchContract } from '@/api/cosmos.js'
 export default {
   data() {
     return {
@@ -91,13 +92,35 @@ export default {
     async search(address) {
       if (address == '') return
       let data = await searchCoin(address)
-      console.log(data)
-      if (data.data.code == 7) { // @todo 没有结果 再去查找中心化接口
-        this.list = []
-        this.loading = false
-      } else {
+      // console.log(data)
+      if (data.data.code !== 7) { // @todo 没有结果 再去查找中心化接口
         let result = data.data.data.result || null
         this.searchData(result)
+      } else {
+        const res = (await searchContract(address)).data
+        if (res.error) {
+          this.list = []
+          this.loading = false
+        } else {
+          let ID = null
+          if (!this.tokenAddressList.includes(res.result.address)) {
+            if (this.$cache.get('_token_single_id')) {
+              ID = Number(this.$cache.get('_token_single_id').split('_').slice(-1)[0]) + 1
+              this.$cache.set('_token_single_id', `_token_single_id_${ID}`, 0)
+            } else {
+              this.$cache.set('_token_single_id', '_token_single_id_1', 0)
+            } 
+          }
+          let result = {
+            contract_address: res.result.address,
+            alias_name: res.result.label,
+            full_name: res.result.label,
+            logo: '/static/img/account/uGHM.png',
+            hot: 1,
+            ID: this.$cache.get('_token_single_id')
+          }
+          this.searchData(result)
+        }
       }
     },
     goBack() {

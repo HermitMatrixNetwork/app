@@ -29,3 +29,7 @@ export const txsQuery = async (events) => {
   })
   return http.get(`${baseServer.cosmosServer}/cosmos/tx/v1beta1/txs?${params}`)
 }
+
+export const searchContract = async (contract_address) => {
+  return http.get(`${baseServer.cosmosServer}/wasm/contract/${contract_address}`)
+}
