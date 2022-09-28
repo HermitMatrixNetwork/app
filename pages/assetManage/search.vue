@@ -92,11 +92,10 @@ export default {
       if (address == '') return
       let data = await searchCoin(address)
       console.log(data)
-      if (data.data.code == 7) {
+      if (data.data.code == 7) { // @todo 没有结果 再去查找中心化接口
         this.list = []
         this.loading = false
       } else {
-        
         let result = data.data.data.result || null
         this.searchData(result)
       }

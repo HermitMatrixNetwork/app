@@ -77,14 +77,20 @@
               <template #right>
                 <custom-loading v-if="item.loadingBalance"></custom-loading>
                 <view class="coinNumber" v-else>
+                  <!-- 非主网币 -->
                   <view class="number" v-if="item.alias_name !== mainCoin.alias_name">
                     {{ formatBalance(item.balance) || '0.00' }}
                   </view>
-                  <view class="number" v-else-if="!lockAmountLoading || item.balance" style="display: flex; align-items: center; justify-content: flex-end;">
-                    {{ formatBalance(item.balance + lockAmount) || '0.00' }}
-                    <custom-loading v-if="updatingBalance"></custom-loading>
+                  <!-- 主网币 -->
+                  <!-- -if="!lockAmountLoading || item.balance" -->
+                  <view class="number" v-else style="display: flex; align-items: center; justify-content: flex-end;">
+                    <!-- <custom-loading v-if="lockAmountLoading || unboundingBlanceLoading"></custom-loading> -->
+                    <!-- <view v-else> -->
+                      {{ formatBalance(item.balance + lockAmount + unBoundingBalance) || '0.00' }}
+                      <custom-loading v-if="updatingBalance"></custom-loading>
+                    <!-- </view> -->
                   </view>
-                  <view class="number" v-else>0.00</view>
+                  <!-- <view class="number" v-else>0.00</view> -->
                   <view class="money">$0.00000</view>
                 </view>
               </template>
@@ -98,6 +104,7 @@
     <view :initRender="initRender" :change:initRender="render.init"></view>
     <view :callBalanceLoading="callBalanceLoading" :change:callBalanceLoading="render.setBalanceLoading"></view>
     <view :getLockAmount="getLockAmount" :change:getLockAmount="render.getDelegationRecord"></view>
+    <view :callUnboundingDelegators="callUnboundingDelegators" :change:callUnboundingDelegators="render.getUnbondingDelegationRecord"></view>
     
     <!-- 指纹验证 -->
     <view class="toast" v-show="switchingWallet || delayHide">
@@ -185,11 +192,16 @@ export default {
         icon: '/static/img/mine/loading.gif',
         msg: languages[this.$cache.get('_language')].text231
       },
-      delayHide: false
-      
+      delayHide: false,
+      unboundingBlanceLoading: true,
+      callUnboundingDelegators: 0,
+      unBoundingBalance: 0,
     }
   },
   onPullDownRefresh() {
+    this.lockAmountLoading = true
+    this.unboundingBlanceLoading = true
+    this.callUnboundingDelegators++
     this.getLockAmount++
     this.initCoinList()
     this.aa = false
@@ -210,7 +222,9 @@ export default {
     this.aa = false
     this.firstShowAa = true
     this.lockAmountLoading = true
+    this.unboundingBlanceLoading = true
     this.initRender++
+    this.callUnboundingDelegators++
     this.getLockAmount++
   },
   created() {
@@ -391,7 +405,21 @@ export default {
       })
       this.lockAmount = lock / mainCoin.decimals
       this.lockAmountLoading = false
-      console.log('lockAmount', this.lockAmount)
+      // console.log('lockAmount', this.lockAmount)
+    },
+    handlerUnboundingBlance(res) {
+      this.unBoundingBalance = 0
+      res.result.unbondingResponses.forEach(item => {
+        item.entries.forEach(item => {
+          this.unBoundingBalance += Number(item.balance)
+        })
+      })
+      
+      this.unBoundingBalance = this.unBoundingBalance / mainCoin.decimals
+      this.unboundingBlanceLoading = false
+      // this.unBoundingBalance = res.result.unboundingResponses.reduce((pre, cur, 0) => {
+      //   return pre + Number(cur.ent)
+      // })
     }
   },
   computed: {
@@ -399,7 +427,7 @@ export default {
       return (this.lockAmountLoading || this.gettingBalance) && this.switchWallet
     },
     updatingBalance() {
-      return (this.lockAmountLoading || this.gettingBalance)
+      return (this.lockAmountLoading || this.gettingBalance || this.unboundingBlanceLoading)
     },
     visibaleTokenList() {
       const type = {
@@ -451,7 +479,8 @@ export default {
     getCodeHash,
     getOtherBalance,
     getTokenDecimals,
-    getDelegationRecord
+    getDelegationRecord,
+    getUnbondingDelegationRecord
   } from '@/utils/secretjs/SDK'
   import renderUtils from '@/utils/render.base.js'
   import mainCoin from '@/config/index.js'
@@ -564,7 +593,23 @@ export default {
           coin.showWarn = false
         }
         return balance
-      }
+      },
+      async getUnbondingDelegationRecord(val) {
+        if (val == 0) return
+        let wallet;
+        //#ifdef APP-PLUS
+        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+        //#endif
+        
+        //#ifndef APP-PLUS 
+        wallet = uni.getStorageSync('_currentWallet').data
+        //#endif
+        const result = await getUnbondingDelegationRecord(wallet.address)
+        renderUtils.runMethod(this._$id, 'handlerUnboundingBlance', {
+          result
+        }, this)
+        // console.log('getUnbondingDelegationRecord', result.unbondingResponses);
+      },
     }
   }
 </script>

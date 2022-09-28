@@ -161,13 +161,13 @@
                         "^/browserServer" : "/"
                     }
                 },
-                "/recordServer": {
-                  "target" : "http://158.247.237.78:8188",
-                  "changeOrigin" : true,
-                  "secure" : false,
-                  "pathRewrite" : {
-                      "^/recordServer" : "/"
-                  }
+                "/recordServer" : {
+                    "target" : "http://158.247.237.78:8188",
+                    "changeOrigin" : true,
+                    "secure" : false,
+                    "pathRewrite" : {
+                        "^/recordServer" : "/"
+                    }
                 }
             }
         }

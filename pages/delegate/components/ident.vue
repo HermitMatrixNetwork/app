@@ -5,7 +5,7 @@
 		<view class="header-box">
 			<view class="header">
 				<headerItem :title="language.text45" :value="currentWallet.coinList[0].balance" />
-				<headerItem :title="language.text46" />
+				<headerItem :title="language.text46" :value="unBoundingBalance" />
 			</view>
 		</view>
 		<view class="my-delegate">
@@ -72,6 +72,7 @@
 		</view>
     <view :callMainCoinBalance="callMainCoinBalance" :change:callMainCoinBalance="render.getMainCoinBalance">
     </view>
+    <view :callUnboundingDelegators="callUnboundingDelegators" :change:callUnboundingDelegators="render.getUnbondingDelegationRecord"></view>
 	</view>
 </template>
 
@@ -126,12 +127,15 @@ export default {
       sortRule: 'des', // asc:升序; des:降序
       mainCoin,
       status: 0,
-      callMainCoinBalance: 0
+      callMainCoinBalance: 0,
+      unboundingBlanceLoading: true,
+      callUnboundingDelegators: 0,
+      unBoundingBalance: 0,
     }
   },
   created() {
     // this.address = this.currentWallet.address
-    this.updateData()
+    // this.updateData()
   },
   methods: {
     updateData() {
@@ -141,6 +145,8 @@ export default {
       this.currentWallet = this.$cache.get('_currentWallet')
       this.callMainCoinBalance++
       this.loading = true
+      this.unBoundingBalance = 0
+      this.callUnboundingDelegators++
       this.ValidatorsData()
       // this.address = this.currentWallet.address
     },
@@ -198,7 +204,21 @@ export default {
     },
     handlerMainCoinBalance(res) {
       this.currentWallet.coinList[0].balance = res.res
-    }
+    },
+    handlerUnboundingBlance(res) {
+      this.unBoundingBalance = 0
+      res.result.unbondingResponses.forEach(item => {
+        item.entries.forEach(item => {
+          this.unBoundingBalance += Number(item.balance)
+        })
+      })
+      
+      this.unBoundingBalance = this.unBoundingBalance / mainCoin.decimals
+      this.unboundingBlanceLoading = false
+      // this.unBoundingBalance = res.result.unboundingResponses.reduce((pre, cur, 0) => {
+      //   return pre + Number(cur.ent)
+      // })
+    },
   },
   computed: {
     showList() {
@@ -248,6 +268,7 @@ export default {
 
  <script lang="renderjs" module="render">
   import {
+    getUnbondingDelegationRecord,
     getMainCoinBalance 
   } from '@/utils/secretjs/SDK.js'
   import renderUtils from '@/utils/render.base.js'
@@ -267,6 +288,22 @@ export default {
         renderUtils.runMethod(this._$id, 'handlerMainCoinBalance', {
           res
         }, this)
+      },
+      async getUnbondingDelegationRecord(val) {
+        if (val == 0) return
+        let wallet;
+        //#ifdef APP-PLUS
+        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+        //#endif
+        
+        //#ifndef APP-PLUS 
+        wallet = uni.getStorageSync('_currentWallet').data
+        //#endif
+        const result = await getUnbondingDelegationRecord(wallet.address)
+        renderUtils.runMethod(this._$id, 'handlerUnboundingBlance', {
+          result
+        }, this)
+        // console.log('getUnbondingDelegationRecord', result.unbondingResponses);
       }
     }
   }

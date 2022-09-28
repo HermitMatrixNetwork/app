@@ -447,7 +447,7 @@ export default {
           }
           //给callSimulate赋值调用simulateFee方法
           this.callSimulate = JSON.parse(JSON.stringify(this.sendFormData))
-          console.log('callSimulate', this.callSimulate)
+
           // this.submitPopupIsShow = true
           return
         } else if (Number(this.sendFormData.sendAmount) > Number(quota.amount)) {
@@ -767,7 +767,6 @@ export default {
 			},
 			async simulateFee(val) {
 				if (!val.sendAmount || Number(val.sendAmount) == '' || !val.receiveAddress) return
-				console.log('调用',val);
 				const Secret = await getSecret()
 				let res = {}
 				let {

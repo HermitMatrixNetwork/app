@@ -105,7 +105,8 @@ export default {
           [this.language.text16]: res.to_address,
           [this.language.text87]: res.from_address,
           'Memo': res.tx.body.memo,
-          [this.language.text88]: res.transactionHash
+          [this.language.text88]: res.transactionHash,
+          [this.language.text239]: res.height
         }
       } else if (typeUrl.includes('MsgDelegate')) {
         this.transactionMessage = {
@@ -114,7 +115,8 @@ export default {
           [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
           [this.language.text91]: res.tx.body.messages[0].value.validatorAddress,
           'Memo': res.tx.body.memo,
-          [this.language.text88]: res.transactionHash
+          [this.language.text88]: res.transactionHash,
+          [this.language.text239]: res.height
         }
       } else if (typeUrl.includes('MsgExecuteContract')) {
         this.transactionMessage = {
@@ -123,7 +125,8 @@ export default {
           [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
           [this.language.text91]: res.tx.body.messages[0].value.validatorAddress,
           'Memo': res.tx.body.memo,
-          [this.language.text88]: res.transactionHash
+          [this.language.text88]: res.transactionHash,
+          [this.language.text239]: res.height
         }
       } else if (typeUrl.includes('MsgUndelegate')) {
         this.transactionMessage = {
@@ -132,7 +135,8 @@ export default {
           [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
           [this.language.text217]: res.tx.body.messages[0].value.validatorAddress,
           'Memo': res.tx.body.memo,
-          [this.language.text88]: res.transactionHash
+          [this.language.text88]: res.transactionHash,
+          [this.language.text239]: res.height
         }
       } else if (typeUrl.includes('MsgWithdrawDelegatorReward')) {
         res.rawLog.replace(/\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match, p1) => {
@@ -148,7 +152,8 @@ export default {
           [this.language.text93]: res.tx.body.messages[0].value.delegatorAddress,
           [this.language.text94]: res.withdrawAddress,
           'Memo': res.tx.body.memo,
-          [this.language.text88]: res.transactionHash
+          [this.language.text88]: res.transactionHash,
+          [this.language.text239]: res.height
         }
       } else if (typeUrl.includes('MsgSetWithdrawAddress')) {
         this.transactionMessage = {
@@ -156,7 +161,8 @@ export default {
           [this.language.text111]: res.fee,
           [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
           [this.language.text94]: res.tx.body.messages[0].value.withdrawAddress,
-          [this.language.text88]: res.transactionHash
+          [this.language.text88]: res.transactionHash,
+          [this.language.text239]: res.height
         }
       }
       
@@ -167,13 +173,15 @@ export default {
       this.status = this.language.text181
       this.statusIcon = '/static/img/chenggong.png'
       
-      this.result.timestamp = this.formatTime(new Date(new Date(res.block_time * 1000).setHours(new Date(res.block_time * 1000).getHours() + 8)))
+      // this.result.timestamp = this.formatTime(new Date(new Date(res.block_time * 1000).setHours(new Date(res.block_time * 1000).getHours() + 8)))
+      this.result.timestamp = res.timestamp
       this.transactionMessage = {
-        [this.language.text84]: res.amount,
+        [this.language.text84]: `${res.type == 'transfer' ? '-' : res.type == 'recipient' ? '+' : ''}${res.amount}`,
         [this.language.text16]: res.to_address,
         [this.language.text87]: res.from_address,
         [this.language.text88]: res.sender,
-        'Memo': res.memo
+        'Memo': res.memo,
+        [this.language.text239]: res.height
       }
       this.loading = false
     },
@@ -202,6 +210,7 @@ export default {
           [this.language.text16]: res.message.to_address,
           [this.language.text87]: res.message.from_address,
           [this.language.text88]: res.sender,
+          [this.language.text239]: res.height
         }
         break
       case 'MsgUndelegate':
@@ -212,6 +221,7 @@ export default {
           [this.language.text90]: res.message.delegator_address,
           [this.language.text87]: res.message.validator_address,
           [this.language.text88]: res.sender,
+          [this.language.text239]: res.height
         }
         break
       case 'MsgInstantiateContract':
@@ -220,6 +230,7 @@ export default {
           [this.language.text111]: res.fee / mainCoin.decimals + mainCoin.alias_name,
           '合约Code_id': res.message.code_id,
           [this.language.text88]: res.sender,
+          [this.language.text239]: res.height
         }
         break
       case 'MsgExecuteContract':
@@ -228,11 +239,11 @@ export default {
           [this.language.text111]: res.fee / mainCoin.decimals + mainCoin.alias_name,
           '合约地址': res.message.contract,
           [this.language.text88]: res.sender,
+          [this.language.text239]: res.height
         }
         break
       }
       this.loading = false
-      console.log(this.status)
     },
     copy(item ,key) {
       const copyList = ['Memo', this.language.text84, this.language.text111] // Memo, Amount, Fee
