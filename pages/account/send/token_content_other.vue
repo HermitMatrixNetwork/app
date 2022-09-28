@@ -1,6 +1,6 @@
 <template>
   <view class="token_content">
-    <custom-header :delay="300" :delayHandler="delayHandler" tabUrl="/pages/account/index" :title="token.alias_name">
+    <custom-header :delay="300" :delayHandler="delayHandler" :title="token.alias_name">
       <template #right>
         <text class="customIcon" @click="toTokenDetail()">{{ language.text99 }}</text>
       </template>
@@ -19,7 +19,7 @@
             </view>
           </view>
           <view class="right">
-            <custom-loading v-if="token.loadingBalance"></custom-loading>
+            <custom-loading v-if="token.loadingBalance || loadingBalance"></custom-loading>
             <view v-else style="padding-right: 16rpx;" class="token_price">
               <view class="balance">{{ token.balance | formatBalance }}</view>
               <view>
@@ -61,7 +61,7 @@
                     <view class="content-address">
                       {{ (record.to_address || record.validator_address) | sliceAddress(6, -6) }}
                     </view>
-                    <view class="content-time">{{ record.timestamp }} +UTC</view>
+                    <view class="content-time">{{ record.timestamp }}</view>
                   </view>
                   <view class="right">
                     <view class="amount"
@@ -112,6 +112,7 @@
     <view :callRenderLoadMore="callRenderLoadMore" :change:callRenderLoadMore="render.more"></view>
     <view :callBalanceLoading="callBalanceLoading" :change:callBalanceLoading="render.setBalanceLoading"></view>
 		<view :check="sendTokenMessage" :change:check="render.sendToken"></view>
+    <view :callGetBlance="callGetBlance" :change:callGetBlance="render.getBalance"></view>
 	</view>
 </template>
 
@@ -178,15 +179,20 @@ export default {
       systemBarHeight: '0rpx',
       sendTokenMessage:false,
       sendbtnLoading:false,
+      callGetBlance: '',
+      loadingBalance: true
     }
   },
   async onLoad(options) {
+    this.loadingBalance = true
+  
     let obj = options.sendToken?JSON.parse(options.sendToken):false
     // console.log('获取的数据',obj)
     this.sendbtnLoading = !!obj
     this.sendTokenMessage = obj
 		
     this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
+    this.callGetBlance = JSON.parse(JSON.stringify(this.token))
     if (this.token.loadingBalance) {
       this.timer = setInterval(() => {
         const token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
@@ -204,14 +210,32 @@ export default {
     if (this.token.view_key) {
       this.callRenderTransationHistory = this.token
       this.loading = true
+    } else {
+      this.loading = false
     }
     this.getSystemStatusHeight()
     this.calculateHeight()
+  },
+  onPullDownRefresh() {
+    this.loadingBalance = true
+    this.callGetBlance = ''
+    this.$nextTick(() => {
+      this.callGetBlance = JSON.parse(JSON.stringify(this.token))
+    })
+    this.callRenderTransationHistory = {...this.callRenderTransationHistory,random:Math.floor(Math.random() * 10000)}
+    setTimeout(() => {
+      uni.stopPullDownRefresh()
+    }, 1500)
   },
   methods: {
     txResult(res){
       // this.init({res:res,token:this.token}) //刷新列表
       this.sendbtnLoading = false
+      this.loadingBalance = true
+      this.callGetBlance = ''
+      this.$nextTick(() => {
+        this.callGetBlance = JSON.parse(JSON.stringify(this.token))
+      })
       this.callRenderTransationHistory = {...this.callRenderTransationHistory,random:Math.floor(Math.random() * 10000)}
     },
     getSystemStatusHeight() {
@@ -239,7 +263,7 @@ export default {
       res,
       token
     }) {
-			
+      console.log(res)
       this.accountTransfer = {
 			  'transfer': [],
 			  'recipient': [],
@@ -251,9 +275,9 @@ export default {
         size: 5,
         total: 0,
         loading: false
-      },
+      }
       // console.log('初始化获取的列表',res)
-      console.log(1111111111111111, res.transaction_history)
+      // console.log(1111111111111111, res.transaction_history)
       if (res.viewing_key_error || res.parse_err) {
         console.log('出现了预期之外的错误', res.viewing_key_error)
       } else {
@@ -300,7 +324,6 @@ export default {
             break
           }
         })
-
         this.loading = false
 
       }
@@ -346,7 +369,7 @@ export default {
             let mm = (date.getMinutes() + '').padStart(2, '0')
             let ss = (date.getSeconds() + '').padStart(2, '0')
           
-            return `${y}年${m}月${d}日 ${hh}:${mm}:${ss}`
+            return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
           }
           
           item.timestamp = format(item.block_time * 1000)
@@ -377,6 +400,8 @@ export default {
       })
     },
     updateCoinList(coin) {
+      this.token = coin/*  */
+      this.loadingBalance = false
       const wallet = this.$cache.get('_currentWallet')
       let coinList = wallet.coinList
       let coinIndex = wallet.coinList.findIndex(item => item.ID == coin.ID)
@@ -512,7 +537,6 @@ export default {
     },
     methods: {
       async getAddress(token) {
-				console.log('调用');
         if (!token || !token.view_key) {
         } else {
           token = JSON.parse(JSON.stringify(token))
@@ -538,11 +562,11 @@ export default {
           }
           this.getTransationHistory(token, wallet)
           if (token.loadingBalance) {
-            this.getTokenBalance(token, wallet)
+            this.getTokenBalance(wallet, token)
           }
         }
       },
-      async getTokenBalance(token, wallet) {
+      async getTokenBalance(wallet, token) {
         let balance = 0
         if (!token.codeHash) {
           try {
@@ -685,14 +709,24 @@ export default {
 						res.code = 7
 					}
 				}
-				console.log('结果',res);
 				// renderUtils.runMethod(this._$id, 'dealSuccessJump', {
 				// 	res,
 				// 	otherToken
 				// }, this)
 				renderUtils.runMethod(this._$id,'txResult',res,this)
 			},
-			
+      getBalance(val) {
+        if (val == 0) return;
+        let wallet;
+        //#ifdef APP-PLUS
+        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+        //#endif
+
+        //#ifndef APP-PLUS 
+        wallet = uni.getStorageSync('_currentWallet').data
+        //#endif
+        this.getTokenBalance(wallet, val)
+      }
     }
   }
 </script>
@@ -949,7 +983,7 @@ export default {
   }
 
   .loading-more {
-    height: 90rpx;
+    height: 120rpx;
     line-height: 90rpx;
     text-align: center;
     font-size: 28rpx;

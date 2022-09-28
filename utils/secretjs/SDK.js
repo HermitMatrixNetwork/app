@@ -193,10 +193,6 @@ export async function getUnbondingDelegationRecord(address) {
   const result = await Secret.query.staking.delegatorUnbondingDelegations({
     delegatorAddr: address
   })
-  const delegation = await Secret.query.staking.delegation({
-    delegatorAddr: address,
-    validatorAddr: 'ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl'
-  })
   return result
 }
 

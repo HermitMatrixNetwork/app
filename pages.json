@@ -432,7 +432,7 @@
       "path": "pages/account/send/token_content_other",
       "style": {
         "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
+        "enablePullDownRefresh": true
       }
 
     }, {

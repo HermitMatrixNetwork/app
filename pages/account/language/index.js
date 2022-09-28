@@ -263,6 +263,7 @@ const languages = {
     text236: '调用合约失败',
     text237: '油费不足',
     text238: '地址有误',
+    text239: '区块号'
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -526,6 +527,7 @@ const languages = {
 
     text237: '油費不足',
     text238: '地址有誤',
+    text239: '區塊號'
   },
   EN: {
     Mywallet: 'My wallet',
@@ -790,6 +792,7 @@ const languages = {
 
     text237: 'Insufficient fuel charge',
     text238: 'The address is wrong.',
+    text239: 'Block number'
   }
 }
 export default languages

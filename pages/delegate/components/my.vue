@@ -2,13 +2,17 @@
   <view class="my">
     <view :address="address" :change:address="render.init"></view>
     <view :updateRewards="updateRewards" :change:updateRewards="render.getRewards"></view>
+    <view :callUnboundingDelegators="callUnboundingDelegators" :change:callUnboundingDelegators="render.getUnbondingDelegationRecord"></view>
     <view class="header-box">
       <view class="header">
+        <!-- 已委托总是 -->
         <headerItem :title="language.text02" :value="allData.total" />
+        <!-- 累计领取 -->
         <headerItem :title="language.text03" />
-        <!-- totalReward -->
+        <!-- 待领取 -->
         <headerItem :title="language.text04" :value="totalReward" :needFormat="false" />
-        <headerItem :title="language.text05" />
+        <!-- 解锁中 -->
+        <headerItem :title="language.text05" :value="unBoundingBalance" />
       </view>
     </view>
     <view class="account-box">
@@ -66,6 +70,7 @@ import language from '../language'
 import headerItem from './header-item'
 import mainCoin from '@/config/index.js'
 import { txsQuery } from '@/api/cosmos.js'
+import { getCumulativeRewardCollection } from '@/api/record.js'
 import {
   sliceAddress
 } from '@/utils/filters.js'
@@ -90,6 +95,9 @@ export default {
       titleHeight: 0,
       listTitleHeight: 0,
       updateRewards: 0,
+      unboundingBlanceLoading: true,
+      callUnboundingDelegators: 0,
+      unBoundingBalance: 0,
     }
   },
   created() {
@@ -139,7 +147,7 @@ export default {
     btnClick() {
       this.$emit('switchToDelegate')
     },
-    updateData() {
+    async updateData() {
       console.log('delegate update data')
       // if (this.$cache.get('_updateDelegateInfo') === null || this.$cache.get('_updateDelegateInfo')) {
       this.list = []
@@ -151,13 +159,33 @@ export default {
       }
       
       this.address = this.currentWallet.address
+      this.unBoundingBalance = 0
+      this.callUnboundingDelegators++
+      const res = await getCumulativeRewardCollection({
+        address: this.$cache.get('_currentWallet').address
+      })
       
+      console.log(res)
       // if (this.$cache.get('_delegateInfo')) {
       // this.address = this.currentWallet.address
       // this.allData = this.$cache.get('_delegateInfo')
       // this.list = this.allData.list
       // }
 
+    },
+    handlerUnboundingBlance(res) {
+      this.unBoundingBalance = 0
+      res.result.unbondingResponses.forEach(item => {
+        item.entries.forEach(item => {
+          this.unBoundingBalance += Number(item.balance)
+        })
+      })
+      
+      this.unBoundingBalance = this.unBoundingBalance / mainCoin.decimals
+      this.unboundingBlanceLoading = false
+      // this.unBoundingBalance = res.result.unboundingResponses.reduce((pre, cur, 0) => {
+      //   return pre + Number(cur.ent)
+      // })
     },
     goTo(url) {
       uni.navigateTo({
@@ -222,6 +250,7 @@ export default {
 </script>
 <script lang="renderjs" module="render">
   import {
+    getUnbondingDelegationRecord,
     getDelegationTotalRewards,
     getDelegatorDelegations,
     getStakingValidator,
@@ -275,7 +304,23 @@ export default {
            pastVal[i].rewards = res.rewards[0]
          }
         renderUtils.runMethod(this._$id, 'handerRewards', pastVal, this)
-      } // @todo 更新收益领取
+      },
+      async getUnbondingDelegationRecord(val) {
+        if (val == 0) return
+        let wallet;
+        //#ifdef APP-PLUS
+        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+        //#endif
+        
+        //#ifndef APP-PLUS 
+        wallet = uni.getStorageSync('_currentWallet').data
+        //#endif
+        const result = await getUnbondingDelegationRecord(wallet.address)
+        renderUtils.runMethod(this._$id, 'handlerUnboundingBlance', {
+          result
+        }, this)
+        // console.log('getUnbondingDelegationRecord', result.unbondingResponses);
+      },
     }
   }
 </script>
