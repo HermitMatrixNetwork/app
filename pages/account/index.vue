@@ -199,6 +199,7 @@ export default {
     }
   },
   onPullDownRefresh() {
+    this.gettingBalance = true
     this.lockAmountLoading = true
     this.unboundingBlanceLoading = true
     this.callUnboundingDelegators++
@@ -223,6 +224,7 @@ export default {
     this.firstShowAa = true
     this.lockAmountLoading = true
     this.unboundingBlanceLoading = true
+    this.gettingBalance = true
     this.initRender++
     this.callUnboundingDelegators++
     this.getLockAmount++

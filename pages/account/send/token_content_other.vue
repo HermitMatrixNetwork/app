@@ -19,7 +19,7 @@
             </view>
           </view>
           <view class="right">
-            <custom-loading v-if="token.loadingBalance || loadingBalance"></custom-loading>
+            <custom-loading v-if="token.view_key && (token.loadingBalance || loadingBalance)"></custom-loading>
             <view v-else style="padding-right: 16rpx;" class="token_price">
               <view class="balance">{{ token.balance | formatBalance }}</view>
               <view>
@@ -59,7 +59,7 @@
                   </view>
                   <view class="content">
                     <view class="content-address">
-                      {{ (record.to_address || record.validator_address) | sliceAddress(6, -6) }}
+                      {{ record.showAddress | sliceAddress(6, -6) }}
                     </view>
                     <view class="content-time">{{ record.timestamp }}</view>
                   </view>
@@ -269,7 +269,6 @@ export default {
       res,
       token
     }) {
-      console.log(res)
       this.accountTransfer = {
 			  'transfer': [],
 			  'recipient': [],
@@ -286,6 +285,9 @@ export default {
       // console.log(1111111111111111, res.transaction_history)
       if (res.viewing_key_error || res.parse_err) {
         console.log('出现了预期之外的错误', res.viewing_key_error)
+        this.token.view_key = ''
+        this.updateCoinList(this.token)
+        this.loading = false
       } else {
         let wallet = this.$cache.get('_currentWallet')
         let result = res.transaction_history
@@ -323,15 +325,16 @@ export default {
           case 'recipient':
             item.icon = require('@/static/img/account/shoukuan2.png')
             this.accountTransfer['recipient'].push(item)
+            item.showAddress = item.from_address
             break
           case 'transfer':
             item.icon = require('@/static/img/account/fasong2.png')
             this.accountTransfer['transfer'].push(item)
+            item.showAddress = item.to_address
             break
           }
         })
         this.loading = false
-
       }
     },
     setLockAmount({
