@@ -114,6 +114,7 @@ export default {
           let result = {
             contract_address: res.result.address,
             alias_name: res.result.label,
+            apply_type: 'SNIP20',
             full_name: res.result.label,
             logo: '/static/img/account/uGHM.png',
             hot: 1,

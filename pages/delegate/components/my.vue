@@ -228,10 +228,13 @@ export default {
       })
       totalRewards = totalRewards / mainCoin.delegateDecimals
       this.allData.totalReward = totalRewards
-      setTimeout(() => {
+      this.timer = setTimeout(() => {
         this.updateRewards = JSON.parse(JSON.stringify(this.list))
       }, 2000)
     }
+  },
+  onUnload() {
+    clearTimeout(this.timer)
   },
   computed: {
     totalReward() {

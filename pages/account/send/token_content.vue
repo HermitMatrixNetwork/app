@@ -265,6 +265,9 @@ export default {
   },
   onReady() {
     this.callRenderDelegateRecord = this.address
+    this.unboundingBlanceLoading = true
+    this.unBoundingBalance = 0
+    this.callUnboundingDelegators++
     this.callMainCoinBalance++
   },
   onPullDownRefresh() {
@@ -987,7 +990,7 @@ export default {
       this.loadingBalace = false
     },
     handlerUnboundingBlance(res) {
-      console.log(res)
+      console.log('锁定结果', res)
       res.result.unbondingResponses.forEach(item => {
         item.entries.forEach(item => {
           this.unBoundingBalance += Number(item.balance)
@@ -995,7 +998,6 @@ export default {
       })
       
       this.unBoundingBalance = this.unBoundingBalance / mainCoin.decimals
-      console.log(this.unBoundingBalance)
       this.unboundingBlanceLoading = false
       // this.unBoundingBalance = res.result.unboundingResponses.reduce((pre, cur, 0) => {
       //   return pre + Number(cur.ent)

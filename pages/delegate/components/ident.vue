@@ -5,7 +5,7 @@
 		<view class="header-box">
 			<view class="header">
 				<headerItem :title="language.text45" :value="currentWallet.coinList[0].balance" />
-				<headerItem :title="language.text46" :value="unBoundingBalance" />
+				<headerItem :title="language.text46" :value="(unBoundingBalance + delegationsBlance)" />
 			</view>
 		</view>
 		<view class="my-delegate">
@@ -73,6 +73,8 @@
     <view :callMainCoinBalance="callMainCoinBalance" :change:callMainCoinBalance="render.getMainCoinBalance">
     </view>
     <view :callUnboundingDelegators="callUnboundingDelegators" :change:callUnboundingDelegators="render.getUnbondingDelegationRecord"></view>
+    
+     <view :callDelegations="callDelegations" :change:callDelegations="render.getDelegations"></view>
 	</view>
 </template>
 
@@ -131,6 +133,9 @@ export default {
       unboundingBlanceLoading: true,
       callUnboundingDelegators: 0,
       unBoundingBalance: 0,
+      callDelegationsLoading: true,
+      callDelegations: 0,
+      delegationsBlance: 0
     }
   },
   created() {
@@ -147,6 +152,9 @@ export default {
       this.loading = true
       this.unBoundingBalance = 0
       this.callUnboundingDelegators++
+      this.callDelegations++
+      this.callDelegationsLoading = true
+      this.delegationsBlance = 0
       this.ValidatorsData()
       // this.address = this.currentWallet.address
     },
@@ -219,6 +227,13 @@ export default {
       //   return pre + Number(cur.ent)
       // })
     },
+    handlerDelegationsBalance({ list }) {
+      let total = 0
+      list.forEach(item => {
+        total += Number(item.balance.amount)
+      })
+      this.delegationsBlance = total / mainCoin.decimals
+    }
   },
   computed: {
     showList() {
@@ -269,6 +284,7 @@ export default {
  <script lang="renderjs" module="render">
   import {
     getUnbondingDelegationRecord,
+    getDelegatorDelegations,
     getMainCoinBalance 
   } from '@/utils/secretjs/SDK.js'
   import renderUtils from '@/utils/render.base.js'
@@ -304,6 +320,24 @@ export default {
           result
         }, this)
         // console.log('getUnbondingDelegationRecord', result.unbondingResponses);
+      },
+      async getDelegations(val) {
+        if (val == 0) return
+        let wallet;
+        //#ifdef APP-PLUS
+        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+        //#endif
+        
+        //#ifndef APP-PLUS 
+        wallet = uni.getStorageSync('_currentWallet').data
+        //#endif
+        
+        let list = await getDelegatorDelegations(wallet.address)
+        
+        
+        renderUtils.runMethod(this._$id, 'handlerDelegationsBalance', {
+          list
+        }, this)
       }
     }
   }

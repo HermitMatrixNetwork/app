@@ -217,6 +217,10 @@ export default {
     this.calculateHeight()
   },
   onPullDownRefresh() {
+    if (!this.token.view_key) {
+      uni.stopPullDownRefresh()
+      return
+    }
     this.loadingBalance = true
     this.callGetBlance = ''
     this.$nextTick(() => {
