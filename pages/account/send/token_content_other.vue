@@ -189,10 +189,10 @@ export default {
     let obj = options.sendToken?JSON.parse(options.sendToken):false
     // console.log('获取的数据',obj)
     this.sendbtnLoading = !!obj
-    this.sendTokenMessage = obj
-		
+    setTimeout(()=>{
+      this.sendTokenMessage = obj
+    },500)
     this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
-    this.callGetBlance = JSON.parse(JSON.stringify(this.token))
     if (this.token.loadingBalance) {
       this.timer = setInterval(() => {
         const token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
@@ -202,6 +202,7 @@ export default {
         }
       }, 1500)
     }
+		
   },
   beforeDestroy() {
     clearInterval(this.timer)
@@ -215,6 +216,7 @@ export default {
     }
     this.getSystemStatusHeight()
     this.calculateHeight()
+    this.callGetBlance = JSON.parse(JSON.stringify(this.token))
   },
   onPullDownRefresh() {
     this.loadingBalance = true
@@ -503,12 +505,10 @@ export default {
     }
   },
   onBackPress(e) {
-	  if(e.from === 'backbutton'){
-	    uni.switchTab({
-	      url:'/pages/account/index'
-	    })
-	    return true
-	  }
+	   uni.switchTab({
+	     url: '/pages/account/index'
+	   })
+	   return true
   },
 }
 </script>

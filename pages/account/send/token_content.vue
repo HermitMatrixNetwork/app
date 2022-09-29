@@ -11,8 +11,8 @@
         <template #right>
           <view style="padding-right: 16rpx;" class="token_price">
             <!-- <view class="balance" v-if="token.balance === undefined">0.00</view> -->
-            <custom-loading v-if="loadingBalace || lockAmountLoading || unboundingBlanceLoading"></custom-loading>
-            <view class="balance" v-else>{{ ( token.balance + lockAmount + unBoundingBalance)  | formatBalance }}</view>
+            <custom-loading v-if="loadingBalace || lockAmountLoading"></custom-loading>
+            <view class="balance" v-else>{{ ( token.balance + lockAmount)  | formatBalance }}</view>
             <view>
               <text class="symbol">$</text>
               <text>0.00000</text>
@@ -35,9 +35,9 @@
         </view>
         <view class="lock">
           <text>{{ language.text58 }}</text>
-          <custom-loading v-if="lockAmountLoading || unboundingBlanceLoading"></custom-loading>
+          <custom-loading v-if="lockAmountLoading"></custom-loading>
           <view v-else class="quantity">
-            <view class="top">{{ (lockAmount + unBoundingBalance) | formatBalance }}</view>
+            <view class="top">{{ lockAmount | formatBalance }}</view>
             <view class="bottom">
               <text class="symbol">$</text>
               <text>0.00000</text>
@@ -116,7 +116,6 @@
     </view>
     <!--  -->
     <view :check="sendTokenMessage" :change:check="render.sendToken"></view>
-    <view :callUnboundingDelegators="callUnboundingDelegators" :change:callUnboundingDelegators="render.getUnbondingDelegationRecord"></view>
   </view>
 </template>
 
@@ -237,9 +236,6 @@ export default {
       navHeight: '0rpx',
       systemBarHeight: '0rpx',
       callMainCoinBalance: 0,
-      unboundingBlanceLoading: true,
-      callUnboundingDelegators: 0,
-      unBoundingBalance: 0,
       sendTokenMessage: false,
       sendbtnLoading: false,
     }
@@ -248,10 +244,12 @@ export default {
     let obj = options.sendToken ? JSON.parse(options.sendToken) : false
     console.log('获取的数据', obj)
     this.sendbtnLoading = !!obj
-    this.sendTokenMessage = obj
     this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
     const wallet = this.$cache.get('_currentWallet')
     this.loadingBalace = true
+    setTimeout(()=>{
+      this.sendTokenMessage = obj
+    },500)
     // if (this.token.balance === undefined) {
     //   this.timer = setInterval(() => {
     //     if (wallet.coinList[0].balance === undefined) return
@@ -268,12 +266,7 @@ export default {
     this.callMainCoinBalance++
   },
   onPullDownRefresh() {
-    this.unboundingBlanceLoading = true
-    this.lockAmountLoading = true
-    this.loadingBalace = true
-    this.unBoundingBalance = 0
     this.callRenderDelegateRecord = ''
-    this.callUnboundingDelegators++
     this.callMainCoinBalance++
     this.init()
     const wallet = this.$cache.get('_currentWallet')
@@ -986,26 +979,8 @@ export default {
       this.token.balance = res.res
       this.loadingBalace = false
     },
-    handlerUnboundingBlance(res) {
-      console.log(res)
-      res.result.unbondingResponses.forEach(item => {
-        item.entries.forEach(item => {
-          this.unBoundingBalance += Number(item.balance)
-        })
-      })
-      
-      this.unBoundingBalance = this.unBoundingBalance / mainCoin.decimals
-      console.log(this.unBoundingBalance)
-      this.unboundingBlanceLoading = false
-      // this.unBoundingBalance = res.result.unboundingResponses.reduce((pre, cur, 0) => {
-      //   return pre + Number(cur.ent)
-      // })
-    },
     txResult(res) {
       this.init() //刷新列表
-      this.loadingBalace = true
-      this.callMainCoinBalance++
-      this.callUnboundingDelegators++
       this.sendbtnLoading = false
     }
   },
@@ -1028,6 +1003,7 @@ export default {
     }
   },
   onBackPress(e) {
+    console.log(e)
     if (e.from === 'backbutton') {
       uni.switchTab({
         url: '/pages/account/index'
@@ -1053,6 +1029,7 @@ export default {
       getAddress(address) {
         if (address === '') return
         this.getDelegationRecord(address)
+        this.getUnbondingDelegationRecord(address)
       },
       async getDelegationRecord(address) {
         const result = await getDelegationRecord(address)
@@ -1060,20 +1037,8 @@ export default {
           result
         }, this)
       },
-      async getUnbondingDelegationRecord(val) {
-        if (val == 0) return
-        let wallet;
-        //#ifdef APP-PLUS
-        wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
-        //#endif
-        
-        //#ifndef APP-PLUS 
-        wallet = uni.getStorageSync('_currentWallet').data
-        //#endif
-        const result = await getUnbondingDelegationRecord(wallet.address)
-        renderUtils.runMethod(this._$id, 'handlerUnboundingBlance', {
-          result
-        }, this)
+      async getUnbondingDelegationRecord(address) {
+        // const result = await getUnbondingDelegationRecord(address)
         // console.log('getUnbondingDelegationRecord', result.unbondingResponses);
       },
       async getMainCoinBalance(val) {
