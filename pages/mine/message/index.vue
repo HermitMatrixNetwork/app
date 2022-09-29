@@ -58,17 +58,17 @@ export default {
       const res = await getNotice()
       console.log('通知信息', res)
       let arr = res.data.data.notices.sort((a, b) => b.timestamp - a.timestamp)
-      if(this.alreadyRead.length == 0){
-        this.noticeList = arr
-      } else {
-        arr.forEach(item=>{
-          if(this.alreadyRead.includes(item.ID)){
-            this.readList.push(item)
-          }else{
-            this.noticeList.push(item)
-          }
-        })
-      }
+      // if(this.alreadyRead.length == 0){
+      this.noticeList = arr
+      // } else {
+      //   arr.forEach(item=>{
+      //     if(this.alreadyRead.includes(item.ID)){
+      //       this.readList.push(item)
+      //     }else{
+      //       this.noticeList.push(item)
+      //     }
+      //   })
+      // }
       this.loading = false
     },
   },
