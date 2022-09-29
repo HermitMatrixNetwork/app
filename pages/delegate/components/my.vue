@@ -8,7 +8,7 @@
         <!-- 已委托总是 -->
         <headerItem :title="language.text02" :value="allData.total" />
         <!-- 累计领取 -->
-        <headerItem :title="language.text03" />
+        <headerItem :title="language.text03" :value="cumulativeReward"/>
         <!-- 待领取 -->
         <headerItem :title="language.text04" :value="totalReward" :needFormat="false" />
         <!-- 解锁中 -->
@@ -98,6 +98,7 @@ export default {
       unboundingBlanceLoading: true,
       callUnboundingDelegators: 0,
       unBoundingBalance: 0,
+      cumulativeReward: 0
     }
   },
   created() {
@@ -164,8 +165,7 @@ export default {
       const res = await getCumulativeRewardCollection({
         address: this.$cache.get('_currentWallet').address
       })
-      
-      console.log(res)
+      this.cumulativeReward = res.data.data.withdraw_amount / mainCoin.decimals
       // if (this.$cache.get('_delegateInfo')) {
       // this.address = this.currentWallet.address
       // this.allData = this.$cache.get('_delegateInfo')
@@ -228,10 +228,13 @@ export default {
       })
       totalRewards = totalRewards / mainCoin.delegateDecimals
       this.allData.totalReward = totalRewards
-      setTimeout(() => {
+      this.timer = setTimeout(() => {
         this.updateRewards = JSON.parse(JSON.stringify(this.list))
       }, 2000)
     }
+  },
+  onUnload() {
+    clearTimeout(this.timer)
   },
   computed: {
     totalReward() {

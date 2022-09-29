@@ -9,7 +9,8 @@ export default {
     'text07': '暂未开放',
     text08: '最近使用',
     text09: 'Tools',
-    text10: '暂无数据'
+    text10: '暂无数据',
+    text11: '暂无记录'
   },
   EN: {
     'text01': 'DAPPs',
@@ -21,7 +22,8 @@ export default {
     'text07': 'Under development',
     text08: 'Recently used',
     text09: 'Tools',
-    text10: '暫無數據'
+    text10: 'No data',
+    text11: 'No record'
   },
   CT: {
     'text01': '應用',
@@ -33,6 +35,7 @@ export default {
     'text07': '暫未開放',
     text08: '最近使用',
     text09: 'Tools',
-    text10: 'No data'
+    text10: '暫無數據',
+    text11: '暫無記錄'
   }
 }

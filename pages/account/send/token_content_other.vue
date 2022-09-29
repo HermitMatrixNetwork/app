@@ -219,6 +219,10 @@ export default {
     this.callGetBlance = JSON.parse(JSON.stringify(this.token))
   },
   onPullDownRefresh() {
+    if (!this.token.view_key) {
+      uni.stopPullDownRefresh()
+      return
+    }
     this.loadingBalance = true
     this.callGetBlance = ''
     this.$nextTick(() => {

@@ -263,6 +263,9 @@ export default {
   },
   onReady() {
     this.callRenderDelegateRecord = this.address
+    this.unboundingBlanceLoading = true
+    this.unBoundingBalance = 0
+    this.callUnboundingDelegators++
     this.callMainCoinBalance++
   },
   onPullDownRefresh() {
@@ -978,6 +981,21 @@ export default {
     handlerMainCoinBalance(res) {
       this.token.balance = res.res
       this.loadingBalace = false
+    },
+    handlerUnboundingBlance(res) {
+      console.log(res)
+      res.result.unbondingResponses.forEach(item => {
+        item.entries.forEach(item => {
+          this.unBoundingBalance += Number(item.balance)
+        })
+      })
+      
+      this.unBoundingBalance = this.unBoundingBalance / mainCoin.decimals
+      console.log(this.unBoundingBalance)
+      this.unboundingBlanceLoading = false
+      // this.unBoundingBalance = res.result.unboundingResponses.reduce((pre, cur, 0) => {
+      //   return pre + Number(cur.ent)
+      // })
     },
     txResult(res) {
       this.init() //刷新列表

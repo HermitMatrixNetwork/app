@@ -1,6 +1,6 @@
 <template>
   <view class="page-wrapper">
-    <custom-header :title="language.text08"></custom-header>
+    <custom-header :title="language.text08" :customStyle="{ 'z-index': 98 }"></custom-header>
     <view class="border"></view>
 
     <view class="list" v-if="recently.length">
@@ -23,7 +23,7 @@
         <view class="border"></view>
       </view>
     </view>
-    <no-data v-else class="no-data" tip="暂无记录"></no-data>
+    <no-data v-else class="no-data" :tip="language.text11"></no-data>
   </view>
 </template>
 
