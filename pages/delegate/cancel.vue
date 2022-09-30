@@ -610,6 +610,7 @@ export default {
           res = await Secret.tx.simulate([msgUndelegate], {
             feeDenom: 'ughm',
           })
+          console.log(res)
           let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
           renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
         } catch (e) {

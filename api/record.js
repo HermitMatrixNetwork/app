@@ -28,7 +28,7 @@ export const getRecordList = (data) => {
 
 export const getCumulativeRewardCollection = (data) => {
   return http.post('/browser/accountinfo', {
-    'chain_id': 'ghmdev',
+    'chain_id': 'dev',
     ...data
   })
 }

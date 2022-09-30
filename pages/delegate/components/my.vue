@@ -161,11 +161,12 @@ export default {
       
       this.address = this.currentWallet.address
       this.unBoundingBalance = 0
+      this.cumulativeRewar = 0
       this.callUnboundingDelegators++
       const res = await getCumulativeRewardCollection({
         address: this.$cache.get('_currentWallet').address
       })
-      this.cumulativeReward = res.data.data.withdraw_amount / mainCoin.decimals
+      this.cumulativeReward = res.data.data.withdrawAmount / mainCoin.decimals
       // if (this.$cache.get('_delegateInfo')) {
       // this.address = this.currentWallet.address
       // this.allData = this.$cache.get('_delegateInfo')

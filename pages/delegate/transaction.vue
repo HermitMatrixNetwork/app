@@ -24,7 +24,7 @@ export default {
       }, {
         name: language[this.$cache.get('_language')].text71,
       }, {
-        name: language[this.$cache.get('_language')].text72
+        name: language[this.$cache.get('_language')].text112
       }, {
         name: language[this.$cache.get('_language')].text73
       }],

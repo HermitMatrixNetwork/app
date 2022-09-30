@@ -7,7 +7,7 @@
     <view class="account-header">
       <view class="header-left" @click="showSwitchWallet = true">
         <view class="title">{{ currentWallet.name }}</view>
-        <image src="/static/img/account/down.png" style="width: 32rpx; height: 32rpx;"></image>
+        <image src="/static/img/account/down.png" style="width: 45rpx; height: 45rpx;"></image>
       </view>
     
       <view class="header-icon">
@@ -343,11 +343,11 @@ export default {
         this.lockAmountLoading = true
         this.initCoinList()
         this.tokenList = this.currentWallet.coinList
-        setTimeout(() => {
+        this.$nextTick(() => {
           this.initRender++
           this.getLockAmount++
-          this.switchWallet = false
-        }, 1500)
+        })
+       
       } else {
         this.showSwitchWallet = false
       }
@@ -426,7 +426,8 @@ export default {
   },
   computed: {
     switchingWallet() {
-      return (this.lockAmountLoading || this.gettingBalance) && this.switchWallet
+      // 
+      return (this.lockAmountLoading || this.gettingBalance || this.unboundingBlanceLoading) && this.switchWallet
     },
     updatingBalance() {
       return (this.lockAmountLoading || this.gettingBalance || this.unboundingBlanceLoading)
@@ -459,16 +460,22 @@ export default {
     //     }
     //   }
     // }
+    updatingBalance(newVal) {
+      if (!newVal) {
+        this.switchWallet = false
+      }
+    },
     switchingWallet(newVal) {
-      if (newVal) {
-        setTimeout(() => {
-          this.toast.msg = this.languages.text232
-          this.toast.icon = '/static/img/mine/success.png'
-        }, 2000)
-        setTimeout(() => {
-          this.delayHide = false
-          this.showSwitchWallet = false
-        }, 4000)
+      if (!newVal) {
+        // setTimeout(() => {
+        // this.toast.msg = this.languages.text232
+        // this.toast.icon = '/static/img/mine/success.png'
+        // setTimeout(() => {
+        this.delayHide = false
+        this.showSwitchWallet = false
+        // }, 500)
+        // }, 500)
+
       }
     }
   }

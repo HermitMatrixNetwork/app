@@ -1,5 +1,6 @@
 <template>
   <view>
+    <custom-notify ref="notify" style="z-index:99999"></custom-notify>
     <u-popup class="switch-wallet-popup" :show="showSwitchWallet" closeOnClickOverlay @close="close">
       <view class="header">
         <text>{{ language.text32 }}</text>
@@ -10,7 +11,11 @@
           :class="{ selected: index == 0 }" @click="close($event, index)">
           <view class="item-left">
             <view class="item-left-name">{{ wallet.name }}</view>
-            <view class="item-left-address">{{ wallet.address | formatAddress }}</view>
+            <view class="item-left-address" style="display: flex; align-items: center;">
+              {{ wallet.address | formatAddress }}
+              <image src="/static/img/account/copy2.png" style="width: 28rpx; height: 28rpx; margin-left: 20rpx" @click.stop="copy(wallet.address)"></image>
+            </view>
+           
           </view>
           <view class="item-right" v-show="index == 0">
             <image src="@/static/img/walletManager/xuanzhong2.png"></image>
@@ -26,6 +31,7 @@
       </uni-button>
     </u-popup>
     <addWallet :showAddWallet="showAddWallet" @close="closeAddWalletPopup" />
+
   </view>
 </template>
 
@@ -69,6 +75,18 @@ export default {
     },
     closeAddWalletPopup() {
       this.showAddWallet = false
+    },
+    copy(val) {
+      uni.setClipboardData({
+        data: val,
+        showToast: false,
+        success: () => {
+          this.$refs.notify.show('error', this.language.text33, { bgColor: '#275EF1' })
+        },
+        fail: () => {
+          // this.$refs.notify.show('error', '复制失败')
+        }
+      })
     }
   },
   watch: {

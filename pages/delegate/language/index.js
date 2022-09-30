@@ -116,7 +116,8 @@ const languages = {
     text108: '自定义',
     text109: '地址有误，请重新输入',
     text110: '已全部加载完毕',
-    text111: '油费不足'
+    text111: '油费不足',
+    text112: '赎回'
   },
   'CT': {
     myDelegate: '我的委托',
@@ -231,7 +232,8 @@ const languages = {
     text108: '自定義',
     text109: '地址有誤，請重新輸入',
     text110: '已全部加載完畢',
-    text111: '油費不足'
+    text111: '油費不足',
+    text112: '贖回'
   },
   'EN': {
     'text01': 'my stakes',
@@ -344,7 +346,8 @@ const languages = {
     text108: 'customize',
     text109: 'The address is incorrect, please re-enter',
     text110: 'end',
-    text111: 'Insufficient fuel charge'
+    text111: 'Insufficient fuel charge',
+    text112: 'redeem'
   }
 }
 export default languages

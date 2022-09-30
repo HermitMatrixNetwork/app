@@ -271,7 +271,7 @@ export default {
     //   this.$refs.addressInptval ? this.$refs.addressInptval.childValue = wallet.withdrawAddress : this.receiveAddress = wallet.withdrawAddress
     // }
   },
-  mounted() {
+  onReady() {
     const wallet = this.currentWallet
     setTimeout(() => {
       this.callWithdrawAddress = wallet.address
