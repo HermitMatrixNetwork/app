@@ -169,7 +169,14 @@
         </view>
       </view>
     </view>
-		
+		<u-modal :show="cancelError" width="686rpx" :showConfirmButton="false" class="hintModal">
+		  <view class="modalContent">
+		    <image src="/static/img/tishi2.png" style="width: 64rpx; height: 64rpx;"></image>
+		    <view class="modal-title">{{language.text113}}</view>
+		    <text class="modal-content">{{language.text114}}</text>
+		    <button @click="cancelError = false">{{ language.text20 }}</button>
+		  </view>
+		</u-modal>
   </view>
 </template>
 
@@ -241,6 +248,7 @@ export default {
       callSimulate: {},
       feeLoading: true,
       btnLoading:false,
+      cancelError:false
     }
   },
   onLoad(options) {
@@ -507,7 +515,11 @@ export default {
     },
     gasError(res) {
 		  // console.log(res)
-		  this.$refs.notify.show('', this.language.text111)
+      if(res === 1){
+        this.cancelError = true
+      }else{
+        this.$refs.notify.show('', this.language.text111)
+      }
 		  this.btnLoading = false
 		  this.formData.amount.amount = ''
     }
@@ -614,9 +626,15 @@ export default {
           let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
           renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
         } catch (e) {
-          console.log(e);
-          res.code = 7
-					renderUtils.runMethod(this._$id, 'gasError', res, this) //错误调用gasError方法
+					let msg = e.message
+					let error;
+					if(msg.includes('too many unbonding delegation entries')){
+						// console.log('取消次数过多');
+						error = 1
+					}else{
+						error = 2
+					}
+					renderUtils.runMethod(this._$id, 'gasError',error, this) //错误调用gasError方法
         }
       }
     },
@@ -1104,4 +1122,44 @@ export default {
     color: red;
     font-size: 24rpx;
   }
+	
+	/deep/ .hintModal {
+	
+	  .u-modal__content {
+	    padding: 32rpx;
+	    padding-top: 48rpx !important;
+	  }
+	
+	  .modalContent {
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    justify-content: space-between;
+	
+	    .modal-title {
+	      font-size: 32rpx;
+	      color: #2c365a;
+	      font-weight: 600;
+	      line-height: 32rpx;
+	       margin-top: 32rpx;
+	    }
+	
+	    .modal-content {
+	      font-size: 28rpx;
+	      color: #8397b1;
+	      line-height: 42rpx;
+	      margin-top: 32rpx;
+	      margin-bottom: 48rpx;
+	    }
+	
+	    button {
+	      width: 622rpx;
+	      height: 96rpx;
+	      font-size: 32rpx;
+	      line-height: 96rpx;
+	      background: #002fa8;
+	      color: #ffffff;
+	    }
+	  }
+	}
 </style>

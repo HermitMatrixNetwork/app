@@ -20,7 +20,7 @@ const languages = {
     'text12': '暂无委托，点击',
     'text13': '选择取消委托节点',
     'text14': '点击去选择',
-    'text15': '注：取消委托交易成功后，需等待2天才可成功到账！',
+    'text15': '注：取消委托交易成功后，需要等待43200个区块（约1天）才可到账！',
     'text16': '输入取消委托数量',
     'text17': '请输入金额',
     'text18': '全部',
@@ -117,7 +117,9 @@ const languages = {
     text109: '地址有误，请重新输入',
     text110: '已全部加载完毕',
     text111: '油费不足',
-    text112: '赎回'
+    text112: '赎回',
+    text113: '提示',
+    text114: '您在该节点已有7笔赎回交易在等待到账，请到账后再操作赎回！'
   },
   'CT': {
     myDelegate: '我的委托',
@@ -136,7 +138,7 @@ const languages = {
     'text12': '暫無委托，點擊',
     'text13': '選擇取消委托節點',
     'text14': '點擊去選擇',
-    'text15': '註：取消委托交易成功後，需等待2天才可成功到賬！',
+    'text15': '註：取消委托交易成功後，需要等待43200個區塊（約1天）才可到賬！',
     'text16': '輸入取消委托數量',
     'text17': '請輸入金額',
     'text18': '全部',
@@ -233,7 +235,9 @@ const languages = {
     text109: '地址有誤，請重新輸入',
     text110: '已全部加載完畢',
     text111: '油費不足',
-    text112: '贖回'
+    text112: '贖回',
+    text113: '提示',
+    text114: '您在該節點已有7筆贖回交易在等待到賬，請到賬後再操作贖回！'
   },
   'EN': {
     'text01': 'my stakes',
@@ -250,7 +254,7 @@ const languages = {
     'text12': 'No Stake ',
     'text13': 'Select Delegate Node',
     'text14': 'Click to select',
-    'text15': 'Note: After the successful cancellation of the entrusted transaction, it will take 2 days to arrive successfully!',
+    'text15': 'Note: after the cancellation of the commission transaction is successful, you need to wait for 43200 blocks (about 1 day) to receive the account!',
     'text16': 'Enter the number of cancellation delegates',
     'text17': 'Please enter the amount',
     'text18': 'All',
@@ -347,7 +351,9 @@ const languages = {
     text109: 'The address is incorrect, please re-enter',
     text110: 'end',
     text111: 'Insufficient fuel charge',
-    text112: 'redeem'
+    text112: 'redeem',
+    text113: 'Prompt',
+    text114: 'You already have 7 redemption transactions waiting for the account at this node, please go to the account and then redeem!'
   }
 }
 export default languages

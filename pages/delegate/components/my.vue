@@ -166,7 +166,8 @@ export default {
       const res = await getCumulativeRewardCollection({
         address: this.$cache.get('_currentWallet').address
       })
-      this.cumulativeReward = res.data.data.withdrawAmount / mainCoin.decimals
+      console.log('累计领取奖励',res)
+      this.cumulativeReward = !isNaN(res.data.data.withdrawAmount)?res.data.data.withdrawAmount / mainCoin.decimals:0
       // if (this.$cache.get('_delegateInfo')) {
       // this.address = this.currentWallet.address
       // this.allData = this.$cache.get('_delegateInfo')
