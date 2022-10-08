@@ -64,12 +64,25 @@
         </view>
       </u-modal>
       <view class="coin-list">
-        <u-tabs :list="coinList" lineColor="#2C365A" @click="click" :inactiveStyle="inactiveStyle"
+<!--        <u-tabs :list="coinList" lineColor="#2C365A" @click="click" :inactiveStyle="inactiveStyle" :scrollable="false"
           :activeStyle="activeStyle" lineWidth="20" lineHeight="3" :itemStyle="itemStyle" :current="currentIndex" class="coin-tabs">
           <view slot="right" style="padding-bottom: 8rpx">
             <image src="/static/img/account/add3.png" @click="toAsset" style="width: 48rpx;height: 48rpx;"></image>
           </view>
-        </u-tabs>
+        </u-tabs> -->
+        <view class="coin-list-top coin-tabs">
+          <view class="tabs">
+            <view class="tabs-item actived">
+              <view class="tabs-item-text">
+                <text>{{ languages.text07 }}</text>
+              </view>
+              <view class="tabs-item-bar"></view>
+            </view>
+          </view>
+          <view class="tabs-right">
+            <image src="/static/img/account/add3.png" @click="toAsset" style="width: 48rpx;height: 48rpx;"></image>
+          </view>
+        </view>
         <scroll-view v-if="visibaleTokenList.length" class="coinbox" scroll-y :style="{ height: scrollHeight }">
           <view class="content" v-for="item in visibaleTokenList" :key="item.ID">
             <TokenColumn :showWarn="item.showWarn" :tokenName="item.alias_name"
@@ -125,15 +138,11 @@
 import {
   sliceAddress
 } from '@/utils/filters.js'
-import {
-  exceptE6
-} from '@/utils/format.js'
 import mainCoin from '@/config/index.js'
 import SwitchWallet from '@/pages/walletManager/switchWallet.vue'
 import TokenColumn from './send/components/TokenColumn.vue'
 import languages from './language'
 import mixin from './mixins/index.js'
-import reflsh from '@/utils/reflesh.js'
 export default {
   mixins: [mixin],
   components: {
@@ -153,7 +162,9 @@ export default {
       address: '',
       currentWallet: this.$cache.get('_currentWallet'),
       languages: languages[this.$cache.get('_language')],
-      coinList: [],
+      coinList: [{
+        name: languages[this.$cache.get('_language')].text07
+      }],
       inactiveStyle: {
         fontSize: '34rpx',
         color: '#8397B1',
@@ -204,7 +215,7 @@ export default {
     this.unboundingBlanceLoading = true
     this.callUnboundingDelegators++
     this.getLockAmount++
-    this.initCoinList()
+    // this.initCoinList()
     this.aa = false
     this.firstShowAa = true
     this.initRender++
@@ -217,17 +228,26 @@ export default {
     }, 3000)
   },
   onShow() {
-    this.$refs.custom_update && this.$refs.custom_update.checkUpdate()
+
+  },
+  onReady() {
     // this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
-    this.initCoinList()
+    // this.initCoinList()
+    this.$refs.custom_update && this.$refs.custom_update.checkUpdate()
+    
     this.aa = false
     this.firstShowAa = true
     this.lockAmountLoading = true
     this.unboundingBlanceLoading = true
     this.gettingBalance = true
-    this.initRender++
-    this.callUnboundingDelegators++
-    this.getLockAmount++
+    this.tokenList = this.$cache.get('_currentWallet').coinList || [mainCoin]
+    
+    setTimeout(() => {
+      this.initRender++
+      this.callUnboundingDelegators++
+      this.getLockAmount++
+    }, 1000)
+
   },
   created() {
     //获取选择的代币
@@ -236,6 +256,13 @@ export default {
   mounted() {
     this.getSystemStatusHeight()
     this.calculateHeight()
+
+  },
+  onBackPress() {
+    uni.reLaunch({
+      url: '/pages/index/index'
+    })
+    return true
   },
   methods: {
     formatBalance(val) {
@@ -341,7 +368,7 @@ export default {
         this.toast.icon = '/static/img/mine/loading.gif'
         this.currentWallet = this.$cache.get('_currentWallet')
         this.lockAmountLoading = true
-        this.initCoinList()
+        // this.initCoinList()
         this.tokenList = this.currentWallet.coinList
         this.$nextTick(() => {
           this.initRender++
@@ -501,7 +528,8 @@ export default {
       }
     },
     methods: {
-      async init() {
+      async init(val) {
+        if (val == 0) return;
         this.balanceLoading = true
         let wallet;
         //#ifdef APP-PLUS
@@ -877,5 +905,28 @@ export default {
   		color: #FFFFFF;
   		text-align: center;
   	}
+  }
+  
+  .coin-tabs {
+    display: flex;
+    justify-content: space-between;
+    
+    .tabs {
+      .actived {
+        font-family: PingFangSC-S0pxibold;
+        font-weight: 600;
+        font-size: 34rpx;
+        color: #2C365A;
+        
+        &:after {
+          content: '';
+          display: block;
+          height: 6rpx;
+          width: 65%;
+          background-color: #2C365A;
+          margin: 10rpx auto 0;
+        }
+      }
+    }
   }
 </style>

@@ -88,7 +88,10 @@ export default {
       if (this.checkComplete()) {
         this.synchronizingLocalData(this.wallet)
         this.$cache.delete('_temporaryWallet')
-        uni.reLaunch({
+        // uni.reLaunch({
+        //   url: '/pages/account/index'
+        // })
+        uni.switchTab({
           url: '/pages/account/index'
         })
       }

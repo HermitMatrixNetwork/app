@@ -59,10 +59,10 @@ export default {
   data() {
     return {
       language: language[this.$cache.get('_language')],
-      mnemonic: '', // 助记词
-      password: '', // 资金密码
-      checkPassword: '',
-      name: '', // 钱包名称
+      mnemonic: 'shove eagle hidden slogan avoid exhaust better grief purpose run found swing', // 助记词
+      password: '11111111', // 资金密码
+      checkPassword: '11111111',
+      name: '1', // 钱包名称
       passwordEye: false, // 是否明文显示资金密码
       checkPasswordEye: false,
       callRenderMnemonic: '', // 调用render.getMnemonic获取助记词
@@ -113,7 +113,7 @@ export default {
       this.toAccount()
     },
     toAccount() {
-      uni.reLaunch({
+      uni.switchTab({
         url: '/pages/account/index'
       })
     },

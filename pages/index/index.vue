@@ -51,8 +51,11 @@
       <view class="protocol-footer">
         <view class="protocol-footer-check">
           <label>
-            <checkbox class="protocol-footer-check-checkbox" :checked="agree_protocol"
-              @click="agree_protocol = !agree_protocol" />
+            <!-- @click="agree_protocol = !agree_protocol" -->
+            <checkbox-group @change="checkboxChange">
+             <checkbox class="protocol-footer-check-checkbox" :checked="agree_protocol" value="agree_protocol"
+                 />
+            </checkbox-group>
           </label>
           <text>{{ language.text05 }}</text>
         </view>
@@ -83,56 +86,55 @@ export default {
     this.$refs.custom_update && this.$refs.custom_update.checkUpdate()
   },
   onLoad() {
-    if (this.$cache.get('_currentWallet') == null) {
-      this.agree_protocol = this.$cache.get('_agree_protocol') || false
-      plus.navigator.closeSplashscreen()
-    } else {
-      uni.reLaunch({
-        url: '/pages/account/index',
-        success: () => {
-          plus.navigator.closeSplashscreen()
-        }
-      })
-    }
+    // if (this.$cache.get('_currentWallet') == null) {
+    //   this.agree_protocol = this.$cache.get('_agree_protocol') || false
+    //   plus.navigator.closeSplashscreen()
+    // } else {
+    //   uni.reLaunch({
+    //     url: '/pages/account/index',
+    //     success: () => {
+    //       plus.navigator.closeSplashscreen()
+    //     }
+    //   })
+    // }
   },
   methods: {
+    checkboxChange(e) {
+      if (e.detail.value.length) {
+        this.agree_protocol = true
+      } else {
+        this.agree_protocol = false
+      }
+    },
     toCreateWallet() {
       this.action = 'toCreateWallet'
       if (!this.checkIsAgree()) return
       uni.navigateTo({
         url: './createWallet'
       })
+      // uni.navigateTo({
+      //   url: '/pages/account/index'
+      // })
     },
     toImportWallet() {
       this.action = 'toImportWallet'
       if (!this.checkIsAgree()) return
       uni.navigateTo({
-        url: './importWallet'
+        url: '/pages/index/importWallet'
       })
     },
     checkIsAgree() {
-      const isAgree = this.agree_protocol === true
-      this.showProtocol = !isAgree
-      return isAgree
+      this.showProtocol = !this.agree_protocol
+      return this.agree_protocol
     },
     confirmProtocol() {
-      if (this.agree_protocol) {
-        this.$cache.set('_agree_protocol', true, 0)
-        this.showProtocol = false
-        this.action === 'toCreateWallet' ? this.toCreateWallet() : this.toImportWallet()
-      } else {
-        // 提示用户勾选同意用户协议按钮
-      }
-
+      this.$cache.set('_agree_protocol', true, 0)
+      this.showProtocol = false
+      this.action === 'toCreateWallet' ? this.toCreateWallet() : this.toImportWallet()
     },
     closeProtocol() {
       this.showProtocol = false
       this.agree_protocol = false
-    }
-  },
-  watch: {
-    agree_protocol(newVal, oldVal) {
-      this.$cache.set('_agree_protocol', newVal, 0)
     }
   }
 }

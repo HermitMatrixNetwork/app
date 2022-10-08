@@ -269,11 +269,14 @@ export default {
     // }
   },
   onReady() {
-    this.callRenderDelegateRecord = this.address
     this.unboundingBlanceLoading = true
     this.unBoundingBalance = 0
-    this.callUnboundingDelegators++
-    this.callMainCoinBalance++
+    setTimeout(() => {
+      this.callRenderDelegateRecord = this.address
+      this.callUnboundingDelegators++
+      this.callMainCoinBalance++
+      this.init()
+    }, 1000)
   },
   onPullDownRefresh() {
     this.unboundingBlanceLoading = true
@@ -301,7 +304,7 @@ export default {
     this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == this.token.ID)
   },
   created() {
-    this.init()
+    
   },
   mounted() {
     this.calculateHeight()
