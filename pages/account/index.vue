@@ -246,7 +246,7 @@ export default {
       this.initRender++
       this.callUnboundingDelegators++
       this.getLockAmount++
-    }, 1000)
+    }, 1500)
 
   },
   created() {

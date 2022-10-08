@@ -119,14 +119,15 @@ export default {
           [this.language.text239]: res.height
         }
       } else if (typeUrl.includes('MsgExecuteContract')) {
+        res.rawLog.replace(/"contract_address","value":"([0-9a-z]*)/, (match, p1) => {
+          res.contract_address = p1
+        })
         this.transactionMessage = {
-          [this.language.text84]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text84]: '0.00 GHM',
           [this.language.text111]: res.fee,
-          [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
-          [this.language.text91]: res.tx.body.messages[0].value.validatorAddress,
+          [this.language.text86]: res.contract_address, // 收款地址
+          [this.language.text87]: this.$cache.get('_currentWallet').address, // 付款地址
           'Memo': res.tx.body.memo,
-          [this.language.text88]: res.transactionHash,
-          [this.language.text239]: res.height
         }
       } else if (typeUrl.includes('MsgUndelegate')) {
         this.transactionMessage = {

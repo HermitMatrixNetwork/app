@@ -75,7 +75,7 @@
                   </view>
                   <view class="right">
                     <view class="amount" :class="[`${record.type}-amount`]">
-                      {{ ['delegate', 'fail', 'setWithdrawAddress', 'executeContract'].includes(record.type) ? '' : (record.plus ? '+' : '-') }}
+                      {{ ['fail', 'setWithdrawAddress', 'executeContract'].includes(record.type) ? '' : (record.plus ? '+' : '-') }}
                       {{ record.amount }}
                     </view>
                     <view class="real-money">
@@ -462,13 +462,16 @@ export default {
             case 2:
               if (item.tx.body.messages[0]['@type'].includes('MsgDelegate')) {
                 item.icon = require(
-                  '@/static/img/account/weituo2.png')
+                  '@/static/img/account/delegate2.png')
+                item.type = 'delegate'
+                item.plus = false
               } else if (item.tx.body.messages[0]['@type'].includes('MsgUndelegate')) {
-                item.icon = require('@/static/img/delegate/fasong2.png')
-
+                item.icon = require('@/static/img/account/undelegate.png')
+                item.type = 'undelegate'
+                item.plus = true
               }
               item.showAddress = item.validator_address
-              item.type = 'delegate'
+              
               break
             case 3:
               const originType = item.tx.body.messages[0]['@type']
@@ -569,13 +572,15 @@ export default {
               }
             } else if (type.includes('MsgDelegate')) { // 委托
               item.icon = require(
-                '@/static/img/account/weituo2.png')
+                '@/static/img/account/delegate2.png')
               item.showAddress = item.validator_address
               item.type = 'delegate'
+              item.plus = false
             } else if (type.includes('MsgUndelegate')) { // 取消委托
-              item.icon = require('@/static/img/delegate/fasong2.png')
+              item.icon = require('@/static/img/account/undelegate.png')
               item.showAddress = item.validator_address
-              item.type = 'delegate'
+              item.type = 'undelegate'
+              item.plus = true
             } else if (type.includes('MsgWithdrawDelegatorReward')) { // 领取奖励
               item.raw_log.replace(
                 /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
@@ -605,6 +610,9 @@ export default {
               item.showAddress = item.withdraw_address
               item.type = 'setWithdrawAddress'
             } else if (type.includes('MsgExecuteContract')) { // 调用合约
+              item.icon = require(
+                '@/static/img/account/contract.png')
+              item.showAddress = item.tx.body.messages[0].contract
               item.type = 'executeContract'
             }
 
@@ -771,13 +779,15 @@ export default {
                 }
               } else if (type.includes('MsgDelegate')) { // 委托
                 item.icon = require(
-                  '@/static/img/account/weituo2.png')
+                  '@/static/img/account/delegate2.png')
                 item.showAddress = item.validator_address
                 item.type = 'delegate'
+                item.plus = false
               } else if (type.includes('MsgUndelegate')) { // 取消委托
-                item.icon = require('@/static/img/delegate/fasong2.png')
+                item.icon = require('@/static/img/account/undelegate.png')
                 item.showAddress = item.validator_address
-                item.type = 'delegate'
+                item.type = 'undelegate'
+                item.plus = true
               } else if (type.includes('MsgWithdrawDelegatorReward')) { // 领取奖励
                 item.raw_log.replace(
                   /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
@@ -856,12 +866,16 @@ export default {
             case 'delegate':
               if (item.tx.body.messages[0]['@type'].includes('MsgDelegate')) {
                 item.icon = require(
-                  '@/static/img/account/weituo2.png')
+                  '@/static/img/account/delegate2.png')
+                item.type = 'delegate'
+                item.plus = false
               } else if (item.tx.body.messages[0]['@type'].includes('MsgUndelegate')) {
-                item.icon = require('@/static/img/delegate/fasong2.png')
+                item.icon = require('@/static/img/account/undelegate.png')
+                item.type = 'undelegate'
+                item.plus = true
 
               }
-              item.type = 'delegate'
+              
               item.showAddress = item.validator_address
               break
             case 'withdraw':
@@ -1416,11 +1430,11 @@ export default {
     .right {
       text-align: right;
 
-      .sender-amount {
+      .sender-amount, .delegate-amount {
         color: #275EF1
       }
 
-      .recipient-amount {
+      .recipient-amount, .undelegate-amount {
         color: #17C499
       }
 
