@@ -50,7 +50,7 @@ export default {
         path: '/pages/delegate/index',
         icon: require('../../static/img/tabbar/delegate.png'),
         selectIcon: require('../../static/img/tabbar/delegate.png'),
-        text: '委托',
+        text: languages[this.$cache.get('_language')].text08,
         centerItem: true
       }, {
         id: 3,

@@ -313,17 +313,16 @@ export default {
     },
     verifyTouchIDSuccess() {
       this.$nextTick(() => {
-        // this.passwordCheck = false
-        // this.formData.validatorAddress = this.selData.delegation.validatorAddress
-        // this.updataDelegate = this.formData
-        // this.loading = true
-        // @todo 跳转到资产详情页再执行交易
+        this.passwordCheck = false
+        this.formData.validatorAddress = this.selData.delegation.validatorAddress
+        this.updataDelegate = this.formData
+        this.loading = true
         this.verifyTouchID = 3
         // this.modalPasswordIsShow = true
         // this.verifyMethod = 'password'
-        this.showToast = false
-        // this.toast.msg = this.language.text77 + '...'
-        // this.toast.icon = '/static/img/mine/loading.gif'
+        this.showToast = true
+        this.toast.msg = this.language.text77 + '...'
+        this.toast.icon = '/static/img/mine/loading.gif'
         // this.$nextTick(() => {
         //   uni.showToast({
         //     title: `${language.text77}...`,

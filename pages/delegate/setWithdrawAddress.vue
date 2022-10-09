@@ -192,16 +192,15 @@ export default {
     },
     verifyTouchIDSuccess() {
       this.$nextTick(() => {
-        // this.passwordCheck = false
-        // this.callRender = this.formData // 调用render.sendToken
-        // this.loading = true
+        this.passwordCheck = false
+        this.callRender = this.formData // 调用render.sendToken
+        this.loading = true
         this.verifyTouchID = 3
-        this.showToast = false
-        // @todo 跳转到资产详情页再执行交易
+        this.showToast = true
         // this.modalPasswordIsShow = true
         // this.verifyMethod = 'password'
-        // this.toast.msg = this.language.text77 + '...'
-        // this.toast.icon = '/static/img/mine/loading.gif'
+        this.toast.msg = this.language.text77 + '...'
+        this.toast.icon = '/static/img/mine/loading.gif'
         // this.$nextTick(() => {
         //   uni.showToast({
         //     title: `${this.language.text77}...`,

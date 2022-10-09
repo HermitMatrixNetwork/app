@@ -14,7 +14,7 @@ export default {
     'text24': 'REC',
     'text25': 'Slow',
     'text26': 'Seconds',
-    'text27': 'customize',
+    'text27': 'Customize',
     'text28': 'About'
   },
   CT: {

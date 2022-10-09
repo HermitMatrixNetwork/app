@@ -523,6 +523,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/scanCode/scanCode",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
   "globalStyle": {
     "navigationStyle": "custom",

@@ -258,12 +258,12 @@ export default {
     this.calculateHeight()
 
   },
-  onBackPress() {
-    uni.reLaunch({
-      url: '/pages/index/index'
-    })
-    return true
-  },
+  // onBackPress() {
+  //   uni.reLaunch({
+  //     url: '/pages/index/index'
+  //   })
+  //   return true
+  // },
   methods: {
     formatBalance(val) {
       if (val) {

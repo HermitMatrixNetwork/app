@@ -81,6 +81,7 @@ export default {
   },
   methods: {
     qrR(res) {
+      console.log(res)
       this.qrUrl = res
     },
     //生成当前页面图片

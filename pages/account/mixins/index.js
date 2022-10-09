@@ -4,12 +4,28 @@ export default {
       uni.scanCode({
         onlyFromCamera: false,
         scanType: ['qrCode'],
-        success(res) {
+        success: (res) => {
+          console.log(res)
           // console.log('条码类型：' + res.scanType)
-          console.log('条码内容：' + res.result)
-          uni.navigateTo({
-            url: `./send/index?receiveAddress=${res.result}`
-          })
+          if (res.scanType == 'EAN_8') {
+            // uni.showToast({
+            //   title: 'Error',
+            //   type: 'error'
+            // })
+            // var filters = [plus.barcode.QR]
+            // plus.barcode.scan(res.path, (type, result, file, charset) => {
+            //   console.log(type)
+            //   console.log(result)
+            // }, (error) => { console.log(error) }, filters)
+          } else {
+            // console.log('fire- 1')
+            // this.$cache.set('_qrcode', res.result, 0)
+            // uni.navigateTo({
+            //   url: `./send/index?receiveAddress=${res.result}`
+            // })
+          }
+          // console.log('条码内容：' + res.result)
+  
         },
       })
     },
@@ -71,9 +87,9 @@ export default {
       // 		string = string.replace(obj[i].key, obj[i].value)
       // 	}
       // }
-      string = string.replace(/[\>\<\&\'\"]/g,"")
-			// console.log(string);
-			return string
+      string = string.replace(/[\>\<\&\'\"]/g,'')
+      // console.log(string);
+      return string
     }
 
   }

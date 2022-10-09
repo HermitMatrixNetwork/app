@@ -70,20 +70,20 @@ export default {
     text33: '復製成功！'
   },
   'EN': {
-    'text11': 'Add wallet',
-    'text12': 'Create wallet',
+    'text11': 'Add Wallet',
+    'text12': 'Create Wallet',
     'text13': 'Import Wallet',
-    text02: 'No wallet',
+    text02: 'No Wallet',
     text04: 'Already have a wallet.',
-    text25: 'Mnemonic words',
+    text25: 'Mnemonic Words',
     text26: 'It consists of words separated by spaces.',
-    text27: 'Private key',
-    text28: 'public key',
-    text29: 'keystore',
+    text27: 'Private Key',
+    text28: 'Public Key',
+    text29: 'Keystore',
     text30: 'Encrypted private key JSON',
     text31: 'Select import type',
-    text32: 'Switch wallets',
+    text32: 'Switch Wallets',
     'hermitWalle': 'Hermit Wallet',
-    text33: 'Copy successfully!'
+    text33: 'Copy Successfully!'
   }
 }

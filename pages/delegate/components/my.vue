@@ -292,34 +292,17 @@ export default {
         
         
         // @fixed
-        // let list = await this.getLists(address)
-        // let total = 0, totalReward = 0
-        // list.forEach(item => {
-        //   total += Number(item.balance.amount)
-        //   totalReward += Number(item.rewards.amount)
-        // })
-        // let data = {}
-        // data.total = total / mainCoin.decimals
-        // data.totalReward = totalReward / mainCoin.delegateDecimals
-        // data.list = list
-        // renderUtils.runMethod(this._$id, 'initData', data, this)
-
-        
-        await this.getLists(address).then(list => {
-          let total = 0, totalReward = 0
-          list.forEach(item => {
-            total += Number(item.balance.amount)
-            totalReward += Number(item.rewards.amount)
-          })
-          let data = {}
-          data.total = total / mainCoin.decimals
-          data.totalReward = totalReward / mainCoin.delegateDecimals
-          data.list = list
-          renderUtils.runMethod(this._$id, 'initData', data, this)
+        let list = await this.getLists(address)
+        let total = 0, totalReward = 0
+        list.forEach(item => {
+          total += Number(item.balance.amount)
+          totalReward += Number(item.rewards.amount)
         })
-
-
-
+        let data = {}
+        data.total = total / mainCoin.decimals
+        data.totalReward = totalReward / mainCoin.delegateDecimals
+        data.list = list
+        renderUtils.runMethod(this._$id, 'initData', data, this)
 
         // renderUtils.runMethod(this._$id, 'searchData', data, this)
       },

@@ -1,8 +1,5 @@
 <script>
 import {
-  isTor
-} from '@/utils/index.js'
-import {
   MINERS_GAS,
   DEFAULT_RPC
 } from '@/config/index.js'
@@ -86,6 +83,7 @@ export default {
         //   }
         // })
       } else if (this.$cache.get('_touchId') == 1) {
+        console.log('本地缓存有钱包, 且开启了指纹验证（进入指纹验证页）')
         uni.navigateTo({
           url: '/pages/mine/anquan/backgroundVerify',
           animationType: 'none',

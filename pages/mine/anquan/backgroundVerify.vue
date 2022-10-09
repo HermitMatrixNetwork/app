@@ -145,7 +145,14 @@ export default {
         })
         break
       default:
+        // if (this.$cache.get('_qrcode')) {
+        //   uni.navigateTo({
+        //     url: `./send/index?receiveAddress=${this.$cache.get('_qrcode')}`
+        //   })
+        //   this.$cache.delete('_qrcode')
+        // } else {
         uni.navigateBack()
+        // }
       }
     },
     confirm() {

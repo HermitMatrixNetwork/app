@@ -17,13 +17,13 @@ export default {
     'text02': 'Search DAPPs or enter a link to visit',
     'text03': 'Recently',
     'text04': 'All',
-    'text05': 'Recently used',
+    'text05': 'Recently Used',
     'text06': 'Trade',
-    'text07': 'Under development',
-    text08: 'Recently used',
+    'text07': 'Under Development',
+    text08: 'Recently Used',
     text09: 'Tools',
-    text10: 'No data',
-    text11: 'No record'
+    text10: 'No Data',
+    text11: 'No Record'
   },
   CT: {
     'text01': '應用',

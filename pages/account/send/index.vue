@@ -514,11 +514,35 @@ export default {
       this.sendFormData.gasPrice = val.amount
     },
     scanCode() { //扫码
+      // uni.navigateTo({
+      //   url: '/pages/scanCode/scanCode',
+      //   events: {
+      //     qrCodeResult: (res) => {
+      //       console.log(res)
+      //       this.receiveAddress = this.$refs.addressInptval.childValue = res
+      //     }
+      //   }
+      // })
+      // uni.navigateTo({
+      //   url: '/pages/scanCode/scanCodeNvue'
+      // })
       uni.scanCode({
         onlyFromCamera: false,
         scanType: ['qrCode'],
         success: (res) => {
-          this.receiveAddress = this.$refs.addressInptval.childValue = res.result
+          if (res.scanType == 'EAN_8') {
+            uni.showToast({
+              title: 'Error',
+              type: 'error'
+            })
+            // var filters = [plus.barcode.QR]
+            // plus.barcode.scan(res.path, (type, result, file, charset) => {
+            //   console.log(type)
+            //   console.log(result)
+            // }, (error) => { console.log(error) }, filters)
+          } else {
+            this.receiveAddress = this.$refs.addressInptval.childValue = res.result
+          }
         },
       })
     },

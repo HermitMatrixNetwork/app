@@ -9,7 +9,8 @@ var languages = {
     'text02': '我的',
     'text03': '交易',
     'text04': '市场',
-    'text07': '暂未开放'
+    'text07': '暂未开放',
+    'text08': '委托'
   },
   CT: {
     asset: '資產',
@@ -21,7 +22,8 @@ var languages = {
     'text02': '我的',
     'text03': '交易',
     'text04': '市場',
-    'text07': '暫未開放'
+    'text07': '暫未開放',
+    'text08': '委托'
   },
   EN: {
     asset: '資產',
@@ -33,7 +35,8 @@ var languages = {
     'text02': 'Me',
     'text03': 'Trade',
     'text04': 'Market',
-    'text07': 'Under development'
+    'text07': 'Under Development',
+    'text08': 'Delegate'
   }
 }
 
