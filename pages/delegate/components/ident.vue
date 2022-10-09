@@ -148,14 +148,16 @@ export default {
       this.sortRule = 'des'
       this.sortTarget = language[this.$cache.get('_language')].text48
       this.currentWallet = this.$cache.get('_currentWallet')
-      this.callMainCoinBalance++
       this.loading = true
       this.unBoundingBalance = 0
-      this.callUnboundingDelegators++
-      this.callDelegations++
       this.callDelegationsLoading = true
       this.delegationsBlance = 0
       this.ValidatorsData()
+      setTimeout(()=>{
+        this.callMainCoinBalance++
+        this.callUnboundingDelegators++
+        this.callDelegations++
+      },300)
       // this.address = this.currentWallet.address
     },
     changeStatus(status) {
