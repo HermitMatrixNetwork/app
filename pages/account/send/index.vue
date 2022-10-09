@@ -373,9 +373,16 @@ export default {
       this.$nextTick(() => {
         // this.checkSuccess = this.sendFormData
         // @todo 跳转到资产详情页再执行交易
-        // this.transferLoading = true
+        let {receiveAddress,userAddress,sendAmount,memo,gas,gasPrice,decimal,token} = this.sendFormData
+        const {ID} = this.token
         this.verifyTouchID = 3
         this.showToast = false
+        console.log('tokenID',ID)
+        uni.redirectTo({
+					  url: `./token_content${ID==0?'':'_other'}?tokenID=${this.token?ID:0}&sendToken=${JSON.stringify({receiveAddress,userAddress,sendAmount,memo,gas,gasPrice,decimal,token})}`
+        })
+        // this.transferLoading = true
+        
         // this.modalPasswordIsShow = true
         // this.verifyMethod = 'password'
         // this.toast.msg = `${this.language.text198}...`
