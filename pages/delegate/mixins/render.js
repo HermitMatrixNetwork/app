@@ -21,6 +21,7 @@ export default {
           getRewards(delegatorAddress, validatorAddress)
         ]
         ).then(res => {
+          console.log('请求结束--2')
           list[i].validator = res[0]
           list[i].rewards = res[1].rewards[0]
         })

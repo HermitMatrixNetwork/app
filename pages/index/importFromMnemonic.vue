@@ -7,7 +7,7 @@
         <view class="item-label">{{ language.text25 }}</view>
         <view class="item-input">
           <u--textarea v-model="mnemonic" height="180rpx" @input="mnemonicChange" :placeholder="language.text33"
-            maxlength="120" :formatter='formatter'>
+            maxlength="-1" :formatter='formatter'>
           </u--textarea>
         </view>
       </view>

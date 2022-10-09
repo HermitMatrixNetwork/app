@@ -151,6 +151,8 @@ export default {
     async updateData() {
       console.log('delegate update data')
       // if (this.$cache.get('_updateDelegateInfo') === null || this.$cache.get('_updateDelegateInfo')) {
+
+
       this.list = []
       this.loading = true
       this.allData = {}
@@ -160,14 +162,18 @@ export default {
       }
       
       this.address = this.currentWallet.address
+      
       this.unBoundingBalance = 0
-      this.cumulativeRewar = 0
+      this.cumulativeReward = 0
       this.callUnboundingDelegators++
       const res = await getCumulativeRewardCollection({
         address: this.$cache.get('_currentWallet').address
       })
       console.log('累计领取奖励',res)
-      this.cumulativeReward = !isNaN(res.data.data.withdrawAmount)?res.data.data.withdrawAmount / mainCoin.decimals:0
+      this.cumulativeReward = !isNaN(res.data.data.withdrawAmount)?res.data.data.withdrawAmount / mainCoin.decimals : 0
+
+
+
       // if (this.$cache.get('_delegateInfo')) {
       // this.address = this.currentWallet.address
       // this.allData = this.$cache.get('_delegateInfo')
@@ -182,7 +188,6 @@ export default {
           this.unBoundingBalance += Number(item.balance)
         })
       })
-      
       this.unBoundingBalance = this.unBoundingBalance / mainCoin.decimals
       this.unboundingBlanceLoading = false
       // this.unBoundingBalance = res.result.unboundingResponses.reduce((pre, cur, 0) => {
@@ -190,6 +195,7 @@ export default {
       // })
     },
     goTo(url) {
+      console.log('click fire')
       uni.navigateTo({
         url,
         events: {
@@ -200,6 +206,7 @@ export default {
       })
     },
     async initData(data) {
+      console.log('请求结束')
       this.allData = data
       let { list } = data
       this.list.forEach((item, index) => {
@@ -221,6 +228,7 @@ export default {
       this.$cache.set('_delegateInfo', this.allData, 0)
       
       this.updateRewards = JSON.parse(JSON.stringify(data.list))
+      
     },
     handerRewards(res) {
       this.list = res
@@ -281,17 +289,37 @@ export default {
         //   updateDelegateInfo = JSON.parse(updateDelegateInfo).data.data          
         // }
         // if (!updateDelegateInfo) return; 
-        let list = await this.getLists(address)
-        let total = 0, totalReward = 0
-        list.forEach(item => {
-          total += Number(item.balance.amount)
-          totalReward += Number(item.rewards.amount)
+        
+        
+        // @fixed
+        // let list = await this.getLists(address)
+        // let total = 0, totalReward = 0
+        // list.forEach(item => {
+        //   total += Number(item.balance.amount)
+        //   totalReward += Number(item.rewards.amount)
+        // })
+        // let data = {}
+        // data.total = total / mainCoin.decimals
+        // data.totalReward = totalReward / mainCoin.delegateDecimals
+        // data.list = list
+        // renderUtils.runMethod(this._$id, 'initData', data, this)
+
+        
+        await this.getLists(address).then(list => {
+          let total = 0, totalReward = 0
+          list.forEach(item => {
+            total += Number(item.balance.amount)
+            totalReward += Number(item.rewards.amount)
+          })
+          let data = {}
+          data.total = total / mainCoin.decimals
+          data.totalReward = totalReward / mainCoin.delegateDecimals
+          data.list = list
+          renderUtils.runMethod(this._$id, 'initData', data, this)
         })
-        let data = {}
-        data.total = total / mainCoin.decimals
-        data.totalReward = totalReward / mainCoin.delegateDecimals
-        data.list = list
-        renderUtils.runMethod(this._$id, 'initData', data, this)
+
+
+
 
         // renderUtils.runMethod(this._$id, 'searchData', data, this)
       },

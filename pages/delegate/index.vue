@@ -37,9 +37,13 @@ export default {
   onShow () {
     this.$nextTick(() => {
       setTimeout(() => {
+        console.log('发出请求')
         this.$refs.customChildNode.updateData()
-      }, 500)
+      }, 1000)
     })
+  },
+  onHide() {
+    clearInterval(this.$refs.customChildNode.timer)
   },
   onUnload() {
     clearInterval(this.$refs.customChildNode.timer)
@@ -57,13 +61,13 @@ export default {
       handler (newVal) {
         this.$nextTick(() => {
           this.$refs.customChildNode.updateData()
-          clearInterval(this.$refs.customChildNode.timer)
+          clearTimeout(this.$refs.customChildNode.timer)
         })
       }
     }
   },
   onPullDownRefresh() {
-    clearInterval(this.$refs.customChildNode.timer)
+    clearTimeout(this.$refs.customChildNode.timer)
     this.$refs.customChildNode.updateData()
     // this.$nextTick(() => {
     //   uni.stopPullDownRefresh()
