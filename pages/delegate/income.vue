@@ -265,6 +265,11 @@ export default {
 
   },
   onShow() {
+    let wallet = this.$cache.get('_currentWallet')
+    if (wallet.withdrawAddress) {
+      this.$refs.addressInptval ? this.$refs.addressInptval.childValue = wallet.withdrawAddress : this.receiveAddress =
+          wallet.withdrawAddress
+    }
     // const wallet = this.currentWallet
     // if (!wallet.withdrawAddress) {
     // this.callWithdrawAddress = wallet.address // @test delay
@@ -274,9 +279,7 @@ export default {
   },
   onReady() {
     const wallet = this.currentWallet
-    setTimeout(() => {
-      this.callWithdrawAddress = wallet.address
-    }, 500)
+    this.callWithdrawAddress = wallet.address
   },
   filters: {
     sliceAddress
@@ -462,6 +465,7 @@ export default {
       this.callRenderGetBanlance++
     },
     handlerWithdrawAddress(res) {
+      console.log(res, 'res response')
       this.callWithdrawAddress = 0
       if (res.withdrawAddress) {
         const wallet = this.currentWallet
