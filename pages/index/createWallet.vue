@@ -99,6 +99,9 @@ export default {
       }
     }
   },
+  onLoad(options) {
+    this.from = options.from
+  },
   methods: {
     goBack() {
       uni.navigateBack()
@@ -119,12 +122,12 @@ export default {
     },
     toBackupReminder(wallet, privateKey) {
       uni.navigateTo({
-        url: './backupReminder'
+        url: `./backupReminder?from=${this.from}`
       })
     },
     formatter(val){
-		      return val.replace(/[\>\<\&\'\"]/g,'')
-		    }
+      return val.replace(/[\>\<\&\'\"]/g,'')
+    }
   }
 }
 </script>

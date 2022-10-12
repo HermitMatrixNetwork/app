@@ -386,10 +386,12 @@ export default {
           case 'recipient':
             item.icon = require('@/static/img/account/shoukuan2.png')
             this.accountTransfer['recipient'].push(item)
+            item.showAddress = item.from_address
             break
           case 'transfer':
             item.icon = require('@/static/img/account/fasong2.png')
             this.accountTransfer['transfer'].push(item)
+            item.showAddress = item.to_address
             break
           }
 
@@ -496,12 +498,12 @@ export default {
   filters: {
     sliceAddress,
     formatBalance(val) {
-      const int = (val + '').split('.')[0]
-      let float = (val + '').split('.')[1]
-      if (float) {
-        float = float.substr(0, 6)
-      }
-      return (int + '.' + (float || '000000')) || '0.000000'
+      // const int = (val + '').split('.')[0]
+      // let float = (val + '').split('.')[1]
+      // if (float) {
+      //   float = float.substr(0, 6)
+      // }
+      return (val && Number(val).toFixed(6)) || '0.000000'
     }
   },
   computed: {
@@ -588,7 +590,15 @@ export default {
         } else {
           balance = await this.getOtherTokenBalance(token, wallet)
         }
-
+        if (!token.decimals) {
+          tokenInfo = await getTokenDecimals({
+            contract: {
+              address: token.contract_address,
+              codeHash: token.codeHash
+            }
+          })
+          token.decimals = Math.pow(10, tokenInfo.token_info.decimals) || 1
+        }
         if (token.decimals) balance = balance / token.decimals
         token.balance = balance
         token.loadingBalance = false

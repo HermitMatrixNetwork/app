@@ -15,7 +15,8 @@
           </view>
         </view>
         <div class="right" >
-          <text class="num" :class="[item.type == 'withdraw' ? item.reciver_address == wallet.address ? 'plus' : 'minus' : '']">{{ item.type == "withdraw" ? item.reciver_address == wallet.address ? '+' : '-' : '' }} {{ item.amount }} {{ mainCoin.alias_name }}</text>
+          <!-- {{ item.type == "withdraw" ? item.reciver_address == wallet.address ? '+' : '-' : '' }} -->
+          <text class="num" :class="[item.type == 'withdraw' ? item.reciver_address == wallet.address ? 'plus' : 'minus' : '', `${item.type}-amount`]">{{ ['setWithdrawAddress'].includes(item.type) ? '' : (item.plus ? '+' : '-') }} {{ item.amount }} {{ mainCoin.alias_name }}</text>
         </div>
       </view>
       <view class="end">{{ language.text110 }}</view>
@@ -103,13 +104,17 @@ export default {
           item.amount = item.tx.body.messages[0].amount.amount / mainCoin.decimals
       
           if (type.includes('MsgUndelegate')) {
-            item.icon = '/static/img/delegate/fasong2.png'
+            item.icon = '/static/img/account/undelegate.png'
             item.showAddress = item.validator_address
+            item.type = 'undelegate'
+            item.plus = true
             tempUndelegateResult.push(item)
       
           } else if (type.includes('MsgDelegate')) {
-            item.icon = '/static/img/delegate/weituo2.png'
+            item.icon = '/static/img/account/delegate2.png'
             item.showAddress = item.validator_address
+            item.type = 'delegate'
+            item.plus = false
             tempDelegateResult.push(item)
           }
       
@@ -135,6 +140,7 @@ export default {
               item.reciver_address = p1
             })
             item.type = 'withdraw'
+            item.plus = item.reciver_address == this.wallet.address
           } else {
             item.raw_log.replace(/"key":"withdraw_address","value":"([0-9a-z]*)"/, (match, p1) => {
               item.reciver_address = p1
@@ -238,5 +244,13 @@ export default {
     text-align: center;
     font-size: 28rpx;
     color: #2C365A;
+  }
+  
+  .delegate-amount {
+    color: #275EF1 !important;
+  }
+  
+  .undelegate-amount {
+    color: #17C499 !important;
   }
 </style>

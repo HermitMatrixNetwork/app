@@ -94,13 +94,14 @@ export default {
       // })
       return true
     }
-  },
+  }
 }
 </script>
 
 <style lang="scss" scoped>
   .select-node {
     padding-top: calc(112rpx + var(--status-bar-height));
+    height: 100vh;
   }
   
 	.lists {

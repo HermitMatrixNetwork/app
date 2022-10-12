@@ -130,7 +130,10 @@ export default {
     text124: '暂无反馈历史',
     text125: '服务协议',
     text126: '版权归 Hermit Wallet 所有',
-    text127: '最近更新于'
+    text127: '最近更新于',
+    text128: '邀请好友',
+    text129: '二维码生成中',
+    text130: '保存图片成功'
   },
   EN: {
     addressErrorTipDuplicate: '钱包地址已存在，请勿重复添加',
@@ -168,7 +171,7 @@ export default {
     'text29': 'Confirm',
     'text30': 'Setup Successfully!',
     'text31': 'Security Settings',
-    'text32': 'Fingerprint identification',
+    'text32': 'Fingerprint Identification',
     'text33': 'Tip: You didn\'t turn on and enter your fingerprint at the mobile phone settings, and the Hermit Wallet app can\'t get fingerprint information. Please set it up first!',
     'text34': 'Please enter your fingerprint to complete the verification.',
     'text35': 'Fingerprint entry error, please re-enter!',
@@ -263,7 +266,10 @@ export default {
     text124: 'There is no feedback history.',
     text125: 'Service Agreement',
     text126: 'Copyright by Hermit Wallet',
-    text127: 'Last updated on'
+    text127: 'Last updated on',
+    text128: 'Invite Friends',
+    text129: 'Generating QR code',
+    text130: 'Successfully saved the picture'
   },
   CT: {
     'text01': '我的',
@@ -392,6 +398,9 @@ export default {
     text124: '暫無反饋歷史',
     text125: '服務協議',
     text126: '版權歸 Hermit Wallet 所有',
-    text127: '最近更新於'
+    text127: '最近更新於',
+    text128: '邀請好友',
+    text129: '二維碼生成中',
+    text130: '保存圖片成功'
   }
 }

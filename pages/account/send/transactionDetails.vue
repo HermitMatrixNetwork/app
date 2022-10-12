@@ -165,6 +165,46 @@ export default {
           [this.language.text88]: res.transactionHash,
           [this.language.text239]: res.height
         }
+      } else if (typeUrl.includes('MsgInstantiateContract')) {
+        this.transactionMessage = {
+          [this.language.text92]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text111]: res.fee,
+          [this.language.text93]: this.$cache.get('_currentWallet').address,
+          [this.language.text88]: res.transactionHash,
+          [this.language.text239]: res.height
+        }
+      } else if (typeUrl.includes('MsgUnjail')) {
+        this.transactionMessage = {
+          [this.language.text92]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text111]: res.fee,
+          [this.language.text93]: this.$cache.get('_currentWallet').address,
+          [this.language.text88]: res.transactionHash,
+          [this.language.text239]: res.height
+        }
+      } else if (typeUrl.includes('RaAuthenticate')) {
+        this.transactionMessage = {
+          [this.language.text92]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text111]: res.fee,
+          [this.language.text93]: this.$cache.get('_currentWallet').address,
+          [this.language.text88]: res.transactionHash,
+          [this.language.text239]: res.height
+        }
+      } else if (typeUrl.includes('MsgStoreCode')) {
+        this.transactionMessage = {
+          [this.language.text92]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text111]: res.fee,
+          [this.language.text93]: this.$cache.get('_currentWallet').address,
+          [this.language.text88]: res.transactionHash,
+          [this.language.text239]: res.height
+        }        
+      } else if (typeUrl.includes('MsgCreateValidator')) {
+        this.transactionMessage = {
+          [this.language.text92]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text111]: res.fee,
+          [this.language.text93]: this.$cache.get('_currentWallet').address,
+          [this.language.text88]: res.transactionHash,
+          [this.language.text239]: res.height
+        }        
       }
       
       this.loading = false
@@ -180,7 +220,6 @@ export default {
         [this.language.text84]: `${res.type == 'transfer' ? '-' : res.type == 'recipient' ? '+' : ''}${res.amount}`,
         [this.language.text16]: res.to_address,
         [this.language.text87]: res.from_address,
-        [this.language.text88]: res.sender,
         'Memo': res.memo,
         [this.language.text239]: res.height
       }

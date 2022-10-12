@@ -59,12 +59,13 @@ export default {
         flag: 'email',
         icon: '/static/img/mine/contact/email.png',
         value: ''
-      },{
-        label: language[this.$cache.get('_language')].text68,
-        flag: 'wechat',
-        icon: '/static/img/mine/contact/wechat.png',
-        value: ''
       }],
+      // {
+      //   label: language[this.$cache.get('_language')].text68,
+      //   flag: 'wechat',
+      //   icon: '/static/img/mine/contact/wechat.png',
+      //   value: ''
+      // }
       loading: true
     }
   },

@@ -1,20 +1,22 @@
 <template>
 	<view class="list">
-		<view class="item" v-for="(item,index) in list" :key="index" @click="clickItem(item)">
-			<view class="left">
-				<view class="name">
-					{{item.validator.description.moniker}}
-				</view>
-				<view class="address">
-					{{item.validator.operatorAddress|sliceAddress(7, -8)}}
-				</view>
-			</view>
-			<div class="right">
-				<text class="num" v-if="redirectURL !== '/pages/delegate/income'">{{item.balance.amount / mainCoin.decimals }}</text>
-				<text class="num" v-else>{{ (item.rewards.amount / mainCoin.delegateDecimals).toFixed(5) }}</text>
-        <radio class="radio" shape="circle" :checked="index == selectIndex"></radio>
-			</div>
-		</view>
+    <scroll-view scroll-y class="scroll-container" :style="{ height: scrollHeight } ">
+      <view class="item" v-for="(item,index) in list" :key="index" @click="clickItem(item)">
+      	<view class="left">
+      		<view class="name">
+      			{{item.validator.description.moniker}}
+      		</view>
+      		<view class="address">
+      			{{item.validator.operatorAddress|sliceAddress(7, -8)}}
+      		</view>
+      	</view>
+      	<div class="right">
+      		<text class="num" v-if="redirectURL !== '/pages/delegate/income'">{{item.balance.amount / mainCoin.decimals }}</text>
+      		<text class="num" v-else>{{ (item.rewards.amount / mainCoin.delegateDecimals).toFixed(5) }}</text>
+          <radio class="radio" shape="circle" :checked="index == selectIndex"></radio>
+      	</div>
+      </view>
+    </scroll-view>
 	</view>
 </template>
 
@@ -49,8 +51,17 @@ export default {
       mainCoin
     }
   },
-
+  mounted() {
+    this.getSystemStatusHeight()
+  },
   methods: {
+    getSystemStatusHeight() {
+      uni.getSystemInfo({
+        success: res => {
+          this.systemBarHeight = res.statusBarHeight
+        }
+      })
+    },
 	 selRadio(index){
       console.log(index)
 	 },
@@ -71,8 +82,12 @@ export default {
       }
       
     },
+  },
+  computed: {
+	  scrollHeight() {
+	    return `calc(100vh - 112rpx - ${this.systemBarHeight + 'rpx'})`
+	  }
   }
-	
 }
 </script>
 

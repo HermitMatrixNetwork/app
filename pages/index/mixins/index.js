@@ -48,7 +48,7 @@ export default {
 
       // 删除隐私信息
       this.deletePrivateInfo(wallet, action)
-
+      
       // keystore解密私钥(if it need)
       this.getPrivateKeyFromKeystore && await this.getPrivateKeyFromKeystore(wallet)
 
@@ -137,15 +137,20 @@ export default {
         const inferAddressPages = ['importFromPrivatekey', 'importFromKeystore']
         let address = wallet.address
         if (inferAddressPages.includes(action)) {
-					if (this.privateKey64.split('').find(item => item.charCodeAt(0) === 65533) !== undefined) {
-						throw Error('私钥错误')
-					}
+          if (this.privateKey64.split('').find(item => item.charCodeAt(0) === 65533) !== undefined) {
+            throw Error('私钥错误')
+          }
+          // if (action == 'importFromKeystore') {
+          //   console.log('fire')
+          //   await this.getPrivateKeyFromKeystore()
+          // }
           const pubkey = await WalletCrypto.getPublickey(WalletCrypto.StringToUint(this.privateKey64))
           address = WalletCrypto.pubkeyToAddress(pubkey)
         }
 
         return address
       } catch (e) {
+        console.log(e)
         this.$refs.notify.show('error', this.language.text60)
         return false
       }

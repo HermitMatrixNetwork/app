@@ -48,6 +48,9 @@ export default {
       language: language[this.$cache.get('_language')]
     }
   },
+  onLoad(options) {
+    this.from = options.from
+  },
   created() {
     this.wallet = this.$cache.get('_temporaryWallet')
     this.mnemonicList = WalletCrypto.decode(this.wallet.mnemonic).split(' ')
@@ -82,7 +85,7 @@ export default {
       }
     },
     checkComplete() {
-      return this.errorIndex == -1 && this.pickedMnemonicList.length == 12
+      return this.errorIndex == -1 && this.pickedMnemonicList.length == this.mnemonicList.length
     },
     confirm() {
       if (this.checkComplete()) {
@@ -91,8 +94,11 @@ export default {
         // uni.reLaunch({
         //   url: '/pages/account/index'
         // })
+        if (this.from) {
+          this.$cache.set('_closeSwitchPopup', true, 0)
+        }
         uni.switchTab({
-          url: '/pages/account/index'
+          url: `/pages/account/index?from=${this.from}`
         })
       }
     }
@@ -126,7 +132,7 @@ export default {
 
     &-input {
       width: 670rpx;
-      height: 420rpx;
+      min-height: 420rpx;
       padding: 24rpx;
       margin-bottom: 48rpx;
       background: #FBFCFE;

@@ -98,6 +98,10 @@ export default {
         page: './yuyan/index'
       }],
       bottom: [{
+        name: language[this.$cache.get('_language')].text128,
+        icon: 'yaoqing.png',
+        page: './yaoqing/index'
+      },{
         name: language[this.$cache.get('_language')].text61,
         icon: 'bangzhu.png',
         page: './bangzhu/index'

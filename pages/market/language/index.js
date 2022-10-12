@@ -10,7 +10,14 @@ export default {
     text08: '最近使用',
     text09: 'Tools',
     text10: '暂无数据',
-    text11: '暂无记录'
+    text11: '暂无记录',
+    text12: '复制链接',
+    text13: '刷新',
+    text14: '收藏',
+    text15: '复制成功！',
+    text16: '已收藏',
+    text17: '已取消收藏',
+    text18: '我的收藏'
   },
   EN: {
     'text01': 'DAPPs',
@@ -23,7 +30,14 @@ export default {
     text08: 'Recently Used',
     text09: 'Tools',
     text10: 'No Data',
-    text11: 'No Record'
+    text11: 'No Record',
+    text12: 'Copy Link',
+    text13: 'Refresh',
+    text14: 'Collection',
+    text15: 'Copy Successfully!',
+    text16: 'Have already collected',
+    text17: 'Collection canceled',
+    text18: 'My Collection'
   },
   CT: {
     'text01': '應用',
@@ -36,6 +50,13 @@ export default {
     text08: '最近使用',
     text09: 'Tools',
     text10: '暫無數據',
-    text11: '暫無記錄'
+    text11: '暫無記錄',
+    text12: '復製鏈接',
+    text13: '刷新',
+    text14: '收藏',
+    text15: '復製成功！',
+    text16: '已收藏',
+    text17: '已取消收藏',
+    text18: '我的收藏'
   }
 }

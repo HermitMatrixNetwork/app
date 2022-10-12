@@ -137,9 +137,7 @@ export default {
         bgColor: '#275EF1'
       })
       setTimeout(() => {
-        uni.redirectTo({
-          url: './index'
-        })
+        uni.navigateBack()
       }, 1000)
     },
     confirm() {

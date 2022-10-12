@@ -53,19 +53,21 @@
 				</view>
 				<custom-loading v-if="loading" class="loading"></custom-loading>
         <view class="list-data" v-else-if="showList.length">
-					<view class="list-item" v-for="(item,index) in showList" :key="index" @click="toValidatorDetail(item)">
-						<view class="left">
-							<view class="name">{{item.validator_name }}</view>
-							<view class="other">{{item.operator_address|sliceAddress(7, -8)}}</view>
-						</view>
-						<view class="center">
-							{{ item.uptimes }}
-						</view>
-						<view class="right">
-							<view class="name">{{ item.token }}</view>
-							<view class="other">{{ language.text50 }}: {{ item.rate }}</view>
-						</view>
-					</view>
+          <scroll-view scroll-y class="scroll-container" :style="{ height: scrollHeight } ">
+            <view class="list-item" v-for="(item,index) in showList" :key="index" @click="toValidatorDetail(item)">
+              <view class="left">
+                <view class="name">{{item.validator_name }}</view>
+                <view class="other">{{item.operator_address|sliceAddress(7, -8)}}</view>
+              </view>
+              <view class="center">
+                {{ item.uptimes }}
+              </view>
+              <view class="right">
+                <view class="name">{{ item.token }}</view>
+                <view class="other">{{ language.text50 }}: {{ item.rate }}</view>
+              </view>
+            </view>
+          </scroll-view>
 				</view>
 				<no-data v-else :tip="language.text101"/>
 			</view>
@@ -135,14 +137,45 @@ export default {
       unBoundingBalance: 0,
       callDelegationsLoading: true,
       callDelegations: 0,
-      delegationsBlance: 0
+      delegationsBlance: 0,
+      tabsHeight: 0,
+      sortListHeight: 0,
+      listTitleHeight: 0
     }
   },
   created() {
     // this.address = this.currentWallet.address
     // this.updateData()
   },
+  mounted() {
+    this.getSystemStatusHeight()
+    this.calculateHeight()
+  },
   methods: {
+    getSystemStatusHeight() {
+      uni.getSystemInfo({
+        success: res => {
+          this.systemBarHeight = res.statusBarHeight
+        }
+      })
+    },
+    calculateHeight() {
+      const query = uni.createSelectorQuery().in(this)
+      query.select('.tabs').boundingClientRect(data => {
+       
+        this.tabsHeight = data.height + 'px'
+      })
+    
+      query.select('.sort-list').boundingClientRect(data => {
+        this.sortListHeight = data.height + 'px'
+      })
+      
+      query.select('.list-title').boundingClientRect(data => {
+        this.listTitleHeight = data.height + 'px'
+      })
+      query.exec()
+      console.log()
+    },
     updateData() {
       console.log('indent update data')
       this.sortRule = 'des'
@@ -179,12 +212,16 @@ export default {
     async ValidatorsData() {
       try {
         const res = (await getNodeList({
-          'chain_id':'ghmdev'
+          'chain_id':'dev'
         })).data.data.list        
         // this.validators = res
         this.validators = res.map(item => {
           item.token = item.tokens / mainCoin.decimals
-          item.uptimes = (1 - item.uptime) * 100 + '%'
+          if (item.uptime !== undefined) {
+            item.uptimes = (item.uptime * 100).toFixed(2) + '%'
+          } else {
+            item.uptimes = '0%'
+          }
           item.rate = item.commission_rate * 100 + '%'
           return item
         })
@@ -247,12 +284,12 @@ export default {
         validatorsList = this.validators
         break
       case 1:
-        // console.log('共识中')
-        validatorsList = this.validators.filter(item => item.jailed == 'false')
+        // console.log('活跃中')
+        validatorsList = this.validators.filter(item => item.jailed == false).slice(0 ,100)
         break
       case 2:
         // console.log('待解禁')
-        validatorsList = this.validators.filter(item => item.jailed == 'true')
+        validatorsList = this.validators.filter(item => item.jailed == true)
         break
       case 3: 
         // console.log('候选者')
@@ -277,6 +314,10 @@ export default {
         break
       }
       return this.sortRule == 'asc' ? ascList : ascList.reverse()
+    },
+    scrollHeight() {
+      const operation_btn = '180rpx'
+      return `calc(100vh - 56rpx - 112rpx - 200rpx - ${this.tabsHeight} - ${this.sortListHeight} - ${this.listTitleHeight} - ${operation_btn} - ${this.systemBarHeight + 'rpx'})`
     }
   }
 }
@@ -389,6 +430,7 @@ export default {
     width: 600rpx;
   }
 	.ident {
+    // height: 100vh;
 		// width: 686rpx;
 		// height: 280rpx;
 	}

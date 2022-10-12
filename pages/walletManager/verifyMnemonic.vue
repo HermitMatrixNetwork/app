@@ -9,7 +9,7 @@
       </view>
       <view class="mnemonic-input">
         <view class="mnemonic-input-item" v-for="(item, index) in pickedMnemonicList" :key="index"
-          @click="resetItem(item)">
+          @click="resetItem(item, index)">
           <view class="item">{{ item }}</view>
           <view class="error-icon" v-show="errorIndex > -1 && index >= errorIndex">
             <image src="/static/img/close.png" style="width: 36rpx; height: 36rpx;"></u-icon>
@@ -17,8 +17,8 @@
         </view>
       </view>
       <view class="mnemonic-content">
-        <view class="mnemonic-content-item" :class="{ disable: pickedMnemonicList.includes(item) }"
-          v-for="(item, index) in randomMnemonicList" :key="index" @click="pickItem(item)">
+        <view class="mnemonic-content-item" :class="{ disable: pickedMnemonicIndex.includes(index) }"
+          v-for="(item, index) in randomMnemonicList" :key="index" @click="pickItem(item, index)">
           {{ item }}
         </view>
       </view>
@@ -44,6 +44,7 @@ export default {
       mnemonicList: [], // 正确顺序的助记词
       randomMnemonicList: [], // 随机排序助记词 
       pickedMnemonicList: [], // 用户选择的助记词
+      pickedMnemonicIndex: [], // 用户选择助记词的索引 (基于随机助记词数组)
       errorIndex: -1, // 选择错误助记词的索引
     }
   },
@@ -54,14 +55,21 @@ export default {
   },
   methods: {
     // 删除选择的助记词
-    resetItem(item) {
-      const checkIndex = this.pickedMnemonicList.findIndex(val => val == item)
-      this.pickedMnemonicList.splice(checkIndex, 1)
+    resetItem(item, index) {
+      // const checkIndex = this.pickedMnemonicList.findIndex(val => val == item)
+      // this.pickedMnemonicList.splice(checkIndex, 1)
+      // this.validatePickedMnemonicList()
+      this.pickedMnemonicList.splice(index, 1)
+      this.pickedMnemonicIndex.splice(index, 1)
       this.validatePickedMnemonicList()
     },
     // 添加选中的助记词
-    pickItem(item) {
-      if (this.pickedMnemonicList.includes(item)) return
+    pickItem(item, index) {
+      // if (this.pickedMnemonicList.includes(item)) return
+      // this.pickedMnemonicList.push(item)
+      // this.validatePickedMnemonicList()
+      if (this.pickedMnemonicIndex.includes(index)) return
+      this.pickedMnemonicIndex.push(index)
       this.pickedMnemonicList.push(item)
       this.validatePickedMnemonicList()
     },
@@ -80,7 +88,7 @@ export default {
       }
     },
     checkComplete() {
-      return this.errorIndex == -1 && this.pickedMnemonicList.length == 12
+      return this.errorIndex == -1 && this.pickedMnemonicList.length == this.mnemonicList.length
     },
     confirm() {
       if (this.checkComplete()) {
@@ -120,7 +128,7 @@ export default {
 
     &-input {
       width: 670rpx;
-      height: 420rpx;
+      min-height: 420rpx;
       padding: 24rpx;
       margin-bottom: 48rpx;
       background: #FBFCFE;

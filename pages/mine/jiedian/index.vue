@@ -51,7 +51,8 @@ export default {
   onLoad() {
     this.nodeList = this.$cache.get('_nodeList') || [DEFAULT_RPC]
     this.$cache.set('_nodeList', this.nodeList, 0)
-    this.selectIndex = this.$cache.get('_nodeList').findIndex(item => item.link == this.currentRpc)
+    this.currentRpc = this.$cache.get('_currentRpc')
+    this.selectIndex = this.$cache.get('_nodeList').findIndex(item => item.link == this.$cache.get('_currentRpc'))
   },
   methods: {
     addNode() {

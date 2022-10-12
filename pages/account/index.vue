@@ -99,7 +99,8 @@
                   <view class="number" v-else style="display: flex; align-items: center; justify-content: flex-end;">
                     <!-- <custom-loading v-if="lockAmountLoading || unboundingBlanceLoading"></custom-loading> -->
                     <!-- <view v-else> -->
-                      {{ formatBalance(item.balance + lockAmount + unBoundingBalance) || '0.00' }}
+                      {{ formatBalance(new decimal(item.balance + '').add(new decimal(lockAmount + '')).add(new decimal(unBoundingBalance + '')).toString()) || '0.00' }}
+<!--                      {{ formatBalance(item.balance + lockAmount + unBoundingBalance) || '0.00' }} -->
                       <custom-loading v-if="updatingBalance"></custom-loading>
                     <!-- </view> -->
                   </view>
@@ -112,7 +113,7 @@
         </scroll-view>
       </view>
     </view>
-    <SwitchWallet :showSwitchWallet="showSwitchWallet" @close="closeSwitchWalletPopup" />
+    <SwitchWallet :showSwitchWallet="showSwitchWallet" @close="closeSwitchWalletPopup" ref="switchWallet"/>
 
     <view :initRender="initRender" :change:initRender="render.init"></view>
     <view :callBalanceLoading="callBalanceLoading" :change:callBalanceLoading="render.setBalanceLoading"></view>
@@ -143,6 +144,7 @@ import SwitchWallet from '@/pages/walletManager/switchWallet.vue'
 import TokenColumn from './send/components/TokenColumn.vue'
 import languages from './language'
 import mixin from './mixins/index.js'
+import decimal from 'decimal'
 export default {
   mixins: [mixin],
   components: {
@@ -207,6 +209,7 @@ export default {
       unboundingBlanceLoading: true,
       callUnboundingDelegators: 0,
       unBoundingBalance: 0,
+      decimal
     }
   },
   onPullDownRefresh() {
@@ -228,11 +231,14 @@ export default {
     }, 3000)
   },
   onShow() {
-
-  },
-  onReady() {
-    // this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
-    // this.initCoinList()
+    if (this.$cache.get('_closeSwitchPopup')) {
+      this.showSwitchWallet = false
+      this.$refs.switchWallet.showAddWallet = false
+      this.$cache.delete('_closeSwitchPopup')
+      this.currentWallet = this.$cache.get('_currentWallet')
+      this.address = this.currentWallet.address
+    }
+    
     this.$refs.custom_update && this.$refs.custom_update.checkUpdate()
     
     this.aa = false
@@ -247,6 +253,26 @@ export default {
       this.callUnboundingDelegators++
       this.getLockAmount++
     }, 1500)
+  },
+  onReady() {
+    // this.newuserAdres = this.userAdres.replace(this.userAdres.slice(16, 36), '***')
+    // this.initCoinList()
+    
+    
+    // this.$refs.custom_update && this.$refs.custom_update.checkUpdate()
+    
+    // this.aa = false
+    // this.firstShowAa = true
+    // this.lockAmountLoading = true
+    // this.unboundingBlanceLoading = true
+    // this.gettingBalance = true
+    // this.tokenList = this.$cache.get('_currentWallet').coinList || [mainCoin]
+    
+    // setTimeout(() => {
+    //   this.initRender++
+    //   this.callUnboundingDelegators++
+    //   this.getLockAmount++
+    // }, 1500)
 
   },
   created() {
@@ -367,10 +393,14 @@ export default {
         this.toast.msg = this.languages.text231
         this.toast.icon = '/static/img/mine/loading.gif'
         this.currentWallet = this.$cache.get('_currentWallet')
+        this.unboundingBlanceLoading = true
         this.lockAmountLoading = true
+        this.address = ''
         // this.initCoinList()
         this.tokenList = this.currentWallet.coinList
         this.$nextTick(() => {
+          this.address = this.$cache.get('_currentWallet').address
+          this.callUnboundingDelegators++
           this.initRender++
           this.getLockAmount++
         })
@@ -576,7 +606,6 @@ export default {
               }
             }
           }
-          
           if (coin.decimals) balance = balance / coin.decimals
           coin.balance = balance
           coin.loadingBalance = false

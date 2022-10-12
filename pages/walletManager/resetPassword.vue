@@ -145,6 +145,7 @@ export default {
   },
   onBackPress(event) {
     if (event.from === 'backbutton') {
+      console.log(111)
       uni.navigateTo({
         url: '/pages/walletManager/index'
       })

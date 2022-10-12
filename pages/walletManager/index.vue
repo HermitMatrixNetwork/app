@@ -109,6 +109,8 @@
             	<image src="/static/img/mine/zhiwen.png" style="width: 88rpx; height: 88rpx;"></image>
             </view>
           </view>
+          <view v-if="touchId" class="changeVerifyMethod" @click="changeVerifyMethod">{{ language.text197 }}
+          </view>
 
         </view>
       </template>
@@ -183,6 +185,14 @@ export default {
     if (this.touchId) this.verifyMethod = 'touchID'
   },
   methods: {
+    changeVerifyMethod() {
+      this.verifyMethod == 'password' ? this.verifyMethod = 'touchID' : this.verifyMethod = 'password'
+      if (this.verifyMethod == 'touchID') {
+        this.verify()
+      } else {
+        plus.fingerprint.cancel()
+      }
+    },
     verifyTouchIDFail() {
       this.showToast = false
     },
@@ -195,11 +205,36 @@ export default {
     verifyTouchIDSuccess() {
       this.$nextTick(() => {
         // this.checkSuccess = this.sendFormData
-        // this.transferLoading = true
+        this.transferLoading = true
         this.verifyTouchID = 3
         this.showToast = false
-        this.showConfirmPasswordModal = true
-        this.verifyMethod = 'password'
+        console.log(this.target)
+        if (this.target === 'editName') {
+          const name = this.name.trim()
+          if (name.length > 10 || name == '') {
+            this.editNameError = true
+            return
+          }
+          this.wallet.name = name
+          this.$cache.set('_currentWallet', this.wallet, 0)
+          this.editNameError = false
+          this.showEditWalletNameModal = false
+          this.$refs.notify.show('', this.language.text127, { bgColor: '#275EF1' })
+          this.name = ''
+        } else if (this.target === 'removeWallet') {
+          // 删除当前钱包
+          this.removeWallet()
+        } else if (this.target === 'resetPassword') {
+          uni.navigateTo({
+            url: './resetPassword'
+          })
+        } else {
+          uni.navigateTo({
+            url: `/pages/walletManager/export${this.target}Reminder`
+          })
+        }
+        // this.showConfirmPasswordModal = true
+        // this.verifyMethod = 'password'
         // this.toast.msg = `${this.language.text198}...`
         // this.toast.icon = '/static/img/mine/loading.gif'
         // uni.showToast({
@@ -327,6 +362,14 @@ export default {
     },
     formatter(val){
       return this.dealInputValue(val)
+    }
+  },
+  onBackPress(event) {
+    if (event.from === 'backbutton') {
+      uni.switchTab({
+        url: '/pages/account/index'
+      })
+      return true
     }
   }
 }
@@ -692,5 +735,14 @@ export default {
   	.logo {
   		text-align: center;
   	}
+  }
+  
+  .changeVerifyMethod {
+  	text-align: right;
+  	font-family: PingFangSC-Regular;
+  	font-size: 28rpx;
+  	color: #1E5EFF;
+  	margin-top: 20rpx;
+    margin-bottom: 5rpx;
   }
 </style>

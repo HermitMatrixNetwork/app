@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <view>
     <custom-header title="扫码">
       <template #right>
@@ -64,3 +64,34 @@ export default {
 <style lang="scss" scoped>
 
 </style>
+ -->
+ 
+ <template>
+   <view></view>
+ </template>
+ 
+<script>
+export default {
+  onReady() {
+    this.scanCode()
+  },
+  mounted() {
+    
+  },
+  methods: {
+    scanCode() {
+      // uni.scanCode({
+      //   onlyFromCamera: false,
+      //   scanType: ['qrCode'],
+      //   success: (res) => {
+      //     console.log(res)
+      //     if (res.scanType == 'EAN_8') { }
+      //     else {
+               
+      //     }
+      //   },
+      // })
+    }
+  }
+}
+</script>

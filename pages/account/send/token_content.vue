@@ -10,9 +10,9 @@
       <TokenColumn :tokenIcon="token.logo" :tokenName="token.alias_name" :tokenColumnStyle="tokenColumnStyle">
         <template #right>
           <view style="padding-right: 16rpx;" class="token_price">
-            <!-- <view class="balance" v-if="token.balance === undefined">0.00</view> -->
+            <view class="balance" v-if="token.balance === undefined">0.00</view>
             <custom-loading v-if="loadingBalace || lockAmountLoading  || unboundingBlanceLoading"></custom-loading>
-            <view class="balance" v-else>{{ ( token.balance + lockAmount  + unBoundingBalance)  | formatBalance }}
+            <view v-else class="balance" >{{ ( new decimal(token.balance + '').add(new decimal(lockAmount + '')).add(new decimal(unBoundingBalance + '')).toString())  | formatBalance }}
             </view>
             <view>
               <text class="symbol">$</text>
@@ -27,7 +27,7 @@
           <text>{{ language.text57 }}</text>
           <view class="quantity">
             <custom-loading v-if="loadingBalace"></custom-loading>
-            <view class="top" v-else>{{ token.balance | formatBalance }}</view>
+            <view class="top" v-else >{{ token.balance | formatBalance }}</view>
             <view class="bottom">
               <text class="symbol">$</text>
               <text>0.00000</text>
@@ -38,7 +38,7 @@
           <text>{{ language.text58 }}</text>
           <custom-loading v-if="lockAmountLoading  || unboundingBlanceLoading"></custom-loading>
           <view v-else class="quantity">
-            <view class="top">{{ (lockAmount  + unBoundingBalance) | formatBalance }}</view>
+            <view class="top">{{ (new decimal(lockAmount + '').add(new decimal(unBoundingBalance + '')).toString() ) | formatBalance }}</view>
             <view class="bottom">
               <text class="symbol">$</text>
               <text>0.00000</text>
@@ -75,7 +75,7 @@
                   </view>
                   <view class="right">
                     <view class="amount" :class="[`${record.type}-amount`]">
-                      {{ ['fail', 'setWithdrawAddress', 'executeContract'].includes(record.type) ? '' : (record.plus ? '+' : '-') }}
+                      {{ ['fail', 'setWithdrawAddress', 'executeContract', 'instantiateContract', 'MsgUnjail', 'RaAuthenticate', 'MsgStoreCode', 'MsgCreateValidator'].includes(record.type) ? '' : (record.plus ? '+' : '-') }}
                       {{ record.amount }}
                     </view>
                     <view class="real-money">
@@ -127,6 +127,7 @@
 // 究极不可维护代码之无脑复制黏贴☢
 import TokenColumn from './components/TokenColumn.vue'
 import mixin from '../mixins/index.js'
+import decimal from 'decimal'
 import {
   queryAccountHash
 } from '@/utils/secretjs/SDK.js'
@@ -234,7 +235,7 @@ export default {
       loadingBalace: true,
       lockAmountLoading: true,
       callRenderDelegateRecord: '',
-      lockAmount: 0,
+      lockAmount: 7,
       mainCoin,
       mainTokenHeight: '0rpx',
       navHeight: '0rpx',
@@ -244,7 +245,8 @@ export default {
       sendbtnLoading: false,
       unboundingBlanceLoading: true,
       callUnboundingDelegators: 0,
-      unBoundingBalance: 0,
+      unBoundingBalance: 0.248889,
+      decimal
     }
   },
   async onLoad(options) {
@@ -614,6 +616,27 @@ export default {
                 '@/static/img/account/contract.png')
               item.showAddress = item.tx.body.messages[0].contract
               item.type = 'executeContract'
+            } else if (type.includes('MsgInstantiateContract')) {
+              item.icon = require(
+                '@/static/img/account/instantiateContract.png')
+              item.type = 'instantiateContract'
+              item.showAddress = this.$cache.get('_currentWallet').address
+            } else if (type.includes('MsgUnjail')) {
+              // @todo icon input
+              item.type = 'MsgUnjail'
+              item.showAddress = this.$cache.get('_currentWallet').address
+            } else if (type.includes('RaAuthenticate')) {
+              // @todo icon input
+              item.type = 'RaAuthenticate'
+              item.showAddress = this.$cache.get('_currentWallet').address
+            } else if (type.includes('MsgStoreCode')) {
+              // @todo icon input
+              item.type = 'MsgStoreCode'
+              item.showAddress = this.$cache.get('_currentWallet').address
+            } else if (type.includes('MsgCreateValidator')) {
+              // @todo icon input
+              item.type = 'MsgCreateValidator'
+              item.showAddress = this.$cache.get('_currentWallet').address
             }
 
 
@@ -818,6 +841,30 @@ export default {
                 item.type = 'setWithdrawAddress'
               } else if (type.includes('MsgExecuteContract')) { // 调用合约
                 item.type = 'executeContract'
+                item.icon = require(
+                  '@/static/img/account/contract.png')
+                item.showAddress = item.tx.body.messages[0].contract
+              } else if (type.includes('MsgInstantiateContract')) {
+                item.icon = require(
+                  '@/static/img/account/instantiateContract.png')
+                item.type = 'instantiateContract'
+                item.showAddress = this.$cache.get('_currentWallet').address
+              } else if (type.includes('MsgUnjail')) {
+                // @todo icon input
+                item.type = 'MsgUnjail'
+                item.showAddress = this.$cache.get('_currentWallet').address
+              } else if (type.includes('RaAuthenticate')) {
+                // @todo icon input
+                item.type = 'RaAuthenticate'
+                item.showAddress = this.$cache.get('_currentWallet').address
+              } else if (type.includes('MsgStoreCode')) {
+                // @todo icon input
+                item.type = 'MsgStoreCode'
+                item.showAddress = this.$cache.get('_currentWallet').address
+              } else if (type.includes('MsgCreateValidator')) {
+                // @todo icon input
+                item.type = 'MsgCreateValidator'
+                item.showAddress = this.$cache.get('_currentWallet').address
               }
 
 
@@ -1037,6 +1084,9 @@ export default {
       if (float) {
         float = float.substr(0, 6)
       }
+      // new decimal(this.sendFormData.gas + '').mul(new decimal(this.sendFormData.gasPrice)).div(
+      //   new decimal(this.mainCoin.decimals)).toString()
+      
       return int + '.' + (float || '000000')
     }
   },

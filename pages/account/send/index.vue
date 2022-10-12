@@ -533,6 +533,7 @@ export default {
       // uni.navigateTo({
       //   url: '/pages/scanCode/scanCodeNvue'
       // })
+      this.$cache.set('_donotVerify', true, 0)
       uni.scanCode({
         onlyFromCamera: false,
         scanType: ['qrCode'],
@@ -540,7 +541,7 @@ export default {
           if (res.scanType == 'EAN_8') {
             uni.showToast({
               title: 'Error',
-              type: 'error'
+              icon : 'none'
             })
             // var filters = [plus.barcode.QR]
             // plus.barcode.scan(res.path, (type, result, file, charset) => {
@@ -551,6 +552,19 @@ export default {
             this.receiveAddress = this.$refs.addressInptval.childValue = res.result
           }
         },
+        complete: (res) => {
+          console.log('complete ')
+          this.$cache.set('_donotVerify', false, 0)
+          if (this.$cache.get('_touchId') == 1) {
+            uni.navigateTo({
+              url: '/pages/mine/anquan/backgroundVerify',
+              animationType: 'none',
+              success: () => {
+                plus.navigator.closeSplashscreen()
+              }
+            })
+          }
+        }
       })
     },
     jumpTokenlist() { //代币选择

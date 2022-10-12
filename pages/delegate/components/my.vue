@@ -83,7 +83,8 @@ export default {
   },
   data() {
     return {
-      language: language[this.$cache.get('_language')],
+      // language: language[this.$cache.get('_language')],
+      language: language['CN'],
       address: '',
       list: [],
       allData: {},
@@ -205,42 +206,47 @@ export default {
         }
       })
     },
-    async initData(data) {
-      console.log('请求结束')
-      this.allData = data
-      let { list } = data
-      this.list.forEach((item, index) => {
-        item = Object.assign(item , list[index])
+    initData(data) {
+      this.$nextTick(async () => {
+        console.log('请求结束')
+        this.allData = data
+        let { list } = data
+        this.list.forEach((item, index) => {
+          item = Object.assign(item , list[index])
+        })
+        for (let i = 0, len = list.length; i < len; i++) {
+          const item = list[i]
+          const { delegatorAddress, validatorAddress } = item.delegation
+          // 获取最新质押时间 
+          const res = (await txsQuery([`events=message.sender='${this.address}'`, `events=delegate.validator='${validatorAddress}'`])).data.tx_responses
+          if (res.length > 0) {
+            item.timestamp = res.pop().timestamp.replace(/T|Z/g, ' ')
+            item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() + 8)))
+          }
+        }
+        list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        this.list = list
+        this.loading = false
+        this.address = ''
+        this.$cache.set('_updateDelegateInfo', false, 36000)
+        this.$cache.set('_delegateInfo', this.allData, 0)
+        
+        this.updateRewards = JSON.parse(JSON.stringify(data.list))
       })
-      for (let i = 0, len = list.length; i < len; i++) {
-        const item = list[i]
-        const { delegatorAddress, validatorAddress } = item.delegation
-        // 获取最新质押时间
-        const res = (await txsQuery([`events=message.sender='${this.address}'`, `events=delegate.validator='${validatorAddress}'`])).data.tx_responses
-        item.timestamp = res.pop().timestamp.replace(/T|Z/g, ' ')
-        item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() + 8)))
-      }
-      list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      this.list = list
-      this.loading = false
-      this.address = ''
-      this.$cache.set('_updateDelegateInfo', false, 36000)
-      this.$cache.set('_delegateInfo', this.allData, 0)
-      
-      this.updateRewards = JSON.parse(JSON.stringify(data.list))
-      
     },
     handerRewards(res) {
-      this.list = res
-      let totalRewards = 0
-      this.list.forEach(item => {
-        totalRewards += Number(item.rewards.amount)
+      this.$nextTick(() => {
+        this.list = res
+        let totalRewards = 0
+        this.list.forEach(item => {
+          totalRewards += Number(item.rewards.amount)
+        })
+        totalRewards = totalRewards / mainCoin.delegateDecimals
+        this.allData.totalReward = totalRewards
+        this.timer = setTimeout(() => {
+          this.updateRewards = JSON.parse(JSON.stringify(this.list))
+        }, 2000)
       })
-      totalRewards = totalRewards / mainCoin.delegateDecimals
-      this.allData.totalReward = totalRewards
-      this.timer = setTimeout(() => {
-        this.updateRewards = JSON.parse(JSON.stringify(this.list))
-      }, 2000)
     }
   },
   onUnload() {
@@ -248,7 +254,7 @@ export default {
   },
   computed: {
     totalReward() {
-      let reward = this.allData.totalReward ? (this.allData.totalReward).toFixed(6) + '' : '0.000000'
+      let reward = this.allData.totalReward ? (Number(this.allData.totalReward)).toFixed(6) + '' : '0.000000'
       if (reward.length > 13) {
         reward = reward.substr(0, 6) + '...' + reward.substr(-6)
       }

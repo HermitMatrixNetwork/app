@@ -93,7 +93,7 @@ export default {
       if (address == '') return
       let data = await searchCoin(address)
       // console.log(data)
-      if (data.data.code !== 7) { // @todo 没有结果 再去查找中心化接口
+      if (data.data.code !== 7) {
         let result = data.data.data.result || null
         this.searchData(result)
       } else {
@@ -116,7 +116,7 @@ export default {
             alias_name: res.result.label,
             apply_type: 'SNIP20',
             full_name: res.result.label,
-            logo: '/static/img/account/uGHM.png',
+            logo: '/static/img/account/nologo.jpg',
             hot: 1,
             ID: this.$cache.get('_token_single_id')
           }

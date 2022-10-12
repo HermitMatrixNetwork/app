@@ -146,12 +146,33 @@ export default {
       }
     },
     scanCode() { //扫码
+      this.$cache.set('_donotVerify', true, 0)
       uni.scanCode({
         onlyFromCamera: false,
         scanType: ['qrCode'],
         success: (res) => {
-          this.$refs.textarea.childValue = res.result
+          if (res.scanType == 'EAN_8') {
+            uni.showToast({
+              title: 'Error',
+              icon : 'none'
+            })
+          } else {
+            this.$refs.textarea.childValue = res.result
+          }
         },
+        complete: (res) => {
+          console.log('complete ')
+          this.$cache.set('_donotVerify', false, 0)
+          if (this.$cache.get('_touchId') == 1) {
+            uni.navigateTo({
+              url: '/pages/mine/anquan/backgroundVerify',
+              animationType: 'none',
+              success: () => {
+                plus.navigator.closeSplashscreen()
+              }
+            })
+          }
+        }
       })
     },
     deleteBook() {

@@ -11,7 +11,9 @@
           <view v-if="selindex == 1" class="line" />
         </view>
       </div>
-      <component :is="['My', 'Ident'][selindex]" ref='customChildNode' @switchToDelegate="switchToDelegate"></component>
+      <!-- <keep-alive> -->
+        <component :is="['My', 'Ident'][selindex]" ref='customChildNode' @switchToDelegate="switchToDelegate" style="height: 20rpx;"></component>
+      <!-- </keep-alive> -->
       <!-- <My v-if="selindex===0" @switchToDelegate="switchToDelegate"></My> -->
       <!-- <Ident v-if="selindex===1" @switchToDelegate="switchToDelegate"></Ident> -->
     </view>
@@ -39,7 +41,7 @@ export default {
       setTimeout(() => {
         console.log('发出请求')
         this.$refs.customChildNode.updateData()
-      }, 1000)
+      }, 500)
     })
   },
   onHide() {
@@ -87,6 +89,7 @@ export default {
 
 .delegate {
   padding-top: calc(112rpx + var(--status-bar-height));
+  height: 100vh;
 
   .container {
     .top {

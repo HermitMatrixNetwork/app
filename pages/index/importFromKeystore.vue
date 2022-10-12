@@ -6,7 +6,16 @@
       <view class="item">
         <view class="item-label">{{ language.text53 }}</view>
         <view class="item-input">
-          <u--textarea v-model="keystore" :placeholder="language.text54" :formatter='formatter' :maxlength="-1"></u--textarea>
+          <!-- <u--textarea v-model="keystore" :placeholder="language.text54" :formatter='formatter' :maxlength="-1" :ignoreCompositionEvent="false"></u--textarea> -->
+            <textarea
+              style="background-color: #F2F4F8; width: 100%; padding: 32rpx;color: #2C365A !important;font-size: 28rpx !important;"
+              placeholder-style="font-weight: 400 !important;font-size: 28rpx !important;color: #8397B1 !important;"
+              placeholder="请输入内容"
+              border="surround"
+              v-model="keystore"
+              :maxlength="-1"
+              :placeholder="language.text54"
+            ></textarea>
         </view>
       </view>
       <view class="item">
@@ -45,6 +54,9 @@ export default {
   mixins: [mixin],
   components: {
     Notify
+  },
+  onLoad(options) {
+    this.from = options.from
   },
   data() {
     return {
@@ -109,13 +121,16 @@ export default {
       
     },
     cbInitWallet() {
-      uni.reLaunch({
+      if (this.from) {
+        this.$cache.set('_closeSwitchPopup', true, 0)
+      }
+      uni.switchTab({
         url: '/pages/account/index'
       })
     },
     formatter(val){
-		      return val.replace(/[\>\<\&\'\"]/g,'')
-		    }
+      return val.replace(/[\>\<\&\'\"]/g,'')
+    }
   }
 }
 </script>

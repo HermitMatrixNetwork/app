@@ -64,6 +64,9 @@ export default {
       language: language[this.$cache.get('_language')],
     }
   },
+  onLoad(options) {
+    this.from = options.from
+  },
   created() {
     this.wallet = this.$cache.get('_temporaryWallet')
     this.mnemonicList = WalletCryto.decode(this.wallet.mnemonic).split(' ')
@@ -74,7 +77,7 @@ export default {
     },
     toValidateMnemonic() {
       uni.navigateTo({
-        url: './validateMnemonic'
+        url: `./validateMnemonic?from=${this.from}`
       })
     }
   }

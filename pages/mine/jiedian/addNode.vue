@@ -98,9 +98,7 @@ export default {
         this.$cache.set('_nodeList', nodeList, 0)
         this.$refs.notify.show('', this.language.text60, { bgColor: '#275EF1' })
         setTimeout(() => {
-          uni.redirectTo({
-            url: './index'
-          })
+          uni.navigateBack()
         }, 1000)
       }
     },
@@ -146,6 +144,7 @@ export default {
         //#ifndef APP-PLUS 
         wallet = uni.getStorageSync('_currentWallet').data
         //#endif
+        console.log(val.link);
         let client = await SecretNetworkClient.create({
           grpcWebUrl: val.link,
           chainId: val.chainId,
@@ -157,6 +156,7 @@ export default {
             address: wallet.address,
             denom: 'ughm'
           })
+          console.log(res);
         } catch (e) {
           res.code = 7
         }

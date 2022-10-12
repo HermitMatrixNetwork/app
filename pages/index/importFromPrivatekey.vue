@@ -101,6 +101,9 @@ export default {
       }
     }
   },
+  onLoad(options) {
+    this.from = options.from
+  },
   methods: {
     importWallet() {
       const result = this.verifyForm()
@@ -122,7 +125,10 @@ export default {
       }
     },
     cbInitWallet() {
-      uni.reLaunch({
+      if (this.from) {
+        this.$cache.set('_closeSwitchPopup', true, 0)
+      }
+      uni.switchTab({
         url: '/pages/account/index'
       })
     },

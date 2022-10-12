@@ -41,10 +41,13 @@ export default {
       language: language[this.$cache.get('_language')],
     }
   },
+  onLoad(options) {
+    this.from = options.from
+  },
   methods: {
     toNextStep() {
       uni.navigateTo({
-        url: './backupMnemonic'
+        url: `./backupMnemonic?from=${this.from}`
       })
     }
   }

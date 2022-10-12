@@ -24,14 +24,17 @@
 
       <view class="recently">
         <view class="heade">
-          <view class="left">{{ language.text03 }}</view>
+          <view class="left">
+            <text class="recentl" :class="{ active: tabActive == 0 }" @click="clickItem('recently')">{{ language.text03 }}</text>
+            <text class="collect" :class="{ active: tabActive == 1 }" @click="clickItem('collection')">{{ language.text14 }}</text>
+          </view>
           <view class="right" @click="toRecently">
             <text>{{ language.text04 }}</text>
             <image src="/static/img/ic-arrow1.png"></image>
           </view>
         </view>
-        <view class="content" v-if="recently.length">
-          <view class="item" v-for="(item, index) in recently.slice(0, 2)" :key="index" @click="toWebView(item)">
+        <view class="content" v-if="tabActive  == 0 ? recently.length : collection.length">
+          <view class="item" v-for="(item, index) in (tabActive == 0 ? recently.slice(0, 2) : collection.slice(0, 2))" :key="index" @click="toWebView(item)">
             <image :src="item.logo"></image>
             <text>{{ item.name }}</text>
           </view>
@@ -102,10 +105,12 @@ export default {
       tools: [{
         name: '区块浏览器',
         des: '这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器',
-        url: 'http://158.247.237.78/home',
+        // url: 'http://158.247.237.78/home',
+        url: 'http://192.168.0.171:8888',
         logo: '/static/img/account/uGHM.png'
       }],
       recently: [],
+      collection: [],
       bannerList: [],
       background: ['#ff0', '#f00', '#0ff'],
       indicatorDots: true,
@@ -117,7 +122,8 @@ export default {
         fontSize: '28rpx',
         color: '#275EF1'
       },
-      current: 0
+      current: 0,
+      tabActive: 0,
     }
   },
   async created() {
@@ -130,17 +136,51 @@ export default {
     
     this.$cache.set('_recently', this.recently, 0)
 
-    this.tools = this.$cache.get('_tools') || this.tools
-    this.$cache.set('_tools', this.tools, 0)
+    // this.tools = this.$cache.get('_tools') || this.tools
+    // this.$cache.set('_tools', this.tools, 0)
     const res = (await getBannerList()).data.data.banner.photos.photos
     this.bannerList = res
+  },
+  onShow() {
+    this.collection = this.$cache.get('_collectionList') || []
+    if (this.$cache.get('_tempCollection')) {
+      const data = this.$cache.get('_tempCollection')
+      if (data.collect) { // 收藏
+        const alreadyExist = this.collection.find(item => item.url == data.url)
+        if (!alreadyExist) {
+          const collectData = this.tools.find(item => item.url == data.url)
+          this.collection.unshift(collectData)
+        }
+      } else { // 取消收藏
+        const collectIndex = this.collection.findIndex(item => item.url == data.url)
+        if (collectIndex > -1) {
+          this.collection.splice(collectIndex, 1)
+        }
+      }
+    } 
+    this.$cache.set('_collectionList', this.collection, 0)
+    
 
   },
   methods: {
+    clickItem(action) {
+      this.action = action
+      if (action == 'recently') {
+        this.tabActive = 0
+      } else if (action === 'collection') {
+        this.tabActive = 1
+      }
+    },
     toRecently() {
-      uni.navigateTo({
-        url: './recently'
-      })
+      if (this.action == 'recently') {
+        uni.navigateTo({
+          url: './recently'
+        })
+      } else if (this.action == 'collection') {
+        uni.navigateTo({
+          url: './collection'
+        })
+      }
     },
     toTools() {
       uni.navigateTo({
@@ -161,12 +201,12 @@ export default {
       this.$cache.set('_recently', this.recently, 0)
       
       uni.navigateTo({
-        url: `./webview?jumpUrl=${item.url}`
+        url: `./webview?jumpUrl=${item.url}&name=${item.name}`
       })
     },
     jump(link) { // 轮播图
       uni.navigateTo({
-        url: `./webview?jumpUrl=${link}`
+        url: `./webview?jumpUrl=${link}&name=${item.name}`
       })
     },
     search() {}
@@ -269,7 +309,31 @@ export default {
   .recently {
     padding: 32rpx;
     background-color: #fff;
-
+    .heade {
+      padding-bottom: 22rpx;
+    }
+    
+    .left {
+      display: flex;
+      .active {
+        &:after {
+          display: block;
+          content: '';
+          height: 2rpx;
+          width: 65%;
+          background-color: blue;
+          margin: 20rpx auto 0;
+        }
+      }
+    }
+    .recentl {
+      
+    }
+    
+    .collect {
+      margin-left: 32rpx;
+    }
+    
     .content {
       display: flex;
       justify-content: space-between;
