@@ -17,7 +17,10 @@ export default {
     text15: '复制成功！',
     text16: '已收藏',
     text17: '已取消收藏',
-    text18: '我的收藏'
+    text18: '我的收藏',
+    text19: '编辑',
+    text20: '取消收藏',
+    text21: '已取消收藏'
   },
   EN: {
     'text01': 'DAPPs',
@@ -37,7 +40,10 @@ export default {
     text15: 'Copy Successfully!',
     text16: 'Have already collected',
     text17: 'Collection canceled',
-    text18: 'My Collection'
+    text18: 'My Collection',
+    text19: 'Edit',
+    text20: 'Cancel Collection',
+    text21: 'Collection canceled'
   },
   CT: {
     'text01': '應用',
@@ -57,6 +63,9 @@ export default {
     text15: '復製成功！',
     text16: '已收藏',
     text17: '已取消收藏',
-    text18: '我的收藏'
+    text18: '我的收藏',
+    text19: '編輯',
+    text20: '取消收藏',
+    text21: '已取消收藏'
   }
 }

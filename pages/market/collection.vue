@@ -1,6 +1,11 @@
 <template>
   <view class="page-wrapper">
-    <custom-header :title="language.text18" :customStyle="{ 'z-index': 98 }"></custom-header>
+    <custom-notify style="z-index: 99" ref="notify"></custom-notify>
+    <custom-header :title="language.text18" :customStyle="{ 'z-index': 98 }">
+      <template #right>
+        <text class="right-text" @click="changeAction">{{ action == 'view' ? language.text19 : language.text20 }}</text>
+      </template>
+    </custom-header>
     <view class="border"></view>
 
     <view class="list" v-if="collection.length">
@@ -19,6 +24,11 @@
             <view class="article-border">
             </view>
           </view>
+          <view class="radio" v-if="action == 'edit'">
+            <u-checkbox-group @change="radioChange(item, index)">
+              <u-checkbox shape="circle"></u-checkbox>
+            </u-checkbox-group>
+          </view>
         </view>
         <view class="border"></view>
       </view>
@@ -33,11 +43,15 @@ export default {
   data() {
     return {
       collection: [],
+      selectedIndex: [],
+      tempCollection: [],
+      action: 'view',
       language: language[this.$cache.get('_language')]
     }
   },
   created() {
     this.collection = this.$cache.get('_collectionList') || []
+    this.tempCollection = this.$cache.get('_collectionList') || []
   },
   methods: {
     toWebView(item) { // Tools
@@ -46,6 +60,32 @@ export default {
         url: `./webview?jumpUrl=${item.url}`
       })
     },
+    changeAction() {
+      if (this.action == 'view') {
+        this.action = 'edit'
+      } else {
+        this.action = 'view'
+        
+        // 更新收藏列表
+        this.collection = this.collection.filter((item ,index) => !this.selectedIndex.includes(index))
+        this.$cache.set('_collectionList', this.collection, 0)
+        this.$refs.notify.show('error', this.language.text21, {
+          bgColor: '#275EF1'
+        })
+      }
+    },
+    clickItem() {
+      
+    },
+    radioChange(val, index) {
+      const findIndex = this.selectedIndex.findIndex(item => item == index)
+      if (findIndex > -1) { // 存在
+        this.selectedIndex.splice(findIndex, 1)
+      } else { // 不存在
+        this.selectedIndex.push(index)
+      }
+      console.log(this.selectedIndex)
+    }
   }
 }
 </script>
@@ -115,5 +155,11 @@ export default {
 
       }
     }
+  }
+  
+  .right-text {
+    font-family: PingFangSC-Regular;
+    font-size: 28rpx;
+    color: #1E5EFF;
   }
 </style>

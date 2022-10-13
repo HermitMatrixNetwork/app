@@ -40,7 +40,8 @@
           </view>
         </view>
         <view class="content" v-else>
-          <text class="no-data">{{ language.text10 }}</text>
+          <!-- <text class="no-data">{{ language.text10 }}</text> -->
+          <no-data class="no-data"></no-data>
         </view>
       </view>
 
@@ -157,6 +158,7 @@ export default {
           this.collection.splice(collectIndex, 1)
         }
       }
+      this.$cache.delete('_tempCollection')
     } 
     this.$cache.set('_collectionList', this.collection, 0)
     
@@ -458,9 +460,16 @@ export default {
   }
   
   .no-data {
-    font-family: PingFangSC-Regular;
-    font-size: 24rpx;
-    color: #8397B1;
-    line-height: 24rpx;
+    justify-content: center;
+    width: 100vw;
+    // font-family: PingFangSC-Regular;
+    // font-size: 24rpx;
+    // color: #8397B1;
+    // line-height: 24rpx;
+    /deep/ .no-img {
+      margin-bottom: 0 !important;
+      width: 120rpx !important;
+      height: 120rpx !important;
+    }
   }
 </style>
