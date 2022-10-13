@@ -52,13 +52,13 @@ export default {
     if (!this.$cache.get('_delegateInfo')) {
       this.timer = setInterval(() => {
         if (this.$cache.get('_delegateInfo')) {
-          this.list = this.$cache.get('_delegateInfo').list
+          this.list = this.$cache.get('_delegateInfo').list || []
           this.loading = false
           clearInterval(this.timer)
         }
       }, 2000)
     } else {
-      this.list = this.$cache.get('_delegateInfo').list
+      this.list = this.$cache.get('_delegateInfo').list || []
       this.loading = false
     }
   },

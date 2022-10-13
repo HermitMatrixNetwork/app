@@ -293,7 +293,7 @@ export default {
         break
       case 3: 
         // console.log('候选者')
-        validatorsList = this.validators.slice(21)
+        validatorsList = this.validators.filter(item => item.jailed == false).slice(100)
         break
       }
       

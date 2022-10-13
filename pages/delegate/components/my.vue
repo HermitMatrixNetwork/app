@@ -159,8 +159,8 @@ export default {
       this.allData = {}
       if (this.currentWallet.address !== this.$cache.get('_currentWallet').address) {
         this.currentWallet = this.$cache.get('_currentWallet')
-        this.$cache.delete('_delegateInfo')
       }
+      this.$cache.delete('_delegateInfo')
       
       this.address = this.currentWallet.address
       
