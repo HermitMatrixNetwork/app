@@ -621,16 +621,22 @@ export default {
                 '@/static/img/account/instantiateContract.png')
               item.type = 'instantiateContract'
               item.showAddress = this.$cache.get('_currentWallet').address
-            } else if (type.includes('MsgUnjail')) {
+            } else if (type.includes('MsgUnjail')) { // 节点激活
               // @todo icon input
+              item.icon = require(
+                '@/static/img/account/active.png')
               item.type = 'MsgUnjail'
               item.showAddress = this.$cache.get('_currentWallet').address
-            } else if (type.includes('RaAuthenticate')) {
+            } else if (type.includes('RaAuthenticate')) { // 节点注册
               // @todo icon input
+              item.icon = require(
+                '@/static/img/account/register.png')
               item.type = 'RaAuthenticate'
               item.showAddress = this.$cache.get('_currentWallet').address
-            } else if (type.includes('MsgStoreCode')) {
+            } else if (type.includes('MsgStoreCode')) { // 节点激活
               // @todo icon input
+              item.icon = require(
+                '@/static/img/account/active.png')
               item.type = 'MsgStoreCode'
               item.showAddress = this.$cache.get('_currentWallet').address
             } else if (type.includes('MsgCreateValidator')) {
@@ -849,19 +855,25 @@ export default {
                   '@/static/img/account/instantiateContract.png')
                 item.type = 'instantiateContract'
                 item.showAddress = this.$cache.get('_currentWallet').address
-              } else if (type.includes('MsgUnjail')) {
+              } else if (type.includes('MsgUnjail')) { // 节点激活
                 // @todo icon input
+                item.icon = require(
+                  '@/static/img/account/active.png')
                 item.type = 'MsgUnjail'
                 item.showAddress = this.$cache.get('_currentWallet').address
-              } else if (type.includes('RaAuthenticate')) {
+              } else if (type.includes('RaAuthenticate')) { // 节点注册
                 // @todo icon input
+                item.icon = require(
+                  '@/static/img/account/register.png')
                 item.type = 'RaAuthenticate'
                 item.showAddress = this.$cache.get('_currentWallet').address
-              } else if (type.includes('MsgStoreCode')) {
+              } else if (type.includes('MsgStoreCode')) { // 上传合约
                 // @todo icon input
+                item.icon = require(
+                  '@/static/img/account/upload.png')
                 item.type = 'MsgStoreCode'
                 item.showAddress = this.$cache.get('_currentWallet').address
-              } else if (type.includes('MsgCreateValidator')) {
+              } else if (type.includes('MsgCreateValidator')) { // 
                 // @todo icon input
                 item.type = 'MsgCreateValidator'
                 item.showAddress = this.$cache.get('_currentWallet').address

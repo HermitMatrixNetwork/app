@@ -39,7 +39,6 @@ export default {
   onShow () {
     this.$nextTick(() => {
       setTimeout(() => {
-        console.log('发出请求')
         this.$refs.customChildNode.updateData()
       }, 500)
     })

@@ -3,7 +3,7 @@
     <custom-notify style="z-index: 99" ref="notify"></custom-notify>
     <custom-header :title="language.text18" :customStyle="{ 'z-index': 98 }">
       <template #right>
-        <text class="right-text" @click="changeAction">{{ action == 'view' ? language.text19 : language.text20 }}</text>
+        <text class="right-text" @click="changeAction" :class="{ 'disable' : collection.length == 0 }">{{ action == 'view' ? language.text19 : language.text20 }}</text>
       </template>
     </custom-header>
     <view class="border"></view>
@@ -61,17 +61,24 @@ export default {
       })
     },
     changeAction() {
+      if (this.collection.length == 0) return
       if (this.action == 'view') {
         this.action = 'edit'
       } else {
         this.action = 'view'
-        
-        // 更新收藏列表
-        this.collection = this.collection.filter((item ,index) => !this.selectedIndex.includes(index))
-        this.$cache.set('_collectionList', this.collection, 0)
-        this.$refs.notify.show('error', this.language.text21, {
-          bgColor: '#275EF1'
-        })
+        if (this.selectedIndex.length > 0) {
+          // 更新收藏列表
+          this.collection = this.collection.filter((item ,index) => !this.selectedIndex.includes(index))
+          this.$cache.set('_collectionList', this.collection, 0)
+          this.$refs.notify.show('error', this.language.text21, {
+            bgColor: '#275EF1'
+          })
+          this.selectedIndex = []
+        } else {
+          this.$refs.notify.show('error', this.language.text22, {
+            bgColor: '#275EF1'
+          })
+        }
       }
     },
     clickItem() {
@@ -161,5 +168,9 @@ export default {
     font-family: PingFangSC-Regular;
     font-size: 28rpx;
     color: #1E5EFF;
+  }
+  
+  .disable {
+    color: #ccc;
   }
 </style>

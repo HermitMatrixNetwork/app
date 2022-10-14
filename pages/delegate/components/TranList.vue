@@ -101,7 +101,8 @@ export default {
       
           item.validator_address = item.tx.body.messages[0].validator_address
           item.delegator_address = item.tx.body.messages[0].delegator_address
-          item.amount = item.tx.body.messages[0].amount.amount / mainCoin.decimals
+          
+          item.amount = item.tx.body.messages[0].amount ? item.tx.body.messages[0].amount.amount / mainCoin.decimals : item.tx.body.messages[0].value.amount / mainCoin.decimals
       
           if (type.includes('MsgUndelegate')) {
             item.icon = '/static/img/account/undelegate.png'
@@ -134,7 +135,7 @@ export default {
               p1) => {
               item.amount = p1 / mainCoin.decimals
             })
-          item.icon = '/static/img/delegate/shoukuan2.png'  
+          item.icon = '/static/img/account/lingqu.png'
           if (type.includes('MsgWithdrawDelegatorReward')) {
             item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
               item.reciver_address = p1

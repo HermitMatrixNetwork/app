@@ -4,7 +4,7 @@
     
     <custom-loading v-if="loading" class="custom-loading"></custom-loading>
     
-		<view class="message" v-else>
+		<view class="message" v-else-if="[...noticeList,...readList].length">
 			<view class="message-item" v-for="(item, index) in [...noticeList,...readList]" :key="index" @click="toDetail(item)"
 				:class="alreadyRead.includes(item.ID)?'':'unread'">
 				<view class="title">{{ item[`${currentLanguage.toLowerCase()}_title`] }}</view>
@@ -13,6 +13,8 @@
 				<view class="line"></view>
 			</view>
 		</view>
+    
+    <no-data v-else class="no-data"></no-data>
 	</view>
 </template>
 
@@ -165,4 +167,9 @@ export default {
 			padding-top: 37rpx;
 		  border-bottom:2rpx solid rgba(131,151,177, 0.3);
 	}
+  
+  .no-data {
+    height: calc(100vh - 112rpx - var(--status-bar-height));
+    justify-content: center;
+  }
 </style>

@@ -51,7 +51,7 @@
               <view class="other">{{item.validator.operatorAddress|sliceAddress(7, -8)}}</view>
             </view>
             <view class="center">
-              {{ (item.rewards.amount / mainCoin.delegateDecimals).toFixed(6) }} {{ mainCoin.alias_name }}
+              {{ item.rewards ? (item.rewards.amount / mainCoin.delegateDecimals).toFixed(6) : '0.00' }} {{ mainCoin.alias_name }}
             </view>
             <view class="right">
               <view class="name">{{item.balance.amount / mainCoin.decimals }}</view>
@@ -208,7 +208,6 @@ export default {
     },
     initData(data) {
       this.$nextTick(async () => {
-        console.log('请求结束')
         this.allData = data
         let { list } = data
         this.list.forEach((item, index) => {
@@ -239,10 +238,11 @@ export default {
         this.list = res
         let totalRewards = 0
         this.list.forEach(item => {
-          totalRewards += Number(item.rewards.amount)
+          totalRewards += item.rewards ? Number(item.rewards.amount) : 0
         })
         totalRewards = totalRewards / mainCoin.delegateDecimals
         this.allData.totalReward = totalRewards
+        clearTimeout(this.timer)
         this.timer = setTimeout(() => {
           this.updateRewards = JSON.parse(JSON.stringify(this.list))
         }, 2000)
@@ -300,10 +300,14 @@ export default {
         // @fixed
         let list = await this.getLists(address)
         let total = 0, totalReward = 0
+        try {
         list.forEach(item => {
-          total += Number(item.balance.amount)
-          totalReward += Number(item.rewards.amount)
-        })
+          total += item.balance ? Number(item.balance.amount) : 0
+          totalReward += item.rewards ? Number(item.rewards.amount) : 0
+        })  
+        } catch(e) {
+          console.log('e')
+        }
         let data = {}
         data.total = total / mainCoin.decimals
         data.totalReward = totalReward / mainCoin.delegateDecimals

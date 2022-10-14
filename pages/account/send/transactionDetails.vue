@@ -158,7 +158,7 @@ export default {
         }
       } else if (typeUrl.includes('MsgSetWithdrawAddress')) {
         this.transactionMessage = {
-          [this.language.text92]: '0.00GHM',
+          [this.language.text84]: '0.00GHM',
           [this.language.text111]: res.fee,
           [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
           [this.language.text94]: res.tx.body.messages[0].value.withdrawAddress,
@@ -167,41 +167,51 @@ export default {
         }
       } else if (typeUrl.includes('MsgInstantiateContract')) {
         this.transactionMessage = {
-          [this.language.text92]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text84]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
           [this.language.text111]: res.fee,
           [this.language.text93]: this.$cache.get('_currentWallet').address,
+          'Method': 'MsgInstantiateContract',
+          'Memo': res.tx.body.memo,
           [this.language.text88]: res.transactionHash,
           [this.language.text239]: res.height
         }
       } else if (typeUrl.includes('MsgUnjail')) {
         this.transactionMessage = {
-          [this.language.text92]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text84]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
           [this.language.text111]: res.fee,
           [this.language.text93]: this.$cache.get('_currentWallet').address,
+          'Method': 'RaAuthenticate',
+          'Memo': res.tx.body.memo,
           [this.language.text88]: res.transactionHash,
           [this.language.text239]: res.height
         }
       } else if (typeUrl.includes('RaAuthenticate')) {
         this.transactionMessage = {
-          [this.language.text92]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text84]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
           [this.language.text111]: res.fee,
           [this.language.text93]: this.$cache.get('_currentWallet').address,
+          'Method': 'RaAuthenticate',
+          'Memo': res.tx.body.memo,
           [this.language.text88]: res.transactionHash,
           [this.language.text239]: res.height
         }
       } else if (typeUrl.includes('MsgStoreCode')) {
         this.transactionMessage = {
-          [this.language.text92]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text84]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
           [this.language.text111]: res.fee,
           [this.language.text93]: this.$cache.get('_currentWallet').address,
+          'Method': 'MsgStoreCode',
+          'Memo': res.tx.body.memo,
           [this.language.text88]: res.transactionHash,
           [this.language.text239]: res.height
         }        
       } else if (typeUrl.includes('MsgCreateValidator')) {
         this.transactionMessage = {
-          [this.language.text92]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text84]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
           [this.language.text111]: res.fee,
           [this.language.text93]: this.$cache.get('_currentWallet').address,
+          'Method': 'MsgCreateValidator',
+          'Memo': res.tx.body.memo,
           [this.language.text88]: res.transactionHash,
           [this.language.text239]: res.height
         }        

@@ -9,6 +9,8 @@ import mainCoin from '@/config/index.js'
 
 import { getCurrentRpc } from '@/config/index.js'
 
+
+let Secret
 //获取secret
 export async function getSecret() {
   let wallet = {}
@@ -30,12 +32,15 @@ export async function getSecret() {
   wallet.getAccounts = new secretjs.Wallet().getAccounts.bind(wallet)
   wallet.signAmino = new secretjs.Wallet().signAmino.bind(wallet)
   wallet.signDirect = new secretjs.Wallet().signDirect.bind(wallet)
-  let Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress, rpc)
+  Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress, rpc)
   return Secret
 }
+
+getSecret()
+
 //查询余额
 export async function getBalance(address, denom = 'ughm') {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
 
   const result = await Secret.query.bank.balance({
     address,
@@ -48,7 +53,7 @@ export async function getBalance(address, denom = 'ughm') {
 
 //获取合约信息
 export async function getContractInfo(address) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   // try {
   const result = await Secret.query.compute.contractInfo(address)
   // return result
@@ -59,7 +64,7 @@ export async function getContractInfo(address) {
 }
 
 export async function QueryStakingValidators(status) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.secretjs.query.staking.validators(
     pagination,
     status
@@ -68,7 +73,7 @@ export async function QueryStakingValidators(status) {
 
 //发送其他地址
 export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo = '', gas, gasPrice) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.tx.bank.send({
     fromAddress: myaddress,
     toAddress: toaddress,
@@ -86,14 +91,14 @@ export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo
 }
 
 export async function createViewKey(params, options) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.tx.snip20.createViewingKey(params, options)
   return result
 }
 
 //获取委托产生的总奖励
 export async function getDelegationTotalRewards(delegatorAddress) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.distribution.delegationTotalRewards({
     delegatorAddress
   })
@@ -102,7 +107,7 @@ export async function getDelegationTotalRewards(delegatorAddress) {
 
 //委托记录
 export async function getDelegatorDelegations(delegatorAddr) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.staking.delegatorDelegations({
     delegatorAddr
   })
@@ -111,14 +116,14 @@ export async function getDelegatorDelegations(delegatorAddr) {
 
 //查询验证信息
 export async function getValidators(status) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.staking.validators({
     status: status || ''
   })
   return result
 }
 export async function getSigningInfo(consAddress) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.slashing.signingInfo({
     consAddress
   })
@@ -126,7 +131,7 @@ export async function getSigningInfo(consAddress) {
 }
 //去委托
 export async function toDelegate(data, memo = '', gas, gasPrice) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.tx.staking.delegate(data, {
     gasPriceInFeeDenom: gasPrice,
     feeDenom: 'ughm',
@@ -137,7 +142,7 @@ export async function toDelegate(data, memo = '', gas, gasPrice) {
 }
 //通过获取验证信息
 export async function getStakingValidator(delegatorAddr, validatorAddr) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.staking.validator({
     delegatorAddr,
     validatorAddr
@@ -147,7 +152,7 @@ export async function getStakingValidator(delegatorAddr, validatorAddr) {
 
 //取消委托
 export async function getDelegationRewards(delegatorAddr, validatorAddr) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.staking.validator({
     delegatorAddr,
     validatorAddr
@@ -156,7 +161,7 @@ export async function getDelegationRewards(delegatorAddr, validatorAddr) {
 }
 
 export async function unDelegate(data, memo = '', gas, gasPrice) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.tx.staking.undelegate(data, {
     gasPriceInFeeDenom: gasPrice,
     feeDenom: 'ughm',
@@ -168,20 +173,20 @@ export async function unDelegate(data, memo = '', gas, gasPrice) {
 
 //查询账户信息
 export async function queryAccountInformation(query) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.txsQuery(query)
   return result
 }
 
 //通过hash查找
 export async function queryAccountHash(hash) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.getTx(hash)
   return result
 }
 
 export async function getDelegationRecord(address) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.staking.delegatorDelegations({
     delegatorAddr: address
   })
@@ -189,7 +194,7 @@ export async function getDelegationRecord(address) {
 }
 
 export async function getUnbondingDelegationRecord(address) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.staking.delegatorUnbondingDelegations({
     delegatorAddr: address
   })
@@ -197,7 +202,7 @@ export async function getUnbondingDelegationRecord(address) {
 }
 
 export async function setViewKey(data, gas, gasPrice) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   let codeHash = data.codeHash
   if (!data.codeHash) {
     codeHash = await Secret.query.snip20.contractCodeHash(data.contract_address)
@@ -219,19 +224,19 @@ export async function setViewKey(data, gas, gasPrice) {
 
 
 export async function getOtherBalance(data) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.snip20.getBalance(data)
   return result
 }
 
 export async function getCodeHash(data) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const codeHash = await Secret.query.snip20.contractCodeHash(data)
   return codeHash
 }
 
 export async function getOtherTransationHistory(data, pagination, token) {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   // const result = querySnip.getTransactionHistory({
   //       contract: { address: 'ghm18hxq6kypae4arzxda4dvuwdr0p23rrg5pqffx9', codeHash: '188609c5d1fee7b0917d4fedccd04bb8286181bd45e2f77ccac364cda7f164c5' },
   //       address: wallet.address,
@@ -254,13 +259,13 @@ export async function getOtherTransationHistory(data, pagination, token) {
 }
 
 export const getTokenDecimals = async (data) => {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.snip20.getSnip20Params(data)
   return result
 }
 
 export const transferOtherToken = async (data, memo = '', gas, gasPrice) => {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.tx.snip20.transfer(data, {
     gasPriceInFeeDenom: gasPrice,
     feeDenom: 'ughm',
@@ -272,19 +277,19 @@ export const transferOtherToken = async (data, memo = '', gas, gasPrice) => {
 
 // 根据指定验证器查相应信息
 export const getDelegatorHistory = async (data) => {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.txsQuery(`message.sender='${Secret.wallet.address}' AND delegate.validator='ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl'`)
   console.log(result)
 }
 
 export const alla = async (data) => {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.txsQuery(`message.sender='${Secret.wallet.address}' AND message.module='staking'`)
   console.log(result)
 }
 
 export const getRewards = async (delegatorAddress, validatorAddress) => {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.distribution.delegationRewards({
     delegatorAddress,
     validatorAddress
@@ -293,7 +298,7 @@ export const getRewards = async (delegatorAddress, validatorAddress) => {
 }
 
 export const withdrawDelegatorReward = async (data, gas, gasPrice) => {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.tx.distribution.withdrawDelegatorReward(data, {
     gasPriceInFeeDenom: gasPrice,
     feeDenom: 'ughm',
@@ -303,7 +308,7 @@ export const withdrawDelegatorReward = async (data, gas, gasPrice) => {
 }
 
 export const setWithdrawAddress = async (data, gas, gasPrice) => {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.tx.distribution.setWithdrawAddress(data, {
     gasPriceInFeeDenom: gasPrice,
     feeDenom: 'ughm',
@@ -313,7 +318,7 @@ export const setWithdrawAddress = async (data, gas, gasPrice) => {
 }
 
 export const getWithdrawAddress = async (address) => {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   const result = await Secret.query.distribution.delegatorWithdrawAddress({
     delegatorAddress: address
   })
@@ -322,7 +327,7 @@ export const getWithdrawAddress = async (address) => {
 }
 
 export const getMainCoinBalance = async (address, denom = 'ughm') => {
-  let Secret = await getSecret()
+  // let Secret = await getSecret()
   
   const result = await Secret.query.bank.balance({
     address,

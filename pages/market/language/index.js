@@ -20,7 +20,8 @@ export default {
     text18: '我的收藏',
     text19: '编辑',
     text20: '取消收藏',
-    text21: '已取消收藏'
+    text21: '已取消收藏',
+    text22: '请先选择收藏内容'
   },
   EN: {
     'text01': 'DAPPs',
@@ -43,7 +44,8 @@ export default {
     text18: 'My Collection',
     text19: 'Edit',
     text20: 'Cancel Collection',
-    text21: 'Collection canceled'
+    text21: 'Collection canceled',
+    text22: 'Please select your favorite content first'
   },
   CT: {
     'text01': '應用',
@@ -66,6 +68,7 @@ export default {
     text18: '我的收藏',
     text19: '編輯',
     text20: '取消收藏',
-    text21: '已取消收藏'
+    text21: '已取消收藏',
+    text22: '請先選擇收藏內容'
   }
 }
