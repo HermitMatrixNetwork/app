@@ -511,7 +511,7 @@ export default {
             this.selectIndex = index
             this.selData = this.$cache.get('_delegateInfo').list[index]
             this.formData.gas = ''
-            this.balance = (this.selData.rewards.amount / mainCoin.delegateDecimals).toFixed(5)
+            this.balance = this.selData.rewards ? (this.selData.rewards.amount / mainCoin.delegateDecimals).toFixed(5) : 0
           }
         }
       })
