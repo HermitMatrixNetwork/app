@@ -113,6 +113,41 @@
                     }
                 }
             }
+        },
+        "nativePlugins" : {
+            "Mpaas-Scan" : {
+                "AppId" : "ALIPUB30D8FFF171048",
+                "License" : "vRwFj7nsT2xcU0ei0zvSmVsIm9T4yOMqwohTqXvd/dg3clOPmM2rA1Nd+nGpANntKTUD5mivSzZJEsl/G1Vkx2xv6QWRfNr+NglM2+Zm3cZeFgyvTJT5zkBk4pKQBNeB/KW38v7t07MsTPg+UlByn2jjpLgHRtMPkEL7fY4492SBJYf1aXFmocg9IUICof2duuynakX4W1Nfw3ujJz8upiTFqmfCqMnj7BbWmrmOIcmkVykuITFVRVL3gGa+JaMtbUyKyzsebOAIjGQ4zsS0SUa+TD7d9wrhnlChaOSy0dnUZ7331a9zzJCj3opP38kO/5Eli/OkQ4XILsqPYmdSpQ==",
+                "WorkspaceId" : "default",
+                "__plugin_info__" : {
+                    "name" : "支付宝原生扫码插件",
+                    "description" : "支付宝原生扫码组件，包体积仅0.7MB，15分钟即可完成接入。同时，mPaaS提供「扫码分析」大盘",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=2636",
+                    "android_package_name" : "uni.UNIF9452A8",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "2636",
+                    "parameters" : {
+                        "AppId" : {
+                            "des" : "Android平台的AppId，请填写Android的config文件中的appId对应的值",
+                            "key" : "mobilegw.appid",
+                            "value" : ""
+                        },
+                        "License" : {
+                            "des" : "Android平台的License,，请填写Android的config文件中的mpaasConfigLicense对应的值",
+                            "key" : "mpaasConfigLicense",
+                            "value" : ""
+                        },
+                        "WorkspaceId" : {
+                            "des" : "Android平台的WorkspaceId，请填写Android的config文件中的workspaceId对应的值",
+                            "key" : "workspaceId",
+                            "value" : ""
+                        }
+                    }
+                }
+            }
         }
     },
     /* 快应用特有相关 */

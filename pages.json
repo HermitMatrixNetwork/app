@@ -524,15 +524,6 @@
             
         }
         ,{
-            "path" : "pages/scanCode/scanCode",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
             "path" : "pages/mine/yaoqing/index",
             "style" :                                                                                    
             {

@@ -83,11 +83,12 @@ export default {
         //   }
         // })
       } else if (this.$cache.get('_donotVerify')) {
+        console.log('本地缓存有钱包, 且开启了指纹验证（但不验证）')
         let routes = getCurrentPages() // 获取当前打开过的页面路由数组
         let curRoute = routes[routes.length - 1].route // 获取当前页面路由，也就是最后一个打开的页面路由         
         // console.log(curRoute)
+        this.$cache.set('_donotVerify', false, 0)
         if (curRoute == 'pages/mine/yaoqing/index') {
-          this.$cache.set('_donotVerify', false, 0)
         }
       }else if (this.$cache.get('_touchId') == 1) {
         console.log('本地缓存有钱包, 且开启了指纹验证（进入指纹验证页）')
