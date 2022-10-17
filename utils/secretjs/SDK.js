@@ -1,9 +1,5 @@
-import async from 'pbkdf2/lib/async'
 import WalletCrpto from '@/utils/walletCrypto.js'
 
-import {
-  Tx
-} from 'secretjs-hmt/src/protobuf_stuff/cosmos/tx/v1beta1/tx'
 import secretjs from './index.js'
 import mainCoin from '@/config/index.js'
 
