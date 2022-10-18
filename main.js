@@ -6,6 +6,7 @@ import {
 import miniCache from '@/utils/appCache'
 
 Vue.prototype.$secretjs = secretjs
+Vue.prototype.$EventBus = new Vue()
 Vue.use(uView)
 Vue.use(miniCache)
 
