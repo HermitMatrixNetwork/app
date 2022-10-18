@@ -32,7 +32,7 @@
             </view>
             <view class="item" @click="collection">
               <image :src="this.isCollect ? '/static/img/mine/collection2.png' : '/static/img/mine/collection.png'" style="width:100rpx; height: 100rpx;"></image>
-              <text>{{ language.text14 }}</text>
+              <text>{{ this.isCollect ? language.text20 : language.text14 }}</text>
             </view>
         </view>
       </u-popup>

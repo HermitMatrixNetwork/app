@@ -15,6 +15,7 @@
 
     <view class="control" v-if="!upgrading">
       <u-button  class="upgrade" @click="upgrade">{{ language.text85 }}</u-button>
+      <!-- <u-button  class="upgrade" @click="cancel">取消</u-button> -->
     </view>
   </view>
   <view v-else></view>
@@ -73,7 +74,10 @@ export default {
           versionCode, 
           version
         } = inf
-        // res.version = '900'//  @latest
+        if (this.$cache.get('_testupdate')) {
+          res.version = '900'//  @latest
+          this.$cache.delete('_testupdate')
+        }
         if (Number(versionCode) >= Number(res.version)) {
           if (this.tip) {
             this.$emit('update:latestVersion', version)
@@ -91,7 +95,10 @@ export default {
           versionCode, 
           version
         } = inf
-        // res.version = '900' // @latest
+        if (this.$cache.get('_testupdate')) {
+          res.version = '900'//  @latest
+          this.$cache.delete('_testupdate')
+        }
         if (Number(versionCode) >= Number(res.version)) {
           if (this.tip) {
             this.$emit('update:latestVersion', version)

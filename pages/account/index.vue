@@ -101,7 +101,7 @@
                     <!-- <view v-else> -->
                       {{ formatBalance(new decimal(item.balance + '').add(new decimal(lockAmount + '')).add(new decimal(unBoundingBalance + '')).toString()) || '0.00' }}
 <!--                      {{ formatBalance(item.balance + lockAmount + unBoundingBalance) || '0.00' }} -->
-                      <custom-loading v-if="updatingBalance"></custom-loading>
+                      <!-- <custom-loading v-if="updatingBalance"></custom-loading> -->
                     <!-- </view> -->
                   </view>
                   <!-- <view class="number" v-else>0.00</view> -->
@@ -247,7 +247,6 @@ export default {
     this.unboundingBlanceLoading = true
     this.gettingBalance = true
     this.tokenList = this.$cache.get('_currentWallet').coinList || [mainCoin]
-    
     setTimeout(() => {
       this.initRender++
       this.callUnboundingDelegators++

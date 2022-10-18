@@ -18,7 +18,7 @@
     </view>
     <custom-loading v-if="loading" style="margin-top: 100rpx;"></custom-loading>
     <view class="list" v-else-if="list.length">
-      <List :list="list" @change="updateCoinList" />
+      <List ref="list" :list="list" @change="updateCoinList" />
     </view>
     <view v-else class="noData">
       <image class="data" src="@/static/img/account/nodata.png" />
@@ -49,12 +49,17 @@ export default {
     List
   },
   onShow() {
-    // console.log(getCurrentPages())
+    this.tokenList = this.$cache.get('_currentWallet').coinList
+    this.$refs.list && this.$refs.list.init()
   },
-  async created() {
+  async mounted() {
     const res = (await getHotList()).data.data
     this.list = res.hot_assets_list
     this.loading = false
+    this.$nextTick(() => {
+      this.$refs.list.init()
+    })
+     // this.$refs.list.init()
   },
   methods: {
     searchCoin() {
@@ -66,7 +71,12 @@ export default {
       }
       this.address = this.address.trim()
       uni.navigateTo({
-        url: `/pages/assetManage/search?address=${this.address}`
+        url: `/pages/assetManage/search?address=${this.address}`,
+        events: {
+          handlerChange: () => {
+            this.tokenList = this.$cache.get('_currentWallet').coinList
+          }
+        }
       })
       this.address = ''
     },
@@ -78,12 +88,7 @@ export default {
     updateCoinList(list) {
       this.tokenList = list
     },
-    onUnload() {
-      const wallet = this.$cache.get('_currentWallet')
-      wallet.coinList = this.tokenList
-      this.$cache.set('_currentWallet', wallet, 0)
-      this.updateWalletList(wallet)
-    },
+
     updateWalletList(wallet) {
 
       const walletList = this.$cache.get('_walletList') || []
@@ -105,6 +110,12 @@ export default {
       return true
 
     }
+  },
+  onUnload() {
+    const wallet = this.$cache.get('_currentWallet')
+    wallet.coinList = this.tokenList
+    this.$cache.set('_currentWallet', wallet, 0)
+    this.updateWalletList(wallet)
   },
   onBackPress(event) {
     if (event.from == 'backbutton') {

@@ -17,6 +17,11 @@ export default {
     }
   },
   async onLaunch() {
+    clearTimeout(this.timer)
+    this.timer = setTimeout(() => {
+      plus.navigator.closeSplashscreen()
+      clearTimeout(this.timer)
+    }, 3500)
     uni.hideTabBar({
       animation: false
     })
@@ -36,6 +41,7 @@ export default {
     // #ifdef APP-PLUS
     if (this.$cache.get('_currentWallet') == null) { // 本地缓存没有钱包（直接进入首页）
       console.log('本地缓存没有钱包（直接进入首页）')
+      this.$cache.set('_testmsg', '本地缓存没有钱包（直接进入首页）', 0)
       this.$cache.set('_agree_protocol', false, 0)
       uni.reLaunch({
         url: '/pages/index/index',
@@ -45,6 +51,7 @@ export default {
       })
     } else if (_appInit == 0 && this.$cache.get('_touchId') == 1) { // 本地缓存有钱包 且开启了指纹锁
       console.log('本地缓存有钱包 且开启了指纹锁')
+      this.$cache.set('_testmsg', '本地缓存有钱包 且开启了指纹锁', 0)
       uni.navigateTo({
         url: '/pages/mine/anquan/backgroundVerify?redirectUrl=/pages/account/index&type=reLaunch',
         animationType: 'none',
@@ -54,6 +61,7 @@ export default {
       })
     } else if (_appInit !== 1) { // 本地缓存有钱包 且没有开启指纹锁
       console.log('本地缓存有钱包 且没有开启指纹锁')
+      this.$cache.set('_testmsg', '本地缓存有钱包 且没有开启指纹锁', 0)
       uni.reLaunch({
         url: '/pages/account/index',
         success: () => {
@@ -75,6 +83,7 @@ export default {
       console.log('后台唤起')
       if (this.$cache.get('_currentWallet') == null) {
         console.log('本地缓存没有钱包（直接进入首页）')
+        this.$cache.set('_testmsg', '后台唤起 本地缓存没有钱包（直接进入首页）', 0)
         // this.$cache.set('_agree_protocol', false, 0)
         // uni.reLaunch({
         //   url: '/pages/index/index',
@@ -84,6 +93,7 @@ export default {
         // })
       } else if (this.$cache.get('_donotVerify')) {
         console.log('本地缓存有钱包, 且开启了指纹验证（但不验证）')
+        this.$cache.set('_testmsg', '后台唤起 本地缓存有钱包, 且开启了指纹验证（但不验证）', 0)
         let routes = getCurrentPages() // 获取当前打开过的页面路由数组
         let curRoute = routes[routes.length - 1].route // 获取当前页面路由，也就是最后一个打开的页面路由         
         // console.log(curRoute)
@@ -92,6 +102,7 @@ export default {
         }
       }else if (this.$cache.get('_touchId') == 1) {
         console.log('本地缓存有钱包, 且开启了指纹验证（进入指纹验证页）')
+        this.$cache.set('_testmsg', '后台唤起 本地缓存有钱包, 且开启了指纹验证（进入指纹验证页）', 0)
         uni.navigateTo({
           url: '/pages/mine/anquan/backgroundVerify',
           animationType: 'none',
