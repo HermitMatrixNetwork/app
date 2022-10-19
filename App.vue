@@ -4,6 +4,9 @@ import {
   DEFAULT_RPC
 } from '@/config/index.js'
 export default {
+  globalData: {
+    secretClient: null
+  },
   data() {
     return {
       language: {

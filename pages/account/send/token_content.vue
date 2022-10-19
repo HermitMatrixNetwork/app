@@ -1,5 +1,6 @@
 <template>
   <view class="token_content">
+    <view :initSecretClient="initSecretClient" :change:initSecretClient="callInitSecretClient"></view>
     <custom-header tabUrl="/pages/account/index" :title="token.alias_name">
       <template #right>
         <text class="customIcon" @click="toTokenDetail()">{{ language.text69 }}</text>
@@ -251,7 +252,8 @@
         unboundingBlanceLoading: true,
         callUnboundingDelegators: 0,
         unBoundingBalance: 0.248889,
-        decimal
+        decimal,
+        initSecretClient: 0
       }
     },
     async onLoad(options) {
@@ -349,6 +351,14 @@
       clearInterval(this.timer)
     },
     onShow() {
+      // if (getApp().globalData.secretClient == null) {
+      //   this.initSecretClient = 1
+      // } else {
+      //   this.initSecretClient = getApp().globalData.secretClient
+      //   this.$nextTick(() => {
+      //     this.initSecretClient = 0
+      //   })
+      // }
       this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == this.token.ID)
       if (this.$cache.get('_tokenContent_locakAmount_data') !== undefined) {
         this.lockAmount = this.$cache.get('_tokenContent_locakAmount_data')
@@ -1134,6 +1144,9 @@
         this.loadingBalace = true
         this.callMainCoinBalance++
         this.callUnboundingDelegators++
+      },
+      handlerSecretClient(client) {
+        getApp().globalData.secretClient = client
       }
     },
     filters: {
@@ -1176,18 +1189,24 @@
     getMainCoinBalance,
     SendTokentoOtherAddress,
     transferOtherToken,
-    getOtherTransationHistory
+    getOtherTransationHistory,
+    getSecret
   } from '@/utils/secretjs/SDK.js'
   import renderUtils from '@/utils/render.base.js'
   import mainCoin from '@/config/index.js'
   export default {
+    data() {
+      return {
+        secretClient: null
+      }
+    },
     methods: {
       getAddress(address) {
         if (address === '') return
         this.getDelegationRecord(address)
       },
       async getDelegationRecord(address) {
-        const result = await getDelegationRecord(address)
+        const result = await getDelegationRecord(address, this.secretClient)
         renderUtils.runMethod(this._$id, 'setLockAmount', {
           result
         }, this)
@@ -1202,7 +1221,7 @@
         //#ifndef APP-PLUS 
         wallet = uni.getStorageSync('_currentWallet').data
         //#endif
-        const result = await getUnbondingDelegationRecord(wallet.address)
+        const result = await getUnbondingDelegationRecord(wallet.address, this.secretClient)
         renderUtils.runMethod(this._$id, 'handlerUnboundingBlance', {
           result
         }, this)
@@ -1217,7 +1236,7 @@
         //#ifndef APP-PLUS 
         wallet = uni.getStorageSync('_currentWallet').data
         //#endif
-        const res = await getMainCoinBalance(wallet.address)
+        const res = await getMainCoinBalance(wallet.address, this.secretClient)
         renderUtils.runMethod(this._$id, 'handlerMainCoinBalance', {
           res
         }, this)
@@ -1242,7 +1261,7 @@
           sendAmount = sendAmount * mainCoin.decimals
           try {
             res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas,
-              gasPrice)
+              gasPrice, this.secretClient)
             // console.log('发送结果',res);
           } catch (e) {
             console.log(e);
@@ -1261,7 +1280,7 @@
                   amount: sendAmount * newValue.token.decimals + ''
                 }
               }
-            }, newValue.memo, gas, gasPrice)
+            }, newValue.memo, gas, gasPrice, this.secretClient)
             if (result.code !== 0) throw result
             res = (await getOtherTransationHistory({
               contract: {
@@ -1275,7 +1294,7 @@
             }, {
               page_size: 1,
               page: 1
-            }, newValue.token)).transaction_history.txs[0]
+            }, newValue.token, this.secretClient)).transaction_history.txs[0]
             console.log('record', res)
             for (let val of Object.values(res.action)) {
               res.to_address = val.recipient
@@ -1299,6 +1318,24 @@
         // }, this)
         renderUtils.runMethod(this._$id, 'txResult', res, this)
       },
+      async callInitSecretClient(val) {
+        if (val == 0) {
+          return
+        } else if (val == 1) {
+          console.log('initSecretClient');
+          const secretClient = await getSecret()
+          // this.secretClient = secretClient
+          renderUtils.runMethod(this._$id, 'handlerSecretClient', {
+            secretClient
+          }, this)
+        } else {
+          console.log('set secretClient', val);
+          // this.secretClient = val.secretClient ? val.secretClient : val
+          // renderUtils.runMethod(this._$id, 'handlerSecretClient', {
+          //   secretClient
+          // }, this)
+        }
+      }
     }
   }
 </script>

@@ -1,5 +1,6 @@
 <template>
   <view class="account">
+    <view :initSecretClient="initSecretClient" :change:initSecretClient="callInitSecretClient"></view>
     <view class="mask" v-show="updating"></view>
     <view class="mask" v-show="switchingWallet || delayHide"></view>
     <custom-updateApp ref="custom_update" :updating.sync="updating" checkImmediate />
@@ -209,10 +210,14 @@ export default {
       unboundingBlanceLoading: true,
       callUnboundingDelegators: 0,
       unBoundingBalance: 0,
-      decimal
+      decimal,
+      initSecretClient: 0
     }
   },
   onPullDownRefresh() {
+    setTimeout(() => {
+      uni.stopPullDownRefresh()
+    }, 3000)
     this.gettingBalance = true
     this.lockAmountLoading = true
     this.unboundingBlanceLoading = true
@@ -226,11 +231,16 @@ export default {
     this.$nextTick(() => {
       this.address = this.$cache.get('_currentWallet').address
     })
-    setTimeout(() => {
-      uni.stopPullDownRefresh()
-    }, 3000)
   },
   onShow() {
+    // if (getApp().globalData.secretClient == null) {
+    //   this.initSecretClient = 1
+    // } else {
+    //   this.initSecretClient = getApp().globalData.secretClient
+    //   this.$nextTick(() => {
+    //     this.initSecretClient = 0
+    //   })
+    // }
     if (this.$cache.get('_closeSwitchPopup')) {
       this.showSwitchWallet = false
       this.$refs.switchWallet.showAddWallet = false
@@ -278,7 +288,7 @@ export default {
     //获取选择的代币
     this.address = this.currentWallet.address
   },
-  mounted() {
+  async mounted() {
     this.getSystemStatusHeight()
     this.calculateHeight()
 
@@ -491,6 +501,10 @@ export default {
       // this.unBoundingBalance = res.result.unboundingResponses.reduce((pre, cur, 0) => {
       //   return pre + Number(cur.ent)
       // })
+    },
+    handlerSecretClient(client) {
+      getApp().globalData.secretClient = client
+      console.log('handlerSecretClient', client);
     }
   },
   computed: {
@@ -558,7 +572,8 @@ export default {
     getOtherBalance,
     getTokenDecimals,
     getDelegationRecord,
-    getUnbondingDelegationRecord
+    getUnbondingDelegationRecord,
+    getSecret
   } from '@/utils/secretjs/SDK'
   import renderUtils from '@/utils/render.base.js'
   import mainCoin from '@/config/index.js'
@@ -566,7 +581,8 @@ export default {
   export default {
     data() {
       return {
-        balanceLoading: true
+        balanceLoading: true,
+        secretClient: null
       }
     },
     methods: {
@@ -596,7 +612,7 @@ export default {
           let balance = 0.00
           if (coin.alias_name == mainCoin.alias_name) {
             coin.showWarn = false
-            let res = await getBalance(wallet.address)
+            let res = await getBalance(wallet.address, this.secretClient)
             balance = res.balance.amount
             console.log(res);
           } else { // 非主网币
@@ -605,7 +621,7 @@ export default {
             } else {
               if (!coin.codeHash) {
                 try {
-                  let codeHash = await getCodeHash(coin.contract_address)
+                  let codeHash = await getCodeHash(coin.contract_address, this.secretClient)
                   coin.codeHash = codeHash
                   balance = await this.getOtherTokenBalance(coin, wallet)
                 } catch (e) {
@@ -627,6 +643,7 @@ export default {
       },
       setBalanceLoading(newVal) {
         if (newVal == 0) return
+        
         this.balanceLoading = false
       },
       async getDelegationRecord(val) {
@@ -639,7 +656,7 @@ export default {
         //#ifndef APP-PLUS 
         wallet = uni.getStorageSync('_currentWallet').data
         //#endif
-        const result = await getDelegationRecord(wallet.address)
+        const result = await getDelegationRecord(wallet.address, this.secretClient)
         renderUtils.runMethod(this._$id, 'setLockAmount', {
           result
         }, this)
@@ -655,7 +672,7 @@ export default {
           auth: {
             key: coin.view_key
           }
-        })
+        }, this.secretClient)
         if (res.viewing_key_error) {
           coin.showWarn = true
         } else {
@@ -664,7 +681,7 @@ export default {
               address: coin.contract_address,
               codeHash: coin.codeHash
             }
-          })
+          }, this.secretClient)
 
           coin.decimals = Math.pow(10, tokeninfo.token_info.decimals) || 1
           balance = res.balance.amount
@@ -682,12 +699,30 @@ export default {
         //#ifndef APP-PLUS 
         wallet = uni.getStorageSync('_currentWallet').data
         //#endif
-        const result = await getUnbondingDelegationRecord(wallet.address)
+        const result = await getUnbondingDelegationRecord(wallet.address, this.secretClient)
         renderUtils.runMethod(this._$id, 'handlerUnboundingBlance', {
           result
         }, this)
         // console.log('getUnbondingDelegationRecord', result.unbondingResponses);
       },
+      async callInitSecretClient(val) {
+        if (val == 0) {
+          return
+        } else if (val == 1) {
+          const secretClient = await getSecret()
+          console.log('initSecretClient');
+          this.secretClient = secretClient
+          renderUtils.runMethod(this._$id, 'handlerSecretClient', secretClient, this)
+        } else {
+          val()
+          // console.log('globalData', getApp().globalData );
+          console.log('set secretClient');
+          // this.secretClient = val.secretClient ? val.secretClient : val
+          // renderUtils.runMethod(this._$id, 'handlerSecretClient', {
+          //   secretClient
+          // }, this)
+        }
+      }
     }
   }
 </script>
