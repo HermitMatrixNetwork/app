@@ -237,7 +237,7 @@
             loading: false
           }
         },
-        loading: false,
+        loading: true,
         loadingBalace: true,
         lockAmountLoading: true,
         callRenderDelegateRecord: '',
@@ -302,7 +302,7 @@
           setTimeout(() => {
             this.accountTransfer = this.$cache.get('_tokenContent_accountTransfer_data')
             this.loading = false
-          }, 500)
+          }, 1000)
         }
 
       } else {
@@ -317,11 +317,11 @@
           'all': []
         }
       }
-      setTimeout(() => {
+      setTimeout(async () => {
+        await this.init()
         this.callRenderDelegateRecord = this.address
         this.callUnboundingDelegators++
         this.callMainCoinBalance++
-        this.init()
       }, 1000)
     },
     onPullDownRefresh() {
@@ -749,6 +749,9 @@
           // #endif
           this.$cache.set('_tokenContent_accountTransfer_data', this.accountTransfer, 0)
           this.loading = false
+          // this.callRenderDelegateRecord = this.address
+          // this.callUnboundingDelegators++
+          // this.callMainCoinBalance++
         })
       },
       formatTime(time) {
