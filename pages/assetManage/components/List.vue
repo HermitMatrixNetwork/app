@@ -36,15 +36,16 @@ export default {
       mainCoin: {} //主网币参数
     }
   },
-  created() {
-    this.mainCoin = mainCoin
-    let currentWallte = this.$cache.get('_currentWallet')
-    let coinList = currentWallte.coinList
-    coinList.forEach(item => {
-      if (item.contract_address) this.searchList.push(item.contract_address)
-    })
-  },
   methods: {
+    init() {
+      this.searchList = []
+      this.mainCoin = mainCoin
+      let currentWallte = this.$cache.get('_currentWallet')
+      let coinList = currentWallte.coinList
+      coinList.forEach(item => {
+        if (item.contract_address) this.searchList.push(item.contract_address)
+      })
+    },
     //修改coin列表，index选择索引，type类型 add添加，del为删除
     changeCoin(item, type) {
       let currentWallte = this.$cache.get('_currentWallet')
@@ -57,10 +58,9 @@ export default {
       } else {
         const index = coinList.findIndex(coin => coin.contract_address == item.contract_address)
         const searchListIndex = this.searchList.findIndex(address => address == item.contract_address)
-        coinList.splice(index, 1)
-        this.searchList.splice(searchListIndex, 1)
+        if (index > -1) coinList.splice(index, 1)
+        if (searchListIndex > -1) this.searchList.splice(searchListIndex, 1)
       }
-      
       this.$emit('change', coinList)
       
 

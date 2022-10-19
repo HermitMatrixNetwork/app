@@ -641,6 +641,8 @@ export default {
               item.showAddress = this.$cache.get('_currentWallet').address
             } else if (type.includes('MsgCreateValidator')) {
               // @todo icon input
+              item.icon = require(
+                '@/static/img/account/createvalidate.png')
               item.type = 'MsgCreateValidator'
               item.showAddress = this.$cache.get('_currentWallet').address
             }
@@ -875,6 +877,8 @@ export default {
                 item.showAddress = this.$cache.get('_currentWallet').address
               } else if (type.includes('MsgCreateValidator')) { // 
                 // @todo icon input
+                item.icon = require(
+                  '@/static/img/account/createvalidate.png')
                 item.type = 'MsgCreateValidator'
                 item.showAddress = this.$cache.get('_currentWallet').address
               }

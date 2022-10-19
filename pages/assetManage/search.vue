@@ -76,7 +76,7 @@ export default {
       this.search(options.address)
     }
   },
-  created() {
+  onShow() {
     this.currentWallet = this.$cache.get('_currentWallet')
     this.tokenList = this.currentWallet.coinList
     if (this.tokenList.length) {
@@ -92,43 +92,50 @@ export default {
     async search(address) {
       if (address == '') return
       let data = await searchCoin(address)
-      // console.log(data)
       if (data.data.code !== 7) {
         let result = data.data.data.result || null
         this.searchData(result)
       } else {
-        const res = (await searchContract(address)).data
-        if (res.error) {
+        try {
+          const res = (await searchContract(address)).data
+          if (res.error) {
+            this.list = []
+            this.loading = false
+          } else {
+            let ID = null
+            if (!this.tokenAddressList.includes(res.result.address)) {
+              if (this.$cache.get('_token_single_id')) {
+                ID = Number(this.$cache.get('_token_single_id').split('_').slice(-1)[0]) + 1
+                this.$cache.set('_token_single_id', `_token_single_id_${ID}`, 0)
+              } else {
+                this.$cache.set('_token_single_id', '_token_single_id_1', 0)
+              } 
+            }
+            let result = {
+              contract_address: res.result.address,
+              alias_name: res.result.label,
+              apply_type: 'SNIP20',
+              full_name: res.result.label,
+              logo: '/static/img/account/nologo.jpg',
+              hot: 1,
+              ID: this.$cache.get('_token_single_id')
+            }
+            this.searchData(result)
+          }
+        } catch(e) {
           this.list = []
           this.loading = false
-        } else {
-          let ID = null
-          if (!this.tokenAddressList.includes(res.result.address)) {
-            if (this.$cache.get('_token_single_id')) {
-              ID = Number(this.$cache.get('_token_single_id').split('_').slice(-1)[0]) + 1
-              this.$cache.set('_token_single_id', `_token_single_id_${ID}`, 0)
-            } else {
-              this.$cache.set('_token_single_id', '_token_single_id_1', 0)
-            } 
-          }
-          let result = {
-            contract_address: res.result.address,
-            alias_name: res.result.label,
-            apply_type: 'SNIP20',
-            full_name: res.result.label,
-            logo: '/static/img/account/nologo.jpg',
-            hot: 1,
-            ID: this.$cache.get('_token_single_id')
-          }
-          this.searchData(result)
+          console.log('e', e);
         }
+
       }
     },
     goBack() {
       this.reAddress = ''
-      uni.redirectTo({
-        url: './index'
-      })
+      // uni.redirectTo({
+      //   url: './index'
+      // })
+      uni.navigateBack()
     },
     goTo() {
 
@@ -150,6 +157,8 @@ export default {
       this.currentWallet.coinList = this.tokenList
       this.$cache.set('_currentWallet', this.currentWallet, 0)
       this.updateWalletList(this.currentWallet)
+      const eventChannel = this.getOpenerEventChannel()
+      eventChannel.emit('handlerChange')
     },
     deleteToken(token) {
       this.tokenAddressList = this.tokenAddressList.filter(item => item !== token.contract_address)
@@ -157,6 +166,8 @@ export default {
       this.currentWallet.coinList = this.tokenList
       this.$cache.set('_currentWallet', this.currentWallet, 0)
       this.updateWalletList(this.currentWallet)
+      const eventChannel = this.getOpenerEventChannel()
+      eventChannel.emit('handlerChange')
     },
     updateWalletList(wallet) {
       const walletList = this.$cache.get('_walletList') || []

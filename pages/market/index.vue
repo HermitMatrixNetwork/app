@@ -15,7 +15,7 @@
           <swiper class="swiper" circular :indicator-dots="indicatorDots" :indicator-color="'rgba(255,255,255,0.55)'"
             :indicator-active-color="'#fff'" :autoplay="autoplay" :interval="interval" :duration="duration"
             :current="current">
-            <swiper-item v-for="(item, index) in bannerList" :key="index" @click="jump(item.link)">
+            <swiper-item v-for="(item, index) in bannerList" :key="index" @click="jump(item.link, item)">
               <image class="swiper-item" :src="item.url" style="width: 100%" />
             </swiper-item>
           </swiper>
@@ -206,7 +206,8 @@ export default {
         url: `./webview?jumpUrl=${item.url}&name=${item.name}`
       })
     },
-    jump(link) { // 轮播图
+    jump(link, item) { // 轮播图
+      console.log(item);
       uni.navigateTo({
         url: `./webview?jumpUrl=${link}&name=${item.name}`
       })

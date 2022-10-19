@@ -7,7 +7,7 @@
 		</custom-header>
 		<view class="space"/>
 		<view class="list">
-			<List :list="list"/>
+			<List ref="list" :list="list" @change="updateCoinList"/>
 		</view>
 	</view>
 </template>
@@ -21,13 +21,30 @@ export default {
     return {
 		  language: languages[this.$cache.get('_language')],
       address: '',//查询地址
-      list: this.$cache.get('_currentWallet').coinList
+      list: this.$cache.get('_currentWallet').coinList,
+      tokenList: this.$cache.get('_currentWallet').coinList
     }
   },
   components: {
     List
   },
+  onShow() {
+    this.tokenList = this.$cache.get('_currentWallet').coinList
+    this.$refs.list && this.$refs.list.init()
+  },
+  onUnload() {
+    const wallet = this.$cache.get('_currentWallet')
+    wallet.coinList = this.tokenList
+    this.$cache.set('_currentWallet', wallet, 0)
+    this.updateWalletList(wallet)
+  },
+  mounted() {
+    this.$refs.list.init()
+  },
   methods: {
+    updateCoinList(list) {
+      this.tokenList = list
+    },
     searchCoin(){
       if(this.address==''){
         return uni.showToast({
@@ -36,13 +53,40 @@ export default {
         })
       }
       uni.navigateTo({
-        url:`/pages/assetManage/search?address=${this.address}`
+        url:`/pages/assetManage/search?address=${this.address}`,
+        events: {
+          handlerChange: () => {
+            this.tokenList = this.$cache.get('_currentWallet').coinList
+          }
+        }
       })
     },
     goTo(e){
       uni.navigateTo({
       	url:e.currentTarget.dataset.url
       })
+    },
+    
+    updateWalletList(wallet) {
+    
+      const walletList = this.$cache.get('_walletList') || []
+    
+      if (!wallet) return false
+    
+      const walletIndex = walletList.findIndex(item => item.address === wallet.address)
+    
+      if (walletIndex > -1) {
+    
+        walletList.splice(walletIndex, 1)
+    
+      }
+    
+      walletList.unshift(wallet)
+    
+      this.$cache.set('_walletList', walletList, 0)
+    
+      return true
+    
     }
   }
 }
