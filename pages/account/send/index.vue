@@ -329,7 +329,7 @@ export default {
       this.aa = false
     },
     formatBalance(val) {
-      return val && val.toFixed(6)
+      return val && Number(val).toFixed(6)
     },
     formatter(val) {
       // if (val.split('.'))
@@ -511,6 +511,8 @@ export default {
     },
     getMinersCost(val) {
       console.log('油费',val)
+      this.sendFormData.gas = ''
+      this.callSimulate = {}
       if (val.speed == this.language.text27) {
         // this.sendFormData.gas = val.
         this.sendFormData.gas = val.minersGas
@@ -834,6 +836,7 @@ export default {
 
 			},
 			async simulateFee(val) {
+				// console.log('message',val);
 				if (!val.sendAmount || Number(val.sendAmount) == '' || !val.receiveAddress) return
 				const Secret = await getSecret()
 				let res = {}
@@ -843,10 +846,11 @@ export default {
 					sendAmount,
 					memo,
 					gas,
+					gasPrice,
 					decimals
 				} = val
         console.log(val.token.decimals);
-        console.log(sendAmount);
+        // console.log('1111111111',sendAmount);
         const denom = val.token.alias_name == mainCoin.alias_name ? 'ughm' : 'SGHM'
         // const amount = val.token.alias_name == 'GHM' ? (sendAmount * val.token.decimals + '') : (sendAmount + '')
 				try {
@@ -859,9 +863,12 @@ export default {
             	fromAddress: userAddress,
             	toAddress: receiveAddress
             })
+						console.log("msgSend: ", msgSend,gasPrice)
             res = await Secret.tx.simulate([msgSend], {
-            	feeDenom: 'ughm'
+            	feeDenom: 'ughm',
+							gasPriceInFeeDenom: gasPrice
             })
+						// console.log("gas used",res.gasInfo.gasUsed)
             let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
             renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
           } else { // 非主网币 @todo 币名

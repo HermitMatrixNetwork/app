@@ -281,6 +281,7 @@ export default {
         this.isCustomFess = false
       }
       this.formData.gasPrice = val.amount
+      this.formData.gas = ''
     },
     confirmProtocol() {
       if(!this.formData.withdrawAddress) return
@@ -449,6 +450,7 @@ export default {
           const msgSetWithdrawAddress = new secretjs.MsgSetWithdrawAddress(val, val.gas, val.gasPrice)
           res = await Secret.tx.simulate([msgSetWithdrawAddress], {
             feeDenom: 'ughm',
+						gasPriceInFeeDenom:val.gasPrice
           })
           let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
           renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
