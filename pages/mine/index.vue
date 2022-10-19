@@ -155,7 +155,7 @@ export default {
       } //如果获取的通知数量为0则结束
 
       if (this.notices !== messageNum) { //若不相等
-        this.messageNum = messageNum - this.notices
+        this.messageNum = messageNum - this.notices>0?messageNum - this.notices:messageNum
         this.noNotice = true
       }
     }
