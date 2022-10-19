@@ -54,6 +54,7 @@
               <text class="waringPrompt" :style="{ opacity: showAmountError ? 1 : 0 }">{{ language.text102 }}</text>
             <view class="other">
               <div class="title">{{ language.text19 }}：</div>
+              
               <div class="num" v-if="selData">{{selData.balance.amount / mainCoin.decimals }} GHM</div>
               <div class="num" v-else>0 GHM</div>
             </view>
@@ -632,6 +633,7 @@ export default {
           let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
           renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
         } catch (e) {
+          console.log('e', e);
 					let msg = e.message
 					let error;
 					if(msg.includes('too many unbonding delegation entries')){
