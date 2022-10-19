@@ -24,13 +24,20 @@ export default {
       list: [],
       currentLanguage: this.$cache.get('_language'),
       language: language[this.$cache.get('_language')],
-      loading: true
+      loading: false
     }
   },
   async created() {
-    this.loading = true
+    this.loading = false
+    if (this.$cache.get('_help_data')) {
+      this.loading = false
+      this.list = this.$cache.get('_help_data')
+    } else {
+      this.loading = true
+    }
     let res = (await getHelp()).data.data.help_info
     this.list = res
+    this.$cache.set('_help_data', res, 0)
     this.$nextTick(() => {
       this.loading = false
     })

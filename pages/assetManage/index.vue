@@ -42,7 +42,7 @@ export default {
       address: '', //查询地址
       list: [],
       tokenList: this.$cache.get('_currentWallet').coinList,
-      loading: true
+      loading: false
     }
   },
   components: {
@@ -53,11 +53,21 @@ export default {
     this.$refs.list && this.$refs.list.init()
   },
   async mounted() {
+    if (this.$cache.get('_hot_assets_list')) {
+      this.list = this.$cache.get('_hot_assets_list')
+      this.$nextTick(() => {
+        this.$refs.list.init()
+      })
+      this.loading = false
+    } else {
+      this.loading = true
+    }
     const res = (await getHotList()).data.data
     this.list = res.hot_assets_list
+    this.$cache.set('_hot_assets_list', this.list, 0)
     this.loading = false
     this.$nextTick(() => {
-      this.$refs.list.init()
+      this.$refs.list && this.$refs.list.init()
     })
      // this.$refs.list.init()
   },

@@ -52,7 +52,7 @@
 					<view class="right">{{ language.text52 }}</view>
 				</view>
 				<custom-loading v-if="loading" class="loading"></custom-loading>
-        <view class="list-data" v-else-if="showList.length">
+        <view class="list-data" v-else-if="showList.length || haveData">
           <scroll-view scroll-y class="scroll-container" :style="{ height: scrollHeight } ">
             <view class="list-item" v-for="(item,index) in showList" :key="index" @click="toValidatorDetail(item)">
               <view class="left">
@@ -101,7 +101,7 @@ export default {
       address: '',
       currentWallet: this.$cache.get('_currentWallet'),
       validators: [],
-      loading: true,
+      loading: false,
       isDel: true,
       statusList: [{
         name: language[this.$cache.get('_language')].text70
@@ -140,7 +140,8 @@ export default {
       delegationsBlance: 0,
       tabsHeight: 0,
       sortListHeight: 0,
-      listTitleHeight: 0
+      listTitleHeight: 0,
+      haveData: true
     }
   },
   created() {
@@ -174,17 +175,21 @@ export default {
         this.listTitleHeight = data.height + 'px'
       })
       query.exec()
-      console.log()
     },
     updateData() {
       console.log('indent update data')
+      if (!this.$cache.get('_validators')) this.loading = true
+      this.validators = this.$cache.get('_validators') || []
+      if (this.validators.length == 0) {
+        this.haveData = false
+      }
       this.sortRule = 'des'
       this.sortTarget = language[this.$cache.get('_language')].text48
       this.currentWallet = this.$cache.get('_currentWallet')
-      this.loading = true
-      this.unBoundingBalance = 0
+      // this.loading = true
+      this.unBoundingBalance = this.$cache.get('_my_unBoundingBalance_data') || 0
       this.callDelegationsLoading = true
-      this.delegationsBlance = 0
+      this.delegationsBlance = this.$cache.get('_ident_delegationsBlance_data') || 0
       this.ValidatorsData()
       setTimeout(()=>{
         this.callMainCoinBalance++
@@ -253,14 +258,16 @@ export default {
       this.currentWallet.coinList[0].balance = res.res
     },
     handlerUnboundingBlance(res) {
-      this.unBoundingBalance = 0
+      // this.unBoundingBalance = 0
+      let tempUnBoundingBalance = 0
       res.result.unbondingResponses.forEach(item => {
         item.entries.forEach(item => {
-          this.unBoundingBalance += Number(item.balance)
+          tempUnBoundingBalance += Number(item.balance)
         })
       })
       
-      this.unBoundingBalance = this.unBoundingBalance / mainCoin.decimals
+      this.unBoundingBalance = tempUnBoundingBalance / mainCoin.decimals
+      this.$cache.set('_my_unBoundingBalance_data', this.unBoundingBalance, 0)
       this.unboundingBlanceLoading = false
       // this.unBoundingBalance = res.result.unboundingResponses.reduce((pre, cur, 0) => {
       //   return pre + Number(cur.ent)
@@ -272,6 +279,7 @@ export default {
         total += Number(item.balance.amount)
       })
       this.delegationsBlance = total / mainCoin.decimals
+      this.$cache.set('_ident_delegationsBlance_data', this.delegationsBlance, 0)
     }
   },
   computed: {
@@ -313,6 +321,9 @@ export default {
         ascList = validatorsList.sort((a, b) => a.commission_rate - b.commission_rate)
         break
       }
+      this.$nextTick(() => {
+        this.haveData = false
+      })
       return this.sortRule == 'asc' ? ascList : ascList.reverse()
     },
     scrollHeight() {
