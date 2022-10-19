@@ -305,6 +305,19 @@ export default {
       const walletList = this.$cache.get('_walletList')
       this.$refs.notify.show('error', this.language.text211, { bgColor: '#275EF1' })
       let url = ''
+      this.$cache.delete('_tokenContent_accountTransfer_data')
+      this.$cache.delete('_tokenContent_unBoundingBalance_data')
+      this.$cache.delete('_tokenContent_locakAmount_data')
+      this.$cache.delete('_my_list_data')
+      this.$cache.delete('_my_cumulativeReward_data')
+      this.$cache.delete('_my_unBoundingBalance_data')
+      this.$cache.delete('_ident_delegationsBlance_data')
+      this.$cache.delete('_delegateInfo')
+      this.$cache.delete('_tokenContent_locakAmount_data')
+      this.$cache.delete('_tokenContent_unBoundingBalance_data')
+      this.$cache.delete('_my_totalReward_data')
+      this.$cache.delete('_tokenContent_balance_data')
+      console.log('delete');
       if (walletList.length > 1) {
         walletList.shift()
         this.$cache.set('_currentWallet', walletList[0], 0)

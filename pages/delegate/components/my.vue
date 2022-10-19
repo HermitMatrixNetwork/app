@@ -44,7 +44,7 @@
         <custom-loading v-if="loading" class="loading"></custom-loading>
         <!-- :style="{ height: scrollHeight }" -->
         
-        <scroll-view :style="{ height: scrollHeight }" scroll-y class="list-data" v-else-if="list.length" >
+        <scroll-view :style="{ height: scrollHeight }" scroll-y class="list-data" v-else-if="list.length || haveData" >
         <view class="list-item" v-for="(item,index) in list" :key="index">
             <view class="left">
               <view class="name">{{item.validator.description.moniker}}</view>
@@ -89,7 +89,7 @@ export default {
       list: [],
       allData: {},
       currentWallet: this.$cache.get('_currentWallet'),
-      loading: true,
+      loading: false,
       mainCoin,
       systemBarHeight: 0,
       headerBoxHeight: 0,
@@ -99,7 +99,8 @@ export default {
       unboundingBlanceLoading: true,
       callUnboundingDelegators: 0,
       unBoundingBalance: 0,
-      cumulativeReward: 0
+      cumulativeReward: 0,
+      haveData: true
     }
   },
   created() {
@@ -152,27 +153,37 @@ export default {
     async updateData() {
       console.log('delegate update data')
       // if (this.$cache.get('_updateDelegateInfo') === null || this.$cache.get('_updateDelegateInfo')) {
-
-
-      this.list = []
-      this.loading = true
-      this.allData = {}
+      
+      if (this.$cache.get('_my_list_data')) {
+        this.list = this.$cache.get('_my_list_data')
+        this.loading = false
+      } else {
+        this.loading = true
+      }
+      if (this.list.length == 0) {
+        this.haveData = false
+      }
+      this.unBoundingBalance = this.$cache.get('_my_unBoundingBalance_data') || 0
+      this.cumulativeReward = this.$cache.get('_my_cumulativeReward_data') || 0
+      // this.list = []
+      // this.loading = true
+      // this.allData = {}
+      this.allData = this.$cache.get('_delegateInfo') || {}
       if (this.currentWallet.address !== this.$cache.get('_currentWallet').address) {
         this.currentWallet = this.$cache.get('_currentWallet')
       }
-      this.$cache.delete('_delegateInfo')
+      // this.$cache.delete('_delegateInfo')
       
       this.address = this.currentWallet.address
       
-      this.unBoundingBalance = 0
-      this.cumulativeReward = 0
+
       this.callUnboundingDelegators++
       const res = await getCumulativeRewardCollection({
         address: this.$cache.get('_currentWallet').address
       })
       console.log('累计领取奖励',res)
       this.cumulativeReward = !isNaN(res.data.data.withdrawAmount)?res.data.data.withdrawAmount / mainCoin.decimals : 0
-
+      this.$cache.set('_my_cumulativeReward_data', this.cumulativeReward, 0)
 
 
       // if (this.$cache.get('_delegateInfo')) {
@@ -183,13 +194,15 @@ export default {
 
     },
     handlerUnboundingBlance(res) {
-      this.unBoundingBalance = 0
+      // this.unBoundingBalance = 0
+      let tempUnBoundingBalance = 0
       res.result.unbondingResponses.forEach(item => {
         item.entries.forEach(item => {
-          this.unBoundingBalance += Number(item.balance)
+          tempUnBoundingBalance += Number(item.balance)
         })
       })
-      this.unBoundingBalance = this.unBoundingBalance / mainCoin.decimals
+      this.unBoundingBalance = tempUnBoundingBalance / mainCoin.decimals
+      this.$cache.set('_my_unBoundingBalance_data', this.unBoundingBalance, 0)
       this.unboundingBlanceLoading = false
       // this.unBoundingBalance = res.result.unboundingResponses.reduce((pre, cur, 0) => {
       //   return pre + Number(cur.ent)
@@ -210,9 +223,9 @@ export default {
       this.$nextTick(async () => {
         this.allData = data
         let { list } = data
-        this.list.forEach((item, index) => {
-          item = Object.assign(item , list[index])
-        })
+        // this.list.forEach((item, index) => {
+        //   item = Object.assign(item , list[index])
+        // })
         for (let i = 0, len = list.length; i < len; i++) {
           const item = list[i]
           const { delegatorAddress, validatorAddress } = item.delegation
@@ -225,11 +238,14 @@ export default {
         }
         list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
         this.list = list
+        if (this.list.length == 0) {
+          this.haveData = false
+        }
         this.loading = false
         this.address = ''
         this.$cache.set('_updateDelegateInfo', false, 36000)
         this.$cache.set('_delegateInfo', this.allData, 0)
-        
+        this.$cache.set('_my_list_data', this.list, 0)
         this.updateRewards = JSON.parse(JSON.stringify(data.list))
       })
     },
@@ -258,7 +274,12 @@ export default {
       if (reward.length > 13) {
         reward = reward.substr(0, 6) + '...' + reward.substr(-6)
       }
-      return reward
+      if (Number(reward) > 0 || isNaN(Number(reward))) {
+        // console.log('reward', reward)
+        this.$cache.set('_my_totalReward_data', reward, 0)
+      }
+      // console.log(this.$cache.get('_my_totalReward_data'))
+      return this.$cache.get('_my_totalReward_data') || reward
     },
     scrollHeight() {
       const operation_btn = '180rpx'

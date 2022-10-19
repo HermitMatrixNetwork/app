@@ -397,6 +397,19 @@ export default {
         this.address = ''
         // this.initCoinList()
         this.tokenList = this.currentWallet.coinList
+        this.$cache.delete('_tokenContent_accountTransfer_data')
+        this.$cache.delete('_tokenContent_unBoundingBalance_data')
+        this.$cache.delete('_tokenContent_locakAmount_data')
+        this.$cache.delete('_my_list_data')
+        this.$cache.delete('_my_totalReward_data')
+        this.$cache.delete('_my_cumulativeReward_data')
+        this.$cache.delete('_my_unBoundingBalance_data')
+        this.$cache.delete('_ident_delegationsBlance_data')
+        this.$cache.delete('_delegateInfo')
+        this.$cache.delete('_tokenContent_locakAmount_data')
+        this.$cache.delete('_tokenContent_unBoundingBalance_data')
+        this.$cache.delete('_tokenContent_balance_data')
+        console.log('update wallet');
         this.$nextTick(() => {
           this.address = this.$cache.get('_currentWallet').address
           this.callUnboundingDelegators++

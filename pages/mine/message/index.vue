@@ -32,10 +32,16 @@ export default {
       noticeList: [],
       alreadyRead: this.$cache.get('_alreadyRead') || [],
       readList:[],
-      loading: true
+      loading: false
     }
   },
   onLoad() {
+    if (this.$cache.get('_noticeList')) {
+      this.loading = false
+      this.noticeList = this.$cache.get('_noticeList')
+    } else {
+      this.loading = true
+    }
     this.getData()
   },
   methods: {
@@ -58,10 +64,11 @@ export default {
     },
     async getData() {
       const res = await getNotice()
-      console.log('通知信息', res)
+      // console.log('通知信息', res)
       let arr = res.data.data.notices.sort((a, b) => b.timestamp - a.timestamp)
       // if(this.alreadyRead.length == 0){
       this.noticeList = arr
+      this.$cache.set('_noticeList', this.noticeList, 0)
       // } else {
       //   arr.forEach(item=>{
       //     if(this.alreadyRead.includes(item.ID)){
