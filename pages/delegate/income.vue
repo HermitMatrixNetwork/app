@@ -505,6 +505,7 @@ export default {
         this.isCustomFess = false
       }
       this.formData.gasPrice = val.amount
+      this.formData.gas = ''
     },
     toAddressBook() {
       uni.navigateTo({
@@ -674,6 +675,7 @@ export default {
           const msgWithdrawDelegationReward = new secretjs.MsgWithdrawDelegationReward(val)
           res = await Secret.tx.simulate([msgWithdrawDelegationReward], {
             feeDenom: 'ughm',
+						gasPriceInFeeDenom:val.gasPrice
           })
           let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
           renderUtils.runMethod(this._$id, 'handlerGas', gas, this)

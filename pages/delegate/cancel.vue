@@ -440,6 +440,7 @@ export default {
         this.isCustomFess = false
       }
       this.formData.gasPrice = val.amount
+      this.formData.gas = ''
     },
     selectNode(url) {
       const eventChannel = this.getOpenerEventChannel()
@@ -622,6 +623,7 @@ export default {
           const msgUndelegate = new secretjs.MsgUndelegate(data, )
           res = await Secret.tx.simulate([msgUndelegate], {
             feeDenom: 'ughm',
+						gasPriceInFeeDenom:data.gasPrice
           })
           console.log(res)
           let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)

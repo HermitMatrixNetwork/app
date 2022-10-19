@@ -372,6 +372,7 @@ export default {
     },
     getMinersCost(val) {
       this.formData.gasPrice = val.amount
+      this.formData.gas = ''
       if(this.minusData.amount) {
         this.formData.gas = this.minusData.minersGas
         this.formData.gasPrice = this.minusData.amount
@@ -555,12 +556,14 @@ export default {
           ...data
         } = JSON.parse(JSON.stringify(val))
         let res = {}
+				// console.log(data);
         data.amount.amount = data.amount.amount * mainCoin.decimals + ''
         const Secret = await getSecret()
         try {
           const msgDelegate = new secretjs.MsgDelegate(data)
           res = await Secret.tx.simulate([msgDelegate], {
             feeDenom: 'ughm',
+						gasPriceInFeeDenom:data.gasPrice
           })
           let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
           renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
