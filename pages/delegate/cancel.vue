@@ -565,6 +565,9 @@ export default {
       uni.stopPullDownRefresh()
     }, 1500)
     // })
+  },
+  onHide() {
+    uni.stopPullDownRefresh()
   }
 }
 </script>

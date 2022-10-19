@@ -146,6 +146,7 @@ import TokenColumn from './send/components/TokenColumn.vue'
 import languages from './language'
 import mixin from './mixins/index.js'
 import decimal from 'decimal'
+// import serialize from 'serialize-javascript'
 export default {
   mixins: [mixin],
   components: {
@@ -156,7 +157,8 @@ export default {
     sliceAddress,
   },
   onHide() {
-    this.$refs.custom_update.reset()
+    this.$refs.custom_update && this.$refs.custom_update.reset()
+    uni.stopPullDownRefresh()
   },
   data() {
     return {
@@ -577,6 +579,7 @@ export default {
   } from '@/utils/secretjs/SDK'
   import renderUtils from '@/utils/render.base.js'
   import mainCoin from '@/config/index.js'
+  // import serialize from 'serialize-javascript'
 
   export default {
     data() {
@@ -711,7 +714,11 @@ export default {
         } else if (val == 1) {
           const secretClient = await getSecret()
           console.log('initSecretClient');
-          this.secretClient = secretClient
+          // this.secretClient = secretClient
+          console.log(secretClient);
+          // window.secreserialize = serialize
+          window.secretClient = secretClient
+          // console.log(serialize(secretClient));
           renderUtils.runMethod(this._$id, 'handlerSecretClient', secretClient, this)
         } else {
           val()

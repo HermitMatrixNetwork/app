@@ -347,6 +347,9 @@
 
 
     },
+    onHide() {
+      uni.stopPullDownRefresh()
+    },
     beforeDestroy() {
       clearInterval(this.timer)
     },

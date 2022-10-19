@@ -321,9 +321,12 @@ export default {
         ascList = validatorsList.sort((a, b) => a.commission_rate - b.commission_rate)
         break
       }
-      this.$nextTick(() => {
+      // this.$nextTick(() => {
+      //   
+      // })
+      setTimeout(() => {
         this.haveData = false
-      })
+      }, 1000)
       return this.sortRule == 'asc' ? ascList : ascList.reverse()
     },
     scrollHeight() {

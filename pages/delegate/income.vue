@@ -612,6 +612,9 @@ export default {
       this.callWithdrawAddress = this.currentWallet.address
       uni.stopPullDownRefresh()
     })
+  },
+  onHide() {
+    uni.stopPullDownRefresh()
   }
 }
 </script>

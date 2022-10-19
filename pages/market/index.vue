@@ -222,6 +222,9 @@ export default {
       uni.stopPullDownRefresh()
     }, 1000)
   },
+  onHide() {
+    uni.stopPullDownRefresh()
+  },
   watch: {
     searchVal(val) {
       this.searchVal = val.replace(/[\>\<\"\'\&]/g, '')

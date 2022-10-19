@@ -44,6 +44,7 @@ export default {
     })
   },
   onHide() {
+    uni.stopPullDownRefresh()
     clearInterval(this.$refs.customChildNode.timer)
   },
   onUnload() {

@@ -233,6 +233,9 @@ export default {
       uni.stopPullDownRefresh()
     }, 1500)
   },
+  onHide() {
+    uni.stopPullDownRefresh()
+  },
   methods: {
     txResult(res){
       // this.init({res:res,token:this.token}) //刷新列表

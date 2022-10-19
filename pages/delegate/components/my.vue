@@ -278,6 +278,9 @@ export default {
         // console.log('reward', reward)
         this.$cache.set('_my_totalReward_data', reward, 0)
       }
+      if (reward == '0.000000') {
+        this.$cache.delete('_my_totalReward_data')
+      }
       // console.log(this.$cache.get('_my_totalReward_data'))
       return this.$cache.get('_my_totalReward_data') || reward
     },
