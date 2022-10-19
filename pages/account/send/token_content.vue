@@ -171,11 +171,11 @@
           }, {
             name: language[this.$cache.get('_language')].text64,
             type: 'sender',
-            icon: require('@/static/img/account/fasong2.png')
+            icon: '/static/img/account/fasong2.png'
           }, {
             name: language[this.$cache.get('_language')].text65,
             type: 'recipient',
-            icon: require('@/static/img/account/shoukuan2.png')
+            icon: '/static/img/account/shoukuan2.png'
           },
           {
             name: language[this.$cache.get('_language')].text66,
@@ -510,26 +510,24 @@
               item.amount = item.amount / mainCoin.decimals + mainCoin.alias_name
               switch (type) {
                 case 0:
-                  item.icon = require(
-                    '@/static/img/account/fasong2.png')
+                  item.icon =  '/static/img/account/fasong2.png'
                   item.type = 'sender'
                   item.plus = item.to_address == this.address ? true : false
                   item.showAddress = item.to_address
                   break
                 case 1:
-                  item.icon = require('@/static/img/account/shoukuan2.png')
+                  item.icon = '/static/img/account/shoukuan2.png'
                   item.type = 'recipient'
                   item.showAddress = item.from_address
                   item.plus = true
                   break
                 case 2:
                   if (item.tx.body.messages[0]['@type'].includes('MsgDelegate')) {
-                    item.icon = require(
-                      '@/static/img/account/delegate2.png')
+                    item.icon = '/static/img/account/delegate2.png'
                     item.type = 'delegate'
                     item.plus = false
                   } else if (item.tx.body.messages[0]['@type'].includes('MsgUndelegate')) {
-                    item.icon = require('@/static/img/account/undelegate.png')
+                    item.icon = '/static/img/account/undelegate.png'
                     item.type = 'undelegate'
                     item.plus = true
                   }
@@ -538,8 +536,7 @@
                   break
                 case 3:
                   const originType = item.tx.body.messages[0]['@type']
-                  item.icon = require(
-                    '@/static/img/account/lingqu.png')
+                  item.icon = '/static/img/account/lingqu.png'
                   if (originType.includes('MsgSetWithdrawAddress')) {
                     item.raw_log.replace(/"key":"withdraw_address","value":"([0-9a-z]*)"/, (match, p1) => {
                       item.withdraw_address = p1
@@ -570,7 +567,7 @@
           // 处理失败交易记录
           if (res[4].data.data.list) {
             this.accountTransfer['fail'] = res[4].data.data.list.map(item => {
-              item.icon = require('@/static/img/account/shibai.png')
+              item.icon = '/static/img/account/shibai.png'
               // item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
               item.amount = '0.00'
               item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
@@ -625,23 +622,21 @@
                   if (item.to_address === this.address) { // 领取
                     item.type = 'recipient'
                     item.plus = true
-                    item.icon = require('@/static/img/account/shoukuan2.png')
+                    item.icon = '/static/img/account/shoukuan2.png'
                     item.showAddress = item.from_address
                   } else { // 发送
-                    item.icon = require(
-                      '@/static/img/account/fasong2.png')
+                    item.icon = '/static/img/account/fasong2.png'
                     item.plus = item.to_address == this.address ? true : false
                     item.type = 'sender'
                     item.showAddress = item.to_address
                   }
                 } else if (type.includes('MsgDelegate')) { // 委托
-                  item.icon = require(
-                    '@/static/img/account/delegate2.png')
+                  item.icon = '/static/img/account/delegate2.png'
                   item.showAddress = item.validator_address
                   item.type = 'delegate'
                   item.plus = false
                 } else if (type.includes('MsgUndelegate')) { // 取消委托
-                  item.icon = require('@/static/img/account/undelegate.png')
+                  item.icon = '/static/img/account/undelegate.png'
                   item.showAddress = item.validator_address
                   item.type = 'undelegate'
                   item.plus = true
@@ -654,8 +649,7 @@
                   item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
                     item.withdraw_address = p1
                   })
-                  item.icon = require(
-                    '@/static/img/account/lingqu.png')
+                  item.icon = '/static/img/account/lingqu.png'
                   item.plus = item.withdraw_address == this.address ? true : false
                   item.showAddress = item.withdraw_address
                   item.type = 'withdraw'
@@ -668,43 +662,36 @@
                   item.raw_log.replace(/"key":"withdraw_address","value":"([0-9a-z]*)"/, (match, p1) => {
                     item.withdraw_address = p1
                   })
-                  item.icon = require(
-                    '@/static/img/account/lingqu.png')
+                  item.icon = '/static/img/account/lingqu.png'
                   item.plus = item.withdraw_address == this.address ? true : false
                   item.showAddress = item.withdraw_address
                   item.type = 'setWithdrawAddress'
                 } else if (type.includes('MsgExecuteContract')) { // 调用合约
-                  item.icon = require(
-                    '@/static/img/account/contract.png')
+                  item.icon = '/static/img/account/contract.png'
                   item.showAddress = item.tx.body.messages[0].contract
                   item.type = 'executeContract'
                 } else if (type.includes('MsgInstantiateContract')) {
-                  item.icon = require(
-                    '@/static/img/account/instantiateContract.png')
+                  item.icon = '/static/img/account/instantiateContract.png'
                   item.type = 'instantiateContract'
                   item.showAddress = this.$cache.get('_currentWallet').address
                 } else if (type.includes('MsgUnjail')) { // 节点激活
                   // @todo icon input
-                  item.icon = require(
-                    '@/static/img/account/active.png')
+                  item.icon = '/static/img/account/active.png'
                   item.type = 'MsgUnjail'
                   item.showAddress = this.$cache.get('_currentWallet').address
                 } else if (type.includes('RaAuthenticate')) { // 节点注册
                   // @todo icon input
-                  item.icon = require(
-                    '@/static/img/account/register.png')
+                  item.icon = '/static/img/account/register.png'
                   item.type = 'RaAuthenticate'
                   item.showAddress = this.$cache.get('_currentWallet').address
                 } else if (type.includes('MsgStoreCode')) { // 节点激活
                   // @todo icon input
-                  item.icon = require(
-                    '@/static/img/account/active.png')
+                  item.icon = '/static/img/account/active.png'
                   item.type = 'MsgStoreCode'
                   item.showAddress = this.$cache.get('_currentWallet').address
                 } else if (type.includes('MsgCreateValidator')) {
                   // @todo icon input
-                  item.icon = require(
-                    '@/static/img/account/createvalidate.png')
+                  item.icon = '/static/img/account/createvalidate.png'
                   item.type = 'MsgCreateValidator'
                   item.showAddress = this.$cache.get('_currentWallet').address
                 }
@@ -828,7 +815,7 @@
           if (type == 'fail') {
             for (let i = 0, len = result.length; i < len; i++) {
               const item = result[i]
-              item.icon = require('@/static/img/account/shibai.png')
+              item.icon = '/static/img/account/shibai.png'
               // item.amount = (item.tx_amount || '0.00') / this.mainCoin.decimals + this.mainCoin.alias_name
               item.amount = '0.00'
               item.timestamp = item.timestamp.replace(/T|Z/g, ' ')
@@ -865,23 +852,21 @@
                   if (item.to_address === this.address) { // 领取
                     item.type = 'recipient'
                     item.plus = true
-                    item.icon = require('@/static/img/account/shoukuan2.png')
+                    item.icon = '/static/img/account/shoukuan2.png'
                     item.showAddress = item.from_address
                   } else { // 发送
-                    item.icon = require(
-                      '@/static/img/account/fasong2.png')
+                    item.icon = '/static/img/account/fasong2.png'
                     item.plus = item.to_address == this.address ? true : false
                     item.type = 'sender'
                     item.showAddress = item.to_address
                   }
                 } else if (type.includes('MsgDelegate')) { // 委托
-                  item.icon = require(
-                    '@/static/img/account/delegate2.png')
+                  item.icon = '/static/img/account/delegate2.png'
                   item.showAddress = item.validator_address
                   item.type = 'delegate'
                   item.plus = false
                 } else if (type.includes('MsgUndelegate')) { // 取消委托
-                  item.icon = require('@/static/img/account/undelegate.png')
+                  item.icon = '/static/img/account/undelegate.png'
                   item.showAddress = item.validator_address
                   item.type = 'undelegate'
                   item.plus = true
@@ -894,8 +879,7 @@
                   item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
                     item.withdraw_address = p1
                   })
-                  item.icon = require(
-                    '@/static/img/account/lingqu.png')
+                  item.icon = '/static/img/account/lingqu.png'
                   item.plus = item.withdraw_address == this.address ? true : false
                   item.showAddress = item.withdraw_address
                   item.type = 'withdraw'
@@ -908,43 +892,36 @@
                   item.raw_log.replace(/"key":"withdraw_address","value":"([0-9a-z]*)"/, (match, p1) => {
                     item.withdraw_address = p1
                   })
-                  item.icon = require(
-                    '@/static/img/account/lingqu.png')
+                  item.icon = '/static/img/account/lingqu.png'
                   item.plus = item.withdraw_address == this.address ? true : false
                   item.showAddress = item.withdraw_address
                   item.type = 'setWithdrawAddress'
                 } else if (type.includes('MsgExecuteContract')) { // 调用合约
                   item.type = 'executeContract'
-                  item.icon = require(
-                    '@/static/img/account/contract.png')
+                  item.icon = '/static/img/account/contract.png'
                   item.showAddress = item.tx.body.messages[0].contract
                 } else if (type.includes('MsgInstantiateContract')) {
-                  item.icon = require(
-                    '@/static/img/account/instantiateContract.png')
+                  item.icon = '/static/img/account/instantiateContract.png'
                   item.type = 'instantiateContract'
                   item.showAddress = this.$cache.get('_currentWallet').address
                 } else if (type.includes('MsgUnjail')) { // 节点激活
                   // @todo icon input
-                  item.icon = require(
-                    '@/static/img/account/active.png')
+                  item.icon = '/static/img/account/active.png'
                   item.type = 'MsgUnjail'
                   item.showAddress = this.$cache.get('_currentWallet').address
                 } else if (type.includes('RaAuthenticate')) { // 节点注册
                   // @todo icon input
-                  item.icon = require(
-                    '@/static/img/account/register.png')
+                  item.icon = '/static/img/account/register.png'
                   item.type = 'RaAuthenticate'
                   item.showAddress = this.$cache.get('_currentWallet').address
                 } else if (type.includes('MsgStoreCode')) { // 上传合约
                   // @todo icon input
-                  item.icon = require(
-                    '@/static/img/account/upload.png')
+                  item.icon = '/static/img/account/upload.png'
                   item.type = 'MsgStoreCode'
                   item.showAddress = this.$cache.get('_currentWallet').address
                 } else if (type.includes('MsgCreateValidator')) { // 
                   // @todo icon input
-                  item.icon = require(
-                    '@/static/img/account/createvalidate.png')
+                  item.icon = '/static/img/account/createvalidate.png'
                   item.type = 'MsgCreateValidator'
                   item.showAddress = this.$cache.get('_currentWallet').address
                 }
@@ -980,26 +957,24 @@
               item.amount = item.amount / mainCoin.decimals + mainCoin.alias_name
               switch (type) {
                 case 'recipient':
-                  item.icon = require('@/static/img/account/shoukuan2.png')
+                  item.icon = '/static/img/account/shoukuan2.png'
                   item.type = 'recipient'
                   item.showAddress = item.from_address
                   item.plus = true
                   break
                 case 'sender':
-                  item.icon = require(
-                    '@/static/img/account/fasong2.png')
+                  item.icon = '/static/img/account/fasong2.png'
                   item.type = 'sender'
                   item.plus = item.to_address == this.address ? true : false
                   item.showAddress = item.to_address
                   break
                 case 'delegate':
                   if (item.tx.body.messages[0]['@type'].includes('MsgDelegate')) {
-                    item.icon = require(
-                      '@/static/img/account/delegate2.png')
+                    item.icon = '/static/img/account/delegate2.png'
                     item.type = 'delegate'
                     item.plus = false
                   } else if (item.tx.body.messages[0]['@type'].includes('MsgUndelegate')) {
-                    item.icon = require('@/static/img/account/undelegate.png')
+                    item.icon = '/static/img/account/undelegate.png'
                     item.type = 'undelegate'
                     item.plus = true
 
@@ -1009,8 +984,7 @@
                   break
                 case 'withdraw':
                   const originType = item.tx.body.messages[0]['@type']
-                  item.icon = require(
-                    '@/static/img/account/lingqu.png')
+                  item.icon = '/static/img/account/lingqu.png'
                   item.raw_log.replace(
                     /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
                       p1) => {
@@ -1112,8 +1086,7 @@
               mainCoin.decimals && (data.amount = data.amount / mainCoin.decimals)
               data.amount += mainCoin.alias_name
 
-              data.icon = require(
-                '@/static/img/account/fasong2.png')
+              data.icon = '/static/img/account/fasong2.png'
 
               data.timestamp = data.timestamp.replace(/T|Z/g, ' ')
 

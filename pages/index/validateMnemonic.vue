@@ -94,7 +94,7 @@ export default {
         // uni.reLaunch({
         //   url: '/pages/account/index'
         // })
-        if (this.from) {
+        if (this.from !== 'undefined') {
           this.$cache.set('_closeSwitchPopup', true, 0)
           this.$cache.delete('_tokenContent_accountTransfer_data')
           this.$cache.delete('_tokenContent_unBoundingBalance_data')

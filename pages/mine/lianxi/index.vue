@@ -45,7 +45,7 @@ export default {
         icon: '/static/img/mine/contact/telegram.png',
         value: ''
       }, {
-        label: 'GitHup',
+        label: 'GitHub',
         flag: 'github',
         icon: '/static/img/mine/contact/github.png',
         value: ''

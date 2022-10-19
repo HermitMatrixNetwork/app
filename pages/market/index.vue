@@ -106,8 +106,8 @@ export default {
       tools: [{
         name: '区块浏览器',
         des: '这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器',
-        // url: 'http://158.247.237.78/home',
-        url: 'http://192.168.0.171:8888',
+        url: 'http://158.247.237.78/home',
+        // url: 'http://192.168.0.171:8888',
         logo: '/static/img/account/uGHM.png'
       }],
       recently: [],
