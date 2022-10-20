@@ -155,7 +155,13 @@ export default {
       } //如果获取的通知数量为0则结束
 
       if (this.notices !== messageNum) { //若不相等
-        this.messageNum = messageNum - this.notices>0?messageNum - this.notices:messageNum
+        // this.messageNum = messageNum - this.notices?messageNum - this.notices:messageNum
+        if(messageNum - this.notices>0){
+          this.messageNum = messageNum - this.notices
+        }else{
+          this.messageNum = messageNum
+          this.$cache.set('_alreadyRead', [], 0)
+        }
         this.noNotice = true
       }
     }
