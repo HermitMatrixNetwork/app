@@ -515,6 +515,15 @@
             
         }
         ,{
+            "path" : "pages/market/faucet",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
             "path" : "pages/layout/layout",
             "style" :                                                                                    
             {

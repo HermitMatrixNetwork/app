@@ -21,7 +21,11 @@ export default {
     text19: '编辑',
     text20: '取消收藏',
     text21: '已取消收藏',
-    text22: '请先选择收藏内容'
+    text22: '请先选择收藏内容',
+    text23: '区块浏览器',
+    text24: '隐私网络数据平台，使用户能够查询链上数据或授权数据。',
+    text25: '测试水龙头',
+    text26: '用于申领Hermit Matrix Network测试网络代币',
   },
   EN: {
     'text01': 'DAPPs',
@@ -45,7 +49,11 @@ export default {
     text19: 'Edit',
     text20: 'Cancel Collection',
     text21: 'Collection canceled',
-    text22: 'Please select your favorite content first'
+    text22: 'Please select your favorite content first',
+    text23: 'Hermit Scan',
+    text24: 'The Hermit Matrix Network data platform enables users to query on chain data or authorized data.',
+    text25: 'Faucet',
+    text26: 'Used to claim Hermit Matrix Network test network token'
   },
   CT: {
     'text01': '應用',
@@ -69,6 +77,10 @@ export default {
     text19: '編輯',
     text20: '取消收藏',
     text21: '已取消收藏',
-    text22: '請先選擇收藏內容'
+    text22: '請先選擇收藏內容',
+    text23: '區塊瀏覽器',
+    text24: '隱私網絡數據平臺，使用戶能夠查詢鏈上數據或授權數據。',
+    text25: '測試水龍頭',
+    text26: '用於申領Hermit Matrix Network測試網絡代幣'
   }
 }

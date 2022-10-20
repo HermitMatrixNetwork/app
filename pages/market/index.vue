@@ -63,6 +63,26 @@
           </view>
         </view>
       </view>
+      
+      <view class="tools">
+        <view class="heade">
+          <view class="left">Faucet</view>
+<!--          <view class="right" @click="toFaucet">
+            <text>{{ language.text04 }}</text>
+            <image src="/static/img/ic-arrow1.png"></image>
+          </view> -->
+        </view>
+        <view class="content" v-for="(item, index) in faucet" :key="index" @click="toWebView(item)">
+          <view class="logo">
+            <image :src="item.logo"></image>
+          </view>
+          <view class="article">
+            <view class="title">{{ item.name }}</view>
+            <view class="describe">{{ item.des }}</view>
+          </view>
+        </view>
+      </view>
+      
       <view class="tools">
         <view class="heade">
           <view class="left">PriFi</view>
@@ -104,11 +124,17 @@ export default {
     return {
       language: language[this.$cache.get('_language')],
       tools: [{
-        name: '区块浏览器',
-        des: '这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器',
+        name: language[this.$cache.get('_language')].text23,
+        des: language[this.$cache.get('_language')].text24,
         url: 'http://158.247.237.78/home',
         // url: 'http://192.168.0.171:8888',
         logo: '/static/img/account/uGHM.png'
+      }],
+      faucet: [{
+        name: language[this.$cache.get('_language')].text25,
+        des: language[this.$cache.get('_language')].text26,
+        url: 'http://158.247.237.78/home#/faucet',
+        logo: '/static/img/mine/3.png'
       }],
       recently: [],
       collection: [],
@@ -138,7 +164,8 @@ export default {
     this.$cache.set('_recently', this.recently, 0)
 
     // this.tools = this.$cache.get('_tools') || this.tools
-    // this.$cache.set('_tools', this.tools, 0)
+    this.$cache.set('_tools', this.tools, 0)
+    this.$cache.set('_faucet', this.faucet, 0)
     const res = (await getBannerList()).data.data.banner.photos.photos
     this.bannerList = res
   },
@@ -187,6 +214,11 @@ export default {
     toTools() {
       uni.navigateTo({
         url: './tools'
+      })
+    },
+    toFaucet() {
+      uni.navigateTo({
+        url: './faucet'
       })
     },
     toWebView(item) { // Tools

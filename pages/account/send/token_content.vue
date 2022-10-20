@@ -1141,7 +1141,7 @@
         })
 
         this.unBoundingBalance = tempUnBoundingBalance / mainCoin.decimals
-        this.$cache.set('_tokenContent_unBoundingBalance_data', 0)
+        this.$cache.set('_tokenContent_unBoundingBalance_data', this.unBoundingBalance, 0)
         this.unboundingBlanceLoading = false
       },
       txResult(res) {
