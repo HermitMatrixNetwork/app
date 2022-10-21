@@ -33,8 +33,8 @@ const mainCoin = {
 const MINERS_GAS = 20000
 
 const DEFAULT_RPC = {
-  name: 'ghmdev',
-  chainId: 'ghmdev',
+  name: 'ghm-testnet',
+  chainId: 'ghm-testnet',
   link: 'http://167.179.118.118:9091'
 }
 

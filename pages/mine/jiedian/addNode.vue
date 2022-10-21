@@ -58,7 +58,7 @@ export default {
       formData: {
         name: '',
         link: '',
-        chainId: 'ghmdev'
+        chainId: 'ghm-testnet'
       },
       callRender: 0
     }

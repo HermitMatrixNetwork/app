@@ -66,25 +66,6 @@
       
       <view class="tools">
         <view class="heade">
-          <view class="left">Faucet</view>
-<!--          <view class="right" @click="toFaucet">
-            <text>{{ language.text04 }}</text>
-            <image src="/static/img/ic-arrow1.png"></image>
-          </view> -->
-        </view>
-        <view class="content" v-for="(item, index) in faucet" :key="index" @click="toWebView(item)">
-          <view class="logo">
-            <image :src="item.logo"></image>
-          </view>
-          <view class="article">
-            <view class="title">{{ item.name }}</view>
-            <view class="describe">{{ item.des }}</view>
-          </view>
-        </view>
-      </view>
-      
-      <view class="tools">
-        <view class="heade">
           <view class="left">PriFi</view>
         </view>
         <view class="content">
@@ -126,16 +107,21 @@ export default {
       tools: [{
         name: language[this.$cache.get('_language')].text23,
         des: language[this.$cache.get('_language')].text24,
-        url: 'http://158.247.237.78/home',
+        url: 'https://scan.hermit.network/home',
         // url: 'http://192.168.0.171:8888',
         logo: '/static/img/account/uGHM.png'
-      }],
-      faucet: [{
+      },{
         name: language[this.$cache.get('_language')].text25,
         des: language[this.$cache.get('_language')].text26,
-        url: 'http://158.247.237.78/home#/faucet',
+        url: 'https://scan.hermit.network/home#/faucet',
         logo: '/static/img/mine/3.png'
       }],
+      // faucet: [{
+      //   name: language[this.$cache.get('_language')].text25,
+      //   des: language[this.$cache.get('_language')].text26,
+      //   url: 'http://158.247.237.78/home#/faucet',
+      //   logo: '/static/img/mine/3.png'
+      // }],
       recently: [],
       collection: [],
       bannerList: [],
@@ -154,20 +140,25 @@ export default {
     }
   },
   async created() {
-    this.recently = this.$cache.get('_recently') || []
-    
-    if (this.recently.length) {
-      this.recently = this.recently.filter(item => item.timeout > Date.now())
-      this.recently.sort((a, b) => b.timeout - a.timeout)
+    try {
+      this.recently = this.$cache.get('_recently') || []
+      
+      if (this.recently.length) {
+        this.recently = this.recently.filter(item => item.timeout > Date.now())
+        this.recently.sort((a, b) => b.timeout - a.timeout)
+      }
+      
+      this.$cache.set('_recently', this.recently, 0)
+      
+      // this.tools = this.$cache.get('_tools') || this.tools
+      this.$cache.set('_tools', this.tools, 0)
+      // this.$cache.set('_faucet', this.faucet, 0)
+      console.log(await getBannerList());
+      const res = (await getBannerList()).data.data.banner.photos.photos
+      this.bannerList = res
+    } catch (e) {
+      console.log('e', e);
     }
-    
-    this.$cache.set('_recently', this.recently, 0)
-
-    // this.tools = this.$cache.get('_tools') || this.tools
-    this.$cache.set('_tools', this.tools, 0)
-    this.$cache.set('_faucet', this.faucet, 0)
-    const res = (await getBannerList()).data.data.banner.photos.photos
-    this.bannerList = res
   },
   onShow() {
     this.collection = this.$cache.get('_collectionList') || []
@@ -506,6 +497,15 @@ export default {
       margin-bottom: 0 !important;
       width: 120rpx !important;
       height: 120rpx !important;
+    }
+  }
+  
+  .tools {
+    .content {
+      &:not(:last-child) {
+        border-bottom: 2rpx solid  #F4F6F9;
+        padding-bottom: 20rpx;
+      }
     }
   }
 </style>

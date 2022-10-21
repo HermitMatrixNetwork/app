@@ -106,7 +106,8 @@
                     <!-- </view> -->
                   </view>
                   <!-- <view class="number" v-else>0.00</view> -->
-                  <view class="money">$0.00000</view>
+                  <view v-if="item.alias_name !== mainCoin.alias_name" class="money">$0.00000</view>
+                  <view v-else class="money">${{ formatBalance(item.balance) || '0.000000' }}</view>
                 </view>
               </template>
             </TokenColumn>

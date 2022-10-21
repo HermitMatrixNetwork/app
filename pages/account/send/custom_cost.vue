@@ -30,6 +30,7 @@
 <script>
 import InputTitle from './components/Input-title.vue'
 import language from '../language/index.js'
+import mainCoin from '@/config/index.js'
 export default {
   components: {
     InputTitle
@@ -114,6 +115,7 @@ export default {
       const eventChannel = this.getOpenerEventChannel()
       eventChannel.emit('someEvent', {
         amount: this.amount,
+        price: this.amount / mainCoin.decimals,
         minersGas: this.minersGas
       })
       // if (this.redirectUrl) {

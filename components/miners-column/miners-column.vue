@@ -43,7 +43,7 @@ export default {
       minersList: [{
         amount: '0.0125',
         demon: 'ughm',
-        price: '0.00',
+        price: '0.0000000125',
         speed: language[this.$cache.get('_language')].text25,
         time: `${language[this.$cache.get('_language')].text28} 15 ${language[this.$cache.get('_language')].text26}`
       },
@@ -51,14 +51,14 @@ export default {
       {
         amount: '0.015',
         demon: 'ughm',
-        price: '0.00',
+        price: '0.000000015',
         speed: language[this.$cache.get('_language')].text24,
         time: `${language[this.$cache.get('_language')].text28} 5 ${language[this.$cache.get('_language')].text26}`
       },
       {
         amount: '0.02',
         demon: 'ughm',
-        price: '0.00',
+        price: '0.00000002',
         speed: language[this.$cache.get('_language')].text23,
         time: `${language[this.$cache.get('_language')].text28} 3 ${language[this.$cache.get('_language')].text26}`
       },

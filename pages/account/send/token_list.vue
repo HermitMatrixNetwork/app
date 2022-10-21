@@ -8,7 +8,8 @@
         <template #right>
           <view class="right">
             <view>{{ formatBalance(item.balance) || '0.00' }}</view>
-            <view>$ 0.00</view>
+            <view v-if="item.alias_name !== mainCoin.alias_name">$ 0.00</view>
+            <view v-else>${{ formatBalance(item.balance) || `0.00` }}</view>
           </view>
         </template>
       </TokenColumn>
@@ -19,6 +20,7 @@
 <script>
 import TokenColumn from './components/TokenColumn.vue'
 import language from '../language/index.js'
+import mainCoin from '@/config/index.js'
 export default {
   components: {
     TokenColumn
@@ -30,7 +32,8 @@ export default {
         paddingBottom: '32rpx',
         paddingTop: '32rpx',
       },
-      language: language[this.$cache.get('_language')]
+      language: language[this.$cache.get('_language')],
+      mainCoin
     }
   },
   methods: {

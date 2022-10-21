@@ -217,7 +217,7 @@ export default {
     async ValidatorsData() {
       try {
         const res = (await getNodeList({
-          'chain_id':'dev'
+          'chain_id':'ghm-testnet'
         })).data.data.list        
         // this.validators = res
         this.validators = res.map(item => {

@@ -2,8 +2,8 @@
     "name" : "Hermit Wallet",
     "appid" : "__UNI__F9452A8",
     "description" : "",
-    "versionName" : "2.0.5",
-    "versionCode" : 205,
+    "versionName" : "2.1.0",
+    "versionCode" : 210,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -178,33 +178,33 @@
             // 需要被代理的后台地址
             "proxy" : {
                 "/goServer" : {
-                    "target" : "http://158.247.237.78:8888",
+                    "target" : "https://sentinel.hermit.network:2333/api",
                     "changeOrigin" : true,
-                    "secure" : false,
+                    "secure" : true,
                     "pathRewrite" : {
                         "^/goServer" : "/"
                     }
                 },
                 "/cosmosServer" : {
-                    "target" : "http://167.179.118.118:1317",
+                    "target" : "https://rpc.hermit.network:1317",
                     "changeOrigin" : true,
-                    "secure" : false,
+                    "secure" : true,
                     "pathRewrite" : {
                         "^/cosmosServer" : "/"
                     }
                 },
                 "/browserServer" : {
-                    "target" : "http://158.247.237.78:8181",
+                    "target" : "https://api.hermit.network:8188",
                     "changeOrigin" : true,
-                    "secure" : false,
+                    "secure" : true,
                     "pathRewrite" : {
                         "^/browserServer" : "/"
                     }
                 },
                 "/recordServer" : {
-                    "target" : "http://158.247.237.78:8188",
+                    "target" : "https://api.hermit.network:8188",
                     "changeOrigin" : true,
-                    "secure" : false,
+                    "secure" : true,
                     "pathRewrite" : {
                         "^/recordServer" : "/"
                     }

@@ -22,24 +22,6 @@
         </view>
         <view class="border"></view>
       </view>
-      <view class="content" v-for="(item, index) in faucet" :key="item.url" @click="toWebView(item)">
-          <view class="item">
-            <view class="logo">
-              <image :src="item.logo"></image>
-            </view>
-            <view class="article">
-              <view class="title">
-                {{ item.name }}
-              </view>
-              <view class="describe">
-                {{ item.des }}
-              </view>
-              <view class="article-border">
-              </view>
-            </view>
-          </view>
-          <view class="border"></view>
-        </view>
       </view>
     </view>
   </view>
@@ -59,7 +41,6 @@ export default {
   created() {
     this.tools = this.$cache.get('_tools')
     this.faucet = this.$cache.get('_faucet')
-    this.recently = this.$cache.get('_recently')
   },
   methods: {
     toWebView(item) { // Tools

@@ -19,7 +19,7 @@
             </view>
             <view>
               <text class="symbol">$</text>
-              <text>0.00000</text>
+              <text>{{ ( new decimal(token.balance + '').add(new decimal(lockAmount + '')).add(new decimal(unBoundingBalance + '')).toString()) || `0.000000` | formatBalance }}</text>
             </view>
           </view>
         </template>
@@ -33,7 +33,7 @@
             <view class="top" v-else>{{ token.balance | formatBalance }}</view>
             <view class="bottom">
               <text class="symbol">$</text>
-              <text>0.00000</text>
+              <text>{{ token.balance || `0.000000` | formatBalance }}</text>
             </view>
           </view>
         </view>
@@ -46,7 +46,7 @@
             </view>
             <view class="bottom">
               <text class="symbol">$</text>
-              <text>0.00000</text>
+              <text>{{ (new decimal(lockAmount + '').add(new decimal(unBoundingBalance + '')).toString() )  || `0.000000` | formatBalance}}</text>
             </view>
           </view>
         </view>
@@ -467,7 +467,7 @@
             `pagination.limit=${this.pagination.withdraw.size}`
           ]),
           getFailRecord({
-            'chain_id': 'ghmdev',
+            'chain_id': 'ghm-testnet',
             // 'limit': this.pagination.fail.size,
             // 'index': this.pagination.fail.page,
             'address': this.address
@@ -815,7 +815,7 @@
               break
             case 'fail':
               result = (await getFailRecord({
-                'chain_id': 'ghmdev',
+                'chain_id': 'ghm-testnet',
                 'limit': this.pagination[type].size,
                 'index': this.pagination[type].page,
                 'address': this.address
@@ -1158,6 +1158,7 @@
     filters: {
       sliceAddress,
       formatBalance(val) {
+        if (val == '0.000000') return '0.000000'
         let int = (val + '').split('.')[0]
         let float = (val + '').split('.')[1]
         if (float) {
