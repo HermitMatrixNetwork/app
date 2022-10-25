@@ -46,7 +46,7 @@ export default {
         value: ''
       }, {
         label: 'GitBook',
-        flag: 'gitbook',
+        flag: 'github',
         icon: '/static/img/mine/contact/gitbook.png',
         value: ''
       },{

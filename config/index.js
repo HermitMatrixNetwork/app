@@ -24,7 +24,7 @@ const mainCoin = {
   decimals: 10 ** 6,
   delegateDecimals: 10 ** 24,
   view_key: '',
-  official: 'https://ghmchain.org',
+  official: 'https://www.hermit.network',
   contract_address: '',
   loadingBalance: true,
   desc: '' //发布信息

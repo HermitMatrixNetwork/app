@@ -17,7 +17,7 @@
             <view v-else class="balance">
               {{ ( new decimal(token.balance + '').add(new decimal(lockAmount + '')).add(new decimal(unBoundingBalance + '')).toString())  | formatBalance }}
             </view>
-            <view>
+            <view v-if="token.balance !== null && lockAmount !== null  && unBoundingBalance !== null">
               <text class="symbol">$</text>
               <text>{{ ( new decimal(token.balance + '').add(new decimal(lockAmount + '')).add(new decimal(unBoundingBalance + '')).toString()) || `0.000000` | formatBalance }}</text>
             </view>
@@ -31,7 +31,7 @@
           <view class="quantity">
             <custom-loading v-if="token.balance == null"></custom-loading>
             <view class="top" v-else>{{ token.balance | formatBalance }}</view>
-            <view class="bottom">
+            <view class="bottom" v-if="token.balance !== null">
               <text class="symbol">$</text>
               <text>{{ token.balance || `0.000000` | formatBalance }}</text>
             </view>

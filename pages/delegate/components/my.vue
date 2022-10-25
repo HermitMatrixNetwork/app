@@ -173,7 +173,6 @@ export default {
         this.currentWallet = this.$cache.get('_currentWallet')
       }
       // this.$cache.delete('_delegateInfo')
-      
       this.address = this.currentWallet.address
       
 
@@ -221,32 +220,40 @@ export default {
     },
     initData(data) {
       this.$nextTick(async () => {
-        this.allData = data
-        let { list } = data
-        // this.list.forEach((item, index) => {
-        //   item = Object.assign(item , list[index])
-        // })
-        for (let i = 0, len = list.length; i < len; i++) {
-          const item = list[i]
-          const { delegatorAddress, validatorAddress } = item.delegation
-          // 获取最新质押时间 
-          const res = (await txsQuery([`events=message.sender='${this.address}'`, `events=delegate.validator='${validatorAddress}'`])).data.tx_responses
-          if (res.length > 0) {
-            item.timestamp = res.pop().timestamp.replace(/T|Z/g, ' ')
-            item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() + 8)))
+        try {
+          this.allData = data
+          const oldAddress = this.address
+          this.address = ''
+          let { list } = data
+          this.$cache.set('_delegateInfo', this.allData, 0)
+          // this.list.forEach((item, index) => {
+          //   item = Object.assign(item , list[index])
+          // })
+          for (let i = 0, len = list.length; i < len; i++) {
+            const item = list[i]
+            const { delegatorAddress, validatorAddress } = item.delegation
+            // 获取最新质押时间 
+            const res = (await txsQuery([`events=message.sender='${oldAddress}'`, `events=delegate.validator='${validatorAddress}'`])).data.tx_responses
+            if (res.length > 0) {
+              item.timestamp = res.pop().timestamp.replace(/T|Z/g, ' ')
+              item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() + 8)))
+            }
           }
+          list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+          this.list = list
+          if (this.list.length == 0) {
+            this.haveData = false
+          }
+          this.loading = false
+          this.$cache.set('_updateDelegateInfo', false, 36000)
+          this.$cache.set('_delegateInfo', this.allData, 0)
+          this.$cache.set('_my_list_data', this.list, 0)
+          this.updateRewards = JSON.parse(JSON.stringify(data.list))
+        } catch(e) {
+          console.log(e, 'e');
+        } finally {
         }
-        list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-        this.list = list
-        if (this.list.length == 0) {
-          this.haveData = false
-        }
-        this.loading = false
-        this.address = ''
-        this.$cache.set('_updateDelegateInfo', false, 36000)
-        this.$cache.set('_delegateInfo', this.allData, 0)
-        this.$cache.set('_my_list_data', this.list, 0)
-        this.updateRewards = JSON.parse(JSON.stringify(data.list))
+
       })
     },
     handerRewards(res) {

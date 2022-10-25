@@ -26,7 +26,8 @@
               <image :src="eyeAsset? '/static/img/eye.png' : '/static/img/eye-close.png'" @click="assentIsShow" style="width: 32rpx; height: 32rpx;"></image>
           </view>
           <view class="user-balance">
-            {{ eyeAsset ? '$' + allassets : '∗∗∗∗∗∗∗∗' }}
+            <!-- {{ eyeAsset ? '$' + formatBalance(tokenList[0].balance) : '∗∗∗∗∗∗∗∗' }} -->
+            {{ eyeAsset ? '$' + formatBalance(new decimal(tokenList[0].balance + '').add(new decimal(lockAmount + '')).add(new decimal(unBoundingBalance + '')).toString()) : '∗∗∗∗∗∗∗∗' }}
           </view>
           <view class="user-address"  @click="copy">
             <text >{{
@@ -107,7 +108,7 @@
                   </view>
                   <!-- <view class="number" v-else>0.00</view> -->
                   <view v-if="item.alias_name !== mainCoin.alias_name" class="money">$0.00000</view>
-                  <view v-else class="money">${{ formatBalance(item.balance) || '0.000000' }}</view>
+                  <view v-else class="money">${{ formatBalance(new decimal(item.balance + '').add(new decimal(lockAmount + '')).add(new decimal(unBoundingBalance + '')).toString()) || '0.000000' }}</view>
                 </view>
               </template>
             </TokenColumn>
@@ -251,7 +252,13 @@ export default {
       this.currentWallet = this.$cache.get('_currentWallet')
       this.address = this.currentWallet.address
     }
+    if (this.$cache.get('_tokenContent_unBoundingBalance_data') !== undefined) {
+      this.unBoundingBalance = this.$cache.get('_tokenContent_unBoundingBalance_data')
+    } else {
+      this.unBoundingBalance = null
+    }
     
+    this.lockAmount = this.$cache.get('_account_locakAmount_data') || 0
     this.$refs.custom_update && this.$refs.custom_update.checkUpdate()
     
     this.aa = false
@@ -304,8 +311,12 @@ export default {
   // },
   methods: {
     formatBalance(val) {
-      if (val) {
+      if (isNaN(val)) {
+        return '0.000000'
+      } else if (val) {
         return Number(val).toFixed(6)
+      } else {
+        return '0.000000'
       }
     },
     getSystemStatusHeight() {
@@ -422,7 +433,8 @@ export default {
         this.$cache.delete('_tokenContent_locakAmount_data')
         this.$cache.delete('_tokenContent_unBoundingBalance_data')
         this.$cache.delete('_tokenContent_balance_data')
-        console.log('update wallet');
+        this.$cache.delete('_account_locakAmount_data')
+        console.log('update wallet')
         this.$nextTick(() => {
           this.address = this.$cache.get('_currentWallet').address
           this.callUnboundingDelegators++
@@ -488,18 +500,21 @@ export default {
         lock += Number(item.balance.amount)
       })
       this.lockAmount = lock / mainCoin.decimals
+      this.$cache.set('_account_locakAmount_data', this.lockAmount, 0)
       this.lockAmountLoading = false
       // console.log('lockAmount', this.lockAmount)
     },
     handlerUnboundingBlance(res) {
-      this.unBoundingBalance = 0
+      // this.unBoundingBalance = 0
+      let tempUnBoundingBalance = 0
       res.result.unbondingResponses.forEach(item => {
         item.entries.forEach(item => {
-          this.unBoundingBalance += Number(item.balance)
+          tempUnBoundingBalance += Number(item.balance)
         })
       })
       
-      this.unBoundingBalance = this.unBoundingBalance / mainCoin.decimals
+      this.unBoundingBalance = tempUnBoundingBalance / mainCoin.decimals
+      this.$cache.set('_tokenContent_unBoundingBalance_data', this.unBoundingBalance, 0)
       this.unboundingBlanceLoading = false
       // this.unBoundingBalance = res.result.unboundingResponses.reduce((pre, cur, 0) => {
       //   return pre + Number(cur.ent)
@@ -507,7 +522,7 @@ export default {
     },
     handlerSecretClient(client) {
       getApp().globalData.secretClient = client
-      console.log('handlerSecretClient', client);
+      console.log('handlerSecretClient', client)
     }
   },
   computed: {

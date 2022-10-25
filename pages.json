@@ -1,6 +1,5 @@
 {
-  "pages": [
-    {
+  "pages": [{
       "path": "pages/index/index",
       "style": {
         "navigationBarTitleText": "钱包首页"
@@ -69,65 +68,6 @@
       }
     },
     {
-      "path": "pages/walletManager/index",
-      "style": {}
-    },
-    {
-      "path": "pages/walletManager/exportPrivatekeyReminder",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/walletManager/exportPrivatekey",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/walletManager/exportMnemonicReminder",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/walletManager/exportKeystoreReminder",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/walletManager/exportKeystore",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/walletManager/exportMnemonic",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/walletManager/verifyMnemonic",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/walletManager/importWallet",
-      "style": {
-        "enablePullDownRefresh": false
-      }
-    },
-    {
       "path": "pages/assetManage/index",
       "style": {
         "navigationBarTitleText": "",
@@ -146,44 +86,6 @@
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": true
-      }
-    },
-    {
-      "path": "pages/delegate/index",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": true
-      }
-    },
-    {
-      "path": "pages/delegate/cancel",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": true
-      }
-    }, {
-      "path": "pages/delegate/selectNode",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    }, {
-      "path": "pages/delegate/search",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    }, {
-      "path": "pages/delegate/income",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": true
-      }
-    }, {
-      "path": "pages/delegate/transaction",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
       }
     },
     {
@@ -220,13 +122,13 @@
         "enablePullDownRefresh": false
       }
     },
-    {
-      "path": "pages/account/send/index",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": true
-      }
-    },
+    // {
+    //   "path": "pages/account/send/index",
+    //   "style": {
+    //     "navigationBarTitleText": "",
+    //     "enablePullDownRefresh": true
+    //   }
+    // },
     {
       "path": "pages/account/send/tokenInformation",
       "style": {
@@ -234,20 +136,20 @@
         "enablePullDownRefresh": false
       }
     },
-    {
-      "path": "pages/account/send/token_content",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": true
-      }
-    },
-    {
-      "path": "pages/account/send/token_list",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-    },
+    // {
+    //   "path": "pages/account/send/token_content",
+    //   "style": {
+    //     "navigationBarTitleText": "",
+    //     "enablePullDownRefresh": true
+    //   }
+    // },
+    // {
+    //   "path": "pages/account/send/token_list",
+    //   "style": {
+    //     "navigationBarTitleText": "",
+    //     "enablePullDownRefresh": false
+    //   }
+    // },
     {
       "path": "pages/account/send/transactionDetails",
       "style": {
@@ -283,20 +185,6 @@
         "enablePullDownRefresh": false
       }
     }, {
-      "path": "pages/mine/dae/index",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/mine/anquan/index",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
       "path": "pages/mine/anquan/verifyTouchId",
       "style": {
         "navigationBarTitleText": "",
@@ -311,84 +199,7 @@
       }
 
     }, {
-      "path": "pages/mine/yuyan/index",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/mine/bangzhu/detail",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/mine/message/index",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/mine/message/detail",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/mine/jiedian/index",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/mine/jiedian/addNode",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/mine/jiedian/editNode",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/mine/bangzhu/index",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/mine/lianxi/index",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/mine/wenti/index",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/mine/guanyu/index",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-     "path": "pages/mine/anquan/touchIdCheck",
+      "path": "pages/mine/anquan/touchIdCheck",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
@@ -407,20 +218,6 @@
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-    }, {
-      "path": "pages/delegate/validatorDetail",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/delegate/delegate",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": true
-      }
-
     },
     {
       "path": "pages/assetManage/home",
@@ -428,14 +225,16 @@
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
-    }, {
-      "path": "pages/account/send/token_content_other",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": true
-      }
+    },
+    // {
+    //   "path": "pages/account/send/token_content_other",
+    //   "style": {
+    //     "navigationBarTitleText": "",
+    //     "enablePullDownRefresh": true
+    //   }
 
-    }, {
+    // },
+    {
       "path": "pages/account/editAddress",
       "style": {
         "navigationBarTitleText": "",
@@ -450,107 +249,338 @@
       }
 
     }, {
-      "path": "pages/mine/wenti/record",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/mine/wenti/detail",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
-      "path": "pages/delegate/setWithdrawAddress",
-      "style": {
-        "navigationBarTitleText": "",
-        "enablePullDownRefresh": false
-      }
-
-    }, {
       "path": "components/custom-updateApp/custom-updateApp",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
 
+    }, {
+      "path": "pages/market/webview",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/mine/anquan/backgroundVerify",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/market/tools",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/market/faucet",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/layout/layout",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/market/collection",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/market/404",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "pages/delegate/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": true
+      }
     }
-      ,{
-            "path" : "pages/market/webview",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
+  ],
+  "subPackages": [{
+    "root": "pages",
+    "pages": [{
+        "path": "account/send/index",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": true
         }
-        ,{
-            "path" : "pages/mine/anquan/backgroundVerify",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
+      }, {
+        "path": "account/send/token_list",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": false
         }
-        ,{
-            "path" : "pages/mine/guanyu/userAgreement",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
+      }, {
+        "path": "account/send/token_content",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": true
         }
-        ,{
-            "path" : "pages/market/tools",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
+      },
+      {
+        "path": "account/send/token_content_other",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": true
         }
-        ,{
-            "path" : "pages/market/faucet",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
+
+      }, {
+        "path": "delegate/setWithdrawAddress",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": false
         }
-        ,{
-            "path" : "pages/layout/layout",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
+
+      },
+      {
+        "path": "delegate/delegate",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": true
         }
-        ,{
-            "path" : "pages/mine/yaoqing/index",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
+
+      },
+      {
+        "path": "delegate/validatorDetail",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": false
         }
-        ,{
-            "path" : "pages/market/collection",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
+
+      },
+      {
+        "path": "delegate/cancel",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": true
         }
-    ],
+      }, {
+        "path": "delegate/selectNode",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": false
+        }
+      }, {
+        "path": "delegate/search",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": false
+        }
+      }, {
+        "path": "delegate/income",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": true
+        }
+      }, {
+        "path": "delegate/transaction",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": false
+        }
+      }, {
+        "path": "mine/yaoqing/index",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": false
+        }
+
+      }, {
+        "path": "mine/guanyu/userAgreement",
+        "style": {
+          "navigationBarTitleText": "",
+          "enablePullDownRefresh": false
+        }
+
+      }, {
+      "path": "mine/wenti/record",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/wenti/detail",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/yuyan/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/bangzhu/detail",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/message/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/message/detail",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/jiedian/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/jiedian/addNode",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/jiedian/editNode",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/bangzhu/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/lianxi/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/wenti/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/guanyu/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/dae/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    }, {
+      "path": "mine/anquan/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+
+    },
+    {
+      "path": "walletManager/index",
+      "style": {}
+    },
+    {
+      "path": "walletManager/exportPrivatekeyReminder",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "walletManager/exportPrivatekey",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "walletManager/exportMnemonicReminder",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "walletManager/exportKeystoreReminder",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "walletManager/exportKeystore",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "walletManager/exportMnemonic",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "walletManager/verifyMnemonic",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "walletManager/importWallet",
+      "style": {
+        "enablePullDownRefresh": false
+      }
+    }
+    ]
+  }],
+  "preloadRule": {
+    "pages/send/index": {
+      "network": "all",
+      "packages": ["__APP__"]
+    }
+  },
   "globalStyle": {
     "navigationStyle": "custom",
     "navigationBarTextStyle": "black"

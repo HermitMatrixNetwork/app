@@ -42,7 +42,7 @@ export async function getSecret() {
 
 //查询余额
 export async function getBalance(address, client) {
-  console.log('getBalance', client);
+  // console.log('getBalance', client);
   let Secret = client ? client : await getSecret()
   const result = await Secret.query.bank.balance({
     address,
@@ -75,7 +75,7 @@ export async function QueryStakingValidators(status) {
 
 //发送其他地址
 export async function SendTokentoOtherAddress(myaddress, toaddress, amount, memo = '', gas, gasPrice, client) {
-  console.log('SendTokentoOtherAddress', client);
+  // console.log('SendTokentoOtherAddress', client);
   let Secret = client ? client : await getSecret()
   const result = await Secret.tx.bank.send({
     fromAddress: myaddress,
@@ -189,7 +189,7 @@ export async function queryAccountHash(hash) {
 }
 
 export async function getDelegationRecord(address, client) {
-  console.log('getDelegationRecord', client);
+  // console.log('getDelegationRecord', client);
   let Secret = client ? client : await getSecret()
   const result = await Secret.query.staking.delegatorDelegations({
     delegatorAddr: address
@@ -198,7 +198,7 @@ export async function getDelegationRecord(address, client) {
 }
 
 export async function getUnbondingDelegationRecord(address, client) {
-  console.log('getUnbondingDelegationRecord', client);
+  // console.log('getUnbondingDelegationRecord', client);
   let Secret = client ? client : await getSecret()
   const result = await Secret.query.staking.delegatorUnbondingDelegations({
     delegatorAddr: address
@@ -229,21 +229,21 @@ export async function setViewKey(data, gas, gasPrice) {
 
 
 export async function getOtherBalance(data, client) {
-  console.log('getOtherBalance', client);
+  // console.log('getOtherBalance', client);
   let Secret = client ? client : await getSecret()
   const result = await Secret.query.snip20.getBalance(data)
   return result
 }
 
 export async function getCodeHash(data, client) {
-  console.log('getCodeHash', client);
+  // console.log('getCodeHash', client);
   let Secret = client ? client : await getSecret()
   const codeHash = await Secret.query.snip20.contractCodeHash(data)
   return codeHash
 }
 
 export async function getOtherTransationHistory(data, pagination, token, client) {
-  console.log('getOtherTransationHistory', client);
+  // console.log('getOtherTransationHistory', client);
   let Secret = client ? client : await getSecret()
   // const result = querySnip.getTransactionHistory({
   //       contract: { address: 'ghm18hxq6kypae4arzxda4dvuwdr0p23rrg5pqffx9', codeHash: '188609c5d1fee7b0917d4fedccd04bb8286181bd45e2f77ccac364cda7f164c5' },
@@ -267,14 +267,14 @@ export async function getOtherTransationHistory(data, pagination, token, client)
 }
 
 export const getTokenDecimals = async (data, client) => {
-  console.log('getTokenDecimals', client);
+  // console.log('getTokenDecimals', client);
   let Secret = client ? client : await getSecret()
   const result = await Secret.query.snip20.getSnip20Params(data)
   return result
 }
 
 export const transferOtherToken = async (data, memo = '', gas, gasPrice, client) => {
-  console.log('transferOtherToken', client);
+  // console.log('transferOtherToken', client);
   let Secret = client ? client : await getSecret()
   const result = await Secret.tx.snip20.transfer(data, {
     gasPriceInFeeDenom: gasPrice,
@@ -289,13 +289,13 @@ export const transferOtherToken = async (data, memo = '', gas, gasPrice, client)
 export const getDelegatorHistory = async (data) => {
   let Secret = await getSecret()
   const result = await Secret.query.txsQuery(`message.sender='${Secret.wallet.address}' AND delegate.validator='ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl'`)
-  console.log(result)
+  // console.log(result)
 }
 
 export const alla = async (data) => {
   let Secret = await getSecret()
   const result = await Secret.query.txsQuery(`message.sender='${Secret.wallet.address}' AND message.module='staking'`)
-  console.log(result)
+  // console.log(result)
 }
 
 export const getRewards = async (delegatorAddress, validatorAddress) => {
@@ -337,7 +337,7 @@ export const getWithdrawAddress = async (address) => {
 }
 
 export const getMainCoinBalance = async (address, client) => {
-  console.log('getMainCoinBalance', client);
+  // console.log('getMainCoinBalance', client);
   let Secret = client ? client : await getSecret()
   
   const result = await Secret.query.bank.balance({

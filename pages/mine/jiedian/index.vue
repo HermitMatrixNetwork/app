@@ -49,10 +49,17 @@ export default {
     }
   },
   onLoad() {
+    // http://167.179.118.118:9091
+    // https://rpc.hermit.network:9191
     this.nodeList = this.$cache.get('_nodeList') || [DEFAULT_RPC]
     this.$cache.set('_nodeList', this.nodeList, 0)
     this.currentRpc = this.$cache.get('_currentRpc')
-    this.selectIndex = this.$cache.get('_nodeList').findIndex(item => item.link == this.$cache.get('_currentRpc'))
+    this.selectIndex = this.$cache.get('_nodeList').findIndex(item => {
+      return item.link == this.$cache.get('_currentRpc')    
+    })
+    if (this.selectIndex == -1) {
+      this.selectIndex = 0
+    }
   },
   methods: {
     addNode() {

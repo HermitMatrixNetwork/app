@@ -263,7 +263,8 @@ const languages = {
     text236: '调用合约失败',
     text237: '油费不足',
     text238: '地址有误',
-    text239: '区块高度'
+    text239: '区块高度',
+    text240: '自动领取奖励'
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -527,7 +528,8 @@ const languages = {
 
     text237: '油費不足',
     text238: '地址有誤',
-    text239: '區塊高度'
+    text239: '區塊高度',
+    text240: '自動領取獎勵'
   },
   EN: {
     Mywallet: 'My Wallet',
@@ -792,7 +794,8 @@ const languages = {
 
     text237: 'Insufficient fuel charge',
     text238: 'The address is wrong.',
-    text239: 'Block Height'
+    text239: 'Block Height',
+    text240: 'ReceiveRewardsAutomatically'
   }
 }
 export default languages

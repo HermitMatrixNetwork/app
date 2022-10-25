@@ -16,7 +16,9 @@ import renderUtils from '@/utils/render.base.js'
  */
 export function createWallet(fn, vm, mnemonic = '', cb) {
   const wallet = new secretjs.Wallet(mnemonic, {
-    bech32Prefix: 'ghm'
+    hdAccountIndex: 0,
+    coinType: 928,
+    bech32Prefix: "ghm"
   })
 
   // 生成私钥

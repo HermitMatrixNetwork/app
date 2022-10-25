@@ -16,7 +16,7 @@
         </view>
       </template>
     </custom-header>
-    <iframe v-if="refreshIframe" id="iframe" style="width: 100vw; height: calc(100vh - 112rpx - var(--status-bar-height));" :src="jumpUrl" frameborder="0"></iframe>
+    <iframe v-if="refreshIframe" id="iframe" ref="iframe" style="width: 100vw; height: calc(100vh - 112rpx - var(--status-bar-height));" :src="jumpUrl" frameborder="0"></iframe>
      <u-popup class="popup" :show="show" @close="close">
        <view class="popup-top" style="text-align: right; padding: 32rpx 25rpx 0 0;">
          <image src="/static/img/mine/close.png" @click="close" style="width:32rpx; height: 32rpx;"></image>
@@ -48,8 +48,12 @@ var wv
 export default {
   onLoad(options) {
     // console.log(uni.getSystemInfoSync().statusBarHeight)
-    this.jumpUrl = options.jumpUrl
-    console.log(this.jumpUrl)
+    let tempUrl = options.jumpUrl
+    if (tempUrl.startsWith('http://') || tempUrl.startsWith('https://')) {
+    } else {
+      tempUrl = 'http://' + tempUrl
+    } 
+    this.jumpUrl = tempUrl
     this.name = options.name
     this.collectionList = this.$cache.get('_collectionList') || []
     this.isCollect = this.collectionList.find(item => item.url === this.jumpUrl)
@@ -82,6 +86,7 @@ export default {
   },
   methods: {
     showup() {
+      // console.dir(this.$refs.iframe.contentWindow.document)
       this.firstIn = false
       this.hidden = false
       this.show = true

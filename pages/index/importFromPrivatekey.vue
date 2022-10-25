@@ -139,6 +139,7 @@ export default {
         this.$cache.delete('_tokenContent_locakAmount_data')
         this.$cache.delete('_tokenContent_unBoundingBalance_data')
         this.$cache.delete('_tokenContent_balance_data')
+        this.$cache.delete('_account_locakAmount_data')
       }
       uni.switchTab({
         url: '/pages/account/index'
