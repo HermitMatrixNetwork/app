@@ -18,15 +18,18 @@
     <view class="account-box">
       <view class="account-column">
         <view class="column-item" @click="goTo('/pages/delegate/cancel')">
-          <image src="/static/img/delegate/quxiaoweituo.png" ></image>
+          <!-- <image src="/static/img/delegate/quxiaoweituo.png" ></image> -->
+          <image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAAOVBMVEUyMlUAAAAsNlozM1wtLUeDl7F9j6mElrEsNlouOFp8j6kyN1YtN1ksN1ktNlp7iqYuNlwvN1ksNlp3kF3gAAAAEnRSTlMOAPUYCP1o39lrYBywoVRTPTwXXapYAAABrElEQVRYw8zS4Y6DIBAE4KGOVURte+//sAfSHglLdxPpJZ1fRNcvOxE4PYzBXxjj9EDX0AhpgLZmmzZIGKEFSu4cCYU7RULhTpFoeF0i+jyAOogT0UCgW4Rd1w7fgDidNoiOtEB0RYLsA1mDRGdYgaICBjWQXxRQLsjg1/miZF59YHNFNL19/jEz700RjcL0cf6iYfm1r8QCstrv+Y2SPLFTrgi5YDj6bo8wvE14bEfrIFeEWND51Mc76pfEp9reiRUhr8waJzcHI26LY6u8OhC/eEiN77RA3lPnoXrYBC+xTICZkOaaIBrgoEjaXAL5SZD/AeKTYORoDBJgddZAWiBv07TweV6m6cZOENM4jld3tLnG44R+MIvZs0HAqLyMWczeuBiVYYF4QS8YfWARi9cDFrF4/SDckr3F4TvB3+rs3AYAGASCYP9dExMCExwNWLKM71n6lfMe5TA2ZrDnXy9NHA7yhQRWW8AL16NGz6MID0s6zvHAqSMxD+28Vvji46uZL4++3voC7hEBOVFjFg6CMKrSME3jPg0kNTLFUBdjZwzGMbpPWC4s1x8FTKUqmdh19OgAAAAASUVORK5CYII=" ></image>
           <text>{{ language.text06 }}</text>
         </view>
         <view class="column-item" @click="goTo('/pages/delegate/income')">
-          <image src="/static/img/delegate/shouyilingqu.png"></image>
+          <!-- <image src="/static/img/delegate/shouyilingqu.png"></image> -->
+          <image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAAQlBMVEUxMlQAAAA6PWMsNlqDl7EuNlqDl7EsNlsxNVosNlosNlosN1p7iqgxOFotN1sxOFosNlotNlosN1osN1ssNlqDl7G5LHm0AAAAFHRSTlMOABj29mbelCTl7tpVMsdDuXGuUKnlS1IAAAI8SURBVFjDxdkJc4IwEAXgzaNyKR6t/f9/tZYyjfB2Nwc93ozTsSGfGwMaooRkJCbn6KTFqQXFSQUoiRSCkhEXZK6WlBSHQlKS5fl+Esy1YJGieogPC4vxQLswr4VAw8vXLVCqo4OpGUB8SrVqIFsoeAMY9PukTQdMCxwGjYMEq0iw2Qja3qU7D2MTM1xvsIeyAXkG0TV3yvEt8OAZFCW43rU0B/PjyAdDtwAxS8FbkUDdu8wDPEw9vtPniOIVeOxXTVjAKEIHRct57ggC3Ro1cCEwPPpNIltwvDWKiBWoXgQYH/PRM9jIwatxBXJnaP8LJO4EZS2CQCkDe0Bus/imdS0Dh+VEH2fwCB9E/GOA8npf5fZcDCoqDNOwAq+1Q46ZXoen63qABkoJGCRe17EdYgYE+i+YlmpBzi+CqANhSdwBm+wc8ql92aQ97QLbd0q7AeGdLVng/wwZIn8xKel2/l7Zcx7WfdrgKWUg0pPSnhQQBBach21mhfhBkEosGDJ7BGLHpDDISxEz/QMcQYXoqy9eLHEm/pLi1ReM5Rzna4Fzlm1yF5zc2h8fzd22NXNJTOmnw6fXXAgsWbTz4p0LNEB831Y0dydXiAVaE905YNNBEiBmRLk1o4zDubtwDfk3jxwJvJKj29udCSaI+ZEbmGAgpyipTYxS3d9mqRwvg4FKQ57qbVWlJT7C3UyrSPZ2H8yzCOTVbkiCnuVtmcLA2Ny1qct+0bYzkrNdvTEO9c37/637+h8XkiHMzQfmDTArSVP5OwAAAABJRU5ErkJggg==" />
           <text>{{ language.text07 }}</text>
         </view>
         <view class="column-item" @click="goTo('/pages/delegate/transaction')">
-          <image src="/static/img/delegate/jiaoyijilu.png"></image>
+          <!-- <image src="/static/img/delegate/jiaoyijilu.png"></image> -->
+          <image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAAQlBMVEUxMlQAAAA6PWMsNlqDl7EuNlqDl7EsNlsxNVosNlosNlosN1p7iqgxOFotN1sxOFosNlotNlosN1osN1ssNlqDl7G5LHm0AAAAFHRSTlMOABj29mbelCTl7tpVMsdDuXGuUKnlS1IAAAI8SURBVFjDxdkJc4IwEAXgzaNyKR6t/f9/tZYyjfB2Nwc93ozTsSGfGwMaooRkJCbn6KTFqQXFSQUoiRSCkhEXZK6WlBSHQlKS5fl+Esy1YJGieogPC4vxQLswr4VAw8vXLVCqo4OpGUB8SrVqIFsoeAMY9PukTQdMCxwGjYMEq0iw2Qja3qU7D2MTM1xvsIeyAXkG0TV3yvEt8OAZFCW43rU0B/PjyAdDtwAxS8FbkUDdu8wDPEw9vtPniOIVeOxXTVjAKEIHRct57ggC3Ro1cCEwPPpNIltwvDWKiBWoXgQYH/PRM9jIwatxBXJnaP8LJO4EZS2CQCkDe0Bus/imdS0Dh+VEH2fwCB9E/GOA8npf5fZcDCoqDNOwAq+1Q46ZXoen63qABkoJGCRe17EdYgYE+i+YlmpBzi+CqANhSdwBm+wc8ql92aQ97QLbd0q7AeGdLVng/wwZIn8xKel2/l7Zcx7WfdrgKWUg0pPSnhQQBBach21mhfhBkEosGDJ7BGLHpDDISxEz/QMcQYXoqy9eLHEm/pLi1ReM5Rzna4Fzlm1yF5zc2h8fzd22NXNJTOmnw6fXXAgsWbTz4p0LNEB831Y0dydXiAVaE905YNNBEiBmRLk1o4zDubtwDfk3jxwJvJKj29udCSaI+ZEbmGAgpyipTYxS3d9mqRwvg4FKQ57qbVWlJT7C3UyrSPZ2H8yzCOTVbkiCnuVtmcLA2Ny1qct+0bYzkrNdvTEO9c37/637+h8XkiHMzQfmDTArSVP5OwAAAABJRU5ErkJggg==" />
           <text>{{ language.text08 }}</text>
         </view>
       </view>
@@ -250,7 +253,7 @@ export default {
           this.$cache.set('_my_list_data', this.list, 0)
           this.updateRewards = JSON.parse(JSON.stringify(data.list))
         } catch(e) {
-          console.log(e, 'e');
+          console.log(e, 'e')
         } finally {
         }
 
