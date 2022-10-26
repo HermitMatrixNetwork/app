@@ -4,7 +4,8 @@
 		<view class="mask" v-show="transferLoading"></view>
 		<custom-header :title="language.text15" :style="titleStyle" :customStyle="{ 'z-index': 98 }">
 			<template #right>
-				<image src="/static/img/account/saoma.png" style="width:44rpx; height: 44rpx;" @click="scanCode">
+				<!-- <image src="/static/img/account/saoma.png" style="width:44rpx; height: 44rpx;" @click="scanCode"> -->
+				<image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsBAMAAADsqkcyAAAAIVBMVEUAAACEmLKEmLKEmLKEmLKGmrKEmrOInrSFmbKDmLOEl7Iuf7PGAAAAC3RSTlMAn1mlS0RbBpglhaOo7aEAAACASURBVCjPYyAVTFFSUkotgLDZw4AcTxCLRVhQUFDYASLMYgjkGII4EzvQhTskgSznLnRDVpgAWYpCKDaBRQZGOFEMRQwmEmyKIgYTKXFHFUSI0B+UJikhAbVwmDsFUYApXmFMQwYC4AhYHNGAI9IGVarCluxxZBIcWQpHBiQRAACNgim1+covDwAAAABJRU5ErkJggg==" style="width:44rpx; height: 44rpx;" @click="scanCode">
 				</image>
 			</template>
 		</custom-header>

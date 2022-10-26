@@ -25,7 +25,8 @@
             </view>
             <text v-else>{{ language.text14 }}</text>
             <view class="icon-right">
-              <image src="/static/img/ic-arrow1.png"></image>
+              <!-- <image src="/static/img/ic-arrow1.png"></image> -->
+              <image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAWFJREFUWEftlk1OwzAQRv3F5iSIUyCBs0aiq2QFXSHUE0DhAFXVC1DY8bNKdiC6jek5OEnTZNCEgCIhSJ2EWpWafTTPz9+MB0TkCYcftgAbZcAYU+RFa513FRurDAAoCndpbWUALj65ne1mMsXVWe89IpLBpwZqY6MWgLX7vr/k4gtKLwUBCvQ4HPTmURTJIAjWBDB92VsQXZRXgB1PPQwHR/MkSZTWmiEagdQa4IKxEAiBbDx9PUjzZR9AUcyT4un6/PitjYmVAL7umHMwuns+zDNx0pUJGwAYY8B56NKEDUAhIo5jhGGYdWXCGkAIUWvCZk40AfhhIsvpFMTBJE9B3XN3lHOitjMaA1RNjG5m+znSvhDgbpRSiTEPq7JF/xzbmwtQDeO6r8BtCF22Ye3Jm4xkqxA6G8VOH6PvfcDVc+x8Iak+xU5Wsuq+53QpZRDna3mb7fe3f63mwBbgPwx8ANfjvhB3Zf9jAAAAAElFTkSuQmCC"></image>
             </view>
           </view>
         </view>
