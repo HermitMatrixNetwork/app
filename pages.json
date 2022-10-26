@@ -576,7 +576,27 @@
     ]
   }],
   "preloadRule": {
+    "pages/delegate/index": {
+      "network": "all",
+      "packages": ["__APP__"]
+    },
     "pages/send/index": {
+      "network": "all",
+      "packages": ["__APP__"]
+    },
+    "pages/market/index": {
+      "network": "all",
+      "packages": ["__APP__"]
+    },
+    "pages/mine/index": {
+      "network": "all",
+      "packages": ["__APP__"]
+    },
+    "pages/account/index": {
+      "network": "all",
+      "packages": ["__APP__"]
+    },
+    "pages/account/send/token_content": {
       "network": "all",
       "packages": ["__APP__"]
     }

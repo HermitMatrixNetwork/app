@@ -46,9 +46,13 @@ export default {
     if(data.type == 'fail'){
       this.formatFailData(data)
     } else if (data.txhash) {
-      this.transactionHash = data.txhash
+      setTimeout(() => {
+        this.transactionHash = data.txhash
+      }, 500)
     } else if(data.transactionHash) {
-      this.transactionHash = data.transactionHash
+      setTimeout(() => {
+        this.transactionHash = data.transactionHash
+      }, 500)
     } else {
       this.formOtherToken(data)
     }

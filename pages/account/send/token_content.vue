@@ -1366,14 +1366,14 @@ export default {
         if (val == 0) {
           return
         } else if (val == 1) {
-          console.log('initSecretClient');
-          const secretClient = await getSecret()
+          // console.log('initSecretClient');
+          // const secretClient = await getSecret()
           // this.secretClient = secretClient
-          renderUtils.runMethod(this._$id, 'handlerSecretClient', {
-            secretClient
-          }, this)
+          // renderUtils.runMethod(this._$id, 'handlerSecretClient', {
+          //   secretClient
+          // }, this)
         } else {
-          console.log('set secretClient', val);
+          // console.log('set secretClient', val);
           // this.secretClient = val.secretClient ? val.secretClient : val
           // renderUtils.runMethod(this._$id, 'handlerSecretClient', {
           //   secretClient

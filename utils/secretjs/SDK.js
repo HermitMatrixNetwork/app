@@ -5,7 +5,6 @@ import mainCoin from '@/config/index.js'
 
 import { getCurrentRpc } from '@/config/index.js'
 
-
 let Secret
 let oldRpc = getCurrentRpc()
 //获取secret
@@ -31,9 +30,10 @@ export async function getSecret() {
   let publicKey = await WalletCrpto.getPublickey(privateKey)
   wallet.privateKey = privateKey
   wallet.publicKey = publicKey
-  wallet.getAccounts = new secretjs.Wallet().getAccounts.bind(wallet)
-  wallet.signAmino = new secretjs.Wallet().signAmino.bind(wallet)
-  wallet.signDirect = new secretjs.Wallet().signDirect.bind(wallet)
+  let tempWallet = new secretjs.Wallet()
+  wallet.getAccounts = tempWallet.getAccounts.bind(wallet)
+  wallet.signAmino = tempWallet.signAmino.bind(wallet)
+  wallet.signDirect = tempWallet.signDirect.bind(wallet)
   Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress, rpc)
   return Secret
 }
