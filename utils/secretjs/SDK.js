@@ -7,6 +7,7 @@ import { getCurrentRpc } from '@/config/index.js'
 
 let Secret
 let oldRpc = getCurrentRpc()
+let tempWallet = null
 //获取secret
 export async function getSecret() {
   let wallet = {}
@@ -17,20 +18,25 @@ export async function getSecret() {
   //#ifndef APP-PLUS
   wallet = uni.getStorageSync('_currentWallet').data
   //#endif
-  
+
   let rpc = getCurrentRpc()
   if (Secret && oldRpc == rpc) {
-    // console.log('Secret RETURN');
+    // console.log('Secret RETURN')
     return Secret
   }
   oldRpc = rpc
+  // console.log('oldRpc', oldRpc)
+  // console.log('rpc', rpc)
+  // console.log('oldRpc == rpc', oldRpc == rpc)
+  // console.log('Secret SET', Secret)
+  // console.log('tempWallet', tempWallet)
+  tempWallet = tempWallet ? tempWallet : new secretjs.Wallet()
   let walletAddress = wallet.address
   let privateKey64 = WalletCrpto.decode(wallet.privateKey64)
   let privateKey = WalletCrpto.StringToUint(privateKey64)
   let publicKey = await WalletCrpto.getPublickey(privateKey)
   wallet.privateKey = privateKey
   wallet.publicKey = publicKey
-  let tempWallet = new secretjs.Wallet()
   wallet.getAccounts = tempWallet.getAccounts.bind(wallet)
   wallet.signAmino = tempWallet.signAmino.bind(wallet)
   wallet.signDirect = tempWallet.signDirect.bind(wallet)

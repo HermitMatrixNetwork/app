@@ -280,7 +280,9 @@ export default {
   },
   onReady() {
     const wallet = this.currentWallet
-    this.callWithdrawAddress = wallet.address
+    setTimeout(() => {
+      this.callWithdrawAddress = wallet.address
+    }, 1000)
   },
   filters: {
     sliceAddress

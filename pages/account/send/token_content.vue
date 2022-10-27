@@ -11,9 +11,9 @@
       <TokenColumn :tokenIcon="token.logo" :tokenName="token.alias_name" :tokenColumnStyle="tokenColumnStyle">
         <template #right>
           <view style="padding-right: 16rpx;" class="token_price">
-            <view class="balance" v-if="token.balance === undefined">0.00</view>
-            <custom-loading v-if="token.balance == null || lockAmount === null  || unBoundingBalance === null">
-            </custom-loading>
+            <view class="balance" v-if="token.balance === undefined || lockAmount === null  || unBoundingBalance === null">0.00</view>
+<!--            <custom-loading v-if="token.balance == null || lockAmount === null  || unBoundingBalance === null">
+            </custom-loading> -->
             <view v-else class="balance">
               {{ ( new decimal(token.balance + '').add(new decimal(lockAmount + '')).add(new decimal(unBoundingBalance + '')).toString())  | formatBalance }}
             </view>
@@ -24,7 +24,6 @@
           </view>
         </template>
       </TokenColumn>
-
       <view class="token_details">
         <view class="available">
           <text>{{ language.text57 }}</text>
@@ -33,7 +32,7 @@
             <view class="top" v-else>{{ token.balance | formatBalance }}</view>
             <view class="bottom" v-if="token.balance !== null">
               <text class="symbol">$</text>
-              <text>{{ token.balance || `0.000000` | formatBalance }}</text>
+              <text>{{ (token.balance || `0.000000`) | formatBalance }}</text>
             </view>
           </view>
         </view>
@@ -318,10 +317,10 @@ export default {
       }
     }
     setTimeout(async () => {
-      await this.init()
       this.callRenderDelegateRecord = this.address
       this.callUnboundingDelegators++
       this.callMainCoinBalance++
+      await this.init()
     }, 1000)
   },
   onPullDownRefresh() {
