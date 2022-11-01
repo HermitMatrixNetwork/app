@@ -357,3 +357,12 @@ export const getMainCoinBalance = async (address, client) => {
   
   return balance
 }
+
+export const queryContract = async (contractAddress) => {
+  let Secret = await getSecret()
+  const result = await Secret.query.compute.queryContract({
+    contractAddress,
+    query: { token_info: {} }
+  })
+  return result
+}

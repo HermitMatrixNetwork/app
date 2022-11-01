@@ -572,6 +572,18 @@
       "style": {
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "assetManage/customToken",
+      "style": {
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "assetManage/addToken",
+      "style": {
+        "enablePullDownRefresh": false
+      }
     }
     ]
   }],

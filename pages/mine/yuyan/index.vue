@@ -49,17 +49,17 @@ export default {
       this.$cache.set('_language', this.currentLanguage, 0)
       // updateLanguage()
       this.$refs.notify.show('', language[this.$cache.get('_language')].text60, { bgColor: '#275EF1' })
-			this.language = language[this.$cache.get('_language')]
+      this.language = language[this.$cache.get('_language')]
     },
   },
-	onBackPress(event) {
-		if (event.from == 'backbutton') {
-			uni.reLaunch({
-				url: '/pages/mine/index'
-			})
-			return true
-		}
-	}
+  onBackPress(event) {
+    if (event.from == 'backbutton') {
+      uni.reLaunch({
+        url: '/pages/mine/index'
+      })
+      return true
+    }
+  }
 }
 </script>
 

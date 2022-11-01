@@ -264,7 +264,22 @@ const languages = {
     text237: '油费不足',
     text238: '地址有误',
     text239: '区块高度',
-    text240: '自动领取奖励'
+    text240: '自动领取奖励',
+    text241: '自定义代币',
+    text242: '添加代币',
+    text243: '代币列表',
+    text244: '代币合约',
+    text245: '请输入代币合约地址',
+    text246: '代币符号',
+    text247: '请输入代币符号',
+    text248: '代币精度',
+    text249: '保存',
+    text250: '未查询到合约信息，请检查合约地址是否正确！',
+    text251: '删减成功！',
+    text252: '请完成代币信息填写！',
+    text253: '已存在该代币，请勿重复添加',
+    text254: '添加代币成功！',
+    text255: '暂无代币'
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -529,7 +544,22 @@ const languages = {
     text237: '油費不足',
     text238: '地址有誤',
     text239: '區塊高度',
-    text240: '自動領取獎勵'
+    text240: '自動領取獎勵',
+    text241: '自定義代幣',
+    text242: '添加代幣',
+    text243: '代幣列表',
+    text244: '代幣合約',
+    text245: '请输入代币合约地址',
+    text246: '代幣符號',
+    text247: '請輸入代幣符號',
+    text248: '代幣精度',
+    text249: '保存',
+    text250: '未查詢到合約信息，請檢查合約地址是否正確！',
+    text251: '删减成功！',
+    text252: '請完成代幣信息填寫！',
+    text253: '已存在該代幣，請勿重復添加',
+    text254: '添加代幣成功！',
+    text255: '暫無代幣'
   },
   EN: {
     Mywallet: 'My Wallet',
@@ -795,7 +825,22 @@ const languages = {
     text237: 'Insufficient fuel charge',
     text238: 'The address is wrong.',
     text239: 'Block Height',
-    text240: 'ReceiveRewardsAutomatically'
+    text240: 'ReceiveRewardsAutomatically',
+    text241: 'Custom Token',
+    text242: 'Add Tokens',
+    text243: 'Token List',
+    text244: 'Contract',
+    text245: 'Please enter the token contract address',
+    text246: 'Symbol',
+    text247: 'Please enter token symbol',
+    text248: 'Token accuracy',
+    text249: 'Save',
+    text250: 'Token information is not found,please check whether the contract is correct!',
+    text251: 'Deletion succeeded！',
+    text252: 'Please complete the token information!',
+    text253: 'This token already exists, please do not add it again',
+    text254: 'Token added successfully',
+    text255: 'No token Yet'
   }
 }
 export default languages

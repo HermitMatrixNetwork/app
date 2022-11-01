@@ -61,7 +61,7 @@ export default {
         if (index > -1) coinList.splice(index, 1)
         if (searchListIndex > -1) this.searchList.splice(searchListIndex, 1)
       }
-      this.$emit('change', coinList)
+      this.$emit('change', { coinList, contract: item.contract_address})
       
 
       // uni.showToast({

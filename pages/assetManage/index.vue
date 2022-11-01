@@ -13,6 +13,13 @@
       <image src="/static/img/ic-arrow1.png"></image>
     </view>
     <view class="space" />
+    <view class="home-assets" data-url="/pages/assetManage/customToken" @click="goTo">
+      <view class="title">
+        {{language.text241}}
+      </view>
+      <image src="/static/img/ic-arrow1.png"></image>
+    </view>
+    <view class="space" />
     <view class="hot-asset">
       <view class="title">{{language.text166}}</view>
     </view>
@@ -56,7 +63,7 @@ export default {
     if (this.$cache.get('_hot_assets_list')) {
       this.list = this.$cache.get('_hot_assets_list')
       this.$nextTick(() => {
-        this.$refs.list.init()
+        this.$refs.list && this.$refs.list.init()
       })
       this.loading = false
     } else {
@@ -69,7 +76,7 @@ export default {
     this.$nextTick(() => {
       this.$refs.list && this.$refs.list.init()
     })
-     // this.$refs.list.init()
+    // this.$refs.list.init()
   },
   methods: {
     searchCoin() {
@@ -95,8 +102,8 @@ export default {
         url: e.currentTarget.dataset.url,
       })
     },
-    updateCoinList(list) {
-      this.tokenList = list
+    updateCoinList({ coinList }) {
+      this.tokenList = coinList
     },
 
     updateWalletList(wallet) {

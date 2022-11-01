@@ -176,10 +176,13 @@ export default {
         this.currentWallet = this.$cache.get('_currentWallet')
       }
       // this.$cache.delete('_delegateInfo')
-      this.address = this.currentWallet.address
-      
+      setTimeout(() => {
+        
+        this.address = this.currentWallet.address
+        
 
-      this.callUnboundingDelegators++
+        this.callUnboundingDelegators++
+      }, 500)
       const res = await getCumulativeRewardCollection({
         address: this.$cache.get('_currentWallet').address
       })
