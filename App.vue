@@ -19,7 +19,9 @@ export default {
   async onLaunch() {
     clearTimeout(this.timer)
     this.timer = setTimeout(() => {
-      plus.navigator.closeSplashscreen()
+		//#ifdef APP-PLUS
+		plus.navigator.closeSplashscreen()
+		//#endif
       clearTimeout(this.timer)
     }, 3500)
     uni.hideTabBar({
