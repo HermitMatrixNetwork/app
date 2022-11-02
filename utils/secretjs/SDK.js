@@ -26,7 +26,7 @@ export function getSecret() {
 		if (Secret && oldRpc == rpc) {
 			// console.log('Secret RETURN');
 			reslove(Secret)
-		}
+		}	
 		oldRpc = rpc
 		let walletAddress = wallet.address
 		let privateKey64 = WalletCrpto.decode(wallet.privateKey64)

@@ -16,8 +16,8 @@ import {
 } from '@noble/hashes/sha256'
 import CryptoJS from 'crypto-js'
 import * as cosmjs from '@cosmjs/crypto'
-import AES, {
-  Counter
+import {
+  Counter,AES
 } from 'aes-js'
 import {
   Hash
@@ -58,6 +58,7 @@ WalletCrypto.decode = (ciphertext, msg = 'hhaic') => {
  *   @return { String } 64位字符串
  */
 WalletCrypto.UintToString = (source) => {
+	console.log(source,'source');
   let result = Array.prototype.map.call(source, (item) =>
     ('00' + item.toString(16)).slice(-2)
   )

@@ -1,6 +1,6 @@
 {
     "name" : "Hermit Wallet",
-    "appid" : "__UNI__F9452A8",
+    "appid" : "__UNI__204F931",
     "description" : "",
     "versionName" : "2.0.3",
     "versionCode" : 203,
@@ -65,11 +65,11 @@
             "splashscreen" : {
                 "androidStyle" : "default",
                 "android" : {
-                    "hdpi" : "C:/Users/admin/Desktop/启动页2/启动页2/480_762.png",
-                    "xhdpi" : "C:/Users/admin/Desktop/启动页2/启动页2/720_1242.png",
-                    "xxhdpi" : "C:/Users/admin/Desktop/启动页2/启动页2/1080_1882.png"
+                    "hdpi" : "C:/Users/Administrator/Desktop/启动页2/480_762.png",
+                    "xhdpi" : "C:/Users/Administrator/Desktop/启动页2/720_1242.png",
+                    "xxhdpi" : "C:/Users/Administrator/Desktop/启动页2/1080_1882.png"
                 },
-                "iosStyle" : "default",
+                "iosStyle" : "common",
                 "ios" : {
                     "iphone" : {
                         "retina35" : "C:/Users/admin/Desktop/启动页/启动页/ios/640_960@2x.png",
@@ -116,8 +116,8 @@
         },
         "nativePlugins" : {
             "Mpaas-Scan" : {
-                "AppId" : "ALIPUB30D8FFF171048",
-                "License" : "vRwFj7nsT2xcU0ei0zvSmVsIm9T4yOMqwohTqXvd/dg3clOPmM2rA1Nd+nGpANntKTUD5mivSzZJEsl/G1Vkx2xv6QWRfNr+NglM2+Zm3cZeFgyvTJT5zkBk4pKQBNeB/KW38v7t07MsTPg+UlByn2jjpLgHRtMPkEL7fY4492SBJYf1aXFmocg9IUICof2duuynakX4W1Nfw3ujJz8upiTFqmfCqMnj7BbWmrmOIcmkVykuITFVRVL3gGa+JaMtbUyKyzsebOAIjGQ4zsS0SUa+TD7d9wrhnlChaOSy0dnUZ7331a9zzJCj3opP38kO/5Eli/OkQ4XILsqPYmdSpQ==",
+                "AppId" : "ALIPUBE2B87E1011055",
+                "License" : "f6s+XNBTYwfDVx7K2OAq3LoPv95jd1kjXGVbm+SdaX3kKpA6ppfvDzOgzCaUq2M/Wetgclg/T0ZY/g/H/wnr6MOIrKvNXbxF84Kr0UoeHBvl0L1X0qHhnDdV4MKX4fTg+q7xb05q+d4pvQ9z11vRKhRPxRUJmPzmOCSeb0HZkKukUQPsgBsspWLiM6z+BNKsNT09XfzypOF1ksDU/be/9ixYkUaPE0VO2YByjDf0uALUAg7zF9GveYx3+aP7MX78iRnBJU+6YB8Ef27G9jpmIElGkYVJMSapDC7egNeLuF1/b2GKs5zHOqOi37pW6M6mHK/GA3RRY803bD9IY6U3Og==",
                 "WorkspaceId" : "default",
                 "__plugin_info__" : {
                     "name" : "支付宝原生扫码插件",

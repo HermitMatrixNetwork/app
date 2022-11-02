@@ -15,6 +15,7 @@ import renderUtils from '@/utils/render.base.js'
  *   @param { string } cb 回调函数名字
  */
 export function createWallet(fn, vm, mnemonic = '', cb) {
+	console.log(fn,'fnfnfnfnv');
   const wallet = new secretjs.Wallet(mnemonic, {
     bech32Prefix: 'ghm'
   })
