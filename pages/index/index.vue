@@ -88,6 +88,7 @@ export default {
   onLoad() {
     if (this.$cache.get('_currentWallet') == null) {
       this.agree_protocol = this.$cache.get('_agree_protocol') || false
+	  console.log('2222222222');
       plus.navigator.closeSplashscreen()
     } else {
 		
@@ -95,6 +96,7 @@ export default {
         url: '/pages/account/index',
         success: () => {
 			 //#ifdef APP-PLUS
+			 console.log('2222222222');
 				plus.navigator.closeSplashscreen()
 			 //#endif
         }

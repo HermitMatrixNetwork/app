@@ -8,7 +8,7 @@
 import {
   SecretNetworkClient
 } from 'secretjs-hmt'
-
+console.log('22222222')
 class NetworkClient {
   static async create(wallet, walletAddress, rpc, chainId = 'ghmdev') {
     const secretjs = await SecretNetworkClient.create({

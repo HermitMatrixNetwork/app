@@ -1,19 +1,21 @@
-import WalletCrpto from '@/utils/walletCrypto.js'
+// import WalletCrpto from '@/utils/walletCrypto.js'
 
-import secretjs from './index.js'
-import mainCoin from '@/config/index.js'
+// import secretjs from './index.js'
+// import mainCoin from '@/config/index.js'
 
-import {
-	getCurrentRpc
-} from '@/config/index.js'
+// import {
+// 	getCurrentRpc
+// } from '@/config/index.js'
 
 
 let Secret
-let oldRpc = getCurrentRpc()
+// let oldRpc = getCurrentRpc()
+let arr = false
 //获取secret
 export function getSecret() {
 	return new Promise((reslove, reject) => {
 		let wallet = {}
+		
 		//#ifdef APP-PLUS
 		wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
 		//#endif
@@ -21,9 +23,8 @@ export function getSecret() {
 		//#ifndef APP-PLUS
 		wallet = uni.getStorageSync('_currentWallet').data
 		//#endif
-
 		let rpc = getCurrentRpc()
-		if (Secret && oldRpc == rpc) {
+		if (arr) {
 			// console.log('Secret RETURN');
 			reslove(Secret)
 		}	
@@ -38,9 +39,37 @@ export function getSecret() {
 		wallet.signAmino = new secretjs.Wallet().signAmino.bind(wallet)
 		wallet.signDirect = new secretjs.Wallet().signDirect.bind(wallet)
 		Secret = secretjs.SecretNetworkClient.create(wallet, walletAddress, rpc)
+		arr = true
 		reslove(Secret)
 	})
 }
+// export async function getSecret() {
+// 	let wallet = {}
+// 	//#ifndef APP-PLUS
+// 	wallet = uni.getStorageSync('_currentWallet').data
+// 	//#endif
+
+
+// 	let rpc = getCurrentRpc()
+// 	// if (arr) {
+// 	// 	return Secret
+// 	// }
+// 	oldRpc = rpc
+// 	tempWallet = tempWallet ? tempWallet : new secretjs.Wallet()
+// 	let walletAddress = wallet.address
+// 	let privateKey64 = WalletCrpto.decode(wallet.privateKey64)
+// 	let privateKey = WalletCrpto.StringToUint(privateKey64)
+// 	let publicKey = await WalletCrpto.getPublickey(privateKey)
+// 	wallet.privateKey = privateKey
+// 	wallet.publicKey = publicKey
+// 	let tempWallet = new secretjs.Wallet()
+// 	wallet.getAccounts = tempWallet.getAccounts.bind(wallet)
+// 	wallet.signAmino = tempWallet.signAmino.bind(wallet)
+// 	wallet.signDirect = tempWallet.signDirect.bind(wallet)
+// 	Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress, rpc)
+// 	arr = true
+// 	return Secret
+// }
 
 
 // getSecret()

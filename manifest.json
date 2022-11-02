@@ -2,8 +2,8 @@
     "name" : "Hermit Wallet",
     "appid" : "__UNI__204F931",
     "description" : "",
-    "versionName" : "2.0.3",
-    "versionCode" : 203,
+    "versionName" : "2.2.0",
+    "versionCode" : 220,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -63,7 +63,7 @@
                 "share" : {}
             },
             "splashscreen" : {
-                "androidStyle" : "default",
+                "androidStyle" : "common",
                 "android" : {
                     "hdpi" : "C:/Users/Administrator/Desktop/启动页2/480_762.png",
                     "xhdpi" : "C:/Users/Administrator/Desktop/启动页2/720_1242.png",
