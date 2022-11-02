@@ -134,6 +134,12 @@ export default {
     this.$cache.set('_currentWallet', wallet, 0)
     this.updateWalletList(wallet)
   },
+  onHide() {
+    const wallet = this.$cache.get('_currentWallet')
+    wallet.coinList = this.tokenList
+    this.$cache.set('_currentWallet', wallet, 0)
+    this.updateWalletList(wallet)
+  },
   onBackPress(event) {
     if (event.from == 'backbutton') {
       // uni.switchTab({

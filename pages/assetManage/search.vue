@@ -1,9 +1,11 @@
 <template>
   <view class="asset-manage">
+    <view :callGetContractInfo="callGetContractInfo" :change:callGetContractInfo="render.getContractInfo"></view>
     <view class="status_bar"></view>
     <view class="top">
       <u-search :placeholder="language.searchPlaceholder" shape="round" :clearabled="true" v-model="address"
-        actionText="取消" :actionStyle="searchStyle" @search="searchCoin" @custom="goBack" searchIcon="/static/img/delegate/search2.png"></u-search>
+        actionText="取消" :actionStyle="searchStyle" @search="searchCoin" @custom="goBack"
+        searchIcon="/static/img/delegate/search2.png"></u-search>
     </view>
     <custom-loading v-if="loading" class="loading"></custom-loading>
     <view class="list" v-else-if="list.length">
@@ -14,19 +16,21 @@
           </view>
           <view class="content">
             <view class="title">
-              <text>{{ item.full_name }}</text>
+              <text>{{ item.alias_name }}</text>
             </view>
             <view class="contract-address">
               <text>{{ item.contract_address | sliceAddress(8, -10) }}</text>
             </view>
           </view>
           <view class="right" v-if="item.full_name !== mainCoin.full_name">
-            <image v-if="tokenAddressList.includes(item.contract_address)" src="/static/img/account/ic-delect.png" @click="deleteToken(item)" style="width: 44rpx;height: 44rpx;"></image>
-            <image v-else src="/static/img/account/ic-add.png" @click="addToken(item)" style="width: 44rpx;height: 44rpx;"></image>
+            <image v-if="tokenAddressList.includes(item.contract_address)" src="/static/img/account/ic-delect.png"
+              @click="deleteToken(item)" style="width: 44rpx;height: 44rpx;"></image>
+            <image v-else src="/static/img/account/ic-add.png" @click="addToken(item)"
+              style="width: 44rpx;height: 44rpx;"></image>
           </view>
         </view>
         <view class="border">
-          
+
         </view>
       </view>
     </view>
@@ -44,17 +48,22 @@
 import languages from './language/index.js'
 import List from './components/List.vue'
 import mainCoin from '@/config/index.js'
-import { sliceAddress } from '@/utils/filters.js'
+import {
+  sliceAddress
+} from '@/utils/filters.js'
 import {
   searchCoin
 } from '@/api/token.js'
-import { searchContract } from '@/api/cosmos.js'
+import {
+  searchContract
+} from '@/api/cosmos.js'
 export default {
   data() {
     return {
       language: languages[this.$cache.get('_language')],
       reAddress: '', //renderjs调用
       address: '', //查询地址
+      callGetContractInfo: '',
       list: [], //查询结果
       tokenAddressList: [],
       tokenList: [],
@@ -63,6 +72,8 @@ export default {
         fontSize: '28rpx',
         color: '#275EF1'
       },
+      tokenSymbol: '',
+      decimals: '',
       mainCoin,
       loading: true
     }
@@ -80,7 +91,8 @@ export default {
     this.currentWallet = this.$cache.get('_currentWallet')
     this.tokenList = this.currentWallet.coinList
     if (this.tokenList.length) {
-      this.tokenList.forEach(item => item.alias_name !== mainCoin.alias_name && this.tokenAddressList.push(item.contract_address))
+      this.tokenList.forEach(item => item.alias_name !== mainCoin.alias_name && this.tokenAddressList.push(item
+        .contract_address))
     }
   },
   methods: {
@@ -96,37 +108,7 @@ export default {
         let result = data.data.data.result || null
         this.searchData(result)
       } else {
-        try {
-          const res = (await searchContract(address)).data
-          if (res.error) {
-            this.list = []
-            this.loading = false
-          } else {
-            let ID = null
-            if (!this.tokenAddressList.includes(res.result.address)) {
-              if (this.$cache.get('_token_single_id')) {
-                ID = Number(this.$cache.get('_token_single_id').split('_').slice(-1)[0]) + 1
-                this.$cache.set('_token_single_id', `_token_single_id_${ID}`, 0)
-              } else {
-                this.$cache.set('_token_single_id', '_token_single_id_1', 0)
-              } 
-            }
-            let result = {
-              contract_address: res.result.address,
-              alias_name: res.result.label,
-              apply_type: 'SNIP20',
-              full_name: res.result.label,
-              logo: '/static/img/account/nologo.jpg',
-              hot: 1,
-              ID: this.$cache.get('_token_single_id')
-            }
-            this.searchData(result)
-          }
-        } catch(e) {
-          this.list = []
-          this.loading = false
-          console.log('e', e);
-        }
+        this.callGetContractInfo = this.address
 
       }
     },
@@ -152,7 +134,7 @@ export default {
       token.view_key = ''
       token.loadingBalance = true
       this.tokenList.push(token)
-      
+
       this.tokenAddressList.push(token.contract_address)
       this.currentWallet.coinList = this.tokenList
       this.$cache.set('_currentWallet', this.currentWallet, 0)
@@ -179,18 +161,86 @@ export default {
       walletList.unshift(wallet)
       this.$cache.set('_walletList', walletList, 0)
       return true
-    }
+    },
+    async handlerContractInfo(res) {
+      if (res.code == 7) {
+        this.tokenSymbol = ''
+        this.decimals = ''
+      } else {
+        this.tokenSymbol = res.token_info.symbol
+        this.decimals = res.token_info.decimals
+      }
+      this.callGetContractInfo = ''
+      try {
+        const res = (await searchContract(this.address)).data
+        if (res.error) {
+          this.list = []
+          this.loading = false
+        } else {
+          let ID = null
+          if (!this.tokenAddressList.includes(res.result.address)) {
+            if (this.$cache.get('_token_single_id')) {
+              ID = Number(this.$cache.get('_token_single_id').split('_').slice(-1)[0]) + 1
+              this.$cache.set('_token_single_id', `_token_single_id_${ID}`, 0)
+            } else {
+              this.$cache.set('_token_single_id', '_token_single_id_1', 0)
+            }
+          }
+
+          let result = {
+            contract_address: res.result.address,
+            alias_name: this.tokenSymbol,
+            decimals: this.decimals,
+            apply_type: 'SNIP20',
+            full_name: res.result.label,
+            logo: '/static/img/account/nologo.jpg',
+            hot: 1,
+            ID: this.$cache.get('_token_single_id')
+          }
+          console.log(result, this.tokenSymbol)
+          this.searchData(result)
+        }
+      } catch (e) {
+        this.list = []
+        this.loading = false
+        console.log('e', e)
+      }
+    },
   },
   filters: {
     sliceAddress
   }
 }
 </script>
+
+<script lang="renderjs" module="render">
+  import {
+    queryContract
+  } from '@/utils/secretjs/SDK'
+  import renderUtils from '@/utils/render.base.js'
+  export default {
+    methods: {
+      async getContractInfo(contract) {
+        if (contract == '') return
+        let res = {}
+        try {
+          res = await queryContract(contract)
+        } catch (e) {
+          res.code = 7
+          console.log('e', e);
+        }
+        renderUtils.runMethod(this._$id, 'handlerContractInfo', res, this)
+      }
+    }
+  }
+</script>
+
 <style lang="scss" scoped>
   .status_bar {
     height: var(--status-bar-height);
     width: 100%;
   }
+
   .top {
     padding: 20rpx 32rpx;
     margin-bottom: 32rpx;
@@ -231,43 +281,43 @@ export default {
   .loading {
     margin-top: 100rpx;
   }
-  
+
   .denom {
     .item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 30rpx 30rpx 32rpx;
-      
+
       .logo {
         margin-right: 24rpx;
-        
+
         image {
           width: 72rpx;
           height: 72rpx;
         }
       }
-      
+
       .content {
         flex: 1;
-        
+
         .title {
           font-weight: 600;
           font-size: 28rpx;
           color: #2C365A;
           margin-bottom: 12rpx;
         }
-        
+
         .contract-address {
           font-size: 24rpx;
           color: #8397B1;
         }
       }
     }
-    
+
     .border {
       height: 2rpx;
-      background-color: rgba(131,151,177,0.20);
+      background-color: rgba(131, 151, 177, 0.20);
       margin-left: 126rpx;
     }
   }

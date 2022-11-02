@@ -86,8 +86,8 @@ export default {
   },
   data() {
     return {
-      // language: language[this.$cache.get('_language')],
-      language: language['CN'],
+      language: language[this.$cache.get('_language')],
+      // language: language['CN'],
       address: '',
       list: [],
       allData: {},

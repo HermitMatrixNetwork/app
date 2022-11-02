@@ -12,15 +12,15 @@
     <view class="main">
       <view class="label-title">{{ language.text244 }}</view>
       <u--textarea v-model="contract" :placeholder="language.text245" :formatter='formatter' maxlength="60"
-        class="textarea" :autoHeight="$cache.get('_language') == 'CN'"></u--textarea>
+        class="textarea" :autoHeight="true"></u--textarea>
 
       <view class="label-title">{{ language.text246 }}</view>
       <u--textarea @focus="symbolFocus" v-model="tokenSymbol" :placeholder="language.text247" :formatter='formatter'
-        maxlength="60" class="textarea" :autoHeight="$cache.get('_language') == 'CN'"></u--textarea>
+        maxlength="60" class="textarea" :autoHeight="true"></u--textarea>
 
       <view class="label-title">{{ language.text248 }}</view>
-      <u--textarea :disabled="true" v-model="decimals" placeholder="18" :formatter='formatter' maxlength="60"
-        class="textarea" :autoHeight="$cache.get('_language') == 'CN'"></u--textarea>
+      <u--textarea :disabled="true" v-model="decimals" placeholder="" :formatter='formatter' maxlength="60"
+        class="textarea" :autoHeight="true"></u--textarea>
     </view>
   </view>
 </template>
@@ -39,7 +39,8 @@ export default {
       tokenSymbol: '',
       decimals: '',
       callGetContractInfo: '',
-      tokenAddressList: []
+      tokenAddressList: [],
+      loading: false
     }
   },
   onShow() {
@@ -54,11 +55,22 @@ export default {
       return string
     },
     async save() {
+      if (this.loading) return
+      this.loading = true
       const tokenAddressList = this.$cache.get('_custom_tokens_list') ? this.$cache.get('_custom_tokens_list').map(item => item.contract_address) : []
-      if (this.contract == '' || this.tokenSymbol == '' || this.decimals == '') {
+      const coinList = this.$cache.get('_currentWallet').coinList
+      
+      coinList && coinList.forEach(item => item.contract_address && (tokenAddressList.push(item.contract_address)))
+      
+      if (this.decimals == '') {
+        this.$refs.notify.show('error', this.language.text256)
+        this.loading = false
+      } else if (this.contract == '' || this.tokenSymbol == '') {
         this.$refs.notify.show('', this.language.text252)
+        this.loading = false
       } else if (tokenAddressList.includes(this.contract)) {
         this.$refs.notify.show('error', this.language.text253)
+        this.loading = false
       } else {
         let data = await searchCoin(this.contract)
         const eventChannel = this.getOpenerEventChannel()
@@ -118,12 +130,13 @@ export default {
             }
           } catch (e) {
             console.log('e', e)
+            this.loading = false
           }
-
         }
       }
     },
     handlerContractInfo(res) {
+      console.log(res)
       if (res.code == 7) {
         this.tokenSymbol = ''
         this.decimals = ''
