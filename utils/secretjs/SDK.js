@@ -1,15 +1,15 @@
-// import WalletCrpto from '@/utils/walletCrypto.js'
+import WalletCrpto from '@/utils/walletCrypto.js'
 
-// import secretjs from './index.js'
-// import mainCoin from '@/config/index.js'
+import secretjs from './index.js'
+import mainCoin from '@/config/index.js'
 
-// import {
-// 	getCurrentRpc
-// } from '@/config/index.js'
+import {
+	getCurrentRpc
+} from '@/config/index.js'
 
 
 let Secret
-// let oldRpc = getCurrentRpc()
+let oldRpc = getCurrentRpc()
 let arr = false
 //获取secret
 export function getSecret() {

@@ -1,9 +1,9 @@
 {
     "name" : "Hermit Wallet",
-    "appid" : "__UNI__204F931",
+    "appid" : "__UNI__F9452A8",
     "description" : "",
-    "versionName" : "2.2.0",
-    "versionCode" : 220,
+    "versionName" : "2.3.2",
+    "versionCode" : 232,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -63,11 +63,11 @@
                 "share" : {}
             },
             "splashscreen" : {
-                "androidStyle" : "common",
+                "androidStyle" : "default",
                 "android" : {
-                    "hdpi" : "C:/Users/Administrator/Desktop/启动页2/480_762.png",
-                    "xhdpi" : "C:/Users/Administrator/Desktop/启动页2/720_1242.png",
-                    "xxhdpi" : "C:/Users/Administrator/Desktop/启动页2/1080_1882.png"
+                    "hdpi" : "F:/yschain/启动页/480_762.png",
+                    "xhdpi" : "F:/yschain/启动页/720_1242.png",
+                    "xxhdpi" : "F:/yschain/启动页/1080_1882.png"
                 },
                 "iosStyle" : "common",
                 "ios" : {
@@ -173,43 +173,5 @@
         "enable" : false
     },
     "vueVersion" : "2",
-    "h5" : {
-        "devServer" : {
-            // 需要被代理的后台地址
-            "proxy" : {
-                "/goServer" : {
-                    "target" : "http://158.247.237.78:8888",
-                    "changeOrigin" : true,
-                    "secure" : false,
-                    "pathRewrite" : {
-                        "^/goServer" : "/"
-                    }
-                },
-                "/cosmosServer" : {
-                    "target" : "http://167.179.118.118:1317",
-                    "changeOrigin" : true,
-                    "secure" : false,
-                    "pathRewrite" : {
-                        "^/cosmosServer" : "/"
-                    }
-                },
-                "/browserServer" : {
-                    "target" : "http://158.247.237.78:8181",
-                    "changeOrigin" : true,
-                    "secure" : false,
-                    "pathRewrite" : {
-                        "^/browserServer" : "/"
-                    }
-                },
-                "/recordServer" : {
-                    "target" : "http://158.247.237.78:8188",
-                    "changeOrigin" : true,
-                    "secure" : false,
-                    "pathRewrite" : {
-                        "^/recordServer" : "/"
-                    }
-                }
-            }
-        }
-    }
+    "h5" : {}
 }

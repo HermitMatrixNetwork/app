@@ -44,23 +44,14 @@ export default {
 
 		// #ifdef APP-PLUS
 		if (this.$cache.get('_currentWallet') == null) {
-			// 本地缓存没有钱包（直接进入首页）
-			console.log('本地缓存没有钱包（直接进入首页）');
-			uni.showToast({
-				title: '第一次22222222',
-				//将值设置为 success 或者直接不用写icon这个参数
-				icon: 'success',
-				//显示持续时间为 2秒
-				duration: 3000
-			});
+		
 			this.$cache.set('_testmsg', '本地缓存没有钱包（直接进入首页）', 0);
 			this.$cache.set('_agree_protocol', false, 0);
 			// console.log('plus.navigator.hasSplashscreen();',plus.navigator.hasSplashscreen(););
 			uni.reLaunch({
 				url: '/pages/index/index',
-				success: () => {
-					console.log('1111111');
-					// plus.navigator.closeSplashscreen()
+				complete: () => {
+					plus.navigator.closeSplashscreen()
 				}
 			});
 		} else if (_appInit == 0 && this.$cache.get('_touchId') == 1) {
@@ -71,10 +62,9 @@ export default {
 			uni.navigateTo({
 				url: '/pages/mine/anquan/backgroundVerify?redirectUrl=/pages/account/index&type=reLaunch',
 				animationType: 'none',
-				success: () => {
+				complete: () => {
 					// console.log('plus.navigator.hasSplashscreen();',plus.navigator.hasSplashscreen(););
-					console.log('1111111');
-					// plus.navigator.closeSplashscreen()
+					plus.navigator.closeSplashscreen()
 				}
 			});
 		} else if (_appInit !== 1) {
@@ -84,9 +74,8 @@ export default {
 			// console.log('plus.navigator.hasSplashscreen();',plus.navigator.hasSplashscreen(););
 			uni.reLaunch({
 				url: '/pages/account/index',
-				success: () => {
-					console.log('1111111');
-					// plus.navigator.closeSplashscreen()
+				complete: () => {
+					plus.navigator.closeSplashscreen()
 				}
 			});
 		}
