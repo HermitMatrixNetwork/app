@@ -4,7 +4,7 @@ import secretjs from './index.js'
 import mainCoin from '@/config/index.js'
 
 import { getCurrentRpc } from '@/config/index.js'
-
+// window.secretjs = secretjs
 let Secret
 let oldRpc = getCurrentRpc()
 let tempWallet = null
@@ -30,16 +30,19 @@ export async function getSecret() {
   // console.log('oldRpc == rpc', oldRpc == rpc)
   // console.log('Secret SET', Secret)
   // console.log('tempWallet', tempWallet)
-  tempWallet = tempWallet ? tempWallet : new secretjs.Wallet()
+  // tempWallet = tempWallet ? tempWallet : new secretjs.Wallet()
   let walletAddress = wallet.address
   let privateKey64 = WalletCrpto.decode(wallet.privateKey64)
   let privateKey = WalletCrpto.StringToUint(privateKey64)
   let publicKey = await WalletCrpto.getPublickey(privateKey)
   wallet.privateKey = privateKey
   wallet.publicKey = publicKey
-  wallet.getAccounts = tempWallet.getAccounts.bind(wallet)
-  wallet.signAmino = tempWallet.signAmino.bind(wallet)
-  wallet.signDirect = tempWallet.signDirect.bind(wallet)
+  // wallet.getAccounts = tempWallet.getAccounts.bind(wallet)
+  // wallet.signAmino = tempWallet.signAmino.bind(wallet)
+  // wallet.signDirect = tempWallet.signDirect.bind(wallet)
+  wallet.getAccounts = secretjs.Wallet.getAccountsCopy.bind(wallet)
+  wallet.signAmino = secretjs.Wallet.signAminoCopy.bind(wallet)
+  wallet.signDirect = secretjs.Wallet.signDirectCopy.bind(wallet)
   Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress, rpc)
   return Secret
 }

@@ -485,7 +485,7 @@ export default {
       this.callRenderGetBanlance++
     },
     handlerWithdrawAddress(res) {
-      console.log(res, 'res response')
+      // console.log(res, 'res response')
       this.callWithdrawAddress = 0
       if (res.withdrawAddress) {
         const wallet = this.currentWallet

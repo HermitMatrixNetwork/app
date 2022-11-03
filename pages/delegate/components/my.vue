@@ -186,7 +186,7 @@ export default {
       const res = await getCumulativeRewardCollection({
         address: this.$cache.get('_currentWallet').address
       })
-      console.log('累计领取奖励',res)
+      // console.log('累计领取奖励',res)
       this.cumulativeReward = !isNaN(res.data.data.withdrawAmount)?res.data.data.withdrawAmount / mainCoin.decimals : 0
       this.$cache.set('_my_cumulativeReward_data', this.cumulativeReward, 0)
 
@@ -214,7 +214,7 @@ export default {
       // })
     },
     goTo(url) {
-      console.log('click fire')
+      // console.log('click fire')
       uni.navigateTo({
         url,
         events: {

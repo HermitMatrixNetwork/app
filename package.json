@@ -22,7 +22,7 @@
     "image-tools": "^1.4.0",
     "pbkdf2": "^3.1.2",
     "randombytes": "^2.1.0",
-    "secretjs-hmt": "^1.0.2",
+    "secretjs-hmt": "^1.0.3",
     "serialize-javascript": "^6.0.0",
     "tki-qrcode": "^0.1.6",
     "url-loader": "^4.1.1",
