@@ -3,7 +3,7 @@
     <view :initSecretClient="initSecretClient" :change:initSecretClient="callInitSecretClient"></view>
     <view class="mask" v-show="updating"></view>
     <view class="mask" v-show="switchingWallet || delayHide"></view>
-    <!-- <custom-updateApp ref="custom_update" :updating.sync="updating" checkImmediate /> -->
+    <custom-updateApp ref="custom_update" :updating.sync="updating" checkImmediate />
     <!-- 钱包主页 -->
     <view class="account-header">
       <view class="header-left" @click="showSwitchWallet = true">

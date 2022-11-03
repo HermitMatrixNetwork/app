@@ -280,7 +280,8 @@ const languages = {
     text253: '已存在该代币，请勿重复添加',
     text254: '添加代币成功！',
     text255: '暂无代币',
-    text256: '未查询到合约信息，请检查合约地址是否正确！'
+    text256: '未查询到合约信息，请检查合约地址是否正确！',
+    text257: '删除'
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -561,7 +562,8 @@ const languages = {
     text253: '已存在該代幣，請勿重復添加',
     text254: '添加代幣成功！',
     text255: '暫無代幣',
-    text256: '未查詢到合約信息，請檢查合約地址是否正確！'
+    text256: '未查詢到合約信息，請檢查合約地址是否正確！',
+    text257: '刪除'
   },
   EN: {
     Mywallet: 'My Wallet',
@@ -843,7 +845,8 @@ const languages = {
     text253: 'This token already exists, please do not add it again',
     text254: 'Token added successfully',
     text255: 'No token Yet',
-    text256: 'No contract information is found, please check whether the contract address is correct!'
+    text256: 'No contract information is found, please check whether the contract address is correct!',
+    text257: 'Delete'
   }
 }
 export default languages

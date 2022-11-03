@@ -65,12 +65,12 @@ export default {
     } else if (_appInit !== 1) { // 本地缓存有钱包 且没有开启指纹锁
       console.log('本地缓存有钱包 且没有开启指纹锁')
       this.$cache.set('_testmsg', '本地缓存有钱包 且没有开启指纹锁', 0)
-      uni.reLaunch({
-        url: '/pages/account/index',
-        success: () => {
-          plus.navigator.closeSplashscreen()
-        }
-      })
+      // uni.reLaunch({
+      //   url: '/pages/account/index',
+      //   success: () => {
+      //     plus.navigator.closeSplashscreen()
+      //   }
+      // })
     }
     // #endif
 

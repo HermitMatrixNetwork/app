@@ -111,7 +111,7 @@ export default {
           res.version = '900'//  @latest
           this.$cache.delete('_testupdate')
         }
-        if (!res || (Number(versionCode) >= Number(res.version)) && this.showtip) {
+        if (!res || (Number(versionCode) >= Number(res.version))) {
           if (this.tip) {
             this.$emit('update:latestVersion', version)
             uni.showToast({

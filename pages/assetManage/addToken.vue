@@ -62,11 +62,11 @@ export default {
       
       coinList && coinList.forEach(item => item.contract_address && (tokenAddressList.push(item.contract_address)))
       
-      if (this.decimals == '') {
-        this.$refs.notify.show('error', this.language.text256)
-        this.loading = false
-      } else if (this.contract == '' || this.tokenSymbol == '') {
+      if (this.contract == '' || this.tokenSymbol == '') {
         this.$refs.notify.show('', this.language.text252)
+        this.loading = false
+      } else if (this.decimals == '') {
+        this.$refs.notify.show('error', this.language.text256)
         this.loading = false
       } else if (tokenAddressList.includes(this.contract)) {
         this.$refs.notify.show('error', this.language.text253)
@@ -126,7 +126,7 @@ export default {
               setTimeout(() => {
                 uni.navigateBack()
               }, 1500)
-              console.log('result', result)
+              // console.log('result', result)
             }
           } catch (e) {
             console.log('e', e)
@@ -136,7 +136,7 @@ export default {
       }
     },
     handlerContractInfo(res) {
-      console.log(res)
+      // console.log(res)
       if (res.code == 7) {
         this.tokenSymbol = ''
         this.decimals = ''

@@ -13,10 +13,10 @@
       <view class="title">{{language.text243}}</view>
     </view>
     <custom-loading v-if="loading" style="margin-top: 100rpx;"></custom-loading>
-    <view class="list" v-else-if="list.length">
-      <List ref="list" :list="list" @change="updateCoinList" />
+    <view class="list">
+      <List ref="list" :list="list" @change="updateCoinList" showSwiper @deleteItem="deleteItem" v-if="show"/>
     </view>
-    <view v-else class="noData">
+    <view v-if="list.length == 0" class="noData">
       <image class="data" src="@/static/img/account/nodata.png" />
       <view class="tip">
         {{ language.text255 }}
@@ -38,16 +38,17 @@ export default {
       language: languages[this.$cache.get('_language')],
       loading: false,
       list: this.$cache.get('_custom_tokens_list') || [],
-      tokenList: this.$cache.get('_currentWallet').coinList
+      tokenList: this.$cache.get('_currentWallet').coinList,
+      show: true
     }
   },
   onShow() {
     this.list = this.$cache.get('_custom_tokens_list') || [],
     this.tokenList = this.$cache.get('_currentWallet').coinList || []
-    let tokenAddress = []
-    this.tokenList.forEach(item => item.alias_name !== mainCoin.alias_name && tokenAddress.push(item.contract_address))
-    this.list = this.list.filter(item => tokenAddress.includes(item.contract_address))
-    this.$cache.set('_custom_tokens_list', this.list, 0)
+    // let tokenAddress = []
+    // this.tokenList.forEach(item => item.alias_name !== mainCoin.alias_name && tokenAddress.push(item.contract_address))
+    // this.list = this.list.filter(item => tokenAddress.includes(item.contract_address))
+    // this.$cache.set('_custom_tokens_list', this.list, 0)
     this.$refs.list && this.$refs.list.init()
   },
   async mounted() {
@@ -64,8 +65,8 @@ export default {
         url: e.currentTarget.dataset.url,
         events: {
           addToken: (res) => {
-            this.list.push(res)
-            this.$refs.list && this.$refs.list.init()
+            this.show = false
+            this.list.unshift(res)
             this.currentWallet = this.$cache.get('_currentWallet')
             this.tokenList = this.currentWallet.coinList
             this.tokenList.push(res)
@@ -73,15 +74,23 @@ export default {
             this.$cache.set('_currentWallet', this.currentWallet, 0)
             this.updateWalletList(this.currentWallet)
             this.$cache.set('_custom_tokens_list', this.list, 0)
+            setTimeout(() => {
+              this.show = true
+              this.$nextTick(() => {
+                this.$refs.list && this.$refs.list.init()
+              })
+            }, 1560)
           }
         }
       })
     },
-    updateCoinList({ coinList, contract }) {
-      this.tokenList = coinList
+    deleteItem(contract) {
       this.list = this.list.filter(item => item.contract_address !== contract)
       this.$cache.set('_custom_tokens_list', this.list, 0)
       this.$refs.notify.show('error', this.language.text251, { bgColor: '#275EF1' })
+    },
+    updateCoinList({ coinList, contract }) {
+      this.tokenList = coinList
     },
     updateWalletList(wallet) {
     
