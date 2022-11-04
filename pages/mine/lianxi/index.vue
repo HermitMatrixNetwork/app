@@ -45,9 +45,9 @@ export default {
         icon: '/static/img/mine/contact/telegram.png',
         value: ''
       }, {
-        label: 'GitHub',
+        label: 'GitBook',
         flag: 'github',
-        icon: '/static/img/mine/contact/github.png',
+        icon: '/static/img/mine/contact/gitbook.png',
         value: ''
       },{
         label: 'Medium',

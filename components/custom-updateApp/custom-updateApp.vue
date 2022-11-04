@@ -51,6 +51,9 @@ export default {
     latestVersion: {
       type: String,
       default: ''
+    },
+    showtip: {
+      default: false
     }
   },
   created() {
@@ -90,16 +93,25 @@ export default {
       this.upgrading = false
       this.progress = 0
       const res = (await getVersion()).data.data.version
+      // if (!res) {
+      //   uni.showToast({
+      //     // 已是最新版本，无需更新！
+      //     title: this.language.text115,
+      //     icon: 'none'
+      //   })
+      //   this.$emit('update:checking', false)
+      // }
       plus.runtime.getProperty(plus.runtime.appid, (inf) => {
         const {
           versionCode, 
           version
         } = inf
+        // console.log('init');
         if (this.$cache.get('_testupdate')) {
           res.version = '900'//  @latest
           this.$cache.delete('_testupdate')
         }
-        if (Number(versionCode) >= Number(res.version)) {
+        if (!res || (Number(versionCode) >= Number(res.version))) {
           if (this.tip) {
             this.$emit('update:latestVersion', version)
             uni.showToast({
@@ -115,7 +127,6 @@ export default {
           this.$emit('update:updating', true)
           this.show = true
         }
-        
         this.$emit('update:checking', false)
       })
     },

@@ -21,14 +21,14 @@ http.setConfig((config) => {
 
 export const getRecordList = (data) => {
   return http.post('/browser/txlist', {
-    'chain_id': 'dev',
+    'chain_id': 'ghm-testnet',
     ...data
   })
 }
 
 export const getCumulativeRewardCollection = (data) => {
   return http.post('/browser/accountinfo', {
-    'chain_id': 'dev',
+    'chain_id': 'ghm-testnet',
     ...data
   })
 }

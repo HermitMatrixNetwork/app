@@ -1,10 +1,10 @@
 <template>
   <view class="page-wrapper">
-    <custom-header :title="language.text09"></custom-header>
+    <custom-header title="Faucet"></custom-header>
     <view class="border"></view>
 
     <view class="list">
-      <view class="content" v-for="(item, index) in tools" :key="item.url" @click="toWebView(item)">
+      <view class="content" v-for="(item, index) in faucet" :key="index" @click="toWebView(item)">
         <view class="item">
           <view class="logo">
             <image :src="item.logo"></image>
@@ -22,7 +22,6 @@
         </view>
         <view class="border"></view>
       </view>
-      </view>
     </view>
   </view>
 </template>
@@ -32,30 +31,15 @@ import language from './language/index.js'
 export default {
   data() {
     return {
-      tools: [],
       faucet: [],
-      language: language[this.$cache.get('_language')],
-      recently: []
+      language: language[this.$cache.get('_language')]
     }
   },
   created() {
-    this.tools = this.$cache.get('_tools')
     this.faucet = this.$cache.get('_faucet')
   },
   methods: {
     toWebView(item) { // Tools
-    
-    const itemIndex = this.recently.findIndex(ren => ren.url == item.url)
-    if (itemIndex == -1) {
-      item.timeout = Date.now() + 604800 // 7天过期
-      this.recently.push(item)
-    } else {
-      item.timeout = Date.now() + 604800
-      this.recently.splice(itemIndex, 1, item)
-    }
-    
-    this.$cache.set('_recently', this.recently, 0)
-    
       uni.navigateTo({
         url: `./webview?jumpUrl=${item.url}`
       })

@@ -42,8 +42,8 @@ export default {
     this.$refs.list.init()
   },
   methods: {
-    updateCoinList(list) {
-      this.tokenList = list
+    updateCoinList({ coinList }) {
+      this.tokenList = coinList
     },
     searchCoin(){
       if(this.address==''){

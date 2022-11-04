@@ -46,9 +46,13 @@ export default {
     if(data.type == 'fail'){
       this.formatFailData(data)
     } else if (data.txhash) {
-      this.transactionHash = data.txhash
+      setTimeout(() => {
+        this.transactionHash = data.txhash
+      }, 500)
     } else if(data.transactionHash) {
-      this.transactionHash = data.transactionHash
+      setTimeout(() => {
+        this.transactionHash = data.transactionHash
+      }, 500)
     } else {
       this.formOtherToken(data)
     }
@@ -109,8 +113,21 @@ export default {
           [this.language.text239]: res.height
         }
       } else if (typeUrl.includes('MsgDelegate')) {
+        let automaticRewardCollection
+        res.jsonLog[0].events.find(item => {
+          if (item.type == 'coin_received' && item.attributes.length > 2) {
+            item.attributes.find(c => {
+              if (c.key == 'amount') {
+                automaticRewardCollection = parseFloat(c.value) / mainCoin.decimals + 'GHM'
+                return true
+              }
+            })
+            return true
+          }
+        })
         this.transactionMessage = {
           [this.language.text84]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text240]: automaticRewardCollection || '0.00GHM',
           [this.language.text111]: res.fee,
           [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
           [this.language.text91]: res.tx.body.messages[0].value.validatorAddress,
@@ -130,8 +147,21 @@ export default {
           'Memo': res.tx.body.memo,
         }
       } else if (typeUrl.includes('MsgUndelegate')) {
+        let automaticRewardCollection
+        res.jsonLog[0].events.find(item => {
+          if (item.type == 'coin_received' && item.attributes.length > 2) {
+            item.attributes.find(c => {
+              if (c.key == 'amount') {
+                automaticRewardCollection = parseFloat(c.value) / mainCoin.decimals + 'GHM'
+                return true
+              }
+            })
+            return true
+          }
+        })
         this.transactionMessage = {
           [this.language.text216]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+          [this.language.text240]: automaticRewardCollection || '0.00GHM',
           [this.language.text111]: res.fee,
           [this.language.text90]: res.tx.body.messages[0].value.delegatorAddress,
           [this.language.text217]: res.tx.body.messages[0].value.validatorAddress,

@@ -295,11 +295,9 @@ export const transferOtherToken = async (data, memo = '', gas, gasPrice) => {
 
 // 根据指定验证器查相应信息
 export const getDelegatorHistory = async (data) => {
-	let Secret = await getSecret()
-	const result = await Secret.query.txsQuery(
-		`message.sender='${Secret.wallet.address}' AND delegate.validator='ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl'`
-	)
-	console.log(result)
+  let Secret = await getSecret()
+  const result = await Secret.query.txsQuery(`message.sender='${Secret.wallet.address}' AND delegate.validator='ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl'`)
+  // console.log(result)
 }
 
 export const alla = async (data) => {
@@ -360,4 +358,13 @@ export const getMainCoinBalance = async (address) => {
 	balance = balance / mainCoin.decimals
 
 	return balance
+}
+
+export const queryContract = async (contractAddress) => {
+  let Secret = await getSecret()
+  const result = await Secret.query.compute.queryContract({
+    contractAddress,
+    query: { token_info: {} }
+  })
+  return result
 }

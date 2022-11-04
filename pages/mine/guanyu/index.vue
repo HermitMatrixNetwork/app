@@ -35,7 +35,7 @@
 				</view>
 			</view>
 		</view>
-    <custom-updateApp tip :updating.sync="updating" :checking.sync="checking" :latestVersion.sync="latestVersion" ref="updateApp" />
+    <custom-updateApp :showtip="true" tip :updating.sync="updating" :checking.sync="checking" :latestVersion.sync="latestVersion" ref="updateApp" />
 		<view class="Agreement">
 			<view style="color: #1e42ed;" @click="jump">《{{ language.text125 }}》</view>
       <view>{{ language.text126 }}</view>

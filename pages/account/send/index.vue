@@ -4,7 +4,8 @@
 		<view class="mask" v-show="transferLoading"></view>
 		<custom-header :title="language.text15" :style="titleStyle" :customStyle="{ 'z-index': 98 }">
 			<template #right>
-				<image src="/static/img/account/saoma.png" style="width:44rpx; height: 44rpx;" @click="scanCode">
+				<!-- <image src="/static/img/account/saoma.png" style="width:44rpx; height: 44rpx;" @click="scanCode"> -->
+				<image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsBAMAAADsqkcyAAAAIVBMVEUAAACEmLKEmLKEmLKEmLKGmrKEmrOInrSFmbKDmLOEl7Iuf7PGAAAAC3RSTlMAn1mlS0RbBpglhaOo7aEAAACASURBVCjPYyAVTFFSUkotgLDZw4AcTxCLRVhQUFDYASLMYgjkGII4EzvQhTskgSznLnRDVpgAWYpCKDaBRQZGOFEMRQwmEmyKIgYTKXFHFUSI0B+UJikhAbVwmDsFUYApXmFMQwYC4AhYHNGAI9IGVarCluxxZBIcWQpHBiQRAACNgim1+covDwAAAABJRU5ErkJggg==" style="width:44rpx; height: 44rpx;" @click="scanCode">
 				</image>
 			</template>
 		</custom-header>
@@ -18,7 +19,8 @@
 						<image :src="token.logo"></image>
 						<text>{{ token.alias_name }}</text>
 						<view class="icon-right">
-							<image src="/static/img/ic-arrow1.png" style="width:32rpx; height: 32rpx;"></image>
+							<!-- <image src="/static/img/ic-arrow1.png" style="width:32rpx; height: 32rpx;"></image> -->
+							<image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAWFJREFUWEftlk1OwzAQRv3F5iSIUyCBs0aiq2QFXSHUE0DhAFXVC1DY8bNKdiC6jek5OEnTZNCEgCIhSJ2EWpWafTTPz9+MB0TkCYcftgAbZcAYU+RFa513FRurDAAoCndpbWUALj65ne1mMsXVWe89IpLBpwZqY6MWgLX7vr/k4gtKLwUBCvQ4HPTmURTJIAjWBDB92VsQXZRXgB1PPQwHR/MkSZTWmiEagdQa4IKxEAiBbDx9PUjzZR9AUcyT4un6/PitjYmVAL7umHMwuns+zDNx0pUJGwAYY8B56NKEDUAhIo5jhGGYdWXCGkAIUWvCZk40AfhhIsvpFMTBJE9B3XN3lHOitjMaA1RNjG5m+znSvhDgbpRSiTEPq7JF/xzbmwtQDeO6r8BtCF22Ye3Jm4xkqxA6G8VOH6PvfcDVc+x8Iak+xU5Wsuq+53QpZRDna3mb7fe3f63mwBbgPwx8ANfjvhB3Zf9jAAAAAElFTkSuQmCC" style="width:32rpx; height: 32rpx;"></image>
 						</view>
 					</view>
 
@@ -27,7 +29,9 @@
 						<InputTitle :title="language.text16" :type="'text'" :placeholder="language.text17"
 							:isTextarea="true" ref="addressInptval" :inputVal.sync="sendFormData.receiveAddress">
 							<template #title-icon>
-								<image src="/static/img/account/addressbook.png" @click="toAddressBook"
+			<!-- 					<image src="/static/img/account/addressbook.png" @click="toAddressBook"
+									style="width:44rpx; height: 44rpx;"></image> -->
+								<image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAMAAAApWqozAAAAOVBMVEUAAACEmbKGl7GEmLKFmbSEmLOJnbWGmbSEmbSEmLKEmLOEl7KFmLOFmbKDmLOEmLGEmLKFmbWFmbJIAxtDAAAAE3RSTlMAojqbQY8LGDJriIBQWS2VdCRlwQkDFwAAAV5JREFUOMu1lcGWgyAMRX0EkADC0P//2MnUVrSUzKKnd+GG64MTY1i+zlrMlLJeVXZQcHzSi6g6rhy5DpSyNRNsTgT3zGYQ+0XBM4GP4CSuaqdndAHyy9q6vrydgf3UAbDnBcMpxsRmOWGBsC8Cp4X1h3CHfvaNuzPILYIoMkcixKbLXtx03zAksb0qb7L7w/Bynk2TvevV/yup84ps9rC+jVHkDApdDoSsyBtq63Kr2D5P1s/8eTUkDL3OwPbfF0QKovuQoH9BoTkQJeZEBDf0xth1eKB0XSfconPxJjXU5I738lBkjc9lH4y9YIKfyI0rDVRu72RbIVxVCNWOcgYhbfaFLYGQr7JdjORkvwz4TCSeFbkPmQiyy1ssIfYhU4AcAF4msIgZKMdgvAFhJgfglo4+Z9RKcZ3Ja6RK4P5LVHLZTMiOqgSfrgkiTCGCK+PoHOkDteObdrU1v3yZX4MfDRW7cqiQAAAAAElFTkSuQmCC" @click="toAddressBook"
 									style="width:44rpx; height: 44rpx;"></image>
 							</template>
 						</InputTitle>
@@ -745,6 +749,9 @@ export default {
       uni.stopPullDownRefresh()
     }, 1500)
   },
+  onHide() {
+    uni.stopPullDownRefresh()
+  }
 }
 </script>
 <script lang="renderjs" module="render">

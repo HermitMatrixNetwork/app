@@ -6,91 +6,97 @@
       </view>
       <view class="header">
         <u-search :showAction="false" :placeholder="language.text02" shape="round" :clearabled="true"
-          v-model="searchVal" @search="search" searchIcon="/static/img/delegate/search2.png"></u-search>
+          v-model="searchVal" @search="search" searchIcon="/static/img/delegate/search2.png" @clear="clearSearch"></u-search>
       </view>
     </view>
-    <view class="container">
-      <view class="banner-wrap">
-        <view class="uni-margin-wrap">
-          <swiper class="swiper" circular :indicator-dots="indicatorDots" :indicator-color="'rgba(255,255,255,0.55)'"
-            :indicator-active-color="'#fff'" :autoplay="autoplay" :interval="interval" :duration="duration"
-            :current="current">
-            <swiper-item v-for="(item, index) in bannerList" :key="index" @click="jump(item.link, item)">
-              <image class="swiper-item" :src="item.url" style="width: 100%" />
-            </swiper-item>
-          </swiper>
-        </view>
-      </view>
-
-      <view class="recently">
-        <view class="heade">
-          <view class="left">
-            <text class="recentl" :class="{ active: tabActive == 0 }" @click="clickItem('recently')">{{ language.text03 }}</text>
-            <text class="collect" :class="{ active: tabActive == 1 }" @click="clickItem('collection')">{{ language.text14 }}</text>
-          </view>
-          <view class="right" @click="toRecently">
-            <text>{{ language.text04 }}</text>
-            <image src="/static/img/ic-arrow1.png"></image>
+    <view v-if="!searchEmpty">
+      <view class="container">
+        <view class="banner-wrap">
+          <view class="uni-margin-wrap">
+            <swiper class="swiper" circular :indicator-dots="indicatorDots" :indicator-color="'rgba(255,255,255,0.55)'"
+              :indicator-active-color="'#fff'" :autoplay="autoplay" :interval="interval" :duration="duration"
+              :current="current">
+              <swiper-item v-for="(item, index) in bannerList" :key="index" @click="jump(item.link, item)">
+                <image class="swiper-item" :src="item.url" style="width: 100%" />
+              </swiper-item>
+            </swiper>
           </view>
         </view>
-        <view class="content" v-if="tabActive  == 0 ? recently.length : collection.length">
-          <view class="item" v-for="(item, index) in (tabActive == 0 ? recently.slice(0, 2) : collection.slice(0, 2))" :key="index" @click="toWebView(item)">
-            <image :src="item.logo"></image>
-            <text>{{ item.name }}</text>
+      
+        <view class="recently">
+          <view class="heade">
+            <view class="left">
+              <text class="recentl" :class="{ active: tabActive == 0 }" @click="clickItem('recently')">{{ language.text03 }}</text>
+              <text class="collect" :class="{ active: tabActive == 1 }" @click="clickItem('collection')">{{ language.text14 }}</text>
+            </view>
+            <view class="right" @click="toRecently">
+              <text>{{ language.text04 }}</text>
+              <image src="/static/img/ic-arrow1.png"></image>
+            </view>
+          </view>
+          <view class="content" v-if="tabActive  == 0 ? recently.length : collection.length">
+            <view class="item" v-for="(item, index) in (tabActive == 0 ? recently.slice(0, 2) : collection.slice(0, 2))" :key="index" @click="toWebView(item)">
+              <image :src="item.logo"></image>
+              <text>{{ item.name }}</text>
+            </view>
+          </view>
+          <view class="content" v-else>
+            <!-- <text class="no-data">{{ language.text10 }}</text> -->
+            <no-data class="no-data"></no-data>
           </view>
         </view>
-        <view class="content" v-else>
-          <!-- <text class="no-data">{{ language.text10 }}</text> -->
-          <no-data class="no-data"></no-data>
-        </view>
-      </view>
-
-      <view class="tools">
-        <view class="heade">
-          <view class="left">Tools</view>
-          <view class="right" @click="toTools">
-            <text>{{ language.text04 }}</text>
-            <image src="/static/img/ic-arrow1.png"></image>
+      
+        <view class="tools">
+          <view class="heade">
+            <view class="left">Tools</view>
+            <view class="right" @click="toTools">
+              <text>{{ language.text04 }}</text>
+              <image src="/static/img/ic-arrow1.png"></image>
+            </view>
+          </view>
+          <view class="content" v-for="(item, index) in tools" :key="index" @click="toWebView(item)">
+            <view class="logo">
+              <image :src="item.logo"></image>
+            </view>
+            <view class="article">
+              <view class="title">{{ item.name }}</view>
+              <view class="describe">{{ item.des }}</view>
+            </view>
           </view>
         </view>
-        <view class="content" v-for="(item, index) in tools" :key="index" @click="toWebView(item)">
-          <view class="logo">
-            <image :src="item.logo"></image>
+        
+        <view class="tools">
+          <view class="heade">
+            <view class="left">PriFi</view>
           </view>
-          <view class="article">
-            <view class="title">{{ item.name }}</view>
-            <view class="describe">{{ item.des }}</view>
+          <view class="content">
+            <image src="/static/img/prifi.png" style="width: 686rpx;height: 240rpx;;"></image>
           </view>
         </view>
+        <view class="tools">
+          <view class="heade">
+            <view class="left">NFTs</view>
+          </view>
+          <view class="content">
+            <image src="/static/img/nfts.png" style="width: 686rpx;height: 240rpx;;"></image>
+          </view>
+        </view>
+        <view class="tools">
+          <view class="heade">
+            <view class="left">GameFi</view>
+          </view>
+          <view class="content">
+            <image src="/static/img/gamefi.png" style="width: 686rpx;height: 240rpx;;"></image>
+          </view>
+        </view>
+      
       </view>
-      <view class="tools">
-        <view class="heade">
-          <view class="left">PriFi</view>
-        </view>
-        <view class="content">
-          <image src="/static/img/prifi.png" style="width: 686rpx;height: 240rpx;;"></image>
-        </view>
-      </view>
-      <view class="tools">
-        <view class="heade">
-          <view class="left">NFTs</view>
-        </view>
-        <view class="content">
-          <image src="/static/img/nfts.png" style="width: 686rpx;height: 240rpx;;"></image>
-        </view>
-      </view>
-      <view class="tools">
-        <view class="heade">
-          <view class="left">GameFi</view>
-        </view>
-        <view class="content">
-          <image src="/static/img/gamefi.png" style="width: 686rpx;height: 240rpx;;"></image>
-        </view>
-      </view>
-
+      
+      <tab-bar :current-page="1" />
     </view>
-
-    <tab-bar :current-page="1" />
+    <view class="noData" v-else>
+      <no-data :tip="language.text27"></no-data>
+    </view>
   </view>
 </template>
 
@@ -104,12 +110,23 @@ export default {
     return {
       language: language[this.$cache.get('_language')],
       tools: [{
-        name: '区块浏览器',
-        des: '这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器，这是一个区块浏览器这是一个区块浏览器这是一个区块浏览器',
-        url: 'http://158.247.237.78/home',
+        name: language[this.$cache.get('_language')].text23,
+        des: language[this.$cache.get('_language')].text24,
+        url: 'https://scan.hermit.network/home',
         // url: 'http://192.168.0.171:8888',
         logo: '/static/img/account/uGHM.png'
+      },{
+        name: language[this.$cache.get('_language')].text25,
+        des: language[this.$cache.get('_language')].text26,
+        url: 'https://faucet.hermit.network/',
+        logo: '/static/img/mine/3.png'
       }],
+      // faucet: [{
+      //   name: language[this.$cache.get('_language')].text25,
+      //   des: language[this.$cache.get('_language')].text26,
+      //   url: 'http://158.247.237.78/home#/faucet',
+      //   logo: '/static/img/mine/3.png'
+      // }],
       recently: [],
       collection: [],
       bannerList: [],
@@ -125,22 +142,28 @@ export default {
       },
       current: 0,
       tabActive: 0,
+      searchEmpty: false
     }
   },
   async created() {
-    this.recently = this.$cache.get('_recently') || []
-    
-    if (this.recently.length) {
-      this.recently = this.recently.filter(item => item.timeout > Date.now())
-      this.recently.sort((a, b) => b.timeout - a.timeout)
+    try {
+      this.recently = this.$cache.get('_recently') || []
+      
+      if (this.recently.length) {
+        this.recently = this.recently.filter(item => item.timeout > Date.now())
+        this.recently.sort((a, b) => b.timeout - a.timeout)
+      }
+      
+      this.$cache.set('_recently', this.recently, 0)
+      
+      // this.tools = this.$cache.get('_tools') || this.tools
+      this.$cache.set('_tools', this.tools, 0)
+      // this.$cache.set('_faucet', this.faucet, 0)
+      const res = (await getBannerList()).data.data.banner.photos.photos
+      this.bannerList = res
+    } catch (e) {
+      console.log('e', e)
     }
-    
-    this.$cache.set('_recently', this.recently, 0)
-
-    // this.tools = this.$cache.get('_tools') || this.tools
-    // this.$cache.set('_tools', this.tools, 0)
-    const res = (await getBannerList()).data.data.banner.photos.photos
-    this.bannerList = res
   },
   onShow() {
     this.collection = this.$cache.get('_collectionList') || []
@@ -150,7 +173,16 @@ export default {
         const alreadyExist = this.collection.find(item => item.url == data.url)
         if (!alreadyExist) {
           const collectData = this.tools.find(item => item.url == data.url)
-          this.collection.unshift(collectData)
+          if (collectData) { // 静态数据中存在应用信息
+            this.collection.unshift(collectData)
+          } else {
+            this.collection.unshift({
+              url: data.url,
+              name: '',
+              logo: '/static/img/account/uGHM.png',
+              des: ''
+            })
+          }
         }
       } else { // 取消收藏
         const collectIndex = this.collection.findIndex(item => item.url == data.url)
@@ -189,6 +221,11 @@ export default {
         url: './tools'
       })
     },
+    toFaucet() {
+      uni.navigateTo({
+        url: './faucet'
+      })
+    },
     toWebView(item) { // Tools
       // todo 添加进最近访问列表
       const itemIndex = this.recently.findIndex(ren => ren.url == item.url)
@@ -207,12 +244,31 @@ export default {
       })
     },
     jump(link, item) { // 轮播图
-      console.log(item);
+      console.log(item)
       uni.navigateTo({
         url: `./webview?jumpUrl=${link}&name=${item.name}`
       })
     },
-    search() {}
+    search(val) {
+      
+      let reg = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\*\+,;=.]+$/
+      if (val.trim() == '') {
+        this.searchEmpty = false
+      } else if (reg.test(val)) {
+        this.searchEmpty = false
+        uni.navigateTo({
+          url: `./webview?jumpUrl=${this.searchVal}&name=`
+        })
+      } else {
+        this.searchEmpty = true
+        // uni.navigateTo({
+        //   url: `./404?searchVal=${val}`
+        // })
+      }
+    },
+    clearSearch() {
+      this.searchEmpty = false
+    }
   },
   async onPullDownRefresh() {
     const res = (await getBannerList()).data.data.banner.photos.photos
@@ -221,6 +277,14 @@ export default {
     setTimeout(function() {
       uni.stopPullDownRefresh()
     }, 1000)
+  },
+  onHide() {
+    uni.stopPullDownRefresh()
+  },
+  onBackPress(events) {
+    this.searchVal = ''
+    this.searchEmpty = false
+    return true
   },
   watch: {
     searchVal(val) {
@@ -460,17 +524,36 @@ export default {
     position: static !important;
   }
   
-  .no-data {
-    justify-content: center;
-    width: 100vw;
-    // font-family: PingFangSC-Regular;
-    // font-size: 24rpx;
-    // color: #8397B1;
-    // line-height: 24rpx;
-    /deep/ .no-img {
-      margin-bottom: 0 !important;
-      width: 120rpx !important;
-      height: 120rpx !important;
+  .content {
+    .no-data {
+      justify-content: center;
+      width: 100vw;
+      // font-family: PingFangSC-Regular;
+      // font-size: 24rpx;
+      // color: #8397B1;
+      // line-height: 24rpx;
+      /deep/ .no-img {
+        margin-bottom: 0 !important;
+        width: 120rpx !important;
+        height: 120rpx !important;
+      }
+    }
+  }
+  
+  .tools {
+    .content {
+      &:not(:last-child) {
+        border-bottom: 2rpx solid  #F4F6F9;
+        padding-bottom: 20rpx;
+      }
+    }
+  }
+  
+  .noData {
+    height: calc(100vh - 112rpx - var(--status-bar-height));
+    /deep/ .no-data {
+      height: 100%;
+      justify-content: center;
     }
   }
 </style>

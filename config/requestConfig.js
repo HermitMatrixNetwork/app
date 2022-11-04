@@ -8,6 +8,6 @@ export default {
   recordServer: 'https://api.hermit.network:8188', // 只获取交易记录端口 （生产）
   // goServer: 'http://158.247.237.78:8080' // 后台生产
   // browersServer: 'http://158.247.237.78:8082' // 浏览器生产
-
-
+  
+  
 }

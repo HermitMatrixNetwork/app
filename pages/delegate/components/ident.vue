@@ -217,7 +217,7 @@ export default {
     async ValidatorsData() {
       try {
         const res = (await getNodeList({
-          'chain_id':'dev'
+          'chain_id':'ghm-testnet'
         })).data.data.list        
         // this.validators = res
         this.validators = res.map(item => {
@@ -321,9 +321,12 @@ export default {
         ascList = validatorsList.sort((a, b) => a.commission_rate - b.commission_rate)
         break
       }
-      this.$nextTick(() => {
+      // this.$nextTick(() => {
+      //   
+      // })
+      setTimeout(() => {
         this.haveData = false
-      })
+      }, 1000)
       return this.sortRule == 'asc' ? ascList : ascList.reverse()
     },
     scrollHeight() {

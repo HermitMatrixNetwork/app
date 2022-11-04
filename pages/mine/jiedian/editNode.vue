@@ -97,7 +97,7 @@ export default {
       formData: {
         name: '',
         link: '',
-        chainId: 'ghmdev'
+        chainId: 'ghm-testnet'
       },
       callRender: 0,
       nodeIndex: 0,
@@ -191,6 +191,7 @@ export default {
       } else {
         this.linkError = false
         nodeList.splice(this.nodeIndex, 1, this.formData)
+        this.$cache.set('_currentRpc', this.formData.link, 0)
         this.$cache.set('_nodeList', nodeList, 0)
         this.$refs.notify.show('', this.language.text60, {
           bgColor: '#275EF1'

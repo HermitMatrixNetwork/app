@@ -9,7 +9,8 @@
         :inputOtherStyle="{ 'padding-right': '80rpx' }">
         <template #inputRight>
           <view class="scan">
-            <image src="/static/img/account/mipmap-mdpi_saoma.png" style="width: 32rpx;height: 32rpx;" @click="scanCode"></image>
+            <!-- <image src="/static/img/account/mipmap-mdpi_saoma.png" style="width: 32rpx;height: 32rpx;" @click="scanCode"></image> -->
+            <image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsBAMAAADsqkcyAAAAGFBMVEUAAAArNlotN1ouN1srMFwtOlosN1ssNlpCvfsvAAAAB3RSTlMAlHtyCz7dKVVdMQAAAG5JREFUKM9jIBUECQoKCjtA2CyGQI4qiMVUDgIKQBYKJxxTuBTIUi9DNyS9CMgSL0SxCSwyqITNi1HEYCJOKqiCCBH6A2dBFGACFVYvRwFFeIUxDRkIgCNgcUTDoEon2IRxJHscmQRHlsKRAUkEANdsQK+kGjQCAAAAAElFTkSuQmCC" style="width: 32rpx;height: 32rpx;" @click="scanCode"></image>
           </view>
         </template>
       </InputTitle>

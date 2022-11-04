@@ -18,15 +18,18 @@
     <view class="account-box">
       <view class="account-column">
         <view class="column-item" @click="goTo('/pages/delegate/cancel')">
-          <image src="/static/img/delegate/quxiaoweituo.png" ></image>
+          <!-- <image src="/static/img/delegate/quxiaoweituo.png" ></image> -->
+          <image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAAOVBMVEUyMlUAAAAsNlozM1wtLUeDl7F9j6mElrEsNlouOFp8j6kyN1YtN1ksN1ktNlp7iqYuNlwvN1ksNlp3kF3gAAAAEnRSTlMOAPUYCP1o39lrYBywoVRTPTwXXapYAAABrElEQVRYw8zS4Y6DIBAE4KGOVURte+//sAfSHglLdxPpJZ1fRNcvOxE4PYzBXxjj9EDX0AhpgLZmmzZIGKEFSu4cCYU7RULhTpFoeF0i+jyAOogT0UCgW4Rd1w7fgDidNoiOtEB0RYLsA1mDRGdYgaICBjWQXxRQLsjg1/miZF59YHNFNL19/jEz700RjcL0cf6iYfm1r8QCstrv+Y2SPLFTrgi5YDj6bo8wvE14bEfrIFeEWND51Mc76pfEp9reiRUhr8waJzcHI26LY6u8OhC/eEiN77RA3lPnoXrYBC+xTICZkOaaIBrgoEjaXAL5SZD/AeKTYORoDBJgddZAWiBv07TweV6m6cZOENM4jld3tLnG44R+MIvZs0HAqLyMWczeuBiVYYF4QS8YfWARi9cDFrF4/SDckr3F4TvB3+rs3AYAGASCYP9dExMCExwNWLKM71n6lfMe5TA2ZrDnXy9NHA7yhQRWW8AL16NGz6MID0s6zvHAqSMxD+28Vvji46uZL4++3voC7hEBOVFjFg6CMKrSME3jPg0kNTLFUBdjZwzGMbpPWC4s1x8FTKUqmdh19OgAAAAASUVORK5CYII=" ></image>
           <text>{{ language.text06 }}</text>
         </view>
         <view class="column-item" @click="goTo('/pages/delegate/income')">
-          <image src="/static/img/delegate/shouyilingqu.png"></image>
+          <!-- <image src="/static/img/delegate/shouyilingqu.png"></image> -->
+          <image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAAQlBMVEUxMlQAAAA6PWMsNlqDl7EuNlqDl7EsNlsxNVosNlosNlosN1p7iqgxOFotN1sxOFosNlotNlosN1osN1ssNlqDl7G5LHm0AAAAFHRSTlMOABj29mbelCTl7tpVMsdDuXGuUKnlS1IAAAI8SURBVFjDxdkJc4IwEAXgzaNyKR6t/f9/tZYyjfB2Nwc93ozTsSGfGwMaooRkJCbn6KTFqQXFSQUoiRSCkhEXZK6WlBSHQlKS5fl+Esy1YJGieogPC4vxQLswr4VAw8vXLVCqo4OpGUB8SrVqIFsoeAMY9PukTQdMCxwGjYMEq0iw2Qja3qU7D2MTM1xvsIeyAXkG0TV3yvEt8OAZFCW43rU0B/PjyAdDtwAxS8FbkUDdu8wDPEw9vtPniOIVeOxXTVjAKEIHRct57ggC3Ro1cCEwPPpNIltwvDWKiBWoXgQYH/PRM9jIwatxBXJnaP8LJO4EZS2CQCkDe0Bus/imdS0Dh+VEH2fwCB9E/GOA8npf5fZcDCoqDNOwAq+1Q46ZXoen63qABkoJGCRe17EdYgYE+i+YlmpBzi+CqANhSdwBm+wc8ql92aQ97QLbd0q7AeGdLVng/wwZIn8xKel2/l7Zcx7WfdrgKWUg0pPSnhQQBBach21mhfhBkEosGDJ7BGLHpDDISxEz/QMcQYXoqy9eLHEm/pLi1ReM5Rzna4Fzlm1yF5zc2h8fzd22NXNJTOmnw6fXXAgsWbTz4p0LNEB831Y0dydXiAVaE905YNNBEiBmRLk1o4zDubtwDfk3jxwJvJKj29udCSaI+ZEbmGAgpyipTYxS3d9mqRwvg4FKQ57qbVWlJT7C3UyrSPZ2H8yzCOTVbkiCnuVtmcLA2Ny1qct+0bYzkrNdvTEO9c37/637+h8XkiHMzQfmDTArSVP5OwAAAABJRU5ErkJggg==" />
           <text>{{ language.text07 }}</text>
         </view>
         <view class="column-item" @click="goTo('/pages/delegate/transaction')">
-          <image src="/static/img/delegate/jiaoyijilu.png"></image>
+          <!-- <image src="/static/img/delegate/jiaoyijilu.png"></image> -->
+          <image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAAQlBMVEUxMlQAAAA6PWMsNlqDl7EuNlqDl7EsNlsxNVosNlosNlosN1p7iqgxOFotN1sxOFosNlotNlosN1osN1ssNlqDl7G5LHm0AAAAFHRSTlMOABj29mbelCTl7tpVMsdDuXGuUKnlS1IAAAI8SURBVFjDxdkJc4IwEAXgzaNyKR6t/f9/tZYyjfB2Nwc93ozTsSGfGwMaooRkJCbn6KTFqQXFSQUoiRSCkhEXZK6WlBSHQlKS5fl+Esy1YJGieogPC4vxQLswr4VAw8vXLVCqo4OpGUB8SrVqIFsoeAMY9PukTQdMCxwGjYMEq0iw2Qja3qU7D2MTM1xvsIeyAXkG0TV3yvEt8OAZFCW43rU0B/PjyAdDtwAxS8FbkUDdu8wDPEw9vtPniOIVeOxXTVjAKEIHRct57ggC3Ro1cCEwPPpNIltwvDWKiBWoXgQYH/PRM9jIwatxBXJnaP8LJO4EZS2CQCkDe0Bus/imdS0Dh+VEH2fwCB9E/GOA8npf5fZcDCoqDNOwAq+1Q46ZXoen63qABkoJGCRe17EdYgYE+i+YlmpBzi+CqANhSdwBm+wc8ql92aQ97QLbd0q7AeGdLVng/wwZIn8xKel2/l7Zcx7WfdrgKWUg0pPSnhQQBBach21mhfhBkEosGDJ7BGLHpDDISxEz/QMcQYXoqy9eLHEm/pLi1ReM5Rzna4Fzlm1yF5zc2h8fzd22NXNJTOmnw6fXXAgsWbTz4p0LNEB831Y0dydXiAVaE905YNNBEiBmRLk1o4zDubtwDfk3jxwJvJKj29udCSaI+ZEbmGAgpyipTYxS3d9mqRwvg4FKQ57qbVWlJT7C3UyrSPZ2H8yzCOTVbkiCnuVtmcLA2Ny1qct+0bYzkrNdvTEO9c37/637+h8XkiHMzQfmDTArSVP5OwAAAABJRU5ErkJggg==" />
           <text>{{ language.text08 }}</text>
         </view>
       </view>
@@ -83,8 +86,8 @@ export default {
   },
   data() {
     return {
-      // language: language[this.$cache.get('_language')],
-      language: language['CN'],
+      language: language[this.$cache.get('_language')],
+      // language: language['CN'],
       address: '',
       list: [],
       allData: {},
@@ -173,15 +176,17 @@ export default {
         this.currentWallet = this.$cache.get('_currentWallet')
       }
       // this.$cache.delete('_delegateInfo')
-      
-      this.address = this.currentWallet.address
-      
+      setTimeout(() => {
+        
+        this.address = this.currentWallet.address
+        
 
-      this.callUnboundingDelegators++
+        this.callUnboundingDelegators++
+      }, 500)
       const res = await getCumulativeRewardCollection({
         address: this.$cache.get('_currentWallet').address
       })
-      console.log('累计领取奖励',res)
+      // console.log('累计领取奖励',res)
       this.cumulativeReward = !isNaN(res.data.data.withdrawAmount)?res.data.data.withdrawAmount / mainCoin.decimals : 0
       this.$cache.set('_my_cumulativeReward_data', this.cumulativeReward, 0)
 
@@ -209,7 +214,7 @@ export default {
       // })
     },
     goTo(url) {
-      console.log('click fire')
+      // console.log('click fire')
       uni.navigateTo({
         url,
         events: {
@@ -221,32 +226,40 @@ export default {
     },
     initData(data) {
       this.$nextTick(async () => {
-        this.allData = data
-        let { list } = data
-        // this.list.forEach((item, index) => {
-        //   item = Object.assign(item , list[index])
-        // })
-        for (let i = 0, len = list.length; i < len; i++) {
-          const item = list[i]
-          const { delegatorAddress, validatorAddress } = item.delegation
-          // 获取最新质押时间 
-          const res = (await txsQuery([`events=message.sender='${this.address}'`, `events=delegate.validator='${validatorAddress}'`])).data.tx_responses
-          if (res.length > 0) {
-            item.timestamp = res.pop().timestamp.replace(/T|Z/g, ' ')
-            item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() + 8)))
+        try {
+          this.allData = data
+          const oldAddress = this.address
+          this.address = ''
+          let { list } = data
+          this.$cache.set('_delegateInfo', this.allData, 0)
+          // this.list.forEach((item, index) => {
+          //   item = Object.assign(item , list[index])
+          // })
+          for (let i = 0, len = list.length; i < len; i++) {
+            const item = list[i]
+            const { delegatorAddress, validatorAddress } = item.delegation
+            // 获取最新质押时间 
+            const res = (await txsQuery([`events=message.sender='${oldAddress}'`, `events=delegate.validator='${validatorAddress}'`])).data.tx_responses
+            if (res.length > 0) {
+              item.timestamp = res.pop().timestamp.replace(/T|Z/g, ' ')
+              item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() + 8)))
+            }
           }
+          list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+          this.list = list
+          if (this.list.length == 0) {
+            this.haveData = false
+          }
+          this.loading = false
+          this.$cache.set('_updateDelegateInfo', false, 36000)
+          this.$cache.set('_delegateInfo', this.allData, 0)
+          this.$cache.set('_my_list_data', this.list, 0)
+          this.updateRewards = JSON.parse(JSON.stringify(data.list))
+        } catch(e) {
+          console.log(e, 'e')
+        } finally {
         }
-        list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-        this.list = list
-        if (this.list.length == 0) {
-          this.haveData = false
-        }
-        this.loading = false
-        this.address = ''
-        this.$cache.set('_updateDelegateInfo', false, 36000)
-        this.$cache.set('_delegateInfo', this.allData, 0)
-        this.$cache.set('_my_list_data', this.list, 0)
-        this.updateRewards = JSON.parse(JSON.stringify(data.list))
+
       })
     },
     handerRewards(res) {
@@ -277,6 +290,9 @@ export default {
       if (Number(reward) > 0 || isNaN(Number(reward))) {
         // console.log('reward', reward)
         this.$cache.set('_my_totalReward_data', reward, 0)
+      }
+      if (reward == '0.000000') {
+        this.$cache.delete('_my_totalReward_data')
       }
       // console.log(this.$cache.get('_my_totalReward_data'))
       return this.$cache.get('_my_totalReward_data') || reward
