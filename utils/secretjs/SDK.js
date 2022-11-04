@@ -7,82 +7,70 @@ import {
 	getCurrentRpc
 } from '@/config/index.js'
 
-
-let Secret
-let oldRpc = getCurrentRpc()
-let arr = false
+let walletMap = {}
+let queue = 0
 //获取secret
-export function getSecret() {
+export function getSecretUt(wallet, address, rpc) {
 	return new Promise((reslove, reject) => {
-		let wallet = {}
-		
-		//#ifdef APP-PLUS
-		wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
-		//#endif
-
-		//#ifndef APP-PLUS
-		wallet = uni.getStorageSync('_currentWallet').data
-		//#endif
-		let rpc = getCurrentRpc()
-		if (arr) {
-			// console.log('Secret RETURN');
-			reslove(Secret)
-		}	
-		oldRpc = rpc
-		let walletAddress = wallet.address
-		let privateKey64 = WalletCrpto.decode(wallet.privateKey64)
-		let privateKey = WalletCrpto.StringToUint(privateKey64)
-		let publicKey = WalletCrpto.getPublickey(privateKey)
-		wallet.privateKey = privateKey
-		wallet.publicKey = publicKey
-		wallet.getAccounts = new secretjs.Wallet().getAccounts.bind(wallet)
-		wallet.signAmino = new secretjs.Wallet().signAmino.bind(wallet)
-		wallet.signDirect = new secretjs.Wallet().signDirect.bind(wallet)
-		Secret = secretjs.SecretNetworkClient.create(wallet, walletAddress, rpc)
-		arr = true
+		if (!(address in walletMap)) {
+			walletMap[address] = {}
+		}
+		if (rpc == walletMap[address].rpc) {
+			reslove(walletMap[address].Secret)
+		}
+		if (!walletMap[address].wallet) {
+			let Wallet = new secretjs.Wallet()
+			wallet.privateKey = WalletCrpto.StringToUint(WalletCrpto.decode(wallet.privateKey64))
+			wallet.publicKey = WalletCrpto.getPublickey(wallet.privateKey)
+			wallet.getAccounts = Wallet.getAccounts.bind(wallet)
+			wallet.signAmino = Wallet.signAmino.bind(wallet)
+			wallet.signDirect = Wallet.signDirect.bind(wallet)
+		}
+		let Secret = secretjs.SecretNetworkClient.create(wallet, address, rpc)
+		walletMap[address] = {
+			rpc,
+			Secret,
+			wallet
+		};
 		reslove(Secret)
 	})
 }
-// export async function getSecret() {
-// 	let wallet = {}
-// 	//#ifndef APP-PLUS
-// 	wallet = uni.getStorageSync('_currentWallet').data
-// 	//#endif
 
+export function getSecret() {
+	let wallet = {}
+	//#ifdef APP-PLUS
+	wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+	//#endif
 
-// 	let rpc = getCurrentRpc()
-// 	// if (arr) {
-// 	// 	return Secret
-// 	// }
-// 	oldRpc = rpc
-// 	tempWallet = tempWallet ? tempWallet : new secretjs.Wallet()
-// 	let walletAddress = wallet.address
-// 	let privateKey64 = WalletCrpto.decode(wallet.privateKey64)
-// 	let privateKey = WalletCrpto.StringToUint(privateKey64)
-// 	let publicKey = await WalletCrpto.getPublickey(privateKey)
-// 	wallet.privateKey = privateKey
-// 	wallet.publicKey = publicKey
-// 	let tempWallet = new secretjs.Wallet()
-// 	wallet.getAccounts = tempWallet.getAccounts.bind(wallet)
-// 	wallet.signAmino = tempWallet.signAmino.bind(wallet)
-// 	wallet.signDirect = tempWallet.signDirect.bind(wallet)
-// 	Secret = await secretjs.SecretNetworkClient.create(wallet, walletAddress, rpc)
-// 	arr = true
-// 	return Secret
-// }
+	//#ifndef APP-PLUS
+	wallet = uni.getStorageSync('_currentWallet').data
+	//#endif
+	let address = wallet.address
+	let rpc = getCurrentRpc()
+	if (address in walletMap) {
+		return getSecretUt(wallet, address, rpc)
+	}
+	if (++queue == 1) {
+		setTimeout(() => {
+			queue = 0
+		}, 2000)
+		return getSecretUt(wallet, address, rpc)
+	}
+	return new Promise((reslove, reject) => {
+		setTimeout(() => {
+			reslove(getSecretUt(wallet, address, rpc))
+		}, 200)
+	})
+}
 
-
-// getSecret()
 
 //查询余额
-export async function getBalance(address, denom = 'ughm') {
+export async function getBalance(address) {
 	let Secret = await getSecret()
-
 	const result = await Secret.query.bank.balance({
 		address,
-		denom
+		denom: 'ughm'
 	})
-
 	return result
 }
 
@@ -90,13 +78,12 @@ export async function getBalance(address, denom = 'ughm') {
 //获取合约信息
 export async function getContractInfo(address) {
 	let Secret = await getSecret()
-	// try {
-	const result = await Secret.query.compute.contractInfo(address)
-	// return result
-	// } catch (e) {
-	// return false
-	//TODO handle the exception
-	// }
+	try {
+		const result = await Secret.query.compute.contractInfo(address)
+		return result
+	} catch (e) {
+		return false
+	}
 }
 
 export async function QueryStakingValidators(status) {
@@ -275,13 +262,6 @@ export async function getCodeHash(data) {
 
 export async function getOtherTransationHistory(data, pagination, token) {
 	let Secret = await getSecret()
-	// const result = querySnip.getTransactionHistory({
-	//       contract: { address: 'ghm18hxq6kypae4arzxda4dvuwdr0p23rrg5pqffx9', codeHash: '188609c5d1fee7b0917d4fedccd04bb8286181bd45e2f77ccac364cda7f164c5' },
-	//       address: wallet.address,
-	//       auth: { key: "hello kitty" },
-	//       page_size: 10,
-	//       page: 1
-	// })
 	let codeHash = data.contract.codeHash
 	if (!token.codeHash) {
 		codeHash = await Secret.query.snip20.contractCodeHash(token.contract_address)
@@ -318,7 +298,7 @@ export const getDelegatorHistory = async (data) => {
 	let Secret = await getSecret()
 	const result = await Secret.query.txsQuery(
 		`message.sender='${Secret.wallet.address}' AND delegate.validator='ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl'`
-		)
+	)
 	console.log(result)
 }
 
@@ -367,12 +347,12 @@ export const getWithdrawAddress = async (address) => {
 	return result
 }
 
-export const getMainCoinBalance = async (address, denom = 'ughm') => {
+export const getMainCoinBalance = async (address) => {
 	let Secret = await getSecret()
 
 	const result = await Secret.query.bank.balance({
 		address,
-		denom
+		denom: 'ughm'
 	})
 
 	let balance = result.balance.amount

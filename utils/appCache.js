@@ -62,7 +62,8 @@ class MinCache {
     return cache
   }
   get(name) {
-    return isTimeout(name) ? null : cacheMap.get(name).data
+    // return isTimeout(name) ? null : cacheMap.get(name).data
+    return cacheMap.get(name) ? cacheMap.get(name).data : null
   }
   delete(name) {
     let value = false
