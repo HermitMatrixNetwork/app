@@ -363,7 +363,18 @@ export const getMainCoinBalance = async (address, client) => {
 
 export const queryContract = async (contractAddress) => {
   let Secret = await getSecret()
+  const codeHash = await Secret.query.snip20.contractCodeHash(contractAddress)
   const result = await Secret.query.compute.queryContract({
+    contractAddress,
+    codeHash,
+    query: { token_info: {} }
+  })
+  return result
+}
+
+export const querySnip721Contract = async (contractAddress) => {
+  let Secret = await getSecret()
+  const result = await Secret.query.snip721.contractInfo({
     contractAddress,
     query: { token_info: {} }
   })

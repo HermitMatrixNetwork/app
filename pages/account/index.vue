@@ -81,11 +81,17 @@
         </u-tabs> -->
         <view class="coin-list-top coin-tabs">
           <view class="tabs">
-            <view class="tabs-item actived">
+            <view class="tabs-item" :class="{ 'actived': coinType == 'All' }" @click="coinType = 'All'">
               <view class="tabs-item-text">
                 <text>{{ languages.text07 }}</text>
               </view>
-              <view class="tabs-item-bar"></view>
+              <!-- <view class="tabs-item-bar"></view> -->
+            </view>
+            <view class="tabs-item" :class="{ 'actived': coinType == 'NFT' }" @click="coinType = 'NFT'">
+              <view class="tabs-item-text">
+                <text>NFT</text>
+              </view>
+              <!-- <view class="tabs-item-bar"></view> -->
             </view>
           </view>
           <view class="tabs-right">
@@ -544,7 +550,8 @@ export default {
     visibaleTokenList() {
       const type = {
         'token': 'SNIP20',
-        'default': 'NFT'
+        'NFT': 'NFT',
+        'default': ''
       }
       let result = this.coinType === 'All' ? this.tokenList : this.tokenList.filter(item => type[item.apply_type ||
           'default'] === this.coinType)
@@ -1018,7 +1025,14 @@ export default {
     display: flex;
     justify-content: space-between;
     
+    .tabs-item {
+     &:not(:first-child) {
+       margin-left: 20rpx;
+     } 
+    }
+    
     .tabs {
+      display: flex;
       .actived {
         font-family: PingFangSC-S0pxibold;
         font-weight: 600;

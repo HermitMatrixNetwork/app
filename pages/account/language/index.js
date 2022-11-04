@@ -191,7 +191,7 @@ const languages = {
     'text164': '首页资产管理',
     'text165': '輸入合約地址查詢',
     'text166': '热门资产',
-    'text167': '提示：添加成功！',
+    'text167': '添加成功！',
     'text168': '支持所有 Hermit Matrix Network 代币',
     'text169': '请输入代币合约地址进行搜索',
     'text170': '取消',
@@ -281,7 +281,14 @@ const languages = {
     text254: '添加代币成功！',
     text255: '暂无代币',
     text256: '未查询到合约信息，请检查合约地址是否正确！',
-    text257: '删除'
+    text257: '删除',
+    text258: '添加NFT',
+    text259: '自定义添加',
+    text260: 'NFT列表',
+    text261: '代币合约',
+    text262: '请输入代币合约地址',
+    text263: '添加',
+    text264: '搜索结果'
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -472,7 +479,7 @@ const languages = {
     'text164': '首頁資產管理',
     'text165': '輸入合約地址查詢',
     'text166': '熱門資產',
-    'text167': '提示：添加成功！',
+    'text167': '添加成功！',
     'text168': '支持所有 Hermit Matrix Network 代幣',
     'text169': '請輸入代幣合約地址進行搜索',
     'text170': '取消',
@@ -563,7 +570,14 @@ const languages = {
     text254: '添加代幣成功！',
     text255: '暫無代幣',
     text256: '未查詢到合約信息，請檢查合約地址是否正確！',
-    text257: '刪除'
+    text257: '刪除',
+    text258: '添加NFT',
+    text259: '自定義添加',
+    text260: 'NFT列表',
+    text261: '代幣合約',
+    text262: '請輸入代幣合約地址',
+    text263: '添加',
+    text264: '搜索結果'
   },
   EN: {
     Mywallet: 'My Wallet',
@@ -755,7 +769,7 @@ const languages = {
     'text164': 'Home Asset Management',
     'text165': 'Enter the contract address query',
     'text166': 'Popular Assets',
-    'text167': ':Successfully added!',
+    'text167': 'Successfully added!',
     'text168': 'Support all Hermit Matix network tokens',
     'text169': 'Enter the contract address query',
     'text170': 'Cancel',
@@ -846,7 +860,14 @@ const languages = {
     text254: 'Token added successfully',
     text255: 'No token Yet',
     text256: 'No contract information is found, please check whether the contract address is correct!',
-    text257: 'Delete'
+    text257: 'Delete',
+    text258: 'Add NFT',
+    text259: 'Custom Add',
+    text260: 'NFT List',
+    text261: 'Token Contract',
+    text262: 'Please enter the token contract address',
+    text263: 'Add',
+    text264: 'Search Results'
   }
 }
 export default languages

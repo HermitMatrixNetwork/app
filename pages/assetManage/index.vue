@@ -20,6 +20,13 @@
       <image src="/static/img/ic-arrow1.png"></image>
     </view>
     <view class="space" />
+    <view class="home-assets" data-url="/pages/assetManage/nftToken" @click="goTo">
+      <view class="title">
+        {{language.text258}}
+      </view>
+      <image src="/static/img/ic-arrow1.png"></image>
+    </view>
+    <view class="space" />
     <view class="hot-asset">
       <view class="title">{{language.text166}}</view>
     </view>
