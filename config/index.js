@@ -36,7 +36,7 @@ const MINERS_GAS = 20000
 const DEFAULT_RPC = {
   name: 'ghm-testnet',
   chainId: 'ghm-testnet',
-  link: 'http://167.179.118.118:9091'
+  link: 'https://rpc.hermit.network:9191'
 }
 
 const getCurrentRpc = () => {
