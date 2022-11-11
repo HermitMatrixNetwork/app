@@ -786,6 +786,7 @@ export default {
 				if (newValue.token.alias_name == mainCoin.alias_name) {
 					sendAmount = sendAmount * mainCoin.decimals
 					try {
+
 						res = await SendTokentoOtherAddress(userAddress, receiveAddress, sendAmount, memo, gas,
 							gasPrice)
 					} catch (e) {

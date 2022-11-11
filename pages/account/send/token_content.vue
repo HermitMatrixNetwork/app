@@ -256,6 +256,9 @@ export default {
     }
   },
   async onLoad(options) {
+	console.log(options.sendToken);
+	console.log(JSON.parse(options.sendToken));
+	console.log(1);
     let obj = options.sendToken ? JSON.parse(options.sendToken) : false
     console.log('获取的数据', obj)
     this.sendbtnLoading = !!obj
@@ -327,6 +330,7 @@ export default {
     this.unboundingBlanceLoading = true
     this.lockAmountLoading = true
     this.loadingBalace = true
+	
     if (this.$cache.get('_tokenContent_unBoundingBalance_data') !== undefined) {
       this.unBoundingBalance = this.$cache.get('_tokenContent_unBoundingBalance_data')
     } else {
@@ -362,6 +366,9 @@ export default {
     //   })
     // }
     this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == this.token.ID)
+	if(!this.token){
+		return
+	}
     if (this.$cache.get('_tokenContent_locakAmount_data') !== undefined) {
       this.lockAmount = this.$cache.get('_tokenContent_locakAmount_data')
     } else {
@@ -372,7 +379,7 @@ export default {
     } else {
       this.unBoundingBalance = null
     }
-    if (this.$cache.get('_tokenContent_balance_data') !== undefined) {
+    if (this.$cache.get('_tokenContent_balance_data')) {
       this.token.balance = this.$cache.get('_tokenContent_balance_data')
     } else {
       this.token.balance = null

@@ -42,7 +42,6 @@
             this.$cache.set('_appInit', 0, 0)
             let _appInit = this.$cache.get('_appInit')
 
-
             // #ifdef APP-PLUS
             if (this.$cache.get('_currentWallet') == null) { // 本地缓存没有钱包（直接进入首页）
                 console.log('本地缓存没有钱包（直接进入首页）')
@@ -64,15 +63,16 @@
                         plus.navigator.closeSplashscreen()
                     }
                 })
-            } else if (_appInit !== 1) { // 本地缓存有钱包 且没有开启指纹锁
+            // } else if (_appInit !== 1) { // 本地缓存有钱包 且没有开启指纹锁
+            } else { // 本地缓存有钱包 且没有开启指纹锁
                 console.log('本地缓存有钱包 且没有开启指纹锁')
                 this.$cache.set('_testmsg', '本地缓存有钱包 且没有开启指纹锁', 0)
-                // uni.reLaunch({
-                //   url: '/pages/account/index',
-                //   success: () => {
-                //     plus.navigator.closeSplashscreen()
-                //   }
-                // })
+                uni.reLaunch({
+                  url: '/pages/account/index',
+                  success: () => {
+                    plus.navigator.closeSplashscreen()
+                  }
+                })
             }
             // #endif
 
@@ -81,7 +81,6 @@
             uni.hideTabBar({
                 animation: false
             })
-
             // #ifdef APP-PLUS
             if (this.$cache.get('_appInit') == 1) {
                 // 从后台唤起
@@ -111,7 +110,7 @@
                     uni.navigateTo({
                         url: '/pages/mine/anquan/backgroundVerify',
                         animationType: 'none',
-                        success: () => {
+                        complete: () => {
                             plus.navigator.closeSplashscreen()
                         }
                     })

@@ -6,22 +6,24 @@ import mainCoin from '@/config/index.js'
 import {
 	getCurrentRpc
 } from '@/config/index.js'
+import async from 'pbkdf2/lib/async'
 
 let walletMap = {}
 let queue = 0
 //获取secret
 export function getSecretUt(wallet, address, rpc) {
-	return new Promise((reslove, reject) => {
+	return new Promise(async (reslove, reject) => {
 		if (!(address in walletMap)) {
 			walletMap[address] = {}
 		}
 		if (rpc == walletMap[address].rpc) {
 			reslove(walletMap[address].Secret)
+			return;
 		}
 		if (!walletMap[address].wallet) {
 			let Wallet = new secretjs.Wallet()
 			wallet.privateKey = WalletCrpto.StringToUint(WalletCrpto.decode(wallet.privateKey64))
-			wallet.publicKey = WalletCrpto.getPublickey(wallet.privateKey)
+			wallet.publicKey = await WalletCrpto.getPublickey(wallet.privateKey)
 			wallet.getAccounts = Wallet.getAccounts.bind(wallet)
 			wallet.signAmino = Wallet.signAmino.bind(wallet)
 			wallet.signDirect = Wallet.signDirect.bind(wallet)
