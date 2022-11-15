@@ -176,7 +176,12 @@ export default {
   },
   onLoad (options) {
     if (this.touchId) this.verifyMethod = 'touchID'
-    this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
+    
+    if (options.tokenID) {
+      this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
+    } else if (options.symbol) {
+      this.token = this.$cache.get('_currentWallet').coinList.find(item => item.alias_name == options.symbol)
+    }
     Object.assign(this.formData, this.token)
     if (!this.token.view_key) {
       this.formData.view_key = getRamNumber()
@@ -296,15 +301,26 @@ export default {
         this.token.showWarn = false
         const wallet = this.$cache.get('_currentWallet')
         const coinList = wallet.coinList
-        const coinIndex = coinList.findIndex(item => item.ID == this.token.ID)
+        let coinIndex
+        if (this.token.symbol) {
+          coinIndex = coinList.findIndex(item => item.alias_name == this.token.symbol)
+        } else {
+          coinIndex = coinList.findIndex(item => item.ID == this.token.ID)          
+        }
         coinList.splice(coinIndex, 1, this.token)
         wallet.coinList = coinList
         this.$cache.set('_currentWallet', wallet, 0)
         this.updateWalletList(wallet)
         setTimeout(() => {
-          uni.reLaunch({
-            url: `/pages/account/send/token_content_other?tokenID=${this.token.ID}`
-          })
+          if (this.token.apply_type == 'NFT') {
+            uni.reLaunch({
+              url: `/pages/account/NFT-list?symbol=${this.token.symbol}`
+            })
+          } else {
+            uni.reLaunch({
+              url: `/pages/account/send/token_content_other?tokenID=${this.token.ID}`
+            })            
+          }
         }, 3000)
       } else {
         this.verifyTouchID = 3
@@ -324,6 +340,8 @@ export default {
           // this.feeLoading = true
           this.btnLoading = true
         }
+        
+        this.formData.address = this.$cache.get('_currentWallet').address
         this.callSimulate = JSON.parse(JSON.stringify(this.formData))
         // this.submitPopupIsShow = true
       }
@@ -364,6 +382,7 @@ export default {
     },
     getMinimumGas () {
       this.$cache.set('_minimumGas', 0, 0)
+      this.formData.address = this.$cache.get('_currentWallet').address
       const data = JSON.parse(JSON.stringify(this.formData))
       this.callSimulate = {}
       this.$nextTick(() => {
@@ -388,6 +407,7 @@ export default {
 <script lang="renderjs" module="render">
   import {
     setViewKey,
+    set721ViewKey,
     getSecret
   } from '@/utils/secretjs/SDK.js'
   import renderUtils from '@/utils/render.base.js'
@@ -399,7 +419,11 @@ export default {
         if (data == 0) return
         let res = {}
         try {
-          res = await setViewKey(data, data.gas, data.gasPrice)
+          if (data.apply_type == 'NFT') {
+            res = await set721ViewKey(data, data.gas, data.gasPrice)
+          } else {
+            res = await setViewKey(data, data.gas, data.gasPrice)
+          }
         } catch (e) {
           console.log(res, e)
           res.code = 7
@@ -409,14 +433,16 @@ export default {
       async simulateFee(val) {
         if (!val.address) return
         let res = {}
-        let codeHash
+        let codeHash = val.codeHash
         const Secret = await getSecret()
-        
         try {
           if (!val.codeHash) {
-            codeHash = await Secret.query.snip20.contractCodeHash(val.contract_address)
+            if (val.apply_type == 'NFT') {
+              codeHash = await Secret.query.snip721.contractCodeHash(val.contract_address)
+            } else {
+              codeHash = await Secret.query.snip20.contractCodeHash(val.contract_address)
+            }
           }
-
           const msgExecuteContract = new secretjs.MsgExecuteContract({
             sender: val.address,
             contractAddress: val.contract_address,
@@ -431,7 +457,7 @@ export default {
           let gas = Math.ceil(res.gasInfo.gasUsed * 1.15)
           renderUtils.runMethod(this._$id, 'handlerGas', gas, this)
         } catch (e) {
-          console.log(e);
+          console.log('e', e);
           res.code = 7
 					renderUtils.runMethod(this._$id, 'gasError', e, this) //错误调用gasError方法
         }

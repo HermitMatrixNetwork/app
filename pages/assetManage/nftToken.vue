@@ -46,6 +46,17 @@ export default {
   },
   async created() {
     const res = await http.get('https://raw.githubusercontent.com/HermitMatrixNetwork/NonFungibleToken-list/main/NFTlist.json')
+    // uni.request({
+    //   url: 'https://raw.githubusercontent.com/HermitMatrixNetwork/NonFungibleToken-list/main/NFTlist.json',
+    //   method: 'GET',
+    //   success: (res) => {
+    //     console.log(res)
+    //   },
+    //   fail: (err) => {
+    //     console.log(err)
+    //   }
+    // })
+    console.log(res)
     const list = res.data.tokens.map(item => {
       return Object.assign(item, {
         'alias_name': item.symbol,

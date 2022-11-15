@@ -119,7 +119,26 @@ export default {
       // this.callGetContractInfo = this.contract
     },
     handlerContractInfo(res) {
-      console.log('res', res)
+      if (res.code == 7) {
+        this.$refs.notify.show('error', this.language.text250)
+        this.adding = false
+      } else {
+        this.token = {
+          'full_name': res.ContractInfo.label,
+          'alias_name': res.ContractInfo.label,
+          'contract_address': res.address,
+          'apply_type': 'NFT',
+          logo: '/static/img/account/nologo.jpg',
+          address: res.address,
+          symbol: res.ContractInfo.label,
+          desc: '',
+          view_key: '',
+          loadingBalance: true
+          // moreInfo to ask
+        }
+        this.show = true
+        this.adding = false
+      }
     },
     confirm() {
       const eventChannel = this.getOpenerEventChannel()

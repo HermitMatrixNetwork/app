@@ -136,8 +136,8 @@ export default {
       }
     },
     handlerContractInfo(res) {
-      // console.log(res)
-      if (res.code == 7) {
+      console.log(res)
+      if (res.code == 7 || !res.token_info) {
         this.tokenSymbol = ''
         this.decimals = ''
       } else {

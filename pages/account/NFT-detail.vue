@@ -1,45 +1,64 @@
 <template>
-	<view>
-		<custom-header :title="'NFT详情'"></custom-header>
+	<view class="page-wrapper">
+		<custom-header :title="language.text265"></custom-header>
 		<view class="main">
 			<view class="nft-icon">
-				<image src="../../static/icon/update_logo.png" mode=""></image>
+				<image :src="token.logo" mode=""></image>
 			</view>
 
 			<view class="nft-describe">
 				<view class="title">
-					Forever Fomo Duck Squad
+					{{ NFT.full_name }}
 				</view>
-				<text class="id">#1296</text>
+				<text class="id">#{{ token.id }}</text>
 			</view>
 
 			<view class="nft-introduce">
 				<view class="introduce">
-					介绍
+					{{ language.text271 }}
 				</view>
 				<view class="content">
-					Forever FOMO Duck Squad is the genesis collection of NFTs for Highstreet World,made of 7,500
-					procedurally generated (and 500 celebrity-inspired) FOMO duck designed to have continuing utility
-					within our metaverse
+					{{ NFT.desc}}
 				</view>
 			</view>
+      
+      <u-button class="btn" @click="toSend">{{ language.text03 }}</u-button>
 		</view>
 	</view>
 </template>
 
 <script>
+import language from './language/index.js'
 export default {
   data() {
     return {
-
+      language: language[this.$cache.get('_language')],
+      NFT: {},
+      token: {}
+    }
+  },
+  onLoad(options) {
+    this.NFT = this.$cache.get('_currentWallet').coinList.find(item => item.symbol == options.symbol)
+    this.token = this.NFT.tokenList.find(item => item.id == options.id)
+    console.log(this.token)
+  },
+  methods: {
+    toSend() {
+      uni.navigateTo({
+        url: `./NFT-send?symbol=${this.NFT.symbol}&id=${this.token.id}`
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .page-wrapper {
+    padding-top: calc(112rpx + var(--status-bar-height));
+    height: 100vh;
+  }
 	.main {
-		padding-top: 112rpx;
+		// padding-top: 112rpx;
 		// background: red;
 	}
 
@@ -96,4 +115,15 @@ export default {
 			line-height: 28rpx;
 		}
 	}
+  
+  .btn {
+    margin: 96rpx 32rpx;
+    width: auto;
+    height: 96rpx;
+    border-radius: 16rpx;
+    background-color: #002FA7 !important;
+    font-weight: 400;
+    font-size: 32rpx;
+    color: #FCFCFD;
+  }
 </style>

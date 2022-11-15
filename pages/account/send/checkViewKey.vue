@@ -35,7 +35,12 @@ export default {
     }
   },
   onLoad(options) {
-    this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
+    if (options.tokenID) {
+      this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
+    } else if (options.symbol) {
+      this.token = this.$cache.get('_currentWallet').coinList.find(item => item.alias_name == options.symbol)
+    }
+    // this.token = this.$cache.get('_currentWallet').coinList.find(item => item.ID == options.tokenID)
     this.view_key = this.token.view_key
   },
   methods: {
@@ -52,9 +57,15 @@ export default {
       })
     },
     toSetViewKey() {
-      uni.redirectTo({
-        url: `/pages/account/send/settingViewKey?tokenID=${this.token.ID}`
-      })
+      if (this.token.apply_type == 'NFT') {
+        uni.redirectTo({
+          url: `/pages/account/send/settingViewKey?symbol=${this.token.symbol}`
+        })
+      } else {
+        uni.redirectTo({
+          url: `/pages/account/send/settingViewKey?tokenID=${this.token.ID}`
+        })        
+      }
     }
   }
 }

@@ -2,8 +2,8 @@
   <view class="list">
     <template v-if="showSwiper">
       <view class="swiper-item">
-        <u-swipe-action>
-          <u-swipe-action-item v-for="(item,index) in list" :key="index" :options="options"
+        <u-swipe-action autoClose>
+          <u-swipe-action-item v-for="(item,index) in list" :key="item.alias_name" :options="options"
             @click="clickSwiper($event, item)">
             <view class="contain">
               <view class="left">

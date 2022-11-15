@@ -80,6 +80,7 @@ export default {
     }
   },
   onHide() {
+    console.log('onhide')
     this.$refs.custom_update.reset()
   },
   onShow() {
@@ -92,7 +93,11 @@ export default {
     } else {
       uni.reLaunch({
         url: '/pages/account/index',
-        success: () => {
+        complete: () => {
+          // console.log('relaunch')
+          // uni.showToast({
+          //   title: 'relaunch'
+          // })
           plus.navigator.closeSplashscreen()
         }
       })

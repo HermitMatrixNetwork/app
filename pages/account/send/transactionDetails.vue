@@ -1,6 +1,6 @@
 <template>
   <view class="transacTionDestail">
-    <custom-header :tabUrl="redirectUrl" :title="language.text82"></custom-header>
+    <custom-header :tabUrl="redirectUrl" :title="language.text82" :step="step"></custom-header>
     <view class="transacTionMain">
       <view class="main_status">
         <image :src="statusIcon" />
@@ -39,9 +39,29 @@ export default {
       loading: true,
       language: language[this.$cache.get('_language')],
       redirectUrl: '',
+      from: '',
+      step: 1
+    }
+  },
+  onBackPress(event) {
+    if (event.from === 'backbutton') {
+      if (this.redirectUrl) {
+        uni.redirectTo({
+          url: this.redirectUrl
+        })
+      } else {
+        uni.navigateBack({
+          delta: this.step
+        })
+      }
+      return true
     }
   },
   onLoad(options) {
+    this.from = options.from
+    if (this.from == 'NFT') {
+      this.step = 2
+    }
     let data = JSON.parse(options.data)
     if(data.type == 'fail'){
       this.formatFailData(data)
@@ -139,13 +159,25 @@ export default {
         res.rawLog.replace(/"contract_address","value":"([0-9a-z]*)/, (match, p1) => {
           res.contract_address = p1
         })
-        this.transactionMessage = {
-          [this.language.text84]: '0.00 GHM',
-          [this.language.text111]: res.fee,
-          [this.language.text86]: res.contract_address, // 收款地址
-          [this.language.text87]: this.$cache.get('_currentWallet').address, // 付款地址
-          'Memo': res.tx.body.memo,
+        if (this.from == 'NFT') {
+          this.transactionMessage = {
+            [this.language.text84]: '0.00 GHM',
+            [this.language.text111]: res.fee,
+            [this.language.text80]: res.contract_address, // 收款地址
+            [this.language.text276]: this.$cache.get('_currentWallet').address, // 发起地址
+            'Method': typeUrl.split('.').slice(-1)[0],
+            [this.language.text239]: res.height
+          }
+        } else {
+          this.transactionMessage = {
+            [this.language.text84]: '0.00 GHM',
+            [this.language.text111]: res.fee,
+            [this.language.text86]: res.contract_address, // 收款地址
+            [this.language.text87]: this.$cache.get('_currentWallet').address, // 付款地址
+            'Memo': res.tx.body.memo,
+          }
         }
+
       } else if (typeUrl.includes('MsgUndelegate')) {
         let automaticRewardCollection
         res.jsonLog[0].events.find(item => {

@@ -3,7 +3,9 @@ import WalletCrpto from '@/utils/walletCrypto.js'
 import secretjs from './index.js'
 import mainCoin from '@/config/index.js'
 
-import { getCurrentRpc } from '@/config/index.js'
+import {
+  getCurrentRpc
+} from '@/config/index.js'
 // window.secretjs = secretjs
 let Secret
 let oldRpc = getCurrentRpc()
@@ -14,7 +16,7 @@ export async function getSecret() {
   //#ifdef APP-PLUS
   wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
   //#endif
-  
+
   //#ifndef APP-PLUS
   wallet = uni.getStorageSync('_currentWallet').data
   //#endif
@@ -221,26 +223,58 @@ export async function setViewKey(data, gas, gasPrice) {
   if (!data.codeHash) {
     codeHash = await Secret.query.snip20.contractCodeHash(data.contract_address)
   }
-  const result = await Secret.tx.snip20.setViewingKey(
-    {
-      sender: data.address,
-      contractAddress: data.contract_address,
-      codeHash,
-      msg: { set_viewing_key: { key: data.view_key } }
+  const result = await Secret.tx.snip20.setViewingKey({
+    sender: data.address,
+    contractAddress: data.contract_address,
+    codeHash,
+    msg: {
+      set_viewing_key: {
+        key: data.view_key
+      }
     }
-    , {
-      gasPriceInFeeDenom: gasPrice,
-      feeDenom: 'ughm',
-      gasLimit: gas
-    })
+  }, {
+    gasPriceInFeeDenom: gasPrice,
+    feeDenom: 'ughm',
+    gasLimit: gas
+  })
   return result
 }
 
+export async function set721ViewKey(data, gas, gasPrice) {
+  let Secret = await getSecret()
+  let codeHash = data.codeHash
+  if (!data.codeHash) {
+    codeHash = await Secret.query.snip721.contractCodeHash(data.contract_address)
+  }
+  const result = await Secret.tx.snip721.setViewingKey({
+    sender: data.address,
+    contractAddress: data.contract_address,
+    codeHash,
+    msg: {
+      set_viewing_key: {
+        key: data.view_key
+      }
+    }
+  }, {
+    gasPriceInFeeDenom: gasPrice,
+    feeDenom: 'ughm',
+    gasLimit: gas
+  })
+  return result
+}
 
 export async function getOtherBalance(data, client) {
   // console.log('getOtherBalance', client);
   let Secret = client ? client : await getSecret()
   const result = await Secret.query.snip20.getBalance(data)
+  return result
+}
+
+export async function get721TokenBlance(data, client) {
+  // console.log('getOtherBalance', client);
+  let Secret = client ? client : await getSecret()
+  const result = await Secret.query.snip721.getBalance(data)
+  console.log('get721TokenBlance result', result)
   return result
 }
 
@@ -270,7 +304,7 @@ export async function getOtherTransationHistory(data, pagination, token, client)
     ...data,
     page: pagination.page - 1,
     page_size: pagination.page_size
-    
+
   })
   return result
 }
@@ -279,6 +313,13 @@ export const getTokenDecimals = async (data, client) => {
   // console.log('getTokenDecimals', client);
   let Secret = client ? client : await getSecret()
   const result = await Secret.query.snip20.getSnip20Params(data)
+  return result
+}
+
+export const get721TokenDecimals = async (data, client) => {
+  // console.log('getTokenDecimals', client);
+  let Secret = client ? client : await getSecret()
+  const result = await Secret.query.snip721.getSnip20Params(data)
   return result
 }
 
@@ -297,13 +338,16 @@ export const transferOtherToken = async (data, memo = '', gas, gasPrice, client)
 // 根据指定验证器查相应信息
 export const getDelegatorHistory = async (data) => {
   let Secret = await getSecret()
-  const result = await Secret.query.txsQuery(`message.sender='${Secret.wallet.address}' AND delegate.validator='ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl'`)
+  const result = await Secret.query.txsQuery(
+    `message.sender='${Secret.wallet.address}' AND delegate.validator='ghmvaloper15v4z6h7wjcrdx0pygxyvk3naaupgk6a6e5rtrl'`
+  )
   // console.log(result)
 }
 
 export const alla = async (data) => {
   let Secret = await getSecret()
-  const result = await Secret.query.txsQuery(`message.sender='${Secret.wallet.address}' AND message.module='staking'`)
+  const result = await Secret.query.txsQuery(
+    `message.sender='${Secret.wallet.address}' AND message.module='staking'`)
   // console.log(result)
 }
 
@@ -341,23 +385,23 @@ export const getWithdrawAddress = async (address) => {
   const result = await Secret.query.distribution.delegatorWithdrawAddress({
     delegatorAddress: address
   })
-  
+
   return result
 }
 
 export const getMainCoinBalance = async (address, client) => {
   // console.log('getMainCoinBalance', client);
   let Secret = client ? client : await getSecret()
-  
+
   const result = await Secret.query.bank.balance({
     address,
     denom: 'ughm'
   })
-  
+
   let balance = result.balance.amount
-  
+
   balance = balance / mainCoin.decimals
-  
+
   return balance
 }
 
@@ -367,16 +411,113 @@ export const queryContract = async (contractAddress) => {
   const result = await Secret.query.compute.queryContract({
     contractAddress,
     codeHash,
-    query: { token_info: {} }
+    query: {
+      token_info: {}
+    }
   })
   return result
 }
 
 export const querySnip721Contract = async (contractAddress) => {
   let Secret = await getSecret()
-  const result = await Secret.query.snip721.contractInfo({
-    contractAddress,
-    query: { token_info: {} }
-  })
+  console.log(contractAddress)
+  const result = await Secret.query.snip721.contractInfo(contractAddress)
   return result
+}
+
+export const getOwnedTokens = async (address, data) => {
+  let Secret = await getSecret()
+  let tokens
+  // console.log('contract address', data.contract_address)
+  // console.log('wallet address', address)
+  try {
+    tokens = await Secret.query.snip721.GetOwnedTokens({
+      contract: {
+        address: data.contract_address,
+        codeHash: data.codeHash
+      },
+      owner: address,
+      auth: {
+        viewer: {
+          viewing_key: data.view_key,
+          address: address
+        }
+      },
+    })
+  } catch (e) {
+    console.log('e', e)
+  }
+  return tokens
+}
+
+export const get721codeHash = async (address) => {
+  let Secret = await getSecret()
+  const res = await Secret.query.snip721.contractCodeHash(address)
+  return res
+}
+
+export const getTokenInfo = async (data, id, address) => {
+  let Secret = await getSecret()
+  if (!data.codeHash) {
+    data.codeHash = await get721codeHash(data.address)
+  }
+  const res = await Secret.query.snip721.GetTokenInfo({
+    auth: {
+      viewer: {
+        address: address,
+        viewing_key: data.view_key
+      }
+    },
+    contract: {
+      address: data.contract_address,
+      codeHash: data.codeHash
+    },
+    token_id: id
+  })
+  return res
+}
+
+export const sendNFT = async (data) => {
+  let Secret = await getSecret()
+  if (!data.token.codeHash) {
+    data.token.codeHash = await get721codeHash(data.token.contract_address)
+  }
+  const txExec = await Secret.tx.compute.executeContract({
+    sender: data.userAddress,
+    contractAddress: data.token.contract_address,
+    codeHash: data.token.codeHash,
+    msg: {
+      'transfer_nft': {
+        'recipient': data.receiveAddress,
+        'token_id': data.id,
+      }
+    },
+  }, {
+    gasPriceInFeeDenom: data.gasPrice,
+    feeDenom: 'ughm',
+    gasLimit: data.gas
+  }, )
+
+  return txExec
+}
+
+export const query721record = async (data) => {
+  let Secret = await getSecret()
+  if (!data.token.codeHash) {
+    data.token.codeHash = await get721codeHash(data.token.contract_address)
+  }
+  const res = await Secret.query.compute.queryContract({
+    codeHash: data.token.codeHash,
+    contractAddress: data.token.contract_address,
+    query: {
+      transaction_history: {
+        address: data.address,
+        viewing_key: data.token.view_key,
+        // page: page, // (可选)
+        // page_size: page_size,  // (可选)
+      }
+    }
+  })
+  
+  return res
 }

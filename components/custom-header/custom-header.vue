@@ -53,7 +53,10 @@ export default {
       default: ''
     },
     delay: Number,
-    delayHandler: Function
+    delayHandler: Function,
+    step: {
+      default: 1
+    }
   },
   data() {
     return {
@@ -87,7 +90,9 @@ export default {
           url: this.relaunchUrl
         })
       } else {
-        uni.navigateBack()
+        uni.navigateBack({
+          delta: this.step || 1
+        })
       }
     }
   }

@@ -288,7 +288,23 @@ const languages = {
     text261: '代币合约',
     text262: '请输入代币合约地址',
     text263: '添加',
-    text264: '搜索结果'
+    text264: '搜索结果',
+    text265: 'NFT详情',
+    text266: '交易记录',
+    text267: '展开',
+    text268: '收起',
+    text269: '查看或设置viewkey',
+    text270: '我的NFT',
+    text271: '介绍',
+    text272: '收款账户',
+    text273: '扫一扫输入或粘贴钱包地址',
+    text274: '调用合约',
+    text275: '发送内容',
+    text276: '发起地址',
+    text277: '暂无资产',
+    text278: '暂无交易记录！',
+    text279: '地址',
+    text280: '数量'
   },
   CT: {
     Mywallet: '我的錢包 ',
@@ -577,7 +593,23 @@ const languages = {
     text261: '代幣合約',
     text262: '請輸入代幣合約地址',
     text263: '添加',
-    text264: '搜索結果'
+    text264: '搜索結果',
+    text265: 'NFT詳情',
+    text266: '交易記錄',
+    text267: '展開',
+    text268: '收起',
+    text269: '查看或設置viewkey',
+    text270: '我的NFT',
+    text271: '介紹',
+    text272: '收款賬戶',
+    text273: '掃一掃輸入或粘貼錢包地址',
+    text274: '調用合約',
+    text275: '發送內容',
+    text276: '發起地址',
+    text277: '暫無資產',
+    text278: '暫無交易記錄！',
+    text279: '地址',
+    text280: '數量'
   },
   EN: {
     Mywallet: 'My Wallet',
@@ -867,7 +899,24 @@ const languages = {
     text261: 'Token Contract',
     text262: 'Please enter the token contract address',
     text263: 'Add',
-    text264: 'Search Results'
+    text264: 'Search Results',
+    text265: 'NFT Details',
+    text266: 'Transaction Record',
+    text267: 'spread',
+    text268: 'Stow',
+    text269: 'View or set viewkey',
+    text270: 'My NFT',
+    text271: 'Introduce',
+    text272: 'Collection Account',
+    text273: 'Scan to enter or paste the wallet address',
+    text274: 'Call Contract',
+    text275: 'Send Content',
+    text276: 'Originating Dddress',
+    text277: 'No Assets',
+    text278: 'no trading record yet!',
+    text279: 'Address',
+    text280: 'Quantity'
+    
   }
 }
 export default languages

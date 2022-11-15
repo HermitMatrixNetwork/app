@@ -8,7 +8,7 @@
       </view>
       <u-list class="content" height="1080rpx">
         <view class="item" v-for="(wallet, index) in walletList" :key="index"
-          :class="{ selected: index == 0 }" @click="close($event, index)">
+          :class="{ selected: wallet.address == currentWallet.address }" @click="close($event, index, wallet)">
           <view class="item-left">
             <view class="item-left-name">{{ wallet.name }}</view>
             <view class="item-left-address" style="display: flex; align-items: center;">
@@ -52,7 +52,12 @@ export default {
       language: language[this.$cache.get('_language')],
       walletList: this.$cache.get('_walletList'),
       showAddWallet: false,
+      currentWallet: this.$cache.get('_currentWallet')
     }
+  },
+  onShow() {
+    this.walletList = this.$cache.get('_walletList')
+    this.currentWallet = this.$cache.get('_currentWallet')
   },
   filters: {
     formatAddress(val) {
@@ -60,14 +65,14 @@ export default {
     }
   },
   methods: {
-    close(event, index) {
-      if (index > 0) {
-        const walletList = this.walletList
-        const currentWallet = walletList[index]
-        this.$cache.set('_currentWallet', currentWallet, 0)
-        walletList.splice(index, 1)
-        walletList.unshift(currentWallet)
-        this.$cache.set('_walletList', walletList, 0)
+    close(event, index, wallet) {
+      if (wallet && this.currentWallet.address !== wallet.address) {
+        // const walletList = this.walletList
+        const currentWallet = wallet
+        this.$cache.set('_currentWallet', wallet, 0)
+        this.$nextTick(() => {
+          this.currentWallet = wallet
+        })
         this.$emit('close', true)
       } else {
         this.$emit('close')
