@@ -10,6 +10,27 @@ import {
 let Secret
 let oldRpc = getCurrentRpc()
 let tempWallet = null
+
+export function getMsgObj(key,params){
+  return new secretjs[key](params)
+}
+
+export function getOptions() {
+  let wallet = {}
+  //#ifdef APP-PLUS
+  wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
+  //#endif
+  //#ifndef APP-PLUS
+  wallet = uni.getStorageSync('_currentWallet').data
+  //#endif
+
+  return {
+    chainId: 'ghm-testnet',
+    grpcWebUrl: getCurrentRpc(),
+    walletAddress: wallet.address
+  }
+}
+
 //获取secret
 export async function getSecret() {
   let wallet = {}
@@ -518,6 +539,6 @@ export const query721record = async (data) => {
       }
     }
   })
-  
+
   return res
 }
