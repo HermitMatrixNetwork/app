@@ -165,7 +165,7 @@ export default {
             [this.language.text111]: res.fee,
             [this.language.text80]: res.contract_address, // 收款地址
             [this.language.text276]: this.$cache.get('_currentWallet').address, // 发起地址
-            'Method': typeUrl.split('.').slice(-1)[0],
+            'Method': 'transfer',
             [this.language.text239]: res.height
           }
         } else {

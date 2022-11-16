@@ -102,11 +102,13 @@ export default {
     
       if (walletIndex > -1) {
     
-        walletList.splice(walletIndex, 1)
+        walletList.splice(walletIndex, 1, wallet)
     
+      } else {
+        walletList.unshift(wallet)
+        
       }
     
-      walletList.unshift(wallet)
     
       this.$cache.set('_walletList', walletList, 0)
     

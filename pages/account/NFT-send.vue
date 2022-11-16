@@ -352,6 +352,7 @@ export default {
         this.loading = true
 
         // @todo 执行发送逻辑
+        this.callSend = JSON.parse(JSON.stringify(this.sendFormData))
       })
     },
     handlerSend(res) {
@@ -386,9 +387,10 @@ export default {
       if (!wallet) return false
       const walletIndex = walletList.findIndex(item => item.address === wallet.address)
       if (walletIndex > -1) {
-        walletList.splice(walletIndex, 1)
+        walletList.splice(walletIndex, 1, wallet)
+      } else {
+        walletList.unshift(wallet)
       }
-      walletList.unshift(wallet)
       this.$cache.set('_walletList', walletList, 0)
       return true
     },

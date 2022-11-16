@@ -84,7 +84,8 @@
                     </view>
                     <view class="real-money">
                       <text class="rate">$</text>
-                      <text class="money">0.00</text>
+                      <!-- <text class="money">0.00</text> -->
+                      <text class="money">{{ record.amount.slice(0, -3) }}</text>
                     </view>
                   </view>
                 </view>

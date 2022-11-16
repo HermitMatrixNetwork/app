@@ -256,8 +256,10 @@ export default {
         this.searchEmpty = false
       } else if (reg.test(val)) {
         this.searchEmpty = false
+        let target = this.searchVal
+        this.searchVal = ''
         uni.navigateTo({
-          url: `./webview?jumpUrl=${this.searchVal}&name=`
+          url: `./webview?jumpUrl=${target}&name=`
         })
       } else {
         this.searchEmpty = true

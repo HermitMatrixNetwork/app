@@ -114,6 +114,10 @@ export default {
     deleteItem(contract) {
       this.list = this.list.filter(item => item.contract_address !== contract)
       let currentWallet = this.$cache.get('_currentWallet')
+      currentWallet.coinList = currentWallet.coinList.filter(item => {
+        return item.contract_address !== contract
+      })
+      this.tokenList = currentWallet.coinList
       currentWallet['_nft_tokens_list'] = this.list
       this.$cache.set('_currentWallet', currentWallet, 0)
       this.updateWalletList(currentWallet)
@@ -133,11 +137,12 @@ export default {
     
       if (walletIndex > -1) {
     
-        walletList.splice(walletIndex, 1)
+        walletList.splice(walletIndex, 1, wallet)
     
+      } else {
+        walletList.unshift(wallet)
       }
     
-      walletList.unshift(wallet)
     
       this.$cache.set('_walletList', walletList, 0)
     

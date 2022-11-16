@@ -511,9 +511,10 @@ export default {
       if (!wallet) return false
       const walletIndex = walletList.findIndex(item => item.address === wallet.address)
       if (walletIndex > -1) {
-        walletList.splice(walletIndex, 1)
+        walletList.splice(walletIndex, 1, wallet)
+      } else {
+        walletList.unshift(wallet)
       }
-      walletList.unshift(wallet)
       this.$cache.set('_walletList', walletList, 0)
       return true
     },
@@ -522,7 +523,7 @@ export default {
       const wallet = this.$cache.get('_currentWallet')
       wallet.coinList = coinList
       this.$cache.set('_currentWallet', this.currentWallet, 0)
-      // this.updateWalletList(this.currentWallet)
+      this.updateWalletList(this.currentWallet)
     },
     showError(msg) {
       this.$refs.notify.show('error', msg)

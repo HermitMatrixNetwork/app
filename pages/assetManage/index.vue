@@ -116,11 +116,13 @@ export default {
 
       if (walletIndex > -1) {
 
-        walletList.splice(walletIndex, 1)
+        walletList.splice(walletIndex, 1, wallet)
 
+      } else {
+        walletList.unshift(wallet)
+        
       }
 
-      walletList.unshift(wallet)
 
       this.$cache.set('_walletList', walletList, 0)
 
@@ -133,14 +135,14 @@ export default {
     console.log('unload', wallet.address)
     wallet.coinList = this.tokenList
     this.$cache.set('_currentWallet', wallet, 0)
-    // this.updateWalletList(wallet)
+    this.updateWalletList(wallet)
   },
   onHide() {
     const wallet = this.$cache.get('_currentWallet')
     console.log('onhide', wallet.address)
     wallet.coinList = this.tokenList
     this.$cache.set('_currentWallet', wallet, 0)
-    // this.updateWalletList(wallet)
+    this.updateWalletList(wallet)
   },
   onBackPress(event) {
     if (event.from == 'backbutton') {
