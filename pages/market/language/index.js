@@ -26,7 +26,14 @@ export default {
     text24: '隐私网络数据平台，使用户能够查询链上数据或授权数据。',
     text25: '测试水龙头',
     text26: '用于申领Hermit Matrix Network测试网络代币',
-    text27: '搜索不到该应用'
+    text27: '搜索不到该应用',
+	'text42': '转账确认',
+	'text43': '发送账户',
+	'text44': '转账账户',
+	'text45': '转账金额',
+	'text46': '矿工费',
+	'text47': '确认',
+	'text48': '接收账户',
   },
   EN: {
     'text01': 'DAPPs',
@@ -55,7 +62,14 @@ export default {
     text24: 'The Hermit Matrix Network data platform enables users to query on chain data or authorized data.',
     text25: 'Faucet',
     text26: 'Used to claim Hermit Matrix Network test network token',
-    text27: 'Couldn\'t find the app'
+    text27: 'Couldn\'t find the app',
+	'text42': 'Confirm Payment',
+	'text43': 'Sender',
+	'text44': 'Receiver',
+	'text45': 'Amount',
+	'text46': 'Fee',
+	'text47': 'Confirm',
+	'text48': 'Receiver',
   },
   CT: {
     'text01': '應用',
@@ -84,6 +98,13 @@ export default {
     text24: '隱私網絡數據平臺，使用戶能夠查詢鏈上數據或授權數據。',
     text25: '測試水龍頭',
     text26: '用於申領Hermit Matrix Network測試網絡代幣',
-    text27: '搜索不到該應用'
+    text27: '搜索不到該應用',
+	'text42': '轉賬確認',
+	'text43': '發送賬戶',
+	'text44': '轉賬賬戶',
+	'text45': '轉賬金額',
+	'text46': '礦工費',
+	'text47': '確認',
+	'text48': '接收賬戶',
   }
 }
