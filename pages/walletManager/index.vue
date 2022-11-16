@@ -318,9 +318,10 @@ export default {
       this.$cache.delete('_my_totalReward_data')
       this.$cache.delete('_tokenContent_balance_data')
       this.$cache.delete('_account_locakAmount_data')
-      console.log('delete');
+      console.log('delete')
       if (walletList.length > 1) {
-        walletList.shift()
+        const walletIndex = walletList.findIndex(item => item.address === this.wallet.address)
+        walletList.splice(walletIndex, 1)
         this.$cache.set('_currentWallet', walletList[0], 0)
         this.$cache.set('_walletList', walletList, 0)
         url = '/pages/account/index'

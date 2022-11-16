@@ -287,14 +287,41 @@ export default {
       this.statusIcon = '/static/img/chenggong.png'
       
       // this.result.timestamp = this.formatTime(new Date(new Date(res.block_time * 1000).setHours(new Date(res.block_time * 1000).getHours() + 8)))
-      this.result.timestamp = res.timestamp
-      this.transactionMessage = {
-        [this.language.text84]: `${res.type == 'transfer' ? '-' : res.type == 'recipient' ? '+' : ''}${res.amount}`,
-        [this.language.text16]: res.to_address,
-        [this.language.text87]: res.from_address,
-        'Memo': res.memo,
-        [this.language.text239]: res.height
+      if (this.from = 'NFTTx') {
+        const action = res.action
+        this.result.timestamp = this.formatTime(res.block_time * 1000)
+        if (action.transfer) {
+          this.transactionMessage = {
+            [this.language.text84]: '0.00 GHM',
+            [this.language.text43]: action.transfer.from,
+            [this.language.text174]: action.transfer.recipient,
+            'Method': 'transfer',
+            'ID': res.token_id,
+            [this.language.text239]: res.block_height
+          }
+        } else if (action.mint) {
+          this.transactionMessage = {
+            [this.language.text84]: '0.00 GHM',
+            [this.language.text174]: action.mint.recipient,
+            'minter': action.mint.minter,
+            'Method': 'mint',
+            'ID': res.token_id,
+            [this.language.text239]: res.block_height
+          }
+        } else {
+          console.log(action)
+        }
+      } else {
+        this.result.timestamp = res.timestamp
+        this.transactionMessage = {
+          [this.language.text84]: `${res.type == 'transfer' ? '-' : res.type == 'recipient' ? '+' : ''}${res.amount}`,
+          [this.language.text16]: res.to_address,
+          [this.language.text87]: res.from_address,
+          'Memo': res.memo,
+          [this.language.text239]: res.height
+        }
       }
+
       this.loading = false
     },
     formatTime(time) {

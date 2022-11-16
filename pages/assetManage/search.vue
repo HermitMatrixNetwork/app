@@ -163,7 +163,10 @@ export default {
       return true
     },
     async handlerContractInfo(res) {
-      if (res.code == 7) {
+      console.log('handlerContractInfo', res)
+      if (res.parse_err) {
+        
+      } else if (res.code == 7) {
         this.tokenSymbol = ''
         this.decimals = ''
       } else {
@@ -172,8 +175,10 @@ export default {
       }
       this.callGetContractInfo = ''
       try {
+        console.log(this.address)
         const res = (await searchContract(this.address)).data
-        if (res.error) {
+        console.log('searchContract', res)
+        if (res.error || res.result.creator) {
           this.list = []
           this.loading = false
         } else {
@@ -189,8 +194,8 @@ export default {
 
           let result = {
             contract_address: res.result.address,
-            alias_name: this.tokenSymbol,
-            decimals: this.decimals,
+            alias_name: this.tokenSymbol || res.result.label,
+            decimals: this.decimals || 0,
             apply_type: 'SNIP20',
             full_name: res.result.label,
             logo: '/static/img/account/nologo.jpg',

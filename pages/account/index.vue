@@ -122,8 +122,9 @@
               <template #right>
                 <custom-loading v-if="item.loadingBalance"></custom-loading>
                 <view class="coinNumber" v-else>
+                  <view class="number" v-if="item.apply_type == 'NFT'">{{ item.nums || 0 }}</view>
                   <!-- 非主网币 -->
-                  <view class="number" v-if="item.alias_name !== mainCoin.alias_name">
+                  <view class="number" v-else-if="item.alias_name !== mainCoin.alias_name">
                     {{ formatBalance(item.balance) || '0.00' }}
                   </view>
                   <!-- 主网币 -->
@@ -137,7 +138,8 @@
                     <!-- </view> -->
                   </view>
                   <!-- <view class="number" v-else>0.00</view> -->
-                  <view v-if="item.alias_name !== mainCoin.alias_name" class="money">$0.00000</view>
+                  <view v-if="item.apply_type == 'NFT'"></view>
+                  <view v-else-if="item.alias_name !== mainCoin.alias_name" class="money">$0.00000</view>
                   <view v-else class="money">
                     ${{ formatBalance(new decimal(item.balance + '').add(new decimal(lockAmount + '')).add(new decimal(unBoundingBalance + '')).toString()) || '0.000000' }}
                   </view>
@@ -271,6 +273,9 @@ export default {
     })
   },
   onShow() {
+    if (this.$refs.switchWallet) {
+      this.$refs.switchWallet.currentWallet = this.$cache.get('_currentWallet')
+    }
     // if (getApp().globalData.secretClient == null) {
     //   this.initSecretClient = 1
     // } else {
@@ -527,9 +532,16 @@ export default {
         // uni.redirectTo({
         //   url: '/pages/assetManage/index'
         // })
-        uni.navigateTo({
-          url: '/pages/assetManage/index'
-        })
+        if (this.coinType == 'NFT') {
+          uni.navigateTo({
+            url: '/pages/assetManage/nftToken'
+          })
+        } else {
+          uni.navigateTo({
+            url: '/pages/assetManage/index'
+          })
+          
+        }
       })
       this.callBalanceLoading += 1
     },
@@ -580,7 +592,7 @@ export default {
         'NFT': 'NFT',
         'default': ''
       }
-      let result = this.coinType === 'All' ? this.tokenList : this.tokenList.filter(item => type[item.apply_type ||
+      let result = this.coinType === 'All' ? this.tokenList.filter(item => item.apply_type !== 'NFT') : this.tokenList.filter(item => type[item.apply_type ||
           'default'] === this.coinType)
       // if (result.length == 0) {
       //   result = this.tokenList

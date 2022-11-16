@@ -12,7 +12,7 @@
       <view class="line"></view>
       <view class="record-list">
         <scroll-view scroll-y :style="{ height: scrollHeight }">
-          <view class="record" v-for="(item, index) in transationList" :key="index">
+          <view class="record" v-for="(item, index) in transationList" :key="index" @click="toDetail(item)">
             <view class="record-address">
               <view class="address-logo">
                 <image src="/static/img/account/contract.png" ></image>
@@ -32,6 +32,9 @@
         </scroll-view>
       </view>
     </view>
+    <view v-else-if="wrongViewkey">
+      <no-data class="no-data" :tip="language.text08"></no-data>
+    </view>
     <view class="no-data" v-else>
     	<no-data :tip="language.text278" />
     </view>
@@ -45,6 +48,7 @@ export default {
     return {
       language: language[this.$cache.get('_language')],
       token: {},
+      wrongViewkey: false,
       transationList: [],
       loading: true,
       callQuery: {}
@@ -59,6 +63,11 @@ export default {
     this.getSystemStatusHeight()
   },
   methods: {
+    toDetail(item) {
+      uni.navigateTo({
+        url: `./send/transactionDetails?data=${JSON.stringify(item)}&from=NFTTx`
+      })
+    },
     getSystemStatusHeight() {
       uni.getSystemInfo({
         success: res => {
@@ -67,13 +76,13 @@ export default {
       })
     },
     handlerRecord(res) {
-      if (res.code == 7) {
-        this.loading = false
-        return
+      if (res.generic_err) {
+        this.wrongViewkey = true
+      } else if (res.code == 7) {
       } else {
         this.transationList = res.transaction_history.txs
-        this.loading = false
       }
+      this.loading = false
     },
     format(target) {
       const action = target.action
@@ -83,7 +92,7 @@ export default {
       } else if (action.mint) {
         val = action.mint.recipient
       } else {
-        console.log(action)
+        console.log(action) 
         val = ''
       }
       return val.slice(0, 6) + '...' + val.slice(-6)
@@ -128,7 +137,7 @@ export default {
     methods: {
       async queryRecord(val) {
         if (!val.token) return
-        let res
+        let res = {}
         try {
             res = await query721record(val)
         } catch (e) {
@@ -247,5 +256,11 @@ export default {
     background-color: #8397B1;
     opacity: 0.16;
     margin-top: 31rpx;
+  }
+  
+  /deep/ .no-data {
+    .tip {
+      text-align: center;
+    }
   }
 </style>

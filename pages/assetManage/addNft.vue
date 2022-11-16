@@ -70,7 +70,8 @@ export default {
     async add() {
       if (this.adding) return
       this.adding = true
-      let nftToken = this.$cache.get('_nft_tokens_list') || []
+      // let nftToken = this.$cache.get('_nft_tokens_list') || []
+      let nftToken = this.$cache.get('_currentWallet')['_nft_tokens_list'] || []
       if (this.contract.trim() == '') {
         // 请完成代币信息填写
         this.$refs.notify.show('error', this.language.text252)

@@ -39,7 +39,8 @@ export default {
     return {
       language: languages[this.$cache.get('_language')],
       loading: false,
-      list: this.$cache.get('_nft_tokens_list') || [],
+      // list: this.$cache.get('_nft_tokens_list') || [],
+      list: this.$cache.get('_currentWallet')['_nft_tokens_list'] || [],
       tokenList: this.$cache.get('_currentWallet').coinList,
       show: true
     }
@@ -72,13 +73,13 @@ export default {
     this.$cache.set('_nft_all_tokens', list, 0)
   },
   onShow() {
-    this.list = this.$cache.get('_nft_tokens_list') || [],
+    this.list = this.$cache.get('_currentWallet')['_nft_tokens_list'] || [],
     this.tokenList = this.$cache.get('_currentWallet').coinList || []
     this.$refs.list && this.$refs.list.init()
   },
   async mounted() {
-    if (this.$cache.get('_nft_tokens_list')) {
-      this.list = this.$cache.get('_nft_tokens_list')
+    if (this.$cache.get('_currentWallet')['_nft_tokens_list']) {
+      this.list = this.$cache.get('_currentWallet')['_nft_tokens_list']
     }
     this.$nextTick(() => {
       this.$refs.list && this.$refs.list.init()
@@ -93,12 +94,13 @@ export default {
             this.show = false
             this.list.unshift(res)
             this.currentWallet = this.$cache.get('_currentWallet')
+            this.currentWallet['_nft_tokens_list'] = this.list
             this.tokenList = this.currentWallet.coinList
             this.tokenList.push(res)
             this.currentWallet.coinList = this.tokenList
             this.$cache.set('_currentWallet', this.currentWallet, 0)
             this.updateWalletList(this.currentWallet)
-            this.$cache.set('_nft_tokens_list', this.list, 0)
+            // this.$cache.set('_nft_tokens_list', this.list, 0)
             setTimeout(() => {
               this.show = true
               this.$nextTick(() => {
@@ -111,7 +113,11 @@ export default {
     },
     deleteItem(contract) {
       this.list = this.list.filter(item => item.contract_address !== contract)
-      this.$cache.set('_nft_tokens_list', this.list, 0)
+      let currentWallet = this.$cache.get('_currentWallet')
+      currentWallet['_nft_tokens_list'] = this.list
+      this.$cache.set('_currentWallet', currentWallet, 0)
+      this.updateWalletList(currentWallet)
+      // this.$cache.set('_nft_tokens_list', this.list, 0)
       this.$refs.notify.show('error', this.language.text251, { bgColor: '#275EF1' })
     },
     updateCoinList({ coinList, contract }) {

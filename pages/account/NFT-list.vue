@@ -93,18 +93,19 @@ export default {
       token: {},
       expandShow: false,
       loading: true,
-      callGetNFT: '',
+      callGetNFT: {},
       tokenList: [],
       callGetTokenInfo: {}
     }
   },
   onLoad(options) {
     this.token = this.$cache.get('_currentWallet').coinList.find(item => item.symbol == options.symbol)
+    console.log('this.token', this.token)
     if (this.token.tokenList) {
       this.tokenList = this.token.tokenList
       this.loading = false
     }
-    this.callGetNFT = this.token
+    this.callGetNFT = JSON.parse(JSON.stringify(this.token))
   },
   onShow() {
     if (this.token.symbol) {
@@ -113,7 +114,7 @@ export default {
         this.tokenList = this.token.tokenList
         this.loading = false
       }
-      this.callGetNFT = this.token
+      this.callGetNFT = JSON.parse(JSON.stringify(this.token))
     }
   },
   mounted() {
@@ -197,16 +198,32 @@ export default {
       }
     },
     handlerTokenList(res) {
-      console.log('tokenList', res)
+      console.log('handlerTokenList', res)
+      if (res.generic_err) {
+        this.tokenList = []
+        this.token.tokenList = []
+        this.token.nums = 0
+        const wallet = this.$cache.get('_currentWallet')
+        const coinList = wallet.coinList
+        let coinIndex = coinList.findIndex(item => item.alias_name == this.token.symbol)
+        coinList.splice(coinIndex, 1, this.token)
+        wallet.coinList = coinList
+        this.$cache.set('_currentWallet', wallet, 0)
+        this.loading = false
+        this.updateWalletList(wallet)
+        this.loading = false
+        return
+      }
       this.callGetTokenInfo = { tokens: res.token_list.tokens }
       if (this.callGetTokenInfo.tokens.length == 0) {
         this.loading = false
       }
     },
     handlerTokenListInfo(res) {
-      console.log('TokenListInfo', res)
+      console.log('handlerTokenListInfo', res)
       this.tokenList = res
       this.token.tokenList = res
+      this.token.nums = this.tokenList.length
       const wallet = this.$cache.get('_currentWallet')
       const coinList = wallet.coinList
       let coinIndex = coinList.findIndex(item => item.alias_name == this.token.symbol)
@@ -268,8 +285,8 @@ export default {
   },
   methods: {
     async getNFT(token) {
-      if (token.view_key == '') return;
-      
+      // if (token.view_key == '' || !token.view_key) return;
+      if (!token.symbol) return
       let wallet;
       //#ifdef APP-PLUS
       wallet = JSON.parse(plus.storage.getItem('_currentWallet')).data.data
@@ -279,6 +296,7 @@ export default {
       wallet = uni.getStorageSync('_currentWallet').data
       //#endif
       this.tokenCopy = token
+      console.log('token', token);
       const res = await getOwnedTokens(wallet.address, token)
       renderUtils.runMethod(this._$id, 'handlerTokenList', res, this)
     },
