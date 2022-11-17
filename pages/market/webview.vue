@@ -3,7 +3,7 @@
     <view :callTx="callTx" :change:callTx="render.sendTx"></view>
 		<custom-notify ref="notify" style="z-index: 99"></custom-notify>
 		<!-- :showGoBack="false" -->
-		<custom-header :title="name" :customStyle="{ 'z-index': 98 }">
+		<custom-header class="header" :title="name" :customStyle="{ 'z-index': 98 }">
 			<!-- <template #left>
         <view class="back_button">
           <image  @click="goback"  src="/static/img/black.png"  style="width:48rpx;height:48rpx"></image> 
@@ -143,6 +143,21 @@
     	</view>
     </view>
     
+    
+    <u-popup :show="authorizationPop" mode="bottom" class="accredit">
+      <view>
+        <view class="title">{{ language.text49 }}</view>
+        <view class="logo">
+          <image :src="logo || '/static/img/account/uGHM.png'" style="width: 112rpx; height: 112rpx;"></image>
+        </view>
+        <view class="name">{{ name }}</view>
+        <view class="des">{{ language.text50 }}</view>
+        <view class="control-btn">
+          <u-button class="decline" @click="decline">{{ language.text51 }}</u-button>
+          <u-button class="confirm" @click="authoriza">{{ language.text47 }}</u-button>
+        </view>
+      </view>
+    </u-popup>
 	</view>
 </template>
 
@@ -168,9 +183,14 @@ export default {
       tempUrl = 'http://' + tempUrl
     }
     this.jumpUrl = tempUrl
+    this.logo = options.logo
     this.name = options.name
     this.collectionList = this.$cache.get('_collectionList') || []
     this.isCollect = this.collectionList.find(item => item.url === this.jumpUrl)
+  },
+  onShow() {
+    this.language = language[this.$cache.get('_language')]
+    this.languages = languages[this.$cache.get('_language')]
   },
   data() {
     return {
@@ -201,10 +221,18 @@ export default {
       loading: false,
       verifyTouchErrorTip: '',
       callSend: {},
-      callTx: 0
+      callTx: 0,
+      authorizationPop: true,
+      logo: ''
     }
   },
   methods: {
+    decline() {
+      uni.navigateBack()
+    },
+    authoriza() {
+      this.authorizationPop = false
+    },
     closeModalPasswordIsShow() {
       this.modalPasswordIsShow = false
       // if (this.$cache.get('_touchId')) this.verifyMethod = 'touchID'
@@ -780,5 +808,82 @@ export default {
     letter-spacing: 0;
     line-height: 24rpx;
     height: 24rpx;
+  }
+  
+  .accredit {
+    text-align: center;
+    /deep/ .u-popup__content {
+      padding-top: 48rpx;
+      padding-bottom: 32rpx;
+      border-top-left-radius: 16rpx;
+      border-top-right-radius: 16rpx;
+    }
+    
+    .title {
+      font-family: PingFangSC-Medium;
+      font-weight: 600;
+      font-size: 32rpx;
+      color: #2C365A;
+    }
+    
+    .logo {
+      margin-top: 64rpx;
+    }
+    
+    .name {
+      font-family: PingFangSC-Medium;
+      font-weight: 600;
+      font-size: 28rpx;
+      color: #2C365A;
+      letter-spacing: 0;
+      margin-top: 24rpx;
+    }
+    
+    .des {
+      margin-top: 16rpx;
+      padding: 0 32rpx;
+      font-family: PingFangSC-Regular;
+      font-size: 24rpx;
+      color: #8397B1;
+    }
+    
+    .control-btn {
+      display: flex;
+      padding: 0 64rpx;
+      margin-top: 64rpx;
+      justify-content: space-between;
+      
+      /deep/ .u-button {
+        width: 292rpx;
+        height: 96rpx;
+        border-radius: 16px;
+      }
+      
+      .confirm {
+        background-color: #002FA7;
+        font-family: PingFangSC-Regular;
+        font-size: 32rpx;
+        color: #FCFCFD;
+        letter-spacing: 0;
+        text-align: center;
+        line-height: 32rpx;
+      }
+      
+      .decline {
+        font-family: PingFangSC-Regular;
+        font-size: 32rpx;
+        color: #8397B1;
+        letter-spacing: 0;
+        text-align: center;
+        line-height: 32rpx;
+      }
+    }
+  }
+  
+  /deep/ .header .container .center .title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 40vw;
   }
 </style>

@@ -123,11 +123,11 @@ export default {
     height: 112rpx;
 
     .center {
-      height: 32rpx;
+      // height: 32rpx;
       font-weight: 600;
       font-size: 32rpx;
       color: #0F172A;
-      line-height: 32rpx;
+      // line-height: 32rpx;
       
       .title {
         position: absolute;

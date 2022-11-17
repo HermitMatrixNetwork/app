@@ -127,6 +127,7 @@ export default {
       padding: 32rpx 32rpx 36rpx 32rpx;
       display: flex;
       align-items: center;
+      justify-content: space-between;
 
       .logo {
         margin-right: 25rpx;
@@ -138,12 +139,17 @@ export default {
       }
 
       .article {
-        
+        flex: 1;
         .title {
+          text-align: left;
           font-weight: 400;
           font-size: 28rpx;
           color: #2C365A;
-          line-height: 28rpx;
+          // line-height: 28rpx;
+          word-break: break-all;
+          // text-overflow: ellipsis;
+          // white-space: nowrap;
+          // overflow: hidden;
           margin-bottom: 16rpx;
         }
 

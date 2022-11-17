@@ -178,7 +178,7 @@ export default {
           } else {
             this.collection.unshift({
               url: data.url,
-              name: '',
+              name: data.url,
               logo: '/static/img/account/uGHM.png',
               des: ''
             })
@@ -240,7 +240,7 @@ export default {
       this.$cache.set('_recently', this.recently, 0)
       
       uni.navigateTo({
-        url: `./webview?jumpUrl=${item.url}&name=${item.name}`
+        url: `./webview?jumpUrl=${item.url}&name=${item.name}&logo=${item.logo}`
       })
     },
     jump(link, item) { // 轮播图
@@ -259,7 +259,7 @@ export default {
         let target = this.searchVal
         this.searchVal = ''
         uni.navigateTo({
-          url: `./webview?jumpUrl=${target}&name=`
+          url: `./webview?jumpUrl=${target}&name=${target}&logo=/static/img/account/uGHM.png`
         })
       } else {
         this.searchEmpty = true
@@ -413,21 +413,30 @@ export default {
         align-items: center;
         width: 324rpx;
         height: 116rpx;
-        padding-left: 28rpx;
+        padding: 0 28rpx;
+        text-align: center;
+        overflow: hidden;
 
         background: rgba(131, 151, 177, 0.08);
         border-radius: 16rpx;
 
         text {
+          flex: 1;
           font-weight: 600;
           font-size: 28rpx;
+          // margin: 0 28rpx;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
           color: #2C365A;
+          
         }
 
         image {
           width: 52rpx;
           height: 52rpx;
           margin-right: 20rpx;
+          flex-shrink: 0;
         }
       }
     }
