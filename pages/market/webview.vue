@@ -262,6 +262,7 @@
 					setTimeout(() => {
 						this.showToast = false
 					}, 1500)
+					this.payPassword = ''
 					// @todo 执行发送逻辑
 					this.callTx++
 				}
@@ -515,6 +516,7 @@
 			},
 			refresh() {
 				this.iframeDom.contentWindow.location.reload(true)
+				this.serverPostMsg("close")
 			},
 			closeRq() {
 				this.iframePostMsg(DAPPWEB + 'broadcast-' + this.sendData.eventId)
