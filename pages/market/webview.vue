@@ -157,7 +157,7 @@
 				<view class="des">{{ language.text50 }}</view>
 				<view class="control-btn">
 					<u-button class="decline" @click="decline">{{ language.text51 }}</u-button>
-					<u-button class="confirm" @click="authoriza">{{ language.text47 }}</u-button>
+					<u-button class="confirm" @click="render.authorizaR">{{ language.text47 }}</u-button>
 				</view>
 			</view>
 		</u-popup>
@@ -225,7 +225,7 @@
 				verifyTouchErrorTip: '',
 				callSend: {},
 				callTx: 0,
-				authorizationPop: true,
+				authorizationPop: false,
 				logo: ''
 			}
 		},
@@ -233,8 +233,8 @@
 			decline() {
 				uni.navigateBack()
 			},
-			authoriza() {
-				this.authorizationPop = false
+			authoriza(status = false) {
+				this.authorizationPop = status
 			},
 			closeModalPasswordIsShow() {
 				this.modalPasswordIsShow = false
@@ -475,7 +475,8 @@
 			handleEvent(e) {
 				if (e.data && e.data.event && e.data.event.startsWith(DAPPWEB)) {
 					if (e.data.event === DAPPWEB + "init") {
-						this.iframePostMsg(DAPPWEB + 'cs', getOptions())
+						// this.iframePostMsg(DAPPWEB + 'cs', getOptions())
+						this.serverPostMsg("authoriza",true)
 					} else if (e.data.event === DAPPWEB + "sendRq" && !this.sendData) {
 						this.sendData = e.data.data
 						this.sendRq(e.data.data)
@@ -486,6 +487,10 @@
 						console.log(e.data.event, e.data.data)
 					}
 				}
+			},
+			authorizaR(){
+				this.iframePostMsg(DAPPWEB + 'cs', getOptions())
+				this.serverPostMsg("authoriza",false)
 			},
 			// 转账
 			sendRq(data) {
