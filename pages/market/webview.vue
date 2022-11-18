@@ -239,6 +239,7 @@
 			},
 			closeModalPasswordIsShow() {
 				this.modalPasswordIsShow = false
+				this.payPassword = ''
 				// if (this.$cache.get('_touchId')) this.verifyMethod = 'touchID'
 				if (this.touchId) {
 					plus.fingerprint.cancel()
