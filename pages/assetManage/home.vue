@@ -21,7 +21,7 @@ export default {
     return {
 		  language: languages[this.$cache.get('_language')],
       address: '',//查询地址
-      list: this.$cache.get('_currentWallet').coinList,
+      list: this.$cache.get('_currentWallet').coinList.filter(item => item.apply_type !== 'NFT'),
       tokenList: this.$cache.get('_currentWallet').coinList
     }
   },
@@ -29,6 +29,7 @@ export default {
     List
   },
   onShow() {
+    this.list = this.$cache.get('_currentWallet').coinList.filter(item => item.apply_type !== 'NFT')
     this.tokenList = this.$cache.get('_currentWallet').coinList
     this.$refs.list && this.$refs.list.init()
   },

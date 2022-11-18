@@ -114,7 +114,7 @@ export default {
                 alias_name: this.tokenSymbol,
                 apply_type: 'SNIP20',
                 full_name: res.result.label,
-                logo: '/static/img/account/nologo.jpg',
+                logo: '/static/img/ww.png',
                 decimals: this.decimals,
                 hot: 1,
                 ID: this.$cache.get('_token_single_id'),

@@ -69,57 +69,63 @@ export default {
     },
     async add() {
       if (this.adding) return
-      this.adding = true
-      // let nftToken = this.$cache.get('_nft_tokens_list') || []
-      let nftToken = this.$cache.get('_currentWallet')['_nft_tokens_list'] || []
-      if (this.contract.trim() == '') {
-        // 请完成代币信息填写
-        this.$refs.notify.show('error', this.language.text252)
-        this.adding = false
-      } else if (nftToken.find(item => item.contract_address === this.contract)) {
-        // 已存在该代币，请勿重复添加
-        this.$refs.notify.show('error', this.language.text253)
-        this.adding = false
-      } else {
-        let localTokens = []
-        let token = {}
-        // 本地是否已存在NFT代币列表
-        if (this.$cache.get('_nft_all_tokens')) {
-          localTokens = this.$cache.get('_nft_all_tokens')
-        } else {
-          const res = await http.get('https://raw.githubusercontent.com/HermitMatrixNetwork/NonFungibleToken-list/main/NFTlist.json')
-          const list = res.data.tokens.map(item => {
-            return Object.assign(item, {
-              'alias_name': item.symbol,
-              'full_name': item.name,
-              'logo': item.logoURI,
-              'desc': item.description,
-              'contract_address': item.address,
-              'apply_type': 'NFT',
-              view_key: '',
-              loadingBalance: true
-            })
-          })
-          this.$cache.set('_nft_all_tokens', list, 0)
-          localTokens = list
-        }
-        
-        // 本地查询
-        token = localTokens.find(item => item.contract_address == this.contract)
-        
-        if (token) {
-          this.token = token
-          this.show = true
+      try {
+        this.adding = true
+        // let nftToken = this.$cache.get('_nft_tokens_list') || []
+        let nftToken = this.$cache.get('_currentWallet')['_nft_tokens_list'] || []
+        if (this.contract.trim() == '') {
+          // 请完成代币信息填写
+          this.$refs.notify.show('error', this.language.text252)
           this.adding = false
-          return
+        } else if (nftToken.find(item => item.contract_address === this.contract)) {
+          // 已存在该代币，请勿重复添加
+          this.$refs.notify.show('error', this.language.text253)
+          this.adding = false
         } else {
-          this.callGetContractInfo = this.contract
+          let localTokens = []
+          let token = {}
+          // 本地是否已存在NFT代币列表
+          if (this.$cache.get('_nft_all_tokens')) {
+            localTokens = this.$cache.get('_nft_all_tokens')
+          } else {
+            const res = await http.get('https://raw.githubusercontent.com/HermitMatrixNetwork/NonFungibleToken-list/main/NFTlist.json')
+            const list = res.data.tokens.map(item => {
+              return Object.assign(item, {
+                'alias_name': item.symbol,
+                'full_name': item.name,
+                'logo': item.logoURI,
+                'desc': item.description,
+                'contract_address': item.address,
+                'apply_type': 'NFT',
+                view_key: '',
+                loadingBalance: true
+              })
+            })
+            this.$cache.set('_nft_all_tokens', list, 0)
+            localTokens = list
+          }
+          
+          // 本地查询
+          token = localTokens.find(item => item.contract_address == this.contract)
+          
+          if (token) {
+            this.token = token
+            this.show = true
+            this.adding = false
+            return
+          } else {
+            this.callGetContractInfo = this.contract
+          }
+          
         }
-        
+      } catch (e) {
+        this.callGetContractInfo = this.contract
+        console.log('e22', e)
       }
       // this.callGetContractInfo = this.contract
     },
     handlerContractInfo(res) {
+      console.log('res', res)
       if (res.code == 7) {
         this.$refs.notify.show('error', this.language.text250)
         this.adding = false
@@ -129,7 +135,7 @@ export default {
           'alias_name': res.ContractInfo.label,
           'contract_address': res.address,
           'apply_type': 'NFT',
-          logo: '/static/img/account/nologo.jpg',
+          logo: '/static/img/ww.png',
           address: res.address,
           symbol: res.ContractInfo.label,
           desc: '',
@@ -173,7 +179,7 @@ export default {
           res = await querySnip721Contract(contract)
         } catch (e) {
           res.code = 7
-          console.log('e', e);
+          console.log('e11', e);
         }
         renderUtils.runMethod(this._$id, 'handlerContractInfo', res, this)
       }

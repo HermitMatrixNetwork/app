@@ -262,7 +262,7 @@ export default {
     }
   },
   onBackPress(event) {
-    if (e.from === 'backbutton') {
+    if (event.from === 'backbutton') {
       uni.switchTab({
         url: '/pages/account/index'
       })
