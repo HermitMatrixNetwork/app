@@ -146,7 +146,7 @@
 			</view>
 		</view>
 
-
+		<view :authorRenderNum="authorRenderNum" :change:authorRenderNum="render.authorRender"></view>
 		<u-popup :show="authorizationPop" mode="bottom" class="accredit">
 			<view>
 				<view class="title">{{ language.text49 }}</view>
@@ -157,7 +157,7 @@
 				<view class="des">{{ language.text50 }}</view>
 				<view class="control-btn">
 					<u-button class="decline" @click="decline">{{ language.text51 }}</u-button>
-					<u-button class="confirm" @click="render.authorizaR">{{ language.text47 }}</u-button>
+					<u-button class="confirm" @click="authorRenderNum++">{{ language.text47 }}</u-button>
 				</view>
 			</view>
 		</u-popup>
@@ -205,6 +205,7 @@
 				submitPopupIsShow: false,
 				sendFormData: {},
 				callBack: 0,
+				authorRenderNum: 0,
 				pop: false,
 				language: language[this.$cache.get('_language')],
 				languages: languages[this.$cache.get('_language')],
@@ -233,7 +234,7 @@
 			decline() {
 				uni.navigateBack()
 			},
-			authoriza(status = false) {
+			authoriza(status) {
 				this.authorizationPop = status
 			},
 			closeModalPasswordIsShow() {
@@ -476,7 +477,7 @@
 				if (e.data && e.data.event && e.data.event.startsWith(DAPPWEB)) {
 					if (e.data.event === DAPPWEB + "init") {
 						// this.iframePostMsg(DAPPWEB + 'cs', getOptions())
-						this.serverPostMsg("authoriza",true)
+						this.serverPostMsg("authoriza", true)
 					} else if (e.data.event === DAPPWEB + "sendRq" && !this.sendData) {
 						this.sendData = e.data.data
 						this.sendRq(e.data.data)
@@ -488,9 +489,9 @@
 					}
 				}
 			},
-			authorizaR(){
+			authorRender() {
 				this.iframePostMsg(DAPPWEB + 'cs', getOptions())
-				this.serverPostMsg("authoriza",false)
+				this.serverPostMsg("authoriza", false)
 			},
 			// 转账
 			sendRq(data) {
@@ -539,7 +540,7 @@
 				}
 				let eventId = this.sendData.eventId
 				let res = this.secretjs.tx.broadcast(messages, this.sendData.txOptions).then(res => {
-					console.log(DAPPWEB + 'broadcast-' + eventId+"广播成功",res);
+					console.log(DAPPWEB + 'broadcast-' + eventId + "广播成功", res);
 					this.iframePostMsg(DAPPWEB + 'broadcast-' + eventId, {
 						status: 1,
 						res
