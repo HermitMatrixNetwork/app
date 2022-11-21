@@ -148,7 +148,6 @@ export default {
   async created() {
     try {
       this.recently = this.$cache.get('_recently') || []
-      
       if (this.recently.length) {
         this.recently = this.recently.filter(item => item.timeout > Date.now())
         this.recently.sort((a, b) => b.timeout - a.timeout)
@@ -229,14 +228,12 @@ export default {
     toWebView(item) { // Tools
       // todo 添加进最近访问列表
       const itemIndex = this.recently.findIndex(ren => ren.url == item.url)
+	  item.timeout = Date.now() + 604800000 // 7天过期
       if (itemIndex == -1) {
-        item.timeout = Date.now() + 604800 // 7天过期
         this.recently.push(item)
       } else {
-        item.timeout = Date.now() + 604800
         this.recently.splice(itemIndex, 1, item)
       }
-      
       this.$cache.set('_recently', this.recently, 0)
       
       uni.navigateTo({

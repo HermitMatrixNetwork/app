@@ -46,11 +46,10 @@ export default {
     toWebView(item) { // Tools
     
     const itemIndex = this.recently.findIndex(ren => ren.url == item.url)
+    item.timeout = Date.now() + 604800000 // 7天过期
     if (itemIndex == -1) {
-      item.timeout = Date.now() + 604800 // 7天过期
       this.recently.push(item)
     } else {
-      item.timeout = Date.now() + 604800
       this.recently.splice(itemIndex, 1, item)
     }
     
