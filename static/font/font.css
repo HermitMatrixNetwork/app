@@ -1,0 +1,8 @@
+@font-face {
+    /*给字体命名*/
+    font-family: 'din-medium';
+    /*引入字体文件*/
+    src: url('./din-medium_0.ttf');
+    font-weight: normal;
+    font-style: normal;
+}

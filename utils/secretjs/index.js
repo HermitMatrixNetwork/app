@@ -1,5 +1,5 @@
 import NetworkClient from './SecretNetWorkClient'
-import * as _secretjs from 'secretjs'
+import * as _secretjs from 'secretjs-hmt'
 const SecretJs = {
 
   get SecretNetworkClient() {

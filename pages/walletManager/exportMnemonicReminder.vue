@@ -1,0 +1,127 @@
+<template>
+  <view class="page-wrapper">
+    <custom-header :customStyle="{ 'z-index': 99 }"></custom-header>
+
+    <view class="logo">
+      <image src="/static/img/index/tishi.png" style="width: 174rpx; height: 174rpx;"></image>
+    </view>
+
+    <view class="content">
+      <view class="title">
+        {{ language.text136 }}
+      </view>
+      <view class="hint">
+        {{ language.text191 }}
+      </view>
+      <view class="line"></view>
+      <view class="rules">
+        <view class="rules-item">
+          <view class="rules-item-icon"></view>
+          <view class="rules-item-describe">
+            {{ language.text137 }}
+          </view>
+        </view>
+        <view class="rules-item">
+          <view class="rules-item-icon"></view>
+          <view class="rules-item-describe">
+            {{ language.text138 }}
+          </view>
+        </view>
+        <view class="rules-item">
+          <view class="rules-item-icon"></view>
+          <view class="rules-item-describe">
+           {{ language.text178 }}
+          </view>
+        </view>
+      </view>
+      <u-button class="btn" @click="toNextStep">{{ language.text149 }}</u-button>
+    </view>
+  </view>
+</template>
+
+<script>
+  import language from '@/pages/account/language/index.js'
+export default {
+  data() {
+    return {
+      language: language[this.$cache.get('_language')],
+    }
+  },
+  methods: {
+    toNextStep() {
+      uni.redirectTo({
+        url: './exportMnemonic'
+      })
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+  .page-wrapper {
+    padding-top: calc(112rpx + var(--status-bar-height));
+  }
+  .logo {
+    margin-top: 88rpx;
+    margin-bottom: 102rpx;
+    text-align: center;
+  }
+
+  .content {
+    padding: 0 40rpx;
+
+    .title {
+      height: 32rpx;
+      margin-bottom: 24rpx;
+      font-weight: 600;
+      font-size: 32rpx;
+      color: #2C365A;
+      line-height: 32rpx;
+    }
+
+    .hint {
+      height: 28rpx;
+      font-weight: 400;
+      font-size: 28rpx;
+      color: #8397B1;
+      line-height: 28rpx;
+    }
+
+    .line {
+      height: 2rpx;
+      background-color: rgba(131,151,177, 0.3);
+      margin: 48rpx 0;
+    }
+
+    .rules-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 52rpx;
+
+      &-icon {
+        width: 10rpx;
+        height: 10rpx;
+        margin-right: 26rpx;
+        border-radius: 50%;
+        background-color: #8397B1;
+      }
+
+      &-describe {
+        font-size: 28rpx;
+        line-height: 44rpx;
+        color: #8397B1;
+      }
+    }
+
+    .btn {
+      margin: 96rpx 32rpx 32rpx;
+      width: auto;
+      height: 96rpx;
+      border-radius: 16rpx;
+      background-color: #002FA7 !important;
+      font-weight: 400;
+      font-size: 32rpx;
+      color: #FCFCFD;
+    }
+  }
+</style>

@@ -1,4 +1,9 @@
 @import '@/uni_modules/uview-ui/theme.scss';
+* { box-sizing: border-box; }
+
+html {
+  overflow: hidden;
+}
 /**
  * 这里是uni-app内置的常用样式变量
  *
@@ -14,6 +19,9 @@
  */
 
 /* 颜色变量 */
+$success-notify-color: #275EF1;
+$error-notify-color: #EC6665;
+
 
 /* 行为相关颜色 */
 $uni-color-primary: #007aff;

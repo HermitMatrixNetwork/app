@@ -32,6 +32,8 @@ module.exports = {
     'semi': ['error', 'never'],
     // 不能出现多个空格
     'no-multi-spaces': 'error',
+    // 缩进两个空格
+    'indent': ['error', 2],
     //在computed properties中禁用异步actions
     'vue/no-async-in-computed-properties': 'error',
     //不允许重复的keys

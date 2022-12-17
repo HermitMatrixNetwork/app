@@ -1,30 +1,30 @@
 /*
-* @Author: 黄海聪
-* @Date: 2022-06-22 16:27:58
-* @LastEditors: 黄海聪
-* @FilePath: /utils/secretjs/SecretNetWorkClient.js
-* @Description: In User Settings Edit
-*/
+ * @Author: Huanghaicong
+ * @Date: 2022-06-22 16:27:58
+ * @LastEditors: Huanghaicong
+ * @FilePath: /utils/secretjs/SecretNetWorkClient.js
+ * @Description: In User Settings Edit
+ */
 import {
   SecretNetworkClient
-} from 'secretjs'
+} from 'secretjs-hmt'
 
 class NetworkClient {
-  static async create(wallet, walletAddress) {
+  static async create(wallet, walletAddress, rpc, chainId = 'ghm-testnet') {
     const secretjs = await SecretNetworkClient.create({
-      grpcWebUrl: 'http://167.179.118.118:9091',
-      chainId: 'ghmdev',
+      grpcWebUrl: rpc,
+      chainId,
       wallet,
       walletAddress
     })
-
-    return new NetworkClient(secretjs)
+    return secretjs
+    // return new NetworkClient(secretjs)
   }
 
   constructor(secretjs) {
     this.secretjs = secretjs
   }
-
+	
   /* 
       查询用户余额
       @param { String } address 用户地址
@@ -32,7 +32,7 @@ class NetworkClient {
   async QueryBankBalanlce(address) {
     const result = await this.secretjs.query.bank.balance({
       address,
-      denom: 'uGHM'
+      denom: 'ughm'
     })
     // result.balance.amount = result.balance.amount / 1e6
     return result

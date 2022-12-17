@@ -7,23 +7,21 @@
  */
 let runMethod = (vmId, methodName, params, that) => {
   if (that && methodName in that) {
-    that[methodName](params);
+    that[methodName](params)
   }
-  //#ifdef APP-PLUS
   UniViewJSBridge.publishHandler('onWxsInvokeCallMethod', {
     cid: vmId,
     method: methodName,
     args: params
   })
-  //#endif	
 }
 
 /**
  * 获取当前页面对象
  */
 function getCurrentView() {
-  let pages = getCurrentPages();
-  return pages[pages.length - 1];
+  let pages = getCurrentPages()
+  return pages[pages.length - 1]
 }
 
 export default {

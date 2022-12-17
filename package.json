@@ -1,7 +1,6 @@
 {
   "name": "hmn-app",
   "version": "1.0.0",
-  "description": "",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,8 +10,31 @@
   "license": "ISC",
   "dependencies": {
     "@cosmjs/crypto": "^0.28.7",
+    "@keplr-wallet/crypto": "^0.10.12",
+    "aes-js": "^3.1.2",
     "bech32": "^2.0.0",
+    "bip39": "^3.0.4",
     "bn.js": "^5.2.1",
-    "secretjs": "^1.3.0-beta.6"
-  }
+    "buffer": "^6.0.3",
+    "crypto-js": "^4.1.1",
+    "decimal": "^0.0.2",
+    "file-loader": "^6.2.0",
+    "image-tools": "^1.4.0",
+    "pbkdf2": "^3.1.2",
+    "randombytes": "^2.1.0",
+    "secretjs-hmt": "^1.0.3",
+    "serialize-javascript": "^6.0.0",
+    "tki-qrcode": "^0.1.6",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.74.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HermitMatrixNetwork/app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HermitMatrixNetwork/app/issues"
+  },
+  "homepage": "https://github.com/HermitMatrixNetwork/app#readme",
+  "description": ""
 }
