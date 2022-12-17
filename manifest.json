@@ -2,8 +2,8 @@
     "name" : "Hermit Wallet",
     "appid" : "__UNI__F9452A8",
     "description" : "",
-    "versionName" : "2.4.2",
-    "versionCode" : 242,
+    "versionName" : "2.5.2",
+    "versionCode" : 252,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -65,9 +65,9 @@
             "splashscreen" : {
                 "androidStyle" : "default",
                 "android" : {
-                    "hdpi" : "C:/Users/admin/Desktop/启动页2/启动页2/480_762.png",
-                    "xhdpi" : "C:/Users/admin/Desktop/启动页2/启动页2/720_1242.png",
-                    "xxhdpi" : "C:/Users/admin/Desktop/启动页2/启动页2/1080_1882.png"
+                    "hdpi" : "E:/wallet app/launch_pages/android/480_762.png",
+                    "xhdpi" : "E:/wallet app/launch_pages/android/720_1242.png",
+                    "xxhdpi" : "E:/wallet app/launch_pages/android/1080_1882.png"
                 },
                 "iosStyle" : "default",
                 "ios" : {
@@ -75,7 +75,7 @@
                         "retina35" : "C:/Users/admin/Desktop/启动页/启动页/ios/640_960@2x.png",
                         "retina40l" : "C:/Users/admin/Desktop/启动页/启动页/ios/640_1136@2x.png",
                         "retina47" : "C:/Users/admin/Desktop/启动页/启动页/ios/750_1334@2x.png",
-                        "iphonex" : "C:/Users/admin/Desktop/启动页/启动页/ios/1125_2436@3x.png",
+                        "iphonex" : "static/img/mine/banner.png",
                         "retina55l" : "C:/Users/admin/Desktop/启动页/启动页/ios/2208_1242@3x.png",
                         "iphonexl" : "C:/Users/admin/Desktop/启动页/启动页/ios/2436_1125@3x.png"
                     }

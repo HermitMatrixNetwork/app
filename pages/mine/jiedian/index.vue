@@ -17,8 +17,7 @@
       <view class="node-content" @click="toEditNode(item)">
         <view class="node-name">{{ item.name }}</view>
         <view class="node-link">
-          <text>RPC {{ language.text90 }}：</text>
-          <text>{{ item.link }}</text>
+          <text>RPC {{ language.text90 }}：{{ item.type?'https://∗∗∗∗∗∗':item.link }}</text>
         </view>
       </view>
       <view class="arrow" @click="toEditNode(item)">
@@ -60,6 +59,7 @@ export default {
     if (this.selectIndex == -1) {
       this.selectIndex = 0
     }
+	console.log(this.nodeList);
   },
   methods: {
     addNode() {
@@ -75,6 +75,7 @@ export default {
       })
     },
     toEditNode(item) {
+	  if(item.type === 'defult') return console.log('默认节点不可编辑');
       uni.navigateTo({
         url: `./editNode?node=${JSON.stringify(item)}`
       })
@@ -125,6 +126,8 @@ export default {
     &-link {
       font-size: 28rpx;
       color: #8397B1;
+	  white-space: nowrap;
+	  text-overflow:ellipsis;
     }
 
     .arrow {

@@ -35,7 +35,7 @@
         Chain ID
       </view>
       <!-- :class="{error: invalidFields.fieldName == 'name'}" -->
-      <u-input class="wallet-name-input" v-model="formData.chainId" :placeholder="language.text107" disabled></u-input>
+      <u-input class="wallet-name-input" v-model="formData.chainId" :placeholder="language.text107"></u-input>
     </view>
 
     <view :callRender="callRender" :change:callRender="render.checkRpcVerify"></view>
@@ -58,7 +58,7 @@ export default {
       formData: {
         name: '',
         link: '',
-        chainId: 'ghm-testnet'
+        chainId: 'Hermit Chain Mainnet'
       },
       callRender: 0
     }
