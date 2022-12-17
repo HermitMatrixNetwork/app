@@ -97,7 +97,7 @@ export default {
       formData: {
         name: '',
         link: '',
-        chainId: 'ghm-testnet'
+        chainId: 'Hermit'
       },
       callRender: 0,
       nodeIndex: 0,

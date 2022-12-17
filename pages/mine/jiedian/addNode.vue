@@ -58,7 +58,7 @@ export default {
       formData: {
         name: '',
         link: '',
-        chainId: 'Hermit Chain Mainnet'
+        chainId: 'Hermit'
       },
       callRender: 0
     }

@@ -10,7 +10,7 @@ import {
 } from 'secretjs-hmt'
 
 class NetworkClient {
-  static async create(wallet, walletAddress, rpc, chainId = 'ghm-testnet') {
+  static async create(wallet, walletAddress, rpc, chainId = 'Hermit') {
     const secretjs = await SecretNetworkClient.create({
       grpcWebUrl: rpc,
       chainId,

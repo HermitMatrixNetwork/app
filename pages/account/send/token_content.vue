@@ -467,7 +467,7 @@ export default {
           `pagination.limit=${this.pagination.withdraw.size}`
         ]),
         getFailRecord({
-          'chain_id': 'ghm-testnet',
+          'chain_id': 'Hermit',
           // 'limit': this.pagination.fail.size,
           // 'index': this.pagination.fail.page,
           'address': this.address
@@ -834,7 +834,7 @@ export default {
           break
         case 'fail':
           result = (await getFailRecord({
-            'chain_id': 'ghm-testnet',
+            'chain_id': 'Hermit',
             'limit': this.pagination[type].size,
             'index': this.pagination[type].page,
             'address': this.address

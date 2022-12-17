@@ -34,8 +34,8 @@ const mainCoin = {
 const MINERS_GAS = 20000
 
 const DEFAULT_RPC = {
-  name: 'ghm-testnet',
-  chainId: 'ghm-testnet',
+  name: 'Hermit Chain Mainnet',
+  chainId: 'Hermit',
   link: 'https://rpc.hermit.network:9191',
   // link: 'http://167.179.118.118:9091',
   type: 'defult'

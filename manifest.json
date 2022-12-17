@@ -2,8 +2,8 @@
     "name" : "Hermit Wallet",
     "appid" : "__UNI__F9452A8",
     "description" : "",
-    "versionName" : "2.5.2",
-    "versionCode" : 252,
+    "versionName" : "2.4.3",
+    "versionCode" : 243,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -51,7 +51,8 @@
                     "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
-                ]
+                ],
+                "abiFilters" : [ "arm64-v8a" ]
             },
             /* ios打包配置 */
             "ios" : {

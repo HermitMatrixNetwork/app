@@ -25,7 +25,7 @@ export function getOptions() {
   //#endif
 
   return {
-    chainId: 'ghm-testnet',
+    chainId: 'Hermit',
     grpcWebUrl: getCurrentRpc(),
     walletAddress: wallet.address
   }
