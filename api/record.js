@@ -32,3 +32,51 @@ export const getCumulativeRewardCollection = (data) => {
     ...data
   })
 }
+
+//发送记录
+export const getSendRecord = async (data) => {
+	return http.post('/browser/txaccount_send',{
+    'chain_id': 'Hermit',
+    ...data
+  })
+}
+
+//接受记录
+export const getReceiveRecord = async (data) => {
+	return http.post('/browser/txaccount_recv',{
+    'chain_id': 'Hermit',
+    ...data
+  })
+}
+
+//委托记录
+export const getDelegateRecord = async (data) => {
+	return http.post('/browser/txdelegate',{
+    'chain_id': 'Hermit',
+    ...data
+  })
+}
+
+//取消委托记录
+export const getUndelegateRecord = async (data) => {
+	return http.post('/browser/txundelegate',{
+    'chain_id': 'Hermit',
+    ...data
+  })
+}
+
+//领取奖励交易记录
+export const getWithdrawRecord = async (data) => {
+  return http.post('/browser/txwithdraw', {
+	  'chain_id':'Hermit',
+	  ...data
+  })
+}
+
+//全部交易记录
+export const getAllRecord = async (data) => {
+	return http.post('/browser/txaccount',{
+    'chain_id': 'Hermit',
+    ...data
+  })
+}

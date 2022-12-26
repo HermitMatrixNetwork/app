@@ -36,6 +36,11 @@ import {
 } from '@/utils/filters.js'
 import mainCoin from '@/config/index.js'
 import language from '../language/index.js'
+import {
+  getDelegateRecord,
+  getUndelegateRecord,
+  getWithdrawRecord
+} from '@/api/record.js'
 export default {
   props: {
     currentTab: Number,
@@ -86,22 +91,40 @@ export default {
       const tempDelegateResult = []
       const tempWithdrawResult = []
       return Promise.all([
-        txsQuery([`events=message.sender='${ this.wallet.address }'`, 'events=message.module=\'staking\'',
+		//委托
+		getDelegateRecord({
+		  'address': this.wallet.address,
+		  'index': 0,
+		  'limit': 0,
+		}),
+		//取消委托
+		getUndelegateRecord({
+		  'address': this.wallet.address,
+		  'index': 0,
+		  'limit': 0,
+		}),
+		//奖励
+		getWithdrawRecord({
+		  'address': this.wallet.address,
+		  'index': 0,
+		  'limit': 0,
+		}),
+        /*txsQuery([`events=message.sender='${ this.wallet.address }'`, 'events=message.module=\'staking\'',
           'order_by=ORDER_BY_DESC'
         ]),
         // 不能做分页，要区分是设置setWithdrawAddress还是withdraw
         txsQuery([`events=message.sender='${ this.wallet.address }'`, 'events=message.module=\'distribution\'',
           'order_by=ORDER_BY_DESC'
-        ])
+        ])*/
       ]).then(res => {
-        const result = res[0].data.tx_responses
-        const withdraw = res[1].data.tx_responses
+        const result = [...res[0].data.data.list,...res[1].data.data.list]
+        const withdraw = res[2].data.data.list
         result.forEach((item, index) => {
           const type = item.tx.body.messages[0]['@type']
       
           item.validator_address = item.tx.body.messages[0].validator_address
           item.delegator_address = item.tx.body.messages[0].delegator_address
-          
+          item.txhash = item.tx_response.txhash
           item.amount = item.tx.body.messages[0].amount ? item.tx.body.messages[0].amount.amount / mainCoin.decimals : item.tx.body.messages[0].value.amount / mainCoin.decimals
       
           if (type.includes('MsgUndelegate')) {
@@ -119,7 +142,7 @@ export default {
             tempDelegateResult.push(item)
           }
       
-          item.timestamp = item.timestamp.replace(/Z|T/g, ' ')
+          item.timestamp = item.tx_response.timestamp.replace(/Z|T/g, ' ')
           item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() + 8)))
         })
       
@@ -129,28 +152,30 @@ export default {
           const type = item.tx.body.messages[0]['@type']
           item.validator_address = item.tx.body.messages[0].validator_address
           item.delegator_address = item.tx.body.messages[0].delegator_address
-      			
-          item.raw_log.replace(
+		  item.txhash = item.tx_response.txhash
+          item.tx_response.raw_log.replace(
             /\{"type":"withdraw_rewards","attributes":\[\{"key":"amount","value":"([0-9]*)/, (match,
               p1) => {
               item.amount = p1 / mainCoin.decimals
             })
           item.icon = '/static/img/account/lingqu.png'
           if (type.includes('MsgWithdrawDelegatorReward')) {
-            item.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
+            item.tx_response.raw_log.replace(/"receiver","value":"([0-9a-z]*)"/, (match, p1) => {
               item.reciver_address = p1
             })
             item.type = 'withdraw'
+			item.reciver_address = item.reciver_address?item.reciver_address:this.wallet.address
             item.plus = item.reciver_address == this.wallet.address
           } else {
-            item.raw_log.replace(/"key":"withdraw_address","value":"([0-9a-z]*)"/, (match, p1) => {
+            item.tx_response.raw_log.replace(/"key":"withdraw_address","value":"([0-9a-z]*)"/, (match, p1) => {
               item.reciver_address = p1
             })
             item.type = 'setWithdrawAddress'
             item.amount = '0.00'
           }
           item.showAddress = item.reciver_address
-          item.timestamp = item.timestamp.replace(/Z|T/g, ' ')
+		  item.amount = item.amount?item.amount:0
+          item.timestamp = item.tx_response.timestamp.replace(/Z|T/g, ' ')
           item.timestamp = this.formatTime(new Date(new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() + 8)))
           tempWithdrawResult.push(item)
         })

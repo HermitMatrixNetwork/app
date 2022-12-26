@@ -95,7 +95,9 @@ export default {
           } else {
             res.amount += Number(cur.value.amount.amount)
           }
-        }
+        }else if (cur.value.outputs) {
+                  res.amount = Number(cur.value.outputs[0]['coins'][0].amount)
+                }
       })
       res.to_address = res.tx.body.messages[0].value.toAddress
       res.from_address = res.tx.body.messages[0].value.fromAddress
@@ -277,7 +279,18 @@ export default {
           [this.language.text88]: res.transactionHash,
           [this.language.text239]: res.height
         }        
-      }
+      }else if(typeUrl.includes('MsgMultiSend')){
+		  console.log(res);
+		  this.transactionMessage = {
+		    [this.language.text84]: this.status == this.language.text182 ? '0.00GHM' : res.amount,
+		    [this.language.text111]: res.fee,
+		    [this.language.text16]: this.$cache.get('_currentWallet').address,
+			[this.language.text87]: res.tx.body.messages[0].value.inputs[0].address,
+		    'Memo': res.tx.body.memo,
+		    [this.language.text88]: res.transactionHash,
+		    [this.language.text239]: res.height
+		  } 
+	  }
       
       this.loading = false
     },
@@ -413,8 +426,31 @@ export default {
     methods: {
       async getTransationInfo(hash) {
         if (hash == '') return;
-        const result = await queryAccountHash(hash)
-        renderUtils.runMethod(this._$id, 'init', result, this)
+		// console.log(hash,'hash');
+		let _transactionDetails_data = this.$cache.get('_transactionDetails_data')
+		let result;
+		if(_transactionDetails_data){
+			if(_transactionDetails_data[hash]){
+				result = _transactionDetails_data[hash]
+				// console.log(result,111111111);
+			}else{
+				// console.log(2222222);
+				result = await queryAccountHash(hash)
+				let map = new Map()
+				map.set(hash,result)
+				const obj = [...map.entries()].reduce((obj, [key, value]) => (obj[key] = value, obj), {})
+				// console.log(obj);
+				this.$cache.set('_transactionDetails_data', {..._transactionDetails_data,...obj}, 0)
+			}	 
+		}else{
+			result = await queryAccountHash(hash)
+			let map = new Map()
+			map.set(hash,result)
+			const obj = [...map.entries()].reduce((obj, [key, value]) => (obj[key] = value, obj), {})
+			this.$cache.set('_transactionDetails_data', obj, 0)
+			// console.log(obj);
+		}
+		renderUtils.runMethod(this._$id, 'init', result, this)
       }
     }
   }

@@ -52,9 +52,9 @@ export default {
     // https://rpc.hermit.network:9191
     this.nodeList = this.$cache.get('_nodeList') || [DEFAULT_RPC]
     this.$cache.set('_nodeList', this.nodeList, 0)
-    this.currentRpc = this.$cache.get('_currentRpc')
+    // this.currentRpc = this.$cache.get('_currentRpc')
     this.selectIndex = this.$cache.get('_nodeList').findIndex(item => {
-      return item.link == this.$cache.get('_currentRpc')    
+      return item.link == this.currentRpc    
     })
     if (this.selectIndex == -1) {
       this.selectIndex = 0
